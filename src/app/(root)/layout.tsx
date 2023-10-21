@@ -1,8 +1,6 @@
-import "../../globals.css";
+import { Bottombar, LeftSidebar, Topbar } from "@/presentation/components";
+import "../globals.css";
 import type { Metadata } from "next";
-import Topbar from "@/presentation/pages/Dashboard/components/Topbar";
-import LeftSidebar from "@/presentation/pages/Dashboard/components/LeftSidebar";
-import Bottombar from "@/presentation/pages/Dashboard/components/Bottombar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
