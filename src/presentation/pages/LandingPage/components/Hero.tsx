@@ -53,7 +53,6 @@ const Hero = () => {
           <Image
             src={pcBackground}
             alt="fithub program"
-            layout="responsive"
             style={{ maxWidth: "100%", height: "auto" }}
           />
         </div>
