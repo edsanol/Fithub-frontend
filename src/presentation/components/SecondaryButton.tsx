@@ -5,7 +5,7 @@ interface SecondaryButtonProps {
   customTextClass?: string;
   btnType?: "button" | "submit" | "reset";
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const SecondaryButton = ({
@@ -18,7 +18,9 @@ const SecondaryButton = ({
   return (
     <button
       type={btnType || "button"}
-      className={`flex w-32 h-9 rounded-lg border-2 border-white items-center justify-center ${customButtonClass}`}
+      className={`flex w-32 h-9 rounded-lg border-2 border-white items-center justify-center ${
+        customButtonClass ? customButtonClass : ""
+      }`}
       onClick={onClick}
     >
       <p className={`text-lg font-bold text-white ${customTextClass}`}>
