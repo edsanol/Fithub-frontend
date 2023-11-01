@@ -11,6 +11,7 @@ interface FormInputProps {
   classNames?: any;
   description?: string;
   customInputClass?: string;
+  onChange?: (event: string) => void;
 }
 
 const FormInput = ({
@@ -21,7 +22,12 @@ const FormInput = ({
   classNames,
   description,
   customInputClass,
+  onChange,
 }: FormInputProps) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange && onChange(event.target.value);
+  };
+
   return (
     <Input
       isRequired={isRequired || false}
@@ -31,6 +37,7 @@ const FormInput = ({
       classNames={classNames || ""}
       description={description || ""}
       className={customInputClass || ""}
+      onChange={handleChange}
     />
   );
 };

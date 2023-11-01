@@ -5,7 +5,7 @@ interface PrimaryButtonProps {
   customTextClass?: string;
   btnType?: "button" | "submit" | "reset";
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const PrimaryButton = ({

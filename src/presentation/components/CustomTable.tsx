@@ -21,6 +21,7 @@ import EyeIcon from "@/assets/svg/EyeIcon";
 import EditIcon from "@/assets/svg/EditIcon";
 import DeleteIcon from "@/assets/svg/DeleteIcon";
 import SearchIcon from "@/assets/svg/SearchIcon";
+import { useSession } from "next-auth/react";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   active: "success",
@@ -31,6 +32,8 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 type User = (typeof users)[0];
 
 const CustomTable = () => {
+  const { data: session, status } = useSession();
+
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
     const cellValue = user[columnKey as keyof User];
 
@@ -89,6 +92,15 @@ const CustomTable = () => {
         return cellValue;
     }
   }, []);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  console.log(session);
+  console.log(session?.user.data);
+  console.log(session?.user.isSuccess);
+
   return (
     <>
       <Input
