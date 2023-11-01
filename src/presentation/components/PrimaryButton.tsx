@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@nextui-org/react";
+
 interface PrimaryButtonProps {
   customButtonClass?: string;
   customTextClass?: string;
@@ -16,7 +18,7 @@ const PrimaryButton = ({
   onClick,
 }: PrimaryButtonProps) => {
   return (
-    <button
+    <Button
       type={btnType || "button"}
       className={`flex w-32 h-9 rounded-lg bg-[#3669FC] items-center justify-center ${customButtonClass}`}
       onClick={onClick}
@@ -24,7 +26,7 @@ const PrimaryButton = ({
       <p className={`text-lg font-bold text-white ${customTextClass}`}>
         {text}
       </p>
-    </button>
+    </Button>
   );
 };
 export default PrimaryButton;
