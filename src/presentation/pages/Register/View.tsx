@@ -2,11 +2,11 @@
 
 import React from "react";
 import { subscriptionsPlans } from "@/assets/constants";
-import { Link } from "@nextui-org/react";
 import {
   AuthHeader,
   FormInput,
   FormInputPassword,
+  FormLink,
   FormSelect,
   FormTextarea,
   PrimaryButton,
@@ -95,9 +95,11 @@ const Register = () => {
               btnType="submit"
               customButtonClass="mt-5 w-full p-8"
             />
-            <Link href="/login" className="mt-3">
-              ¿Ya tienes una cuenta? Inicia sesión aquí
-            </Link>
+            <FormLink
+              text="¿Ya tienes una cuenta? Inicia sesión aquí"
+              href="/login"
+              className="mt-3"
+            />
           </form>
         </div>
       </div>

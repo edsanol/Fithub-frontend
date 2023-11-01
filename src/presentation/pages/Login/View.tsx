@@ -4,9 +4,9 @@ import {
   AuthHeader,
   FormInput,
   FormInputPassword,
+  FormLink,
   PrimaryButton,
 } from "@/presentation/components";
-import { Link } from "@nextui-org/react";
 import React from "react";
 
 const Login = () => {
@@ -26,9 +26,11 @@ const Login = () => {
             classNames={{ base: "dark" }}
             customInputClass="mt-10"
           />
-          <Link href="/login" className="mt-8 text-sm lg:text-base">
-            ¿Has olvidado tu contraseña?
-          </Link>
+          <FormLink
+            text="¿Has olvidado tu contraseña?"
+            href="/login"
+            className="mt-8 text-sm lg:text-base"
+          />
           <FormInputPassword
             isRequired
             label="Contraseña"
@@ -43,12 +45,11 @@ const Login = () => {
           />
         </form>
         <div className="w-full flex justify-center">
-          <Link
+          <FormLink
+            text="¿Todavía no tienes una cuenta? Crea una ahora"
             href="/register"
             className="mt-20 text-sm md:mt-10 xl:text-base"
-          >
-            ¿Todavía no tienes una cuenta? Crea una ahora
-          </Link>
+          />
         </div>
       </div>
     </div>
