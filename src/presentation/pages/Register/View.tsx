@@ -2,15 +2,15 @@
 
 import React from "react";
 import { subscriptionsPlans } from "@/assets/constants";
-import { Link } from "@nextui-org/react";
 import {
+  AuthHeader,
   FormInput,
   FormInputPassword,
+  FormLink,
   FormSelect,
   FormTextarea,
   PrimaryButton,
 } from "@/presentation/components";
-import { Header } from "./components";
 import ViewModel from "./ViewModel";
 
 const Register = () => {
@@ -30,7 +30,7 @@ const Register = () => {
   return (
     <>
       <div className="h-full bg-[#000]">
-        <Header />
+        <AuthHeader />
         <div className="w-11/12 mx-auto bg-[#121417] my-10 rounded-xl p-5 md:w-9/12 md:p-10 lg:w-1/2">
           <form onSubmit={handleSubmit}>
             <div className="block md:flex md:gap-3">
@@ -116,9 +116,11 @@ const Register = () => {
               btnType="submit"
               customButtonClass="mt-5 w-full p-8"
             />
-            <Link href="/login" className="mt-3">
-              ¿Ya tienes una cuenta? Inicia sesión aquí
-            </Link>
+            <FormLink
+              href="/login"
+              text="¿Ya tienes una cuenta? Inicia sesión aquí"
+              customLinkClass="mt-3"
+            />
           </form>
         </div>
       </div>
