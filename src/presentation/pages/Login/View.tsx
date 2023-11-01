@@ -9,8 +9,11 @@ import { Link } from "@nextui-org/react";
 import Image from "next/image";
 import React from "react";
 import bgRegister from "@/assets/images/bg-login.jpg";
+import ViewModel from "./ViewModel";
 
 const Login = () => {
+  const { handleSubmit, handleSetEmail, handleSetPassword } = ViewModel();
+
   return (
     <div className="h-screen bg-[#121417] md:flex">
       <div className="hidden md:block md:w-1/2">
@@ -26,7 +29,7 @@ const Login = () => {
               Bienvenido de vuelta
             </h2>
           </div>
-          <form action="#">
+          <form onSubmit={handleSubmit}>
             <FormInput
               isRequired
               type="email"
@@ -34,6 +37,7 @@ const Login = () => {
               size="lg"
               classNames={{ base: "dark" }}
               customInputClass="mt-5 lg:mt-10"
+              onChange={(value) => handleSetEmail(value)}
             />
             <Link
               href="/login"
@@ -46,10 +50,10 @@ const Login = () => {
               label="Contraseña"
               size="lg"
               classNames={{ base: "dark" }}
+              onChange={(value) => handleSetPassword(value)}
             />
             <PrimaryButton
               text="Iniciar sesión"
-              onClick={() => console.log("Click")}
               btnType="submit"
               customButtonClass="mt-10 w-full p-8 lg:mt-12"
             />

@@ -8,6 +8,7 @@ interface FormTextareaProps {
   placeholder?: string;
   size?: "lg" | "md" | "sm";
   classNames?: any;
+  onChange?: (event: string) => void;
 }
 
 const FormTextarea = ({
@@ -15,6 +16,7 @@ const FormTextarea = ({
   placeholder,
   size,
   classNames,
+  onChange,
 }: FormTextareaProps) => {
   return (
     <Textarea
@@ -23,6 +25,7 @@ const FormTextarea = ({
       placeholder={placeholder || ""}
       size={size || "lg"}
       classNames={classNames || ""}
+      onChange={(event) => onChange && onChange(event.target.value)}
     />
   );
 };

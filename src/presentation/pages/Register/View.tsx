@@ -11,14 +11,28 @@ import {
   PrimaryButton,
 } from "@/presentation/components";
 import { Header } from "./components";
+import ViewModel from "./ViewModel";
 
 const Register = () => {
+  const {
+    handleSubmit,
+    handleSetGymName,
+    handleSetEmail,
+    handleSetPassword,
+    handleSetAddress,
+    handleSetPhoneNumber,
+    handleSetRegisterDate,
+    handleSetSubscriptionPlan,
+    handleSetComments,
+    handleSetNit,
+  } = ViewModel();
+
   return (
     <>
       <div className="h-full bg-[#000]">
         <Header />
         <div className="w-11/12 mx-auto bg-[#121417] my-10 rounded-xl p-5 md:w-9/12 md:p-10 lg:w-1/2">
-          <form action="#">
+          <form onSubmit={handleSubmit}>
             <div className="block md:flex md:gap-3">
               <FormInput
                 isRequired
@@ -26,6 +40,7 @@ const Register = () => {
                 label="Nombre"
                 size="lg"
                 classNames={{ base: "dark" }}
+                onChange={(value) => handleSetGymName(value)}
               />
               <FormInput
                 isRequired
@@ -34,6 +49,7 @@ const Register = () => {
                 size="lg"
                 classNames={{ base: "dark" }}
                 customInputClass="mt-5 md:mt-0"
+                onChange={(value) => handleSetAddress(value)}
               />
             </div>
             <div className="block md:flex md:gap-3">
@@ -44,6 +60,7 @@ const Register = () => {
                 size="lg"
                 classNames={{ base: "dark" }}
                 customInputClass="mt-5"
+                onChange={(value) => handleSetNit(value)}
               />
               <FormInput
                 isRequired
@@ -52,6 +69,7 @@ const Register = () => {
                 size="lg"
                 classNames={{ base: "dark" }}
                 customInputClass="mt-5"
+                onChange={(value) => handleSetPhoneNumber(value)}
               />
             </div>
             <FormInput
@@ -62,6 +80,7 @@ const Register = () => {
               classNames={{ base: "dark" }}
               description="Este correo será utilizado para iniciar sesión"
               customInputClass="mt-5"
+              onChange={(value) => handleSetEmail(value)}
             />
             <FormInputPassword
               isRequired
@@ -69,6 +88,7 @@ const Register = () => {
               size="lg"
               classNames={{ base: "dark" }}
               customInputClass="mt-5"
+              onChange={(value) => handleSetPassword(value)}
             />
             <div className="mt-5">
               <FormSelect
@@ -79,6 +99,7 @@ const Register = () => {
                 classNames={{ base: "dark" }}
                 popoverProps={{ color: "foreground" }}
                 items={subscriptionsPlans}
+                onChange={(value) => handleSetSubscriptionPlan(value)}
               />
             </div>
             <div className="mt-5">
@@ -87,11 +108,11 @@ const Register = () => {
                 placeholder="Escribe tus comentarios"
                 size="lg"
                 classNames={{ base: "dark" }}
+                onChange={(value) => handleSetComments(value)}
               />
             </div>
             <PrimaryButton
               text="Registrarme"
-              onClick={() => console.log("Click")}
               btnType="submit"
               customButtonClass="mt-5 w-full p-8"
             />

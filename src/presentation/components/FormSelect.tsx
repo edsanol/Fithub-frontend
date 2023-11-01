@@ -13,6 +13,7 @@ interface FormSelectProps {
   popoverProps?: any;
   customInputClass?: string;
   items: any;
+  onChange?: (event: string) => void;
 }
 
 const FormSelect = ({
@@ -25,6 +26,7 @@ const FormSelect = ({
   popoverProps,
   customInputClass,
   items,
+  onChange,
 }: FormSelectProps) => {
   return (
     <Select
@@ -40,8 +42,9 @@ const FormSelect = ({
       {items.map((item: any) => (
         <SelectItem
           key={item.value}
-          value={item.value}
+          value={String(item.value)}
           classNames={classNames || ""}
+          onClick={() => onChange && onChange(String(item.value))}
         >
           {item.label}
         </SelectItem>

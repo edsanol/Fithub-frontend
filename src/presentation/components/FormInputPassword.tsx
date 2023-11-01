@@ -12,6 +12,7 @@ interface FormInputPasswordProps {
   classNames?: any;
   description?: string;
   customInputClass?: string;
+  onChange?: (event: string) => void;
 }
 
 const FormInputPassword = ({
@@ -21,8 +22,13 @@ const FormInputPassword = ({
   classNames,
   description,
   customInputClass,
+  onChange,
 }: FormInputPasswordProps) => {
   const [isVisible, setIsVisible] = useState(false);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange && onChange(event.target.value);
+  };
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -48,6 +54,7 @@ const FormInputPassword = ({
       classNames={classNames || ""}
       description={description || ""}
       className={customInputClass || ""}
+      onChange={handleChange}
     />
   );
 };

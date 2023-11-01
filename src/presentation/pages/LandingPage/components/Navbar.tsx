@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@nextui-org/button";
+import { ButtonLogin } from ".";
 
 const Navbar = () => {
   return (
@@ -28,18 +29,9 @@ const Navbar = () => {
               </Link>
             </ul>
             <div className="flex items-center w-[14.5rem] justify-between ml-8 mr-11">
-              <Button
-                size="md"
-                radius="sm"
-                color="secondary"
-                variant="bordered"
-              >
-                <Link href="/">
-                  <p className="text-white font-semibold">Inicia sesión</p>
-                </Link>
-              </Button>
+              <ButtonLogin />
               <Button size="md" radius="sm" color="primary">
-                <Link href="/">
+                <Link href="/register">
                   <p className="text-white font-semibold">Regístrate</p>
                 </Link>
               </Button>
