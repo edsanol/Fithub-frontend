@@ -4,19 +4,19 @@ import React from "react";
 import { subscriptionsPlans } from "@/assets/constants";
 import { Link } from "@nextui-org/react";
 import {
+  AuthHeader,
   FormInput,
   FormInputPassword,
   FormSelect,
   FormTextarea,
   PrimaryButton,
 } from "@/presentation/components";
-import { Header } from "./components";
 
 const Register = () => {
   return (
     <>
       <div className="h-full bg-[#000]">
-        <Header />
+        <AuthHeader />
         <div className="w-11/12 mx-auto bg-[#121417] my-10 rounded-xl p-5 md:w-9/12 md:p-10 lg:w-1/2">
           <form action="#">
             <div className="block md:flex md:gap-3">
