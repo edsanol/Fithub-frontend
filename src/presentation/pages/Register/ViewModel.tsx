@@ -2,6 +2,14 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import {
+  isNotEmpty,
+  isValidEmail,
+  isValidName,
+  isValidNit,
+  isValidPassword,
+  isValidPhone,
+} from "@/presentation/helpers";
 
 const ViewModel = () => {
   const [gymData, setGymData] = useState<any>({
@@ -15,10 +23,57 @@ const ViewModel = () => {
     comments: "",
     nit: "",
   });
+  const [gymDataError, setGymDataError] = useState<any>({
+    gymNameError: false,
+    emailError: false,
+    passwordError: false,
+    addressError: false,
+    phoneNumberError: false,
+    nitError: false,
+  });
   const router = useRouter();
+
+  const handleIsValidForm = (gymData: any) => {
+    const newErrors = {
+      emailError: false,
+      passwordError: false,
+      gymNameError: false,
+      phoneNumberError: false,
+      nitError: false,
+      addressError: false,
+    };
+
+    if (!isValidEmail(gymData.email)) {
+      newErrors.emailError = true;
+    }
+
+    if (!isValidPassword(gymData.password)) {
+      newErrors.passwordError = true;
+    }
+
+    if (!isValidName(gymData.gymName)) {
+      newErrors.gymNameError = true;
+    }
+
+    if (!isValidPhone(gymData.phoneNumber)) {
+      newErrors.phoneNumberError = true;
+    }
+
+    if (!isValidNit(gymData.nit)) {
+      newErrors.nitError = true;
+    }
+
+    if (!isNotEmpty(gymData.address)) {
+      newErrors.addressError = true;
+    }
+
+    setGymDataError(newErrors);
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    handleIsValidForm(gymData);
 
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Gym/Register`,
@@ -93,6 +148,7 @@ const ViewModel = () => {
     handleSetSubscriptionPlan,
     handleSetComments,
     handleSetNit,
+    gymDataError,
   };
 };
 
