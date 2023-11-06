@@ -11,7 +11,13 @@ import React from "react";
 import ViewModel from "./ViewModel";
 
 const Login = () => {
-  const { handleSubmit, handleSetEmail, handleSetPassword } = ViewModel();
+  const {
+    handleSubmit,
+    handleSetEmail,
+    handleSetPassword,
+    emailError,
+    passwordError,
+  } = ViewModel();
 
   return (
     <div className="w-full h-full bg-[#000]">
@@ -23,6 +29,13 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <FormInput
             isRequired
+            isInvalid={emailError}
+            color={emailError ? "danger" : "default"}
+            errorMessage={
+              emailError
+                ? "Credenciales invalidas, email y/o contraseña incorrectos."
+                : ""
+            }
             type="email"
             label="Correo electrónico"
             size="lg"
@@ -37,6 +50,13 @@ const Login = () => {
           />
           <FormInputPassword
             isRequired
+            isInvalid={passwordError}
+            color={passwordError ? "danger" : "default"}
+            errorMessage={
+              passwordError
+                ? "Credenciales invalidas, email y/o contraseña incorrectos."
+                : ""
+            }
             label="Contraseña"
             size="lg"
             classNames={{ base: "dark" }}

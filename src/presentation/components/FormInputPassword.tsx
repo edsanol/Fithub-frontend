@@ -7,6 +7,16 @@ import { Input } from "@nextui-org/react";
 
 interface FormInputPasswordProps {
   isRequired?: boolean;
+  isInvalid?: boolean;
+  color?:
+    | "primary"
+    | "success"
+    | "warning"
+    | "danger"
+    | "default"
+    | "secondary"
+    | undefined;
+  errorMessage?: string;
   label: string;
   size?: "lg" | "md" | "sm";
   classNames?: any;
@@ -17,6 +27,9 @@ interface FormInputPasswordProps {
 
 const FormInputPassword = ({
   isRequired,
+  isInvalid,
+  color,
+  errorMessage,
   label,
   size,
   classNames,
@@ -35,6 +48,10 @@ const FormInputPassword = ({
   return (
     <Input
       isRequired={isRequired || false}
+      isInvalid={isInvalid || false}
+      color={color}
+      errorMessage={errorMessage || ""}
+      variant={isInvalid ? "bordered" : undefined}
       label={label}
       endContent={
         <button

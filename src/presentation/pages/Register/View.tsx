@@ -25,17 +25,25 @@ const Register = () => {
     handleSetSubscriptionPlan,
     handleSetComments,
     handleSetNit,
+    gymDataError,
   } = ViewModel();
 
   return (
     <>
       <div className="h-full bg-[#000]">
         <AuthHeader />
-        <div className="w-11/12 mx-auto bg-[#121417] my-10 rounded-xl p-5 md:w-9/12 md:p-10 lg:w-1/2">
+        <div className="w-11/12 mx-auto bg-[#121417] my-10 rounded-xl p-5 md:w-9/12 md:p-10 xl:w-1/2">
           <form onSubmit={handleSubmit}>
             <div className="block md:flex md:gap-3">
               <FormInput
                 isRequired
+                isInvalid={gymDataError?.gymNameError}
+                color={gymDataError?.gymNameError ? "danger" : "default"}
+                errorMessage={
+                  gymDataError?.gymNameError
+                    ? "Por favor ingresa un nombre válido"
+                    : ""
+                }
                 type="text"
                 label="Nombre"
                 size="lg"
@@ -44,6 +52,13 @@ const Register = () => {
               />
               <FormInput
                 isRequired
+                isInvalid={gymDataError?.addressError}
+                color={gymDataError?.addressError ? "danger" : "default"}
+                errorMessage={
+                  gymDataError?.addressError
+                    ? "Por favor ingresa una dirección válida"
+                    : ""
+                }
                 type="text"
                 label="Dirección"
                 size="lg"
@@ -55,6 +70,13 @@ const Register = () => {
             <div className="block md:flex md:gap-3">
               <FormInput
                 isRequired
+                isInvalid={gymDataError?.nitError}
+                color={gymDataError?.nitError ? "danger" : "default"}
+                errorMessage={
+                  gymDataError?.nitError
+                    ? "Por favor ingresa un NIT válido"
+                    : ""
+                }
                 type="text"
                 label="NIT o razón social"
                 size="lg"
@@ -64,6 +86,13 @@ const Register = () => {
               />
               <FormInput
                 isRequired
+                isInvalid={gymDataError?.phoneNumberError}
+                color={gymDataError?.phoneNumberError ? "danger" : "default"}
+                errorMessage={
+                  gymDataError?.phoneNumberError
+                    ? "Por favor ingresa un número de teléfono válido"
+                    : ""
+                }
                 type="text"
                 label="Número de teléfono"
                 size="lg"
@@ -74,6 +103,13 @@ const Register = () => {
             </div>
             <FormInput
               isRequired
+              isInvalid={gymDataError?.emailError}
+              color={gymDataError?.emailError ? "danger" : "default"}
+              errorMessage={
+                gymDataError?.emailError
+                  ? "Por favor ingresa un correo electrónico válido"
+                  : ""
+              }
               type="email"
               label="Correo electrónico"
               size="lg"
@@ -84,6 +120,13 @@ const Register = () => {
             />
             <FormInputPassword
               isRequired
+              isInvalid={gymDataError?.passwordError}
+              color={gymDataError?.passwordError ? "danger" : "default"}
+              errorMessage={
+                gymDataError?.passwordError
+                  ? "Por favor ingresa una contraseña válida"
+                  : ""
+              }
               label="Contraseña"
               size="lg"
               classNames={{ base: "dark" }}

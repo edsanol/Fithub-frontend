@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 const ViewModel = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [emailError, setEmailError] = useState<boolean>(false);
+  const [passwordError, setPasswordError] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -17,8 +19,13 @@ const ViewModel = () => {
     });
 
     if (responseNextAuth?.error) {
+      setEmailError(true);
+      setPasswordError(true);
       return;
     }
+
+    setEmailError(false);
+    setPasswordError(false);
 
     router.push("/dashboard");
   };
@@ -31,7 +38,13 @@ const ViewModel = () => {
     setPassword(event);
   };
 
-  return { handleSubmit, handleSetEmail, handleSetPassword };
+  return {
+    handleSubmit,
+    handleSetEmail,
+    handleSetPassword,
+    emailError,
+    passwordError,
+  };
 };
 
 export default ViewModel;
