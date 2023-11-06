@@ -32,7 +32,9 @@ const Login = () => {
             isInvalid={emailError}
             color={emailError ? "danger" : "default"}
             errorMessage={
-              emailError ? "Por favor ingresa un correo electónico válido" : ""
+              emailError
+                ? "Credenciales invalidas, email y/o contraseña incorrectos."
+                : ""
             }
             type="email"
             label="Correo electrónico"
@@ -51,7 +53,9 @@ const Login = () => {
             isInvalid={passwordError}
             color={passwordError ? "danger" : "default"}
             errorMessage={
-              passwordError ? "Por favor ingresa una contraseña válida" : ""
+              passwordError
+                ? "Credenciales invalidas, email y/o contraseña incorrectos."
+                : ""
             }
             label="Contraseña"
             size="lg"

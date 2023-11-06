@@ -10,9 +10,10 @@ import {
   isValidPassword,
   isValidPhone,
 } from "@/presentation/helpers";
+import { IGymData, IGymDataValidation } from "@/presentation/interfaces/IAuth";
 
 const ViewModel = () => {
-  const [gymData, setGymData] = useState<any>({
+  const [gymData, setGymData] = useState<IGymData>({
     gymName: "",
     email: "",
     password: "",
@@ -23,7 +24,7 @@ const ViewModel = () => {
     comments: "",
     nit: "",
   });
-  const [gymDataError, setGymDataError] = useState<any>({
+  const [gymDataError, setGymDataError] = useState<IGymDataValidation>({
     gymNameError: false,
     emailError: false,
     passwordError: false,
@@ -33,47 +34,29 @@ const ViewModel = () => {
   });
   const router = useRouter();
 
-  const handleIsValidForm = (gymData: any) => {
-    const newErrors = {
-      emailError: false,
-      passwordError: false,
-      gymNameError: false,
-      phoneNumberError: false,
-      nitError: false,
-      addressError: false,
+  const handleIsValidForm = async () => {
+    const errors: IGymDataValidation = {
+      emailError: !isValidEmail(gymData.email),
+      passwordError: !isValidPassword(gymData.password),
+      gymNameError: !isValidName(gymData.gymName),
+      phoneNumberError: !isValidPhone(gymData.phoneNumber),
+      nitError: !isValidNit(gymData.nit),
+      addressError: !isNotEmpty(gymData.address),
     };
 
-    if (!isValidEmail(gymData.email)) {
-      newErrors.emailError = true;
-    }
+    setGymDataError(errors);
 
-    if (!isValidPassword(gymData.password)) {
-      newErrors.passwordError = true;
-    }
-
-    if (!isValidName(gymData.gymName)) {
-      newErrors.gymNameError = true;
-    }
-
-    if (!isValidPhone(gymData.phoneNumber)) {
-      newErrors.phoneNumberError = true;
-    }
-
-    if (!isValidNit(gymData.nit)) {
-      newErrors.nitError = true;
-    }
-
-    if (!isNotEmpty(gymData.address)) {
-      newErrors.addressError = true;
-    }
-
-    setGymDataError(newErrors);
+    return Promise.resolve(errors);
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    handleIsValidForm(gymData);
+    const errors = await handleIsValidForm();
+
+    if (Object.values(errors).some(Boolean)) {
+      return;
+    }
 
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Gym/Register`,

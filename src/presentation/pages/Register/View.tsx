@@ -32,7 +32,7 @@ const Register = () => {
     <>
       <div className="h-full bg-[#000]">
         <AuthHeader />
-        <div className="w-11/12 mx-auto bg-[#121417] my-10 rounded-xl p-5 md:w-9/12 md:p-10 lg:w-1/2">
+        <div className="w-11/12 mx-auto bg-[#121417] my-10 rounded-xl p-5 md:w-9/12 md:p-10 xl:w-1/2">
           <form onSubmit={handleSubmit}>
             <div className="block md:flex md:gap-3">
               <FormInput
