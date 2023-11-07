@@ -1,7 +1,12 @@
+import CreateUser from "@/presentation/pages/CreateUser";
 import React from "react";
 
-const CreateUser = () => {
-  return <div>CreateUser</div>;
+const CreateUserPage = () => {
+  return (
+    <>
+      <CreateUser />
+    </>
+  );
 };
 
-export default CreateUser;
+export default CreateUserPage;
