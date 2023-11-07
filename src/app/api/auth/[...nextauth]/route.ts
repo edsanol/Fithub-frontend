@@ -18,7 +18,7 @@ const handler = NextAuth({
           }
 
           const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Gym/login`,
             {
               email: credentials.email,
               password: credentials.password,

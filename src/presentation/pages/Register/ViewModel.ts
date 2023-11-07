@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import container from "@/config/inversifyContainer";
+import { RegisterGymUserUseCase } from "@/domain/useCases/GymUser/registerGymUserUseCase";
+import { TYPES } from "@/config/types";
 import {
   isNotEmpty,
   isValidEmail,
@@ -51,37 +53,36 @@ const ViewModel = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    try {
+      const registerGymUserUseCase = container.get<RegisterGymUserUseCase>(
+        TYPES.RegisterGymUserUseCase
+      );
+      const response = await registerGymUserUseCase.execute(gymData);
 
-    const errors = await handleIsValidForm();
+      if (!response) {
+        console.log("error");
+        return;
+      }
+      const errors = await handleIsValidForm();
 
-    if (Object.values(errors).some(Boolean)) {
-      return;
+      if (Object.values(errors).some(Boolean)) {
+        return;
+      }
+
+      const responseNextAuth = await signIn("credentials", {
+        email: gymData.email,
+        password: gymData.password,
+        redirect: false,
+      });
+
+      if (responseNextAuth?.error) {
+        return;
+      }
+
+      router.push("/dashboard");
+    } catch (error) {
+      console.log(error);
     }
-
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Gym/Register`,
-      gymData
-    );
-
-    console.log("response status", response.status);
-    console.log("response", response.data);
-
-    if (response.status !== 200) {
-      console.log("error");
-      return;
-    }
-
-    const responseNextAuth = await signIn("credentials", {
-      email: gymData.email,
-      password: gymData.password,
-      redirect: false,
-    });
-
-    if (responseNextAuth?.error) {
-      return;
-    }
-
-    router.push("/dashboard");
   };
 
   const handleSetGymName = (event: string) => {
