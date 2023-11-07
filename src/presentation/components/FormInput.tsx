@@ -5,6 +5,16 @@ import { Input } from "@nextui-org/react";
 
 interface FormInputProps {
   isRequired?: boolean;
+  isInvalid?: boolean;
+  color?:
+    | "primary"
+    | "success"
+    | "warning"
+    | "danger"
+    | "default"
+    | "secondary"
+    | undefined;
+  errorMessage?: string;
   type: string;
   label: string;
   size?: "lg" | "md" | "sm";
@@ -16,6 +26,9 @@ interface FormInputProps {
 
 const FormInput = ({
   isRequired,
+  isInvalid,
+  color,
+  errorMessage,
   type,
   label,
   size,
@@ -31,6 +44,10 @@ const FormInput = ({
   return (
     <Input
       isRequired={isRequired || false}
+      isInvalid={isInvalid || false}
+      color={color}
+      errorMessage={errorMessage || ""}
+      variant={isInvalid ? "bordered" : undefined}
       type={type}
       label={label}
       size={size || "lg"}

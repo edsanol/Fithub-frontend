@@ -4,9 +4,18 @@ import { useRouter } from "next/navigation";
 import container from "@/config/inversifyContainer";
 import { RegisterGymUserUseCase } from "@/domain/useCases/GymUser/registerGymUserUseCase";
 import { TYPES } from "@/config/types";
+import {
+  isNotEmpty,
+  isValidEmail,
+  isValidName,
+  isValidNit,
+  isValidPassword,
+  isValidPhone,
+} from "@/presentation/helpers";
+import { IGymData, IGymDataValidation } from "@/presentation/interfaces/IAuth";
 
 const ViewModel = () => {
-  const [gymData, setGymData] = useState<any>({
+  const [gymData, setGymData] = useState<IGymData>({
     gymName: "",
     email: "",
     password: "",
@@ -17,7 +26,30 @@ const ViewModel = () => {
     comments: "",
     nit: "",
   });
+  const [gymDataError, setGymDataError] = useState<IGymDataValidation>({
+    gymNameError: false,
+    emailError: false,
+    passwordError: false,
+    addressError: false,
+    phoneNumberError: false,
+    nitError: false,
+  });
   const router = useRouter();
+
+  const handleIsValidForm = async () => {
+    const errors: IGymDataValidation = {
+      emailError: !isValidEmail(gymData.email),
+      passwordError: !isValidPassword(gymData.password),
+      gymNameError: !isValidName(gymData.gymName),
+      phoneNumberError: !isValidPhone(gymData.phoneNumber),
+      nitError: !isValidNit(gymData.nit),
+      addressError: !isNotEmpty(gymData.address),
+    };
+
+    setGymDataError(errors);
+
+    return Promise.resolve(errors);
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,6 +61,11 @@ const ViewModel = () => {
 
       if (!response) {
         console.log("error");
+        return;
+      }
+      const errors = await handleIsValidForm();
+
+      if (Object.values(errors).some(Boolean)) {
         return;
       }
 
@@ -95,6 +132,7 @@ const ViewModel = () => {
     handleSetSubscriptionPlan,
     handleSetComments,
     handleSetNit,
+    gymDataError,
   };
 };
 
