@@ -9,6 +9,7 @@ import FormSelect from "./FormSelect";
 import FormTextarea from "./FormTextarea";
 import AuthHeader from "./AuthHeader";
 import FormLink from "./FormLink";
+import FormRadioButton from "./FormRadioButton";
 
 export {
   PrimaryButton,
@@ -22,4 +23,5 @@ export {
   FormTextarea,
   AuthHeader,
   FormLink,
+  FormRadioButton,
 };

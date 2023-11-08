@@ -21,6 +21,8 @@ interface FormInputProps {
   classNames?: any;
   description?: string;
   customInputClass?: string;
+  labelPlacement?: "outside" | "inside" | "outside-left";
+  placeholder?: string;
   onChange?: (event: string) => void;
 }
 
@@ -35,6 +37,8 @@ const FormInput = ({
   classNames,
   description,
   customInputClass,
+  labelPlacement,
+  placeholder,
   onChange,
 }: FormInputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +58,8 @@ const FormInput = ({
       classNames={classNames || ""}
       description={description || ""}
       className={customInputClass || ""}
+      labelPlacement={labelPlacement || "inside"}
+      placeholder={placeholder || ""}
       onChange={handleChange}
     />
   );

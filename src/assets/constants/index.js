@@ -97,3 +97,14 @@ export const users = [
     email: "kristen.cooper@example.com",
   },
 ];
+
+export const genres = [
+  {
+    value: "M",
+    label: "Masculino",
+  },
+  {
+    value: "F",
+    label: "Femenino",
+  },
+];

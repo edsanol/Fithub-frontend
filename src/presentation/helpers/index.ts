@@ -53,3 +53,11 @@ export const isNotEmpty = (value: string): boolean => {
 
   return false;
 };
+
+export const isValidGenre = (genre: string): boolean => {
+  if (genre === "M" || genre === "F") {
+    return true;
+  }
+
+  return false;
+};
