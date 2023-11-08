@@ -1,5 +1,6 @@
 import { TYPES } from "@/config/types";
 import { GymUser } from "@/domain/entities/GymUser";
+import { UserLogin } from "@/domain/entities/UserLogin";
 import { GymUserRepository } from "@/domain/repositories/gymUserRepository";
 import type { GymUserService } from "@/domain/services/gymUserService";
 import { inject, injectable } from "inversify";
@@ -10,6 +11,12 @@ export class GymUserRepositoryImpl implements GymUserRepository {
 
   constructor(@inject(TYPES.GymUserService) service: GymUserService) {
     this.service = service;
+  }
+
+  async loginGymUser(userLogin: UserLogin): Promise<GymUser> {
+    const response = await this.service.loginGymUser(userLogin);
+
+    return response;
   }
 
   async registerGymUser(gymUser: GymUser): Promise<boolean> {

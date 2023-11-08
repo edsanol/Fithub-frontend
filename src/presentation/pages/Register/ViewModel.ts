@@ -12,10 +12,11 @@ import {
   isValidPassword,
   isValidPhone,
 } from "@/presentation/helpers";
-import { IGymData, IGymDataValidation } from "@/presentation/interfaces/IAuth";
+import { IGymDataValidation } from "@/presentation/interfaces/IAuth";
+import { GymUser } from "@/domain/entities/GymUser";
 
 const ViewModel = () => {
-  const [gymData, setGymData] = useState<IGymData>({
+  const [gymData, setGymData] = useState<GymUser>({
     gymName: "",
     email: "",
     password: "",
@@ -39,7 +40,7 @@ const ViewModel = () => {
   const handleIsValidForm = async () => {
     const errors: IGymDataValidation = {
       emailError: !isValidEmail(gymData.email),
-      passwordError: !isValidPassword(gymData.password),
+      passwordError: !isValidPassword(gymData.password!),
       gymNameError: !isValidName(gymData.gymName),
       phoneNumberError: !isValidPhone(gymData.phoneNumber),
       nitError: !isValidNit(gymData.nit),
