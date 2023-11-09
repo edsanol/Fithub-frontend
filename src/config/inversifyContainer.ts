@@ -7,6 +7,7 @@ import { GymUserServiceImpl } from "@/infrastructure/services/gymUserService";
 import { GymUserRepositoryImpl } from "@/infrastructure/repositories/gymUserRepository";
 import { GymUserRepository } from "@/domain/repositories/gymUserRepository";
 import { RegisterGymUserUseCase } from "@/domain/useCases/GymUser/registerGymUserUseCase";
+import { LoginGymUserUseCase } from "@/domain/useCases/GymUser/loginGymUserUseCase";
 
 const container = new Container();
 
@@ -30,5 +31,8 @@ container
 container
   .bind<RegisterGymUserUseCase>(TYPES.RegisterGymUserUseCase)
   .to(RegisterGymUserUseCase);
+container
+  .bind<LoginGymUserUseCase>(TYPES.LoginGymUserUseCase)
+  .to(LoginGymUserUseCase);
 
 export default container;

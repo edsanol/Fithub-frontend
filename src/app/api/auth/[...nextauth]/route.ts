@@ -1,4 +1,6 @@
-import axios from "axios";
+import container from "@/config/inversifyContainer";
+import { TYPES } from "@/config/types";
+import { LoginGymUserUseCase } from "@/domain/useCases/GymUser/loginGymUserUseCase";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -17,16 +19,17 @@ const handler = NextAuth({
             throw new Error("Missing credentials");
           }
 
-          const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
-            {
-              email: credentials.email,
-              password: credentials.password,
-            }
+          const loginGymUserUseCase = container.get<LoginGymUserUseCase>(
+            TYPES.LoginGymUserUseCase
           );
 
-          if (response.status === 200) {
-            return response.data;
+          const response = await loginGymUserUseCase.execute({
+            email: credentials.email,
+            password: credentials.password,
+          });
+
+          if (response.email) {
+            return response as any;
           }
 
           return null;

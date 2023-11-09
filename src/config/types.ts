@@ -10,6 +10,7 @@ const TYPES = {
 
   // GymUserUseCases
   RegisterGymUserUseCase: Symbol.for("RegisterGymUserUseCase"),
+  LoginGymUserUseCase: Symbol.for("LoginGymUserUseCase"),
 };
 
 export { TYPES };
