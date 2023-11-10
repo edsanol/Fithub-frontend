@@ -97,10 +97,6 @@ const CustomTable = () => {
     return <p>Loading...</p>;
   }
 
-  console.log(session);
-  console.log(session?.user.data);
-  console.log(session?.user.isSuccess);
-
   return (
     <>
       <Input

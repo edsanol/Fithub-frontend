@@ -5,6 +5,9 @@ export interface IAthlete {
   phoneNumber: string;
   genre: string;
   birthDate: string;
+  registerDate: string;
+  idGym: number;
+  gymName: string;
 }
 
 export interface IAthleteValidation {

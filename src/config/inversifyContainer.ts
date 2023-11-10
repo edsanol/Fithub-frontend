@@ -8,6 +8,11 @@ import { GymUserRepositoryImpl } from "@/infrastructure/repositories/gymUserRepo
 import { GymUserRepository } from "@/domain/repositories/gymUserRepository";
 import { RegisterGymUserUseCase } from "@/domain/useCases/GymUser/registerGymUserUseCase";
 import { LoginGymUserUseCase } from "@/domain/useCases/GymUser/loginGymUserUseCase";
+import { AthleteUserService } from "@/domain/services/athleteUserService";
+import { AthleteUserRepository } from "@/domain/repositories/athleteUserRepository";
+import { AthleteUserRepositoryImpl } from "@/infrastructure/repositories/athleteUserRepository";
+import { AthleteUserServiceImpl } from "@/infrastructure/services/athleteUserService";
+import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/registerAthleteUserUseCase";
 
 const container = new Container();
 
@@ -34,5 +39,20 @@ container
 container
   .bind<LoginGymUserUseCase>(TYPES.LoginGymUserUseCase)
   .to(LoginGymUserUseCase);
+
+// AthleteUserService
+container
+  .bind<AthleteUserService>(TYPES.AthleteUserService)
+  .to(AthleteUserServiceImpl);
+
+// AthleteUserRepository
+container
+  .bind<AthleteUserRepository>(TYPES.AthleteUserRepository)
+  .to(AthleteUserRepositoryImpl);
+
+// AthleteUserUseCases
+container
+  .bind<RegisterAthleteUserUseCase>(TYPES.RegisterAthleteUserUseCase)
+  .to(RegisterAthleteUserUseCase);
 
 export default container;
