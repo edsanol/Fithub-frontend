@@ -1,4 +1,5 @@
 import { AthleteUser } from "@/domain/entities/AthleteUser";
+import { AthleteUserList } from "@/domain/models/AthleteUserList";
 import { AthleteUserService } from "@/domain/services/athleteUserService";
 import { inject, injectable } from "inversify";
 import type { HttpClient } from "../api/http";
@@ -18,6 +19,15 @@ export class AthleteUserServiceImpl implements AthleteUserService {
       TickerResponseApi<boolean>,
       AthleteUser
     >("/Athlete/Register", athleteUser);
+
+    return response.data;
+  }
+
+  async getAthleteUserList(data: AthleteUserList): Promise<AthleteUser[]> {
+    const response = await this.http.post<
+      TickerResponseApi<AthleteUser[]>,
+      AthleteUserList
+    >("/Athlete/List", data);
 
     return response.data;
   }

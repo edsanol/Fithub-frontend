@@ -13,6 +13,7 @@ import { AthleteUserRepository } from "@/domain/repositories/athleteUserReposito
 import { AthleteUserRepositoryImpl } from "@/infrastructure/repositories/athleteUserRepository";
 import { AthleteUserServiceImpl } from "@/infrastructure/services/athleteUserService";
 import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/registerAthleteUserUseCase";
+import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
 
 const container = new Container();
 
@@ -54,5 +55,8 @@ container
 container
   .bind<RegisterAthleteUserUseCase>(TYPES.RegisterAthleteUserUseCase)
   .to(RegisterAthleteUserUseCase);
+container
+  .bind<GetAthleteUserListUseCase>(TYPES.GetAthleteUserListUseCase)
+  .to(GetAthleteUserListUseCase);
 
 export default container;

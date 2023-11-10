@@ -55,6 +55,12 @@ const ViewModel = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
+      const errors = await handleIsValidForm();
+
+      if (Object.values(errors).some(Boolean)) {
+        return;
+      }
+
       const registerGymUserUseCase = container.get<RegisterGymUserUseCase>(
         TYPES.RegisterGymUserUseCase
       );
@@ -62,11 +68,6 @@ const ViewModel = () => {
 
       if (!response) {
         console.log("error");
-        return;
-      }
-      const errors = await handleIsValidForm();
-
-      if (Object.values(errors).some(Boolean)) {
         return;
       }
 
