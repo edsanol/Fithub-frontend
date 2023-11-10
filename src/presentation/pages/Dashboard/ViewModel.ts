@@ -1,28 +1,27 @@
 import { AthleteUserList } from "@/domain/models/AthleteUserList";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
-import React, { useState } from "react";
+import { useState } from "react";
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
+import { AthleteColumns } from "@/assets/constants";
 
 const ViewModel = () => {
   const [athleteListData, setAthleteListData] = useState<AthleteUserList>({
-    numPage: 0,
-    numRecordsPage: 0,
-    order: "",
-    sort: "",
-    records: 0,
-    numFilter: 0,
+    numPage: 1,
+    numRecordsPage: 10,
     textFilter: "",
+    numFilter: 0,
     stateFilter: true,
-    startDate: "",
-    endDate: "",
     download: true,
   });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const [athlete, setAthletes] = useState<any[]>([]);
 
+  const handleSubmit = async () => {
+    console.log("entro al submit");
     try {
+      console.log(athleteListData);
+
       const getAthleteUserListUseCase =
         container.get<GetAthleteUserListUseCase>(
           TYPES.GetAthleteUserListUseCase
@@ -36,6 +35,8 @@ const ViewModel = () => {
       }
 
       console.log(response);
+
+      setAthletes(response);
     } catch (error) {
       console.log(error);
     }
@@ -43,26 +44,27 @@ const ViewModel = () => {
 
   const handleSetNumPage = (event: number) => {
     setAthleteListData({ ...athleteListData, numPage: event });
+    handleSubmit();
   };
 
   const handleSetNumRecordsPage = (event: number) => {
     setAthleteListData({ ...athleteListData, numRecordsPage: event });
-  };
-
-  const handleSetRecords = (event: number) => {
-    setAthleteListData({ ...athleteListData, records: event });
+    handleSubmit();
   };
 
   const handleSetTextFilter = (event: string) => {
-    setAthleteListData({ ...athleteListData, textFilter: event });
+    console.log("consulta por texto");
+    setAthleteListData({ ...athleteListData, textFilter: event, numFilter: 1 });
+    handleSubmit();
   };
 
   return {
     handleSubmit,
     handleSetNumPage,
     handleSetNumRecordsPage,
-    handleSetRecords,
     handleSetTextFilter,
+    athlete,
+    AthleteColumns,
   };
 };
 

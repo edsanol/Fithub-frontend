@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -16,12 +16,20 @@ import {
   Pagination,
   Input,
 } from "@nextui-org/react";
-import { columns, users } from "@/assets/constants";
 import EyeIcon from "@/assets/svg/EyeIcon";
 import EditIcon from "@/assets/svg/EditIcon";
 import DeleteIcon from "@/assets/svg/DeleteIcon";
 import SearchIcon from "@/assets/svg/SearchIcon";
 import { useSession } from "next-auth/react";
+
+interface CustomTableProps {
+  onSubmit: () => void;
+  onSetNumPage: (numPage: number) => void;
+  onSetNumRecordsPage: (numRecordsPage: number) => void;
+  onSetTextFilter: (textFilter: string) => void;
+  records: any[];
+  columns: any[];
+}
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   active: "success",
@@ -29,35 +37,61 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
   vacation: "warning",
 };
 
-type User = (typeof users)[0];
+const CustomTable = ({
+  onSubmit,
+  onSetNumPage,
+  onSetNumRecordsPage,
+  onSetTextFilter,
+  records,
+  columns,
+}: CustomTableProps) => {
+  const [page, setPage] = useState(1);
 
-const CustomTable = () => {
+  type User = (typeof records)[0];
+
   const { data: session, status } = useSession();
+
+  const handleSubmit = () => {
+    onSubmit();
+  };
+
+  const handleSearchChange = (event: any) => {
+    onSetTextFilter(event.target.value);
+  };
+
+  const handlePageChange = (page: any) => {
+    onSetNumPage(page);
+    setPage(page);
+  };
+
+  useEffect(() => {
+    console.log("records", records);
+  }, [records]);
 
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
     const cellValue = user[columnKey as keyof User];
 
     switch (columnKey) {
-      case "name":
+      case "athleteName":
         return (
           <User
-            avatarProps={{ radius: "lg", src: user.avatar }}
+            avatarProps={{ radius: "lg" }}
             description={user.email}
             name={cellValue}
           >
             {user.email}
           </User>
         );
-      case "role":
+      case "phoneNumber":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">{cellValue}</p>
             <p className="text-bold text-sm capitalize text-default-400">
-              {user.team}
+              {user.birthDate}
             </p>
           </div>
         );
-      case "status":
+      case "stateAthlete":
         return (
           <Chip
             className="capitalize"
@@ -105,6 +139,7 @@ const CustomTable = () => {
         placeholder="Search by name..."
         startContent={<SearchIcon />}
         classNames={{ base: "dark" }}
+        onChange={handleSearchChange}
       />
       <Table
         aria-label="Example table with custom cells"
@@ -116,8 +151,9 @@ const CustomTable = () => {
               showControls
               showShadow
               color="secondary"
-              page={1}
+              page={page}
               total={10}
+              onChange={handlePageChange}
             />
           </div>
         }
@@ -132,9 +168,9 @@ const CustomTable = () => {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={users}>
+        <TableBody items={records}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item.athleteId}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}

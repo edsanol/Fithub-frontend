@@ -38,10 +38,10 @@ export const subscriptionsPlans = [
   },
 ];
 
-export const columns = [
-  { name: "NAME", uid: "name" },
-  { name: "ROLE", uid: "role" },
-  { name: "STATUS", uid: "status" },
+export const AthleteColumns = [
+  { name: "NOMBRE", uid: "athleteName" },
+  { name: "CONTACTO", uid: "phoneNumber" },
+  { name: "ESTADO", uid: "stateAthlete" },
   { name: "ACTIONS", uid: "actions" },
 ];
 
