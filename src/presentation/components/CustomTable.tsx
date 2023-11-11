@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -16,52 +16,92 @@ import {
   Pagination,
   Input,
 } from "@nextui-org/react";
-import { columns, users } from "@/assets/constants";
 import EyeIcon from "@/assets/svg/EyeIcon";
 import EditIcon from "@/assets/svg/EditIcon";
 import DeleteIcon from "@/assets/svg/DeleteIcon";
 import SearchIcon from "@/assets/svg/SearchIcon";
 import { useSession } from "next-auth/react";
 
+interface CustomTableProps {
+  onSetNumPage: (numPage: number) => void;
+  onSetTextFilter: (textFilter: string) => void;
+  records: any;
+  columns: any[];
+}
+
 const statusColorMap: Record<string, ChipProps["color"]> = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
+  activo: "success",
+  inactivo: "danger",
 };
 
-type User = (typeof users)[0];
+const CustomTable = ({
+  onSetNumPage,
+  onSetTextFilter,
+  records,
+  columns,
+}: CustomTableProps) => {
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
-const CustomTable = () => {
+  type User = (typeof records)[0];
+
   const { data: session, status } = useSession();
 
+  useEffect(() => {
+    try {
+      setLoading(true);
+      onSetNumPage(page);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
+  const handleTextFilter = useCallback(
+    (textFilter: string) => {
+      try {
+        setLoading(true);
+        onSetTextFilter(textFilter);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [onSetTextFilter]
+  );
+
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
+    console.log(user, columnKey);
     const cellValue = user[columnKey as keyof User];
 
     switch (columnKey) {
-      case "name":
+      case "athleteName":
         return (
           <User
-            avatarProps={{ radius: "lg", src: user.avatar }}
+            avatarProps={{ radius: "lg" }}
             description={user.email}
-            name={cellValue}
+            name={cellValue + " " + user.athleteLastName}
           >
             {user.email}
           </User>
         );
-      case "role":
+      case "phoneNumber":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">{cellValue}</p>
             <p className="text-bold text-sm capitalize text-default-400">
-              {user.team}
+              {user.birthDate.slice(0, 10)}
             </p>
           </div>
         );
-      case "status":
+      case "stateAthlete":
         return (
           <Chip
             className="capitalize"
-            color={statusColorMap[user.status]}
+            color={statusColorMap[user.stateAthlete.toLowerCase()]}
             size="sm"
             variant="flat"
           >
@@ -93,7 +133,7 @@ const CustomTable = () => {
     }
   }, []);
 
-  if (status === "loading") {
+  if (status === "loading" || loading) {
     return <p>Loading...</p>;
   }
 
@@ -105,6 +145,7 @@ const CustomTable = () => {
         placeholder="Search by name..."
         startContent={<SearchIcon />}
         classNames={{ base: "dark" }}
+        onChange={(e) => handleTextFilter(e.target.value)}
       />
       <Table
         aria-label="Example table with custom cells"
@@ -116,8 +157,9 @@ const CustomTable = () => {
               showControls
               showShadow
               color="secondary"
-              page={1}
-              total={10}
+              page={page}
+              total={Math.ceil(records.totalRecords / 7)}
+              onChange={(page) => setPage(page)}
             />
           </div>
         }
@@ -132,9 +174,9 @@ const CustomTable = () => {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={users}>
-          {(item) => (
-            <TableRow key={item.id}>
+        <TableBody items={records.items}>
+          {(item: any) => (
+            <TableRow key={item.athleteId}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}
