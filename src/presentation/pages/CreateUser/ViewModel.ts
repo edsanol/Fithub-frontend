@@ -5,22 +5,30 @@ import {
   isValidName,
   isValidPhone,
 } from "@/presentation/helpers";
-import {
-  IAthlete,
-  IAthleteValidation,
-} from "@/presentation/interfaces/IAthlete";
+import { IAthleteValidation } from "@/presentation/interfaces/IAthlete";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/registerAthleteUserUseCase";
+import container from "@/config/inversifyContainer";
+import { TYPES } from "@/config/types";
+import { AthleteUser } from "@/domain/entities/AthleteUser";
 
 const ViewModel = () => {
-  const [athleteData, setAthleteData] = useState<IAthlete>({
-    name: "",
-    lastName: "",
+  const { data: session } = useSession();
+
+  const [athleteData, setAthleteData] = useState<AthleteUser>({
+    athleteName: "",
+    athleteLastName: "",
     email: "",
     phoneNumber: "",
     genre: "",
     birthDate: "",
+    registerDate: new Date().toISOString(),
+    idGym: 0,
+    gymName: "",
+    status: true,
   });
 
   const [athleteDataError, setAthleteDataError] = useState<IAthleteValidation>({
@@ -37,8 +45,8 @@ const ViewModel = () => {
   const handleIsValidForm = async () => {
     const errors: IAthleteValidation = {
       emailError: !isValidEmail(athleteData.email),
-      nameError: !isValidName(athleteData.name),
-      lastNameError: !isValidName(athleteData.lastName),
+      nameError: !isValidName(athleteData.athleteName),
+      lastNameError: !isValidName(athleteData.athleteLastName),
       phoneNumberError: !isValidPhone(athleteData.phoneNumber),
       genreError: !isValidGenre(athleteData.genre),
       birthDateError: !isNotEmpty(athleteData.birthDate),
@@ -58,18 +66,46 @@ const ViewModel = () => {
         return;
       }
 
+      const registerAthleteUserUseCase =
+        container.get<RegisterAthleteUserUseCase>(
+          TYPES.RegisterAthleteUserUseCase
+        );
+
+      const response = await registerAthleteUserUseCase.execute(athleteData);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
       router.push("/dashboard");
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handleSetGymData = useCallback(() => {
+    if (!session) {
+      return;
+    }
+
+    setAthleteData((prevAthleteData) => ({
+      ...prevAthleteData,
+      idGym: session.user.gymId,
+      gymName: session.user.gymName,
+    }));
+  }, [session, setAthleteData]);
+
+  useEffect(() => {
+    handleSetGymData();
+  }, [handleSetGymData]);
+
   const handleSetName = (event: string) => {
-    setAthleteData({ ...athleteData, name: event });
+    setAthleteData({ ...athleteData, athleteName: event });
   };
 
   const handleSetLastName = (event: string) => {
-    setAthleteData({ ...athleteData, lastName: event });
+    setAthleteData({ ...athleteData, athleteLastName: event });
   };
 
   const handleSetEmail = (event: string) => {
@@ -81,7 +117,9 @@ const ViewModel = () => {
   };
 
   const handleSetBirthDate = (event: string) => {
-    setAthleteData({ ...athleteData, birthDate: event });
+    const birthDate = new Date(event).toISOString();
+
+    setAthleteData({ ...athleteData, birthDate: birthDate });
   };
 
   const handleSetGenre = (event: string) => {
