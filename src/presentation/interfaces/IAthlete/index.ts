@@ -1,13 +1,15 @@
 export interface IAthlete {
-  name: string;
-  lastName: string;
+  athleteId: number;
+  athleteName: string;
+  athleteLastName: string;
   email: string;
   phoneNumber: string;
   genre: string;
   birthDate: string;
   registerDate: string;
-  idGym: number;
-  gymName: string;
+  stateAthlete: string;
+  status: boolean;
+  token: string | null;
 }
 
 export interface IAthleteValidation {
@@ -17,4 +19,9 @@ export interface IAthleteValidation {
   phoneNumberError: boolean;
   genreError: boolean;
   birthDateError: boolean;
+}
+
+export interface IAthleteUserList {
+  totalRecords: number;
+  items: IAthlete[];
 }

@@ -23,11 +23,10 @@ import SearchIcon from "@/assets/svg/SearchIcon";
 import { useSession } from "next-auth/react";
 
 interface CustomTableProps {
-  onSubmit: () => void;
   onSetNumPage: (numPage: number) => void;
   onSetNumRecordsPage: (numRecordsPage: number) => void;
   onSetTextFilter: (textFilter: string) => void;
-  records: any[];
+  records: any;
   columns: any[];
 }
 
@@ -38,7 +37,6 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 };
 
 const CustomTable = ({
-  onSubmit,
   onSetNumPage,
   onSetNumRecordsPage,
   onSetTextFilter,
@@ -51,22 +49,9 @@ const CustomTable = ({
 
   const { data: session, status } = useSession();
 
-  const handleSubmit = () => {
-    onSubmit();
-  };
-
-  const handleSearchChange = (event: any) => {
-    onSetTextFilter(event.target.value);
-  };
-
-  const handlePageChange = (page: any) => {
-    onSetNumPage(page);
-    setPage(page);
-  };
-
-  useEffect(() => {
-    console.log("records", records);
-  }, [records]);
+  // useEffect(() => {
+  //   onSetNumPage(page);
+  // }, [page, onSetNumPage]);
 
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
     const cellValue = user[columnKey as keyof User];
@@ -139,7 +124,6 @@ const CustomTable = ({
         placeholder="Search by name..."
         startContent={<SearchIcon />}
         classNames={{ base: "dark" }}
-        onChange={handleSearchChange}
       />
       <Table
         aria-label="Example table with custom cells"
@@ -152,8 +136,8 @@ const CustomTable = ({
               showShadow
               color="secondary"
               page={page}
-              total={10}
-              onChange={handlePageChange}
+              total={Math.ceil(records.totalRecords / 7)}
+              onChange={(page) => setPage(page)}
             />
           </div>
         }
@@ -168,8 +152,8 @@ const CustomTable = ({
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={records}>
-          {(item) => (
+        <TableBody items={records.items}>
+          {(item: any) => (
             <TableRow key={item.athleteId}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>

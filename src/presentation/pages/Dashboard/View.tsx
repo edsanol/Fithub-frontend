@@ -6,7 +6,6 @@ import ViewModel from "./ViewModel";
 
 const Dashboard = () => {
   const {
-    handleSubmit,
     handleSetNumPage,
     handleSetNumRecordsPage,
     handleSetTextFilter,
@@ -17,7 +16,6 @@ const Dashboard = () => {
   return (
     <div className="">
       <CustomTable
-        onSubmit={handleSubmit}
         onSetNumPage={handleSetNumPage}
         onSetNumRecordsPage={handleSetNumRecordsPage}
         onSetTextFilter={handleSetTextFilter}

@@ -1,7 +1,7 @@
 import { TYPES } from "@/config/types";
-import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { AthleteUserList } from "@/domain/models/AthleteUserList";
 import type { AthleteUserRepository } from "@/domain/repositories/athleteUserRepository";
+import { IAthleteUserList } from "@/presentation/interfaces/IAthlete";
 import { inject, injectable } from "inversify";
 
 @injectable()
@@ -11,7 +11,7 @@ export class GetAthleteUserListUseCase {
     private athleteUserRepository: AthleteUserRepository
   ) {}
 
-  async execute(data: AthleteUserList): Promise<AthleteUser[]> {
+  async execute(data: AthleteUserList): Promise<IAthleteUserList> {
     return await this.athleteUserRepository.getAthleteUserList(data);
   }
 }

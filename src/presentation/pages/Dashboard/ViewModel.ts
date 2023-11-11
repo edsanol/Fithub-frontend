@@ -4,24 +4,20 @@ import { useState } from "react";
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteColumns } from "@/assets/constants";
+import { IAthleteUserList } from "@/presentation/interfaces/IAthlete";
 
 const ViewModel = () => {
   const [athleteListData, setAthleteListData] = useState<AthleteUserList>({
-    numPage: 1,
-    numRecordsPage: 10,
-    textFilter: "",
-    numFilter: 0,
-    stateFilter: true,
-    download: true,
+    numRecordsPage: 7,
   });
 
-  const [athlete, setAthletes] = useState<any[]>([]);
+  const [athlete, setAthletes] = useState<IAthleteUserList>({
+    totalRecords: 0,
+    items: [],
+  });
 
   const handleSubmit = async () => {
-    console.log("entro al submit");
     try {
-      console.log(athleteListData);
-
       const getAthleteUserListUseCase =
         container.get<GetAthleteUserListUseCase>(
           TYPES.GetAthleteUserListUseCase
@@ -33,8 +29,6 @@ const ViewModel = () => {
         console.log("error");
         return;
       }
-
-      console.log(response);
 
       setAthletes(response);
     } catch (error) {
@@ -53,7 +47,6 @@ const ViewModel = () => {
   };
 
   const handleSetTextFilter = (event: string) => {
-    console.log("consulta por texto");
     setAthleteListData({ ...athleteListData, textFilter: event, numFilter: 1 });
     handleSubmit();
   };
