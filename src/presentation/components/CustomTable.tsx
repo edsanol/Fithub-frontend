@@ -21,12 +21,13 @@ import EditIcon from "@/assets/svg/EditIcon";
 import DeleteIcon from "@/assets/svg/DeleteIcon";
 import SearchIcon from "@/assets/svg/SearchIcon";
 import { useSession } from "next-auth/react";
+import { IColumns } from "../interfaces/ICustomTable";
 
 interface CustomTableProps {
   onSetNumPage: (numPage: number) => void;
   onSetTextFilter: (textFilter: string) => void;
   records: any;
-  columns: any[];
+  columns: IColumns[];
 }
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
