@@ -16,14 +16,20 @@ const ViewModel = () => {
     items: [],
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (numPage: number = 1) => {
+    console.log("athleteListData", athleteListData);
     try {
       const getAthleteUserListUseCase =
         container.get<GetAthleteUserListUseCase>(
           TYPES.GetAthleteUserListUseCase
         );
 
-      const response = await getAthleteUserListUseCase.execute(athleteListData);
+      const response = await getAthleteUserListUseCase.execute({
+        numRecordsPage: 7,
+        numPage: numPage,
+      });
+
+      console.log("response handle submit", response);
 
       if (!response) {
         console.log("error");
@@ -36,9 +42,9 @@ const ViewModel = () => {
     }
   };
 
-  const handleSetNumPage = (event: number) => {
+  const handleSetNumPage = async (event: number) => {
     setAthleteListData({ ...athleteListData, numPage: event });
-    handleSubmit();
+    await handleSubmit(event);
   };
 
   const handleSetNumRecordsPage = (event: number) => {
@@ -52,7 +58,6 @@ const ViewModel = () => {
   };
 
   return {
-    handleSubmit,
     handleSetNumPage,
     handleSetNumRecordsPage,
     handleSetTextFilter,

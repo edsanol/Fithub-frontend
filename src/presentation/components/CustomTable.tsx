@@ -24,7 +24,6 @@ import { useSession } from "next-auth/react";
 
 interface CustomTableProps {
   onSetNumPage: (numPage: number) => void;
-  onSetNumRecordsPage: (numRecordsPage: number) => void;
   onSetTextFilter: (textFilter: string) => void;
   records: any;
   columns: any[];
@@ -38,20 +37,28 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 const CustomTable = ({
   onSetNumPage,
-  onSetNumRecordsPage,
   onSetTextFilter,
   records,
   columns,
 }: CustomTableProps) => {
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   type User = (typeof records)[0];
 
   const { data: session, status } = useSession();
 
-  // useEffect(() => {
-  //   onSetNumPage(page);
-  // }, [page, onSetNumPage]);
+  useEffect(() => {
+    try {
+      setLoading(true);
+      onSetNumPage(page);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
     const cellValue = user[columnKey as keyof User];
@@ -112,7 +119,7 @@ const CustomTable = ({
     }
   }, []);
 
-  if (status === "loading") {
+  if (status === "loading" || loading) {
     return <p>Loading...</p>;
   }
 

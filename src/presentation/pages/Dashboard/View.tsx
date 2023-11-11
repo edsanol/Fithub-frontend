@@ -5,19 +5,13 @@ import React from "react";
 import ViewModel from "./ViewModel";
 
 const Dashboard = () => {
-  const {
-    handleSetNumPage,
-    handleSetNumRecordsPage,
-    handleSetTextFilter,
-    athlete,
-    AthleteColumns,
-  } = ViewModel();
+  const { handleSetNumPage, handleSetTextFilter, athlete, AthleteColumns } =
+    ViewModel();
 
   return (
     <div className="">
       <CustomTable
         onSetNumPage={handleSetNumPage}
-        onSetNumRecordsPage={handleSetNumRecordsPage}
         onSetTextFilter={handleSetTextFilter}
         records={athlete}
         columns={AthleteColumns}
