@@ -7,17 +7,12 @@ import { AthleteColumns } from "@/assets/constants";
 import { IAthleteUserList } from "@/presentation/interfaces/IAthlete";
 
 const ViewModel = () => {
-  const [athleteListData, setAthleteListData] = useState<AthleteUserList>({
-    numRecordsPage: 7,
-  });
-
   const [athlete, setAthletes] = useState<IAthleteUserList>({
     totalRecords: 0,
     items: [],
   });
 
-  const handleSubmit = async (numPage: number = 1) => {
-    console.log("athleteListData", athleteListData);
+  const handleSubmit = async (params: Partial<AthleteUserList>) => {
     try {
       const getAthleteUserListUseCase =
         container.get<GetAthleteUserListUseCase>(
@@ -26,10 +21,8 @@ const ViewModel = () => {
 
       const response = await getAthleteUserListUseCase.execute({
         numRecordsPage: 7,
-        numPage: numPage,
+        ...params,
       });
-
-      console.log("response handle submit", response);
 
       if (!response) {
         console.log("error");
@@ -42,24 +35,16 @@ const ViewModel = () => {
     }
   };
 
-  const handleSetNumPage = async (event: number) => {
-    setAthleteListData({ ...athleteListData, numPage: event });
-    await handleSubmit(event);
+  const handleSetNumPage = async (numPage: number) => {
+    await handleSubmit({ numPage });
   };
 
-  const handleSetNumRecordsPage = (event: number) => {
-    setAthleteListData({ ...athleteListData, numRecordsPage: event });
-    handleSubmit();
-  };
-
-  const handleSetTextFilter = (event: string) => {
-    setAthleteListData({ ...athleteListData, textFilter: event, numFilter: 1 });
-    handleSubmit();
+  const handleSetTextFilter = async (textFilter: string) => {
+    await handleSubmit({ textFilter, numFilter: 1 });
   };
 
   return {
     handleSetNumPage,
-    handleSetNumRecordsPage,
     handleSetTextFilter,
     athlete,
     AthleteColumns,

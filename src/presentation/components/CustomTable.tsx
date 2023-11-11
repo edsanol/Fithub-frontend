@@ -30,9 +30,8 @@ interface CustomTableProps {
 }
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
+  activo: "success",
+  inactivo: "danger",
 };
 
 const CustomTable = ({
@@ -60,7 +59,22 @@ const CustomTable = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
+  const handleTextFilter = useCallback(
+    (textFilter: string) => {
+      try {
+        setLoading(true);
+        onSetTextFilter(textFilter);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [onSetTextFilter]
+  );
+
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
+    console.log(user, columnKey);
     const cellValue = user[columnKey as keyof User];
 
     switch (columnKey) {
@@ -69,7 +83,7 @@ const CustomTable = ({
           <User
             avatarProps={{ radius: "lg" }}
             description={user.email}
-            name={cellValue}
+            name={cellValue + " " + user.athleteLastName}
           >
             {user.email}
           </User>
@@ -79,7 +93,7 @@ const CustomTable = ({
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">{cellValue}</p>
             <p className="text-bold text-sm capitalize text-default-400">
-              {user.birthDate}
+              {user.birthDate.slice(0, 10)}
             </p>
           </div>
         );
@@ -87,7 +101,7 @@ const CustomTable = ({
         return (
           <Chip
             className="capitalize"
-            color={statusColorMap[user.status]}
+            color={statusColorMap[user.stateAthlete.toLowerCase()]}
             size="sm"
             variant="flat"
           >
@@ -131,6 +145,7 @@ const CustomTable = ({
         placeholder="Search by name..."
         startContent={<SearchIcon />}
         classNames={{ base: "dark" }}
+        onChange={(e) => handleTextFilter(e.target.value)}
       />
       <Table
         aria-label="Example table with custom cells"
