@@ -7,4 +7,5 @@ export interface AthleteUserService {
   getAthleteUserList(data: AthleteUserList): Promise<IAthleteUserList>;
   getAthleteUserById(id: number): Promise<AthleteUser>;
   editAthleteUser(id: number, athleteUser: AthleteUser): Promise<boolean>;
+  deleteAthleteUser(id: number): Promise<boolean>;
 }

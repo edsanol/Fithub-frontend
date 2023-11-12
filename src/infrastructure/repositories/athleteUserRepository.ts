@@ -40,4 +40,10 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
 
     return response;
   }
+
+  async deleteAthleteUser(id: number): Promise<boolean> {
+    const response = await this.service.deleteAthleteUser(id);
+
+    return response;
+  }
 }

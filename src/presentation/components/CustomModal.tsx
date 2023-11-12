@@ -51,7 +51,7 @@ const CustomModal = ({
               <ModalFooter>
                 <Button
                   color="danger"
-                  variant="light"
+                  variant="ghost"
                   onPress={() => onOpenChange(false)}
                 >
                   Cerrar

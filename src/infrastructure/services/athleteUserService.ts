@@ -52,4 +52,13 @@ export class AthleteUserServiceImpl implements AthleteUserService {
 
     return response.data;
   }
+
+  async deleteAthleteUser(id: number): Promise<boolean> {
+    const response = await this.http.put<TickerResponseApi<boolean>, null>(
+      `/Athlete/Delete/${id}`,
+      null
+    );
+
+    return response.data;
+  }
 }

@@ -27,6 +27,7 @@ interface CustomTableProps {
   onSetTextFilter: (textFilter: string) => void;
   onOpenModal: (id: number) => void;
   onRedirect: (id: number) => void;
+  onDelete: (id: number) => void;
   records: any;
   columns: IColumns[];
 }
@@ -41,6 +42,7 @@ const CustomTable = ({
   onSetTextFilter,
   onOpenModal,
   onRedirect,
+  onDelete,
   records,
   columns,
 }: CustomTableProps) => {
@@ -127,7 +129,7 @@ const CustomTable = ({
               </Tooltip>
               <Tooltip color="danger" content="Eliminar usuario">
                 <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                  <DeleteIcon />
+                  <DeleteIcon clickHandler={() => onDelete(user.athleteId)} />
                 </span>
               </Tooltip>
             </div>
@@ -136,7 +138,7 @@ const CustomTable = ({
           return cellValue;
       }
     },
-    [onOpenModal, onRedirect]
+    [onOpenModal, onRedirect, onDelete]
   );
 
   if (status === "loading" || loading) {

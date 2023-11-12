@@ -25,6 +25,7 @@ const TYPES = {
   GetAthleteUserListUseCase: Symbol.for("GetAthleteUserListUseCase"),
   GetAthleteUserByIdUseCase: Symbol.for("GetAthleteUserByIdUseCase"),
   EditAthleteUserUseCase: Symbol.for("EditAthleteUserUseCase"),
+  DeleteAthleteUserUseCase: Symbol.for("DeleteAthleteUserUseCase"),
 };
 
 export { TYPES };
