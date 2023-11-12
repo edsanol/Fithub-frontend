@@ -22,7 +22,7 @@ const ViewModel = () => {
     password: "",
     address: "",
     phoneNumber: "",
-    registerDate: "2023-11-01T02:30:20.934Z",
+    registerDate: new Date().toISOString(),
     subscriptionPlan: "",
     comments: "",
     nit: "",

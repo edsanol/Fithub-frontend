@@ -2,12 +2,9 @@
 
 import React from "react";
 import { Avatar } from "@nextui-org/react";
-import { subscriptionsPlans } from "@/assets/constants";
 import {
   FormInput,
-  FormInputPassword,
   FormLink,
-  FormSelect,
   FormTextarea,
   PrimaryButton,
 } from "@/presentation/components";
@@ -34,34 +31,24 @@ const GymProfile = () => {
     <>
       <div className="h-full bg-[#000]">
         <div className="w-full mx-auto bg-[#121417] rounded-xl p-5 md:p-10 xl:w-10/12">
-          {/* <Avatar
+          <Avatar
             showFallback
             src="https://images.unsplash.com/broken"
             className="w-32 h-32 mx-auto text-large"
           />
-          <div className="w-1/2 mx-auto mt-5 flex justify-center">
-            <h1 className="text-xl">The Ultimate Warrior Gym</h1>
-          </div> */}
+          <div className="w-3/5 mx-auto mt-5 flex justify-center md:w-1/2">
+            <h1 className="text-base lg:text-xl">{gymData.gymName}</h1>
+          </div>
 
-          {/* <div className="w-1/2 mx-auto mt-5 flex justify-center gap-5">
-            <div className="flex flex-col">
-              <h3 className="text-base">Usuarios</h3>
-              <p className="text-sm mx-auto">12</p>
-            </div>
-            <div className="flex flex-col">
-              <h3 className="text-base">Activos</h3>
-              <p className="text-sm mx-auto">12</p>
-            </div>
-          </div> */}
-
-          <div className="w-full flex justify-end">
+          <div className="w-full flex justify-end mt-3">
             <Button
-              color="primary"
+              color={isClicked ? "danger" : "primary"}
               variant="ghost"
               startContent={<EditIcon />}
+              size="lg"
               onClick={handleClick}
             >
-              Editar perfil
+              {isClicked ? "Cancelar" : "Editar"}
             </Button>
           </div>
 
@@ -105,7 +92,15 @@ const GymProfile = () => {
             </div>
             <div className="block md:flex md:gap-3">
               <FormInput
+                isRequired
                 isReadOnly={!isClicked}
+                isInvalid={gymDataError?.nitError}
+                color={gymDataError?.nitError ? "danger" : "default"}
+                errorMessage={
+                  gymDataError?.nitError
+                    ? "Por favor ingresa un NIT válido"
+                    : ""
+                }
                 type="text"
                 label="NIT o razón social"
                 size="lg"
