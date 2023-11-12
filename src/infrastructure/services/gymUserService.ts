@@ -34,4 +34,13 @@ export class GymUserServiceImpl implements GymUserService {
 
     return response.data;
   }
+
+  async editGymUser(id: number, gymUser: GymUser): Promise<boolean> {
+    const response = await this.http.put<TickerResponseApi<boolean>, GymUser>(
+      `/Gym/Edit/${id}`,
+      gymUser
+    );
+
+    return response.data;
+  }
 }

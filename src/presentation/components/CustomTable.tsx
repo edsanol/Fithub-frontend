@@ -75,7 +75,6 @@ const CustomTable = ({
   );
 
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
-    console.log(user, columnKey);
     const cellValue = user[columnKey as keyof User];
 
     switch (columnKey) {

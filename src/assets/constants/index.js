@@ -18,7 +18,7 @@ export const sidebarLinks = [
   },
   {
     imgURL: Home,
-    route: "/profile",
+    route: "/gym-profile",
     label: "Perfil",
   },
 ];

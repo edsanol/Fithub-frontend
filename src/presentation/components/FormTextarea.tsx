@@ -8,6 +8,8 @@ interface FormTextareaProps {
   placeholder?: string;
   size?: "lg" | "md" | "sm";
   classNames?: any;
+  isReadOnly?: boolean;
+  value?: string;
   onChange?: (event: string) => void;
 }
 
@@ -16,10 +18,14 @@ const FormTextarea = ({
   placeholder,
   size,
   classNames,
+  isReadOnly,
+  value,
   onChange,
 }: FormTextareaProps) => {
   return (
     <Textarea
+      isReadOnly={isReadOnly || false}
+      defaultValue={value || ""}
       label={label}
       labelPlacement="outside"
       placeholder={placeholder || ""}
