@@ -35,8 +35,8 @@ const ViewModel = () => {
     genre: "",
     birthDate: "",
     registerDate: new Date().toISOString(),
-    idGym: 0,
-    gymName: "",
+    idGym: session ? session.user.gymId : 0,
+    gymName: session ? session.user.gymName : "",
     status: true,
   });
 
@@ -77,7 +77,11 @@ const ViewModel = () => {
 
       let response;
 
-      if (athleteIdValue) {
+      if (
+        athleteIdValue &&
+        athleteData.gymName !== "" &&
+        athleteData.idGym !== 0
+      ) {
         const editAthleteUserUseCase = container.get<EditAthleteUserUseCase>(
           TYPES.EditAthleteUserUseCase
         );
@@ -100,29 +104,11 @@ const ViewModel = () => {
         return;
       }
 
-      console.log(athleteData);
-
       router.push("/dashboard");
     } catch (error) {
       console.log(error);
     }
   };
-
-  const handleSetGymData = useCallback(() => {
-    if (!session) {
-      return;
-    }
-
-    setAthleteData((prevAthleteData) => ({
-      ...prevAthleteData,
-      idGym: session.user.gymId,
-      gymName: session.user.gymName,
-    }));
-  }, [session, setAthleteData]);
-
-  useEffect(() => {
-    handleSetGymData();
-  }, [handleSetGymData]);
 
   const getAthleteUserById = async (id: number) => {
     try {
