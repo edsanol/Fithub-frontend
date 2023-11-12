@@ -5,6 +5,7 @@ import { injectable, inject } from "inversify";
 export interface HttpClient {
   post<T, U>(url: string, data: U): Promise<T>;
   put<T, U>(url: string, data: U): Promise<T>;
+  get<T>(url: string): Promise<T>;
 }
 
 @injectable()
@@ -35,6 +36,11 @@ export class AxiosHttpClient implements HttpClient {
 
   async put<T, U>(url: string, data: U): Promise<T> {
     const response: AxiosResponse<T> = await this.axiosInstance.put(url, data);
+    return this.handleResponse(response);
+  }
+
+  async get<T>(url: string): Promise<T> {
+    const response: AxiosResponse<T> = await this.axiosInstance.get(url);
     return this.handleResponse(response);
   }
 }

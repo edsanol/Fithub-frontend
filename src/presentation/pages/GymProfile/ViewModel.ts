@@ -13,6 +13,7 @@ import {
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { EditGymUserUseCase } from "@/domain/useCases/GymUser/editGymUserUseCase";
+import { GetGymUserByIdUseCase } from "@/domain/useCases/GymUser/getGymUserByIdUseCase";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -41,20 +42,29 @@ const ViewModel = () => {
 
   const router = useRouter();
 
+  const loadGymUserData = async (id: number) => {
+    try {
+      const getGymUserByIdUseCase = container.get<GetGymUserByIdUseCase>(
+        TYPES.GetGymUserByIdUseCase
+      );
+
+      const response = await getGymUserByIdUseCase.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setGymData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (gymUser) {
-      setGymData({
-        ...gymData,
-        gymName: gymUser.gymName,
-        email: gymUser.email,
-        address: gymUser.address,
-        phoneNumber: gymUser.phoneNumber,
-        nit: gymUser.nit,
-        comments: gymUser.comments,
-        subscriptionPlan: gymUser.subscriptionPlan,
-      });
+      loadGymUserData(gymUser?.gymId!);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gymUser]);
 
   const handleIsValidForm = async () => {
@@ -69,10 +79,6 @@ const ViewModel = () => {
     setGymDataError(errors);
 
     return Promise.resolve(errors);
-  };
-
-  const handleClick = () => {
-    setIsClicked(!isClicked);
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -103,6 +109,10 @@ const ViewModel = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleClick = () => {
+    setIsClicked(!isClicked);
   };
 
   const handleSetGymName = (event: string) => {

@@ -15,6 +15,7 @@ import { AthleteUserServiceImpl } from "@/infrastructure/services/athleteUserSer
 import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/registerAthleteUserUseCase";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
 import { EditGymUserUseCase } from "@/domain/useCases/GymUser/editGymUserUseCase";
+import { GetGymUserByIdUseCase } from "@/domain/useCases/GymUser/getGymUserByIdUseCase";
 
 const container = new Container();
 
@@ -44,6 +45,9 @@ container
 container
   .bind<EditGymUserUseCase>(TYPES.EditGymUserUseCase)
   .to(EditGymUserUseCase);
+container
+  .bind<GetGymUserByIdUseCase>(TYPES.GetGymUserByIdUseCase)
+  .to(GetGymUserByIdUseCase);
 
 // AthleteUserService
 container

@@ -30,4 +30,10 @@ export class GymUserRepositoryImpl implements GymUserRepository {
 
     return response;
   }
+
+  async getGymUserById(id: number): Promise<GymUser> {
+    const response = await this.service.getGymUserById(id);
+
+    return response;
+  }
 }
