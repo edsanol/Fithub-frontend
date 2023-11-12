@@ -40,4 +40,16 @@ export class AthleteUserServiceImpl implements AthleteUserService {
 
     return response.data;
   }
+
+  async editAthleteUser(
+    id: number,
+    athleteUser: AthleteUser
+  ): Promise<boolean> {
+    const response = await this.http.put<
+      TickerResponseApi<boolean>,
+      AthleteUser
+    >(`/Athlete/Edit/${id}`, athleteUser);
+
+    return response.data;
+  }
 }

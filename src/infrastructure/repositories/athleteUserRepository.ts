@@ -31,4 +31,13 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
 
     return response;
   }
+
+  async editAthleteUser(
+    id: number,
+    athleteUser: AthleteUser
+  ): Promise<boolean> {
+    const response = await this.service.editAthleteUser(id, athleteUser);
+
+    return response;
+  }
 }

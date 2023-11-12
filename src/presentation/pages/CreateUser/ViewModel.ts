@@ -14,9 +14,18 @@ import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/regist
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
+import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
+import { usePathname } from "next/navigation";
+import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
 
 const ViewModel = () => {
   const { data: session } = useSession();
+
+  const pathname = usePathname();
+
+  const athleteId = pathname.match(/\/create-user\/(.*)/);
+
+  const athleteIdValue = athleteId ? athleteId[1] : null;
 
   const [athleteData, setAthleteData] = useState<AthleteUser>({
     athleteName: "",
@@ -66,17 +75,32 @@ const ViewModel = () => {
         return;
       }
 
-      const registerAthleteUserUseCase =
-        container.get<RegisterAthleteUserUseCase>(
-          TYPES.RegisterAthleteUserUseCase
+      let response;
+
+      if (athleteIdValue) {
+        const editAthleteUserUseCase = container.get<EditAthleteUserUseCase>(
+          TYPES.EditAthleteUserUseCase
         );
 
-      const response = await registerAthleteUserUseCase.execute(athleteData);
+        response = await editAthleteUserUseCase.execute(
+          Number(athleteIdValue),
+          athleteData
+        );
+      } else {
+        const registerAthleteUserUseCase =
+          container.get<RegisterAthleteUserUseCase>(
+            TYPES.RegisterAthleteUserUseCase
+          );
+
+        response = await registerAthleteUserUseCase.execute(athleteData);
+      }
 
       if (!response) {
         console.log("error");
         return;
       }
+
+      console.log(athleteData);
 
       router.push("/dashboard");
     } catch (error) {
@@ -99,6 +123,40 @@ const ViewModel = () => {
   useEffect(() => {
     handleSetGymData();
   }, [handleSetGymData]);
+
+  const getAthleteUserById = async (id: number) => {
+    try {
+      const getAthleteUserById = container.get<GetAthleteUserByIdUseCase>(
+        TYPES.GetAthleteUserByIdUseCase
+      );
+
+      const response = await getAthleteUserById.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setAthleteData({
+        ...athleteData,
+        athleteName: response.athleteName,
+        athleteLastName: response.athleteLastName,
+        email: response.email,
+        phoneNumber: response.phoneNumber,
+        genre: response.genre,
+        birthDate: response.birthDate,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (athleteIdValue) {
+      getAthleteUserById(Number(athleteIdValue));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSetName = (event: string) => {
     setAthleteData({ ...athleteData, athleteName: event });
@@ -134,6 +192,8 @@ const ViewModel = () => {
     handleSetPhoneNumber,
     handleSetBirthDate,
     handleSetGenre,
+    getAthleteUserById,
+    athleteData,
     athleteDataError,
   };
 };

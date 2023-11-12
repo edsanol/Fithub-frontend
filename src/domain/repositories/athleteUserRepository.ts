@@ -6,4 +6,5 @@ export interface AthleteUserRepository {
   registerAthleteUser(athleteUser: AthleteUser): Promise<boolean>;
   getAthleteUserList(data: AthleteUserList): Promise<IAthleteUserList>;
   getAthleteUserById(id: number): Promise<AthleteUser>;
+  editAthleteUser(id: number, athleteUser: AthleteUser): Promise<boolean>;
 }

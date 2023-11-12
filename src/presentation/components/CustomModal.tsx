@@ -11,51 +11,50 @@ import {
 interface CustomModalProps {
   isOpen: boolean;
   onOpenChange: (state: boolean) => void;
-  data: any;
+  size:
+    | "xs"
+    | "sm"
+    | "md"
+    | "lg"
+    | "xl"
+    | "2xl"
+    | "3xl"
+    | "4xl"
+    | "5xl"
+    | "full";
+  content: React.ReactNode;
 }
 
-const CustomModal = ({ isOpen, onOpenChange, data }: CustomModalProps) => {
-  console.log(data);
-
+const CustomModal = ({
+  isOpen,
+  onOpenChange,
+  size,
+  content,
+}: CustomModalProps) => {
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        classNames={{ base: "dark" }}
+        size={size}
+      >
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Modal Title
+                <div className="flex justify-center">
+                  <h1 className="text-3xl text-[#3669FC] font-black">FitHub</h1>
+                </div>
               </ModalHeader>
-              <ModalBody>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-              </ModalBody>
+              <ModalBody>{content}</ModalBody>
               <ModalFooter>
                 <Button
                   color="danger"
                   variant="light"
                   onPress={() => onOpenChange(false)}
                 >
-                  Close
-                </Button>
-                <Button color="primary" onPress={() => onOpenChange(false)}>
-                  Action
+                  Cerrar
                 </Button>
               </ModalFooter>
             </>

@@ -26,6 +26,7 @@ interface CustomTableProps {
   onSetNumPage: (numPage: number) => void;
   onSetTextFilter: (textFilter: string) => void;
   onOpenModal: (id: number) => void;
+  onRedirect: (id: number) => void;
   records: any;
   columns: IColumns[];
 }
@@ -39,6 +40,7 @@ const CustomTable = ({
   onSetNumPage,
   onSetTextFilter,
   onOpenModal,
+  onRedirect,
   records,
   columns,
 }: CustomTableProps) => {
@@ -77,7 +79,6 @@ const CustomTable = ({
 
   const renderCell = useCallback(
     (user: User, columnKey: React.Key) => {
-      console.log(user);
       const cellValue = user[columnKey as keyof User];
 
       switch (columnKey) {
@@ -121,7 +122,7 @@ const CustomTable = ({
               </Tooltip>
               <Tooltip content="Editar usuario" classNames={{ base: "dark" }}>
                 <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <EditIcon />
+                  <EditIcon clickHandler={() => onRedirect(user.athleteId)} />
                 </span>
               </Tooltip>
               <Tooltip color="danger" content="Eliminar usuario">
@@ -135,7 +136,7 @@ const CustomTable = ({
           return cellValue;
       }
     },
-    [onOpenModal]
+    [onOpenModal, onRedirect]
   );
 
   if (status === "loading" || loading) {

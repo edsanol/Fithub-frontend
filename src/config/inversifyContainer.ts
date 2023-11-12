@@ -17,6 +17,7 @@ import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthl
 import { EditGymUserUseCase } from "@/domain/useCases/GymUser/editGymUserUseCase";
 import { GetGymUserByIdUseCase } from "@/domain/useCases/GymUser/getGymUserByIdUseCase";
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
+import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
 
 const container = new Container();
 
@@ -70,5 +71,8 @@ container
 container
   .bind<GetAthleteUserByIdUseCase>(TYPES.GetAthleteUserByIdUseCase)
   .to(GetAthleteUserByIdUseCase);
+container
+  .bind<EditAthleteUserUseCase>(TYPES.EditAthleteUserUseCase)
+  .to(EditAthleteUserUseCase);
 
 export default container;

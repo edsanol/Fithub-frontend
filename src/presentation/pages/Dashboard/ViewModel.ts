@@ -7,9 +7,12 @@ import { AthleteColumns } from "@/assets/constants";
 import { IAthleteUserList } from "@/presentation/interfaces/IAthlete";
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
+import { useRouter } from "next/navigation";
 
 const ViewModel = () => {
-  const [athlete, setAthletes] = useState<IAthleteUserList>({
+  const router = useRouter();
+
+  const [athletesList, setAthletesList] = useState<IAthleteUserList>({
     totalRecords: 0,
     items: [],
   });
@@ -46,7 +49,7 @@ const ViewModel = () => {
         return;
       }
 
-      setAthletes(response);
+      setAthletesList(response);
     } catch (error) {
       console.log(error);
     }
@@ -88,13 +91,18 @@ const ViewModel = () => {
     setOpenModal(true);
   };
 
+  const handleRedirect = (athleteId: number) => {
+    router.push(`/create-user/${athleteId}`);
+  };
+
   return {
     handleSetNumPage,
     handleSetTextFilter,
     handleModal,
     handleOpenModal,
+    handleRedirect,
     openModal,
-    athlete,
+    athletesList,
     AthleteColumns,
     athleteUser,
   };
