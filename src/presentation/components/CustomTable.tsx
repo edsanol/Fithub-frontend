@@ -12,7 +12,6 @@ import {
   Chip,
   Tooltip,
   ChipProps,
-  getKeyValue,
   Pagination,
   Input,
 } from "@nextui-org/react";
@@ -26,6 +25,7 @@ import { IColumns } from "../interfaces/ICustomTable";
 interface CustomTableProps {
   onSetNumPage: (numPage: number) => void;
   onSetTextFilter: (textFilter: string) => void;
+  onOpenModal: (id: number) => void;
   records: any;
   columns: IColumns[];
 }
@@ -38,6 +38,7 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 const CustomTable = ({
   onSetNumPage,
   onSetTextFilter,
+  onOpenModal,
   records,
   columns,
 }: CustomTableProps) => {
@@ -74,64 +75,68 @@ const CustomTable = ({
     [onSetTextFilter]
   );
 
-  const renderCell = useCallback((user: User, columnKey: React.Key) => {
-    const cellValue = user[columnKey as keyof User];
+  const renderCell = useCallback(
+    (user: User, columnKey: React.Key) => {
+      console.log(user);
+      const cellValue = user[columnKey as keyof User];
 
-    switch (columnKey) {
-      case "athleteName":
-        return (
-          <User
-            avatarProps={{ radius: "lg" }}
-            description={user.email}
-            name={cellValue + " " + user.athleteLastName}
-          >
-            {user.email}
-          </User>
-        );
-      case "phoneNumber":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">{cellValue}</p>
-            <p className="text-bold text-sm capitalize text-default-400">
-              {user.birthDate.slice(0, 10)}
-            </p>
-          </div>
-        );
-      case "stateAthlete":
-        return (
-          <Chip
-            className="capitalize"
-            color={statusColorMap[user.stateAthlete.toLowerCase()]}
-            size="sm"
-            variant="flat"
-          >
-            {cellValue}
-          </Chip>
-        );
-      case "actions":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Tooltip content="Ver detalle" classNames={{ base: "dark" }}>
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <EyeIcon />
-              </span>
-            </Tooltip>
-            <Tooltip content="Editar usuario" classNames={{ base: "dark" }}>
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <EditIcon />
-              </span>
-            </Tooltip>
-            <Tooltip color="danger" content="Eliminar usuario">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <DeleteIcon />
-              </span>
-            </Tooltip>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+      switch (columnKey) {
+        case "athleteName":
+          return (
+            <User
+              avatarProps={{ radius: "lg" }}
+              description={user.email}
+              name={cellValue + " " + user.athleteLastName}
+            >
+              {user.email}
+            </User>
+          );
+        case "phoneNumber":
+          return (
+            <div className="flex flex-col">
+              <p className="text-bold text-sm capitalize">{cellValue}</p>
+              <p className="text-bold text-sm capitalize text-default-400">
+                {user.birthDate.slice(0, 10)}
+              </p>
+            </div>
+          );
+        case "stateAthlete":
+          return (
+            <Chip
+              className="capitalize"
+              color={statusColorMap[user.stateAthlete.toLowerCase()]}
+              size="sm"
+              variant="flat"
+            >
+              {cellValue}
+            </Chip>
+          );
+        case "actions":
+          return (
+            <div className="relative flex items-center gap-2">
+              <Tooltip content="Ver detalle" classNames={{ base: "dark" }}>
+                <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                  <EyeIcon clickHandler={() => onOpenModal(user.athleteId)} />
+                </span>
+              </Tooltip>
+              <Tooltip content="Editar usuario" classNames={{ base: "dark" }}>
+                <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                  <EditIcon />
+                </span>
+              </Tooltip>
+              <Tooltip color="danger" content="Eliminar usuario">
+                <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                  <DeleteIcon />
+                </span>
+              </Tooltip>
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [onOpenModal]
+  );
 
   if (status === "loading" || loading) {
     return <p>Loading...</p>;

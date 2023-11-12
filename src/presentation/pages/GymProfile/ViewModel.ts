@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { GymUser } from "@/domain/entities/GymUser";
 import { IGymDataValidation } from "@/presentation/interfaces/IAuth";

@@ -25,4 +25,10 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
 
     return response;
   }
+
+  async getAthleteUserById(id: number): Promise<AthleteUser> {
+    const response = await this.service.getAthleteUserById(id);
+
+    return response;
+  }
 }

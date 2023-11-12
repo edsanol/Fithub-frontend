@@ -5,4 +5,5 @@ import { AthleteUserList } from "../models/AthleteUserList";
 export interface AthleteUserRepository {
   registerAthleteUser(athleteUser: AthleteUser): Promise<boolean>;
   getAthleteUserList(data: AthleteUserList): Promise<IAthleteUserList>;
+  getAthleteUserById(id: number): Promise<AthleteUser>;
 }

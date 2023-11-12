@@ -32,4 +32,12 @@ export class AthleteUserServiceImpl implements AthleteUserService {
 
     return response.data;
   }
+
+  async getAthleteUserById(id: number): Promise<AthleteUser> {
+    const response = await this.http.get<TickerResponseApi<AthleteUser>>(
+      `/Athlete/${id}`
+    );
+
+    return response.data;
+  }
 }

@@ -23,6 +23,7 @@ const TYPES = {
   // AthleteUserUseCases
   RegisterAthleteUserUseCase: Symbol.for("RegisterAthleteUserUseCase"),
   GetAthleteUserListUseCase: Symbol.for("GetAthleteUserListUseCase"),
+  GetAthleteUserByIdUseCase: Symbol.for("GetAthleteUserByIdUseCase"),
 };
 
 export { TYPES };
