@@ -4,9 +4,8 @@ import { useState } from "react";
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteColumns } from "@/assets/constants";
-import { IAthleteUserList } from "@/presentation/interfaces/IAthlete";
+import { IAthlete, IAthleteUserList } from "@/presentation/interfaces/IAthlete";
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
-import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { useRouter } from "next/navigation";
 import { DeleteAthleteUserUseCase } from "@/domain/useCases/AthleteUser/deleteAthleteUserUseCase";
 
@@ -18,7 +17,8 @@ const ViewModel = () => {
     items: [],
   });
 
-  const [athleteUser, setAthleteUser] = useState<AthleteUser>({
+  const [athleteUser, setAthleteUser] = useState<IAthlete>({
+    athleteId: 0,
     athleteName: "",
     athleteLastName: "",
     email: "",
@@ -31,8 +31,10 @@ const ViewModel = () => {
     status: true,
   });
 
-  const [openModal, setOpenModal] = useState(false);
-  const [openInfoModal, setOpenInfoModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState({
+    detailsModal: false,
+    deleteModal: false,
+  });
 
   const handleSubmit = async (params: Partial<AthleteUserList>) => {
     try {
@@ -76,36 +78,6 @@ const ViewModel = () => {
     }
   };
 
-  const handleSetNumPage = async (numPage: number) => {
-    await handleSubmit({ numPage });
-  };
-
-  const handleSetTextFilter = async (textFilter: string) => {
-    await handleSubmit({ textFilter, numFilter: 1 });
-  };
-
-  const handleModal = () => {
-    setOpenModal(!openModal);
-  };
-
-  const handleOpenModal = async (athleteId: number) => {
-    await getAthleteUserById(athleteId);
-    setOpenModal(true);
-  };
-
-  const handleRedirect = (athleteId: number) => {
-    router.push(`/create-user/${athleteId}`);
-  };
-
-  const handleOpenInfoModal = async (athleteId: number) => {
-    await getAthleteUserById(athleteId);
-    setOpenInfoModal(true);
-  };
-
-  const handleInfoModal = () => {
-    setOpenInfoModal(!openInfoModal);
-  };
-
   const deleteAthleteUser = async (athleteId: number) => {
     try {
       const deleteAthleteUserUseCase = container.get<DeleteAthleteUserUseCase>(
@@ -113,6 +85,8 @@ const ViewModel = () => {
       );
 
       const response = await deleteAthleteUserUseCase.execute(athleteId);
+
+      setIsModalOpen({ detailsModal: false, deleteModal: false });
 
       if (!response) {
         console.log("error");
@@ -125,20 +99,44 @@ const ViewModel = () => {
     }
   };
 
+  const handleSetNumPage = async (numPage: number) => {
+    await handleSubmit({ numPage });
+  };
+
+  const handleSetTextFilter = async (textFilter: string) => {
+    await handleSubmit({ textFilter, numFilter: 1 });
+  };
+
+  const handleRedirect = (athleteId: number) => {
+    router.push(`/create-user/${athleteId}`);
+  };
+
+  const toggleModal = (modalName: "detailsModal" | "deleteModal") => {
+    setIsModalOpen((prevState) => ({
+      ...prevState,
+      [modalName]: !prevState[modalName],
+    }));
+  };
+
+  const handleOpenModal = async (
+    athleteId: number,
+    modalName: "detailsModal" | "deleteModal"
+  ) => {
+    await getAthleteUserById(athleteId);
+    toggleModal(modalName);
+  };
+
   return {
     handleSetNumPage,
     handleSetTextFilter,
-    handleModal,
     handleOpenModal,
     handleRedirect,
-    handleOpenInfoModal,
-    handleInfoModal,
     deleteAthleteUser,
-    openModal,
-    openInfoModal,
+    toggleModal,
     athletesList,
     AthleteColumns,
     athleteUser,
+    isModalOpen,
   };
 };
 

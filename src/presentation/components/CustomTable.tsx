@@ -25,9 +25,8 @@ import { IColumns } from "../interfaces/ICustomTable";
 interface CustomTableProps {
   onSetNumPage: (numPage: number) => void;
   onSetTextFilter: (textFilter: string) => void;
-  onOpenModal: (id: number) => void;
+  onOpenModal: (id: number, modalName: "detailsModal" | "deleteModal") => void;
   onRedirect: (id: number) => void;
-  onOpenInfoModal: (id: number) => void;
   records: any;
   columns: IColumns[];
 }
@@ -42,7 +41,6 @@ const CustomTable = ({
   onSetTextFilter,
   onOpenModal,
   onRedirect,
-  onOpenInfoModal,
   records,
   columns,
 }: CustomTableProps) => {
@@ -62,7 +60,6 @@ const CustomTable = ({
     } finally {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const handleTextFilter = useCallback(
@@ -119,7 +116,11 @@ const CustomTable = ({
             <div className="relative flex items-center gap-2">
               <Tooltip content="Ver detalle" classNames={{ base: "dark" }}>
                 <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <EyeIcon clickHandler={() => onOpenModal(user.athleteId)} />
+                  <EyeIcon
+                    clickHandler={() =>
+                      onOpenModal(user.athleteId, "detailsModal")
+                    }
+                  />
                 </span>
               </Tooltip>
               <Tooltip content="Editar usuario" classNames={{ base: "dark" }}>
@@ -130,7 +131,9 @@ const CustomTable = ({
               <Tooltip color="danger" content="Eliminar usuario">
                 <span className="text-lg text-danger cursor-pointer active:opacity-50">
                   <DeleteIcon
-                    clickHandler={() => onOpenInfoModal(user.athleteId)}
+                    clickHandler={() =>
+                      onOpenModal(user.athleteId, "deleteModal")
+                    }
                   />
                 </span>
               </Tooltip>
@@ -140,7 +143,7 @@ const CustomTable = ({
           return cellValue;
       }
     },
-    [onOpenModal, onRedirect, onOpenInfoModal]
+    [onOpenModal, onRedirect]
   );
 
   if (status === "loading" || loading) {

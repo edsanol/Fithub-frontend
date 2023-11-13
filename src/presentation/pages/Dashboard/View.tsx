@@ -7,38 +7,35 @@ import CustomModal from "@/presentation/components/CustomModal";
 import { FormInput, FormRadioButton } from "@/presentation/components";
 import { genres } from "@/assets/constants";
 import WarningIcon from "@/assets/svg/WarningIcon";
+import { Button } from "@nextui-org/react";
 
 const Dashboard = () => {
   const {
     handleSetNumPage,
     handleSetTextFilter,
-    handleModal,
     handleOpenModal,
     handleRedirect,
-    handleOpenInfoModal,
-    handleInfoModal,
     deleteAthleteUser,
-    openModal,
-    openInfoModal,
+    toggleModal,
     athletesList,
     AthleteColumns,
     athleteUser,
+    isModalOpen,
   } = ViewModel();
 
   return (
-    <div className="">
+    <div>
       <CustomTable
         onSetNumPage={handleSetNumPage}
         onSetTextFilter={handleSetTextFilter}
         onOpenModal={handleOpenModal}
         onRedirect={handleRedirect}
-        onOpenInfoModal={handleOpenInfoModal}
         records={athletesList}
         columns={AthleteColumns}
       />
       <CustomModal
-        isOpen={openModal}
-        onOpenChange={handleModal}
+        isOpen={isModalOpen.detailsModal}
+        onOpenChange={() => toggleModal("detailsModal")}
         size="2xl"
         content={
           <>
@@ -101,18 +98,27 @@ const Dashboard = () => {
                 label="Selecciona el genero del deportista"
                 customClass="mt-5"
                 options={genres}
-                value={athleteUser?.genre ? athleteUser?.genre : ""}
+                value={athleteUser?.genre}
               />
             </form>
           </>
         }
+        footerContent={
+          <>
+            <Button
+              color="primary"
+              variant="ghost"
+              onPress={() => toggleModal("detailsModal")}
+            >
+              Cerrar
+            </Button>
+          </>
+        }
       />
       <CustomModal
-        isOpen={openInfoModal}
-        onOpenChange={handleInfoModal}
+        isOpen={isModalOpen.deleteModal}
+        onOpenChange={() => toggleModal("deleteModal")}
         size="2xl"
-        onAction={deleteAthleteUser}
-        data={athleteUser}
         content={
           <>
             <div className="mt-3 flex flex-col justify-center">
@@ -126,6 +132,28 @@ const Dashboard = () => {
                 Esta acción no se puede deshacer.
               </p>
             </div>
+          </>
+        }
+        footerContent={
+          <>
+            <Button
+              color="primary"
+              variant="ghost"
+              onPress={() => toggleModal("deleteModal")}
+            >
+              Cerrar
+            </Button>
+            <Button
+              color="danger"
+              onPress={() => {
+                if (athleteUser) {
+                  deleteAthleteUser(athleteUser.athleteId);
+                }
+                toggleModal("deleteModal");
+              }}
+            >
+              Si, eliminar
+            </Button>
           </>
         }
       />

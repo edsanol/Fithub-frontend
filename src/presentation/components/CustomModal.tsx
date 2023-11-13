@@ -5,12 +5,10 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
 } from "@nextui-org/react";
 
 interface CustomModalProps {
   onOpenChange: (state: boolean) => void;
-  onAction?: (athleteId: number) => void;
   isOpen: boolean;
   size:
     | "xs"
@@ -24,18 +22,16 @@ interface CustomModalProps {
     | "5xl"
     | "full";
   content: React.ReactNode;
-  data?: any;
+  footerContent?: React.ReactNode;
 }
 
 const CustomModal = ({
-  isOpen,
   onOpenChange,
-  onAction,
+  isOpen,
   size,
   content,
-  data,
+  footerContent,
 }: CustomModalProps) => {
-  console.log(data);
   return (
     <>
       <Modal
@@ -45,40 +41,15 @@ const CustomModal = ({
         size={size}
       >
         <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                <div className="flex justify-center">
-                  <h1 className="text-3xl text-[#3669FC] font-black">FitHub</h1>
-                </div>
-              </ModalHeader>
-              <ModalBody>{content}</ModalBody>
-              <ModalFooter>
-                {onAction ? (
-                  <Button
-                    color="danger"
-                    onPress={
-                      onAction
-                        ? () => {
-                            onAction(data.athleteId);
-                            onOpenChange(false);
-                          }
-                        : () => onOpenChange(false)
-                    }
-                  >
-                    Si, eliminar
-                  </Button>
-                ) : null}
-                <Button
-                  color="primary"
-                  variant="ghost"
-                  onPress={() => onOpenChange(false)}
-                >
-                  Cerrar
-                </Button>
-              </ModalFooter>
-            </>
-          )}
+          <>
+            <ModalHeader className="flex flex-col gap-1">
+              <div className="flex justify-center">
+                <h1 className="text-3xl text-[#3669FC] font-black">FitHub</h1>
+              </div>
+            </ModalHeader>
+            <ModalBody>{content}</ModalBody>
+            <ModalFooter>{footerContent}</ModalFooter>
+          </>
         </ModalContent>
       </Modal>
     </>
