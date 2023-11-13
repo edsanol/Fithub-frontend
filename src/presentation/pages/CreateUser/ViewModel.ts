@@ -7,7 +7,7 @@ import {
 } from "@/presentation/helpers";
 import { IAthleteValidation } from "@/presentation/interfaces/IAthlete";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/registerAthleteUserUseCase";
@@ -20,8 +20,8 @@ import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthlet
 
 const ViewModel = () => {
   const { data: session } = useSession();
-
   const pathname = usePathname();
+  const router = useRouter();
 
   const athleteId = pathname.match(/\/create-user\/(.*)/);
 
@@ -49,8 +49,6 @@ const ViewModel = () => {
     birthDateError: false,
   });
 
-  const router = useRouter();
-
   const handleIsValidForm = async () => {
     const errors: IAthleteValidation = {
       emailError: !isValidEmail(athleteData.email),
@@ -75,13 +73,14 @@ const ViewModel = () => {
         return;
       }
 
+      if (athleteData.idGym === 0 || athleteData.gymName === "") {
+        console.log("error");
+        return;
+      }
+
       let response;
 
-      if (
-        athleteIdValue &&
-        athleteData.gymName !== "" &&
-        athleteData.idGym !== 0
-      ) {
+      if (athleteIdValue) {
         const editAthleteUserUseCase = container.get<EditAthleteUserUseCase>(
           TYPES.EditAthleteUserUseCase
         );
@@ -141,7 +140,6 @@ const ViewModel = () => {
     if (athleteIdValue) {
       getAthleteUserById(Number(athleteIdValue));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSetName = (event: string) => {
