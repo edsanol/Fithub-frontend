@@ -10,6 +10,8 @@ import FormTextarea from "./FormTextarea";
 import AuthHeader from "./AuthHeader";
 import FormLink from "./FormLink";
 import FormRadioButton from "./FormRadioButton";
+import CustomModal from "./CustomModal";
+import CustomTable from "./CustomTable";
 
 export {
   PrimaryButton,
@@ -24,4 +26,6 @@ export {
   AuthHeader,
   FormLink,
   FormRadioButton,
+  CustomModal,
+  CustomTable,
 };

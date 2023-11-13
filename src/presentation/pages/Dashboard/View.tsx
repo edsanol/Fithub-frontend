@@ -1,10 +1,13 @@
 "use client";
 
-import CustomTable from "@/presentation/components/CustomTable";
 import React from "react";
 import ViewModel from "./ViewModel";
-import CustomModal from "@/presentation/components/CustomModal";
-import { FormInput, FormRadioButton } from "@/presentation/components";
+import {
+  FormInput,
+  FormRadioButton,
+  CustomModal,
+  CustomTable,
+} from "@/presentation/components";
 import { genres } from "@/assets/constants";
 import WarningIcon from "@/assets/svg/WarningIcon";
 import { Button } from "@nextui-org/react";
