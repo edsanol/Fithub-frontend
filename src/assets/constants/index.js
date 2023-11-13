@@ -13,8 +13,8 @@ export const sidebarLinks = [
   },
   {
     imgURL: Home,
-    route: "/search",
-    label: "Buscar",
+    route: "/membership",
+    label: "Membresías",
   },
   {
     imgURL: Home,
