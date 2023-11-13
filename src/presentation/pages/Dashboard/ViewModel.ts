@@ -8,6 +8,7 @@ import { IAthleteUserList } from "@/presentation/interfaces/IAthlete";
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { useRouter } from "next/navigation";
+import { DeleteAthleteUserUseCase } from "@/domain/useCases/AthleteUser/deleteAthleteUserUseCase";
 
 const ViewModel = () => {
   const router = useRouter();
@@ -31,6 +32,7 @@ const ViewModel = () => {
   });
 
   const [openModal, setOpenModal] = useState(false);
+  const [openInfoModal, setOpenInfoModal] = useState(false);
 
   const handleSubmit = async (params: Partial<AthleteUserList>) => {
     try {
@@ -82,7 +84,7 @@ const ViewModel = () => {
     await handleSubmit({ textFilter, numFilter: 1 });
   };
 
-  const handleModal = async () => {
+  const handleModal = () => {
     setOpenModal(!openModal);
   };
 
@@ -95,13 +97,45 @@ const ViewModel = () => {
     router.push(`/create-user/${athleteId}`);
   };
 
+  const handleOpenInfoModal = async (athleteId: number) => {
+    await getAthleteUserById(athleteId);
+    setOpenInfoModal(true);
+  };
+
+  const handleInfoModal = () => {
+    setOpenInfoModal(!openInfoModal);
+  };
+
+  const deleteAthleteUser = async (athleteId: number) => {
+    try {
+      const deleteAthleteUserUseCase = container.get<DeleteAthleteUserUseCase>(
+        TYPES.DeleteAthleteUserUseCase
+      );
+
+      const response = await deleteAthleteUserUseCase.execute(athleteId);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      await handleSubmit({});
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     handleSetNumPage,
     handleSetTextFilter,
     handleModal,
     handleOpenModal,
     handleRedirect,
+    handleOpenInfoModal,
+    handleInfoModal,
+    deleteAthleteUser,
     openModal,
+    openInfoModal,
     athletesList,
     AthleteColumns,
     athleteUser,

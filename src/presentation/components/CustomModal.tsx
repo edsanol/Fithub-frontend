@@ -9,8 +9,9 @@ import {
 } from "@nextui-org/react";
 
 interface CustomModalProps {
-  isOpen: boolean;
   onOpenChange: (state: boolean) => void;
+  onAction?: (athleteId: number) => void;
+  isOpen: boolean;
   size:
     | "xs"
     | "sm"
@@ -23,14 +24,18 @@ interface CustomModalProps {
     | "5xl"
     | "full";
   content: React.ReactNode;
+  data?: any;
 }
 
 const CustomModal = ({
   isOpen,
   onOpenChange,
+  onAction,
   size,
   content,
+  data,
 }: CustomModalProps) => {
+  console.log(data);
   return (
     <>
       <Modal
@@ -49,8 +54,23 @@ const CustomModal = ({
               </ModalHeader>
               <ModalBody>{content}</ModalBody>
               <ModalFooter>
+                {onAction ? (
+                  <Button
+                    color="danger"
+                    onPress={
+                      onAction
+                        ? () => {
+                            onAction(data.athleteId);
+                            onOpenChange(false);
+                          }
+                        : () => onOpenChange(false)
+                    }
+                  >
+                    Si, eliminar
+                  </Button>
+                ) : null}
                 <Button
-                  color="danger"
+                  color="primary"
                   variant="ghost"
                   onPress={() => onOpenChange(false)}
                 >
