@@ -1,4 +1,4 @@
-import { AthleteUserList } from "@/domain/models/AthleteUserList";
+import { PaginateData } from "@/domain/models/PaginateData";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
 import { useState } from "react";
 import container from "@/config/inversifyContainer";
@@ -37,7 +37,7 @@ const ViewModel = () => {
     deleteModal: false,
   });
 
-  const handleSubmit = async (params: Partial<AthleteUserList>) => {
+  const handleSubmit = async (params: Partial<PaginateData>) => {
     try {
       const getAthleteUserListUseCase =
         container.get<GetAthleteUserListUseCase>(

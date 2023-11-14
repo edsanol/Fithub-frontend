@@ -1,6 +1,6 @@
 import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
-import { AthleteUserList } from "@/domain/models/AthleteUserList";
+import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import type { AthleteUserRepository } from "@/domain/repositories/athleteUserRepository";
 import { inject, injectable } from "inversify";
@@ -13,7 +13,7 @@ export class GetAthleteUserListUseCase {
   ) {}
 
   async execute(
-    data: AthleteUserList
+    data: PaginateData
   ): Promise<PaginateResponseList<AthleteUser>> {
     return await this.athleteUserRepository.getAthleteUserList(data);
   }

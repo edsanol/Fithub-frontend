@@ -12,7 +12,7 @@ type constructorParams = {
   download?: boolean;
 };
 
-export class AthleteUserList {
+export class PaginateData {
   public numPage?: number;
   public numRecordsPage?: number;
   public order?: string;

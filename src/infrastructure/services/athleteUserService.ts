@@ -1,5 +1,5 @@
 import { AthleteUser } from "@/domain/entities/AthleteUser";
-import { AthleteUserList } from "@/domain/models/AthleteUserList";
+import { PaginateData } from "@/domain/models/PaginateData";
 import { AthleteUserService } from "@/domain/services/athleteUserService";
 import { inject, injectable } from "inversify";
 import type { HttpClient } from "../api/http";
@@ -25,11 +25,11 @@ export class AthleteUserServiceImpl implements AthleteUserService {
   }
 
   async getAthleteUserList(
-    data: AthleteUserList
+    data: PaginateData
   ): Promise<PaginateResponseList<AthleteUser>> {
     const response = await this.http.post<
       TickerResponseApi<PaginateResponseList<AthleteUser>>,
-      AthleteUserList
+      PaginateData
     >("/Athlete/List", data);
 
     return response.data;

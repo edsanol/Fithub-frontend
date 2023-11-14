@@ -1,6 +1,6 @@
 import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
-import { AthleteUserList } from "@/domain/models/AthleteUserList";
+import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { AthleteUserRepository } from "@/domain/repositories/athleteUserRepository";
 import type { AthleteUserService } from "@/domain/services/athleteUserService";
@@ -21,7 +21,7 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
   }
 
   async getAthleteUserList(
-    data: AthleteUserList
+    data: PaginateData
   ): Promise<PaginateResponseList<AthleteUser>> {
     const response = await this.service.getAthleteUserList(data);
 
