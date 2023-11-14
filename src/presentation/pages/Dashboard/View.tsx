@@ -35,6 +35,7 @@ const Dashboard = () => {
         onRedirect={handleRedirect}
         records={athletesList}
         columns={AthleteColumns}
+        uniqueKeyField="athleteId"
       />
       <CustomModal
         isOpen={isModalOpen.detailsModal}
@@ -150,7 +151,7 @@ const Dashboard = () => {
               color="danger"
               onPress={() => {
                 if (athleteUser) {
-                  deleteAthleteUser(athleteUser.athleteId);
+                  deleteAthleteUser(athleteUser.athleteId!);
                 }
                 toggleModal("deleteModal");
               }}

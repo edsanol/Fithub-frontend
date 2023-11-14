@@ -4,20 +4,21 @@ import { useState } from "react";
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteColumns } from "@/assets/constants";
-import { IAthlete, IAthleteUserList } from "@/presentation/interfaces/IAthlete";
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { useRouter } from "next/navigation";
 import { DeleteAthleteUserUseCase } from "@/domain/useCases/AthleteUser/deleteAthleteUserUseCase";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { AthleteUser } from "@/domain/entities/AthleteUser";
 
 const ViewModel = () => {
   const router = useRouter();
 
-  const [athletesList, setAthletesList] = useState<IAthleteUserList>({
+  const [athletesList, setAthletesList] = useState<PaginateResponseList>({
     totalRecords: 0,
     items: [],
   });
 
-  const [athleteUser, setAthleteUser] = useState<IAthlete>({
+  const [athleteUser, setAthleteUser] = useState<AthleteUser>({
     athleteId: 0,
     athleteName: "",
     athleteLastName: "",

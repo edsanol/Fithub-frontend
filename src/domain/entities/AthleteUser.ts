@@ -1,29 +1,36 @@
 type constructorParams = {
+  athleteId?: number;
   athleteName: string;
   athleteLastName: string;
   email: string;
   phoneNumber: string;
   birthDate: string;
   genre: string;
-  idGym: number;
-  gymName: string;
+  idGym?: number;
+  gymName?: string;
   registerDate: string;
   status: true;
+  stateAthlete?: string;
+  token?: string | null;
 };
 
 export class AthleteUser {
+  public athleteId?: number;
   public athleteName: string;
   public athleteLastName: string;
   public email: string;
   public phoneNumber: string;
   public birthDate: string;
   public genre: string;
-  public idGym: number;
-  public gymName: string;
+  public idGym?: number;
+  public gymName?: string;
   public registerDate: string;
   public status: true;
+  public stateAthlete?: string;
+  public token?: string | null;
 
   constructor({
+    athleteId,
     athleteName,
     athleteLastName,
     email,
@@ -34,7 +41,10 @@ export class AthleteUser {
     gymName,
     registerDate,
     status,
+    stateAthlete,
+    token,
   }: constructorParams) {
+    this.athleteId = athleteId;
     this.athleteName = athleteName;
     this.athleteLastName = athleteLastName;
     this.email = email;
@@ -45,5 +55,7 @@ export class AthleteUser {
     this.gymName = gymName;
     this.registerDate = registerDate;
     this.status = status;
+    this.stateAthlete = stateAthlete;
+    this.token = token;
   }
 }

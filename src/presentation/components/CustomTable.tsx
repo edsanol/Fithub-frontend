@@ -29,6 +29,7 @@ interface CustomTableProps {
   onRedirect: (id: number) => void;
   records: any;
   columns: IColumns[];
+  uniqueKeyField: string;
 }
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
@@ -43,6 +44,7 @@ const CustomTable = ({
   onRedirect,
   records,
   columns,
+  uniqueKeyField,
 }: CustomTableProps) => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -189,7 +191,7 @@ const CustomTable = ({
         </TableHeader>
         <TableBody items={records.items}>
           {(item: any) => (
-            <TableRow key={item.athleteId}>
+            <TableRow key={item[uniqueKeyField]}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}
