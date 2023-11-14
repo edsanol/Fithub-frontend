@@ -19,6 +19,10 @@ import { GetGymUserByIdUseCase } from "@/domain/useCases/GymUser/getGymUserByIdU
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
 import { DeleteAthleteUserUseCase } from "@/domain/useCases/AthleteUser/deleteAthleteUserUseCase";
+import { MembershipRepository } from "@/domain/repositories/membershipRepository";
+import { MembershipService } from "@/domain/services/membershipService";
+import { MembershipRepositoryImpl } from "@/infrastructure/repositories/membershipRepository";
+import { MembershipServiceImpl } from "@/infrastructure/services/membershipService";
 
 const container = new Container();
 
@@ -78,5 +82,15 @@ container
 container
   .bind<DeleteAthleteUserUseCase>(TYPES.DeleteAthleteUserUseCase)
   .to(DeleteAthleteUserUseCase);
+
+// MembershipRepository
+container
+  .bind<MembershipRepository>(TYPES.MembershipRepository)
+  .to(MembershipRepositoryImpl);
+
+// MembershipService
+container
+  .bind<MembershipService>(TYPES.MembershipService)
+  .to(MembershipServiceImpl);
 
 export default container;
