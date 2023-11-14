@@ -11,6 +11,7 @@ import {
 import { genres } from "@/assets/constants";
 import WarningIcon from "@/assets/svg/WarningIcon";
 import { Button } from "@nextui-org/react";
+import { customRenderCell } from "./RenderCell";
 
 const Dashboard = () => {
   const {
@@ -31,8 +32,9 @@ const Dashboard = () => {
       <CustomTable
         onSetNumPage={handleSetNumPage}
         onSetTextFilter={handleSetTextFilter}
-        onOpenModal={handleOpenModal}
-        onRedirect={handleRedirect}
+        customRenderCell={(user, columnKey) =>
+          customRenderCell(user, columnKey, { handleOpenModal, handleRedirect })
+        }
         records={athletesList}
         columns={AthleteColumns}
         uniqueKeyField="athleteId"

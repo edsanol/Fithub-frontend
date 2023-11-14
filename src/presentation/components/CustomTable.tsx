@@ -8,16 +8,9 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  User,
-  Chip,
-  Tooltip,
-  ChipProps,
   Pagination,
   Input,
 } from "@nextui-org/react";
-import EyeIcon from "@/assets/svg/EyeIcon";
-import EditIcon from "@/assets/svg/EditIcon";
-import DeleteIcon from "@/assets/svg/DeleteIcon";
 import SearchIcon from "@/assets/svg/SearchIcon";
 import { useSession } from "next-auth/react";
 import { IColumns } from "../interfaces/ICustomTable";
@@ -25,23 +18,16 @@ import { IColumns } from "../interfaces/ICustomTable";
 interface CustomTableProps {
   onSetNumPage: (numPage: number) => void;
   onSetTextFilter: (textFilter: string) => void;
-  onOpenModal: (id: number, modalName: "detailsModal" | "deleteModal") => void;
-  onRedirect: (id: number) => void;
+  customRenderCell: (user: any, columnKey: React.Key) => React.ReactNode;
   records: any;
   columns: IColumns[];
   uniqueKeyField: string;
 }
 
-const statusColorMap: Record<string, ChipProps["color"]> = {
-  activo: "success",
-  inactivo: "danger",
-};
-
 const CustomTable = ({
   onSetNumPage,
   onSetTextFilter,
-  onOpenModal,
-  onRedirect,
+  customRenderCell,
   records,
   columns,
   uniqueKeyField,
@@ -49,9 +35,7 @@ const CustomTable = ({
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  type User = (typeof records)[0];
-
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   useEffect(() => {
     try {
@@ -62,6 +46,7 @@ const CustomTable = ({
     } finally {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const handleTextFilter = useCallback(
@@ -76,76 +61,6 @@ const CustomTable = ({
       }
     },
     [onSetTextFilter]
-  );
-
-  const renderCell = useCallback(
-    (user: User, columnKey: React.Key) => {
-      const cellValue = user[columnKey as keyof User];
-
-      switch (columnKey) {
-        case "athleteName":
-          return (
-            <User
-              avatarProps={{ radius: "lg" }}
-              description={user.email}
-              name={cellValue + " " + user.athleteLastName}
-            >
-              {user.email}
-            </User>
-          );
-        case "phoneNumber":
-          return (
-            <div className="flex flex-col">
-              <p className="text-bold text-sm capitalize">{cellValue}</p>
-              <p className="text-bold text-sm capitalize text-default-400">
-                {user.birthDate.slice(0, 10)}
-              </p>
-            </div>
-          );
-        case "stateAthlete":
-          return (
-            <Chip
-              className="capitalize"
-              color={statusColorMap[user.stateAthlete.toLowerCase()]}
-              size="sm"
-              variant="flat"
-            >
-              {cellValue}
-            </Chip>
-          );
-        case "actions":
-          return (
-            <div className="relative flex items-center gap-2">
-              <Tooltip content="Ver detalle" classNames={{ base: "dark" }}>
-                <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <EyeIcon
-                    clickHandler={() =>
-                      onOpenModal(user.athleteId, "detailsModal")
-                    }
-                  />
-                </span>
-              </Tooltip>
-              <Tooltip content="Editar usuario" classNames={{ base: "dark" }}>
-                <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <EditIcon clickHandler={() => onRedirect(user.athleteId)} />
-                </span>
-              </Tooltip>
-              <Tooltip color="danger" content="Eliminar usuario">
-                <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                  <DeleteIcon
-                    clickHandler={() =>
-                      onOpenModal(user.athleteId, "deleteModal")
-                    }
-                  />
-                </span>
-              </Tooltip>
-            </div>
-          );
-        default:
-          return cellValue;
-      }
-    },
-    [onOpenModal, onRedirect]
   );
 
   if (status === "loading" || loading) {
@@ -193,7 +108,7 @@ const CustomTable = ({
           {(item: any) => (
             <TableRow key={item[uniqueKeyField]}>
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell>{customRenderCell(item, columnKey)}</TableCell>
               )}
             </TableRow>
           )}
