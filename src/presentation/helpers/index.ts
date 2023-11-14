@@ -3,6 +3,7 @@ import {
   nameRegex,
   nitRegex,
   notEmptyRegex,
+  numberRegex,
   passwordRegex,
   phoneRegex,
 } from "@/presentation/interfaces/regex";
@@ -56,6 +57,14 @@ export const isNotEmpty = (value: string): boolean => {
 
 export const isValidGenre = (genre: string): boolean => {
   if (genre === "M" || genre === "F") {
+    return true;
+  }
+
+  return false;
+};
+
+export const isValidNumber = (number: string): boolean => {
+  if (numberRegex.test(number)) {
     return true;
   }
 

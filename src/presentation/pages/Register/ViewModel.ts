@@ -16,6 +16,8 @@ import { IGymDataValidation } from "@/presentation/interfaces/IAuth";
 import { GymUser } from "@/domain/entities/GymUser";
 
 const ViewModel = () => {
+  const router = useRouter();
+
   const [gymData, setGymData] = useState<GymUser>({
     gymName: "",
     email: "",
@@ -35,9 +37,8 @@ const ViewModel = () => {
     phoneNumberError: false,
     nitError: false,
   });
-  const router = useRouter();
 
-  const handleIsValidForm = async () => {
+  const handleIsValidForm = () => {
     const errors: IGymDataValidation = {
       emailError: !isValidEmail(gymData.email),
       passwordError: !isValidPassword(gymData.password!),

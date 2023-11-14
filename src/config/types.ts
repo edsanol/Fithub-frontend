@@ -32,6 +32,9 @@ const TYPES = {
 
   // MembershipService
   MembershipService: Symbol.for("MembershipService"),
+
+  // MembershipUseCases
+  RegisterMembershipUseCase: Symbol.for("RegisterMembershipUseCase"),
 };
 
 export { TYPES };

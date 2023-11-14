@@ -10,3 +10,5 @@ export const phoneRegex = /^\d{10}$/;
 export const nitRegex = /^\d{7,10}$/;
 
 export const notEmptyRegex = /\S+/;
+
+export const numberRegex = /^(?!0+$)\d+$/;
