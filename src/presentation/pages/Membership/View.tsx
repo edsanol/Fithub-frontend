@@ -50,7 +50,7 @@ const Membership = () => {
         size="2xl"
         content={
           <>
-            <form className="mt-3">
+            <form className="mt-3" onSubmit={handleSubmit}>
               <FormInput
                 isRequired
                 isInvalid={membershipError?.membershipNameError}
@@ -118,25 +118,33 @@ const Membership = () => {
                   placeholder="Escribe una descripción de la membresía"
                   size="lg"
                   classNames={{ base: "dark" }}
+                  onChange={(value) => handleSetDescription(value)}
+                />
+              </div>
+              <div className="mt-5">
+                <PrimaryButton
+                  text="Crear"
+                  btnType="submit"
+                  customButtonClass="w-full p-8"
                 />
               </div>
             </form>
           </>
         }
-        footerContent={
-          <>
-            <Button
-              color="danger"
-              variant="ghost"
-              onPress={() => toggleModal("createModal")}
-            >
-              Cerrar
-            </Button>
-            <Button color="primary" onClick={() => handleSubmit}>
-              Crear
-            </Button>
-          </>
-        }
+        // footerContent={
+        //   <>
+        //     <Button
+        //       color="danger"
+        //       variant="ghost"
+        //       onPress={() => toggleModal("createModal")}
+        //     >
+        //       Cerrar
+        //     </Button>
+        //     <Button color="primary" onClick={() => handleSubmit}>
+        //       Crear
+        //     </Button>
+        //   </>
+        // }
       />
       <CustomModal
         isOpen={isModalOpen.deleteModal}

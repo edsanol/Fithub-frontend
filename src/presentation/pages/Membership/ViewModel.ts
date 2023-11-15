@@ -1,21 +1,21 @@
 import { PaginateData } from "@/domain/models/PaginateData";
-import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
 import { useState } from "react";
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteColumns } from "@/assets/constants";
-import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { useRouter } from "next/navigation";
-import { DeleteAthleteUserUseCase } from "@/domain/useCases/AthleteUser/deleteAthleteUserUseCase";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
-import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { Membership } from "@/domain/entities/Membership";
 import { IMembershipValidation } from "@/presentation/interfaces/IMembership";
 import { isNotEmpty, isValidName, isValidNumber } from "@/presentation/helpers";
 import { RegisterMembershipUseCase } from "@/domain/useCases/Membership/registerMembershipUseCase";
+import { useSession } from "next-auth/react";
 
 const ViewModel = () => {
+  const { data: session } = useSession();
   const router = useRouter();
+
+  console.log(session);
 
   const [athletesList, setAthletesList] = useState<PaginateResponseList>({
     totalRecords: 0,
@@ -27,7 +27,7 @@ const ViewModel = () => {
     cost: 0,
     durationInDays: 0,
     description: "",
-    idGym: 0,
+    idGym: session ? session.user.gymId : 0,
   });
 
   const [membershipError, setMembershipError] = useState<IMembershipValidation>(
@@ -59,7 +59,6 @@ const ViewModel = () => {
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("submit");
     event.preventDefault();
     try {
       const errors = await handleIsValidForm();
@@ -68,25 +67,30 @@ const ViewModel = () => {
         return;
       }
 
-      // const registerMembershipUseCase =
-      //   container.get<RegisterMembershipUseCase>(
-      //     TYPES.RegisterMembershipUseCase
-      //   );
-
-      // const response = await registerMembershipUseCase.execute(membership);
-
-      // if (!response) {
-      //   console.log("error");
-      //   return;
-      // }
-
-      // setIsModalOpen({
-      //   createModal: false,
-      //   detailsModal: false,
-      //   deleteModal: false,
-      // });
-
       console.log(membership);
+
+      if (membership.idGym === 0) {
+        console.log("error");
+        return;
+      }
+
+      const registerMembershipUseCase =
+        container.get<RegisterMembershipUseCase>(
+          TYPES.RegisterMembershipUseCase
+        );
+
+      const response = await registerMembershipUseCase.execute(membership);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setIsModalOpen({
+        createModal: false,
+        detailsModal: false,
+        deleteModal: false,
+      });
     } catch (error) {
       console.log(error);
     }
