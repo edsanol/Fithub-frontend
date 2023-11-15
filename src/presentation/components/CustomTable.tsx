@@ -21,12 +21,13 @@ import EditIcon from "@/assets/svg/EditIcon";
 import DeleteIcon from "@/assets/svg/DeleteIcon";
 import SearchIcon from "@/assets/svg/SearchIcon";
 import { useSession } from "next-auth/react";
+import { IColumns } from "../interfaces/ICustomTable";
 
 interface CustomTableProps {
   onSetNumPage: (numPage: number) => void;
   onSetTextFilter: (textFilter: string) => void;
   records: any;
-  columns: any[];
+  columns: IColumns[];
 }
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
@@ -74,7 +75,6 @@ const CustomTable = ({
   );
 
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
-    console.log(user, columnKey);
     const cellValue = user[columnKey as keyof User];
 
     switch (columnKey) {
@@ -111,17 +111,17 @@ const CustomTable = ({
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <Tooltip content="Details" classNames={{ base: "dark" }}>
+            <Tooltip content="Ver detalle" classNames={{ base: "dark" }}>
               <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                 <EyeIcon />
               </span>
             </Tooltip>
-            <Tooltip content="Edit user" classNames={{ base: "dark" }}>
+            <Tooltip content="Editar usuario" classNames={{ base: "dark" }}>
               <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                 <EditIcon />
               </span>
             </Tooltip>
-            <Tooltip color="danger" content="Delete user">
+            <Tooltip color="danger" content="Eliminar usuario">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
                 <DeleteIcon />
               </span>

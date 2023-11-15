@@ -13,7 +13,7 @@ export interface IGymData {
 export interface IGymDataValidation {
   gymNameError: boolean;
   emailError: boolean;
-  passwordError: boolean;
+  passwordError?: boolean;
   addressError: boolean;
   phoneNumberError: boolean;
   nitError: boolean;

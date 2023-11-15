@@ -1,25 +1,29 @@
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { use, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { GymUser } from "@/domain/entities/GymUser";
+import { IGymDataValidation } from "@/presentation/interfaces/IAuth";
 import { useRouter } from "next/navigation";
-import container from "@/config/inversifyContainer";
-import { RegisterGymUserUseCase } from "@/domain/useCases/GymUser/registerGymUserUseCase";
-import { TYPES } from "@/config/types";
 import {
   isNotEmpty,
   isValidEmail,
   isValidName,
   isValidNit,
-  isValidPassword,
   isValidPhone,
 } from "@/presentation/helpers";
-import { IGymDataValidation } from "@/presentation/interfaces/IAuth";
-import { GymUser } from "@/domain/entities/GymUser";
+import container from "@/config/inversifyContainer";
+import { TYPES } from "@/config/types";
+import { EditGymUserUseCase } from "@/domain/useCases/GymUser/editGymUserUseCase";
+import { GetGymUserByIdUseCase } from "@/domain/useCases/GymUser/getGymUserByIdUseCase";
 
 const ViewModel = () => {
+  const { data: session } = useSession();
+
+  const gymUser = session?.user;
+
+  const [isClicked, setIsClicked] = useState(false);
   const [gymData, setGymData] = useState<GymUser>({
     gymName: "",
     email: "",
-    password: "",
     address: "",
     phoneNumber: "",
     registerDate: new Date().toISOString(),
@@ -27,20 +31,45 @@ const ViewModel = () => {
     comments: "",
     nit: "",
   });
+
   const [gymDataError, setGymDataError] = useState<IGymDataValidation>({
     gymNameError: false,
     emailError: false,
-    passwordError: false,
     addressError: false,
     phoneNumberError: false,
     nitError: false,
   });
+
   const router = useRouter();
+
+  const loadGymUserData = async (id: number) => {
+    try {
+      const getGymUserByIdUseCase = container.get<GetGymUserByIdUseCase>(
+        TYPES.GetGymUserByIdUseCase
+      );
+
+      const response = await getGymUserByIdUseCase.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setGymData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (gymUser) {
+      loadGymUserData(gymUser?.gymId!);
+    }
+  }, [gymUser]);
 
   const handleIsValidForm = async () => {
     const errors: IGymDataValidation = {
       emailError: !isValidEmail(gymData.email),
-      passwordError: !isValidPassword(gymData.password!),
       gymNameError: !isValidName(gymData.gymName),
       phoneNumberError: !isValidPhone(gymData.phoneNumber),
       nitError: !isValidNit(gymData.nit),
@@ -54,6 +83,7 @@ const ViewModel = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     try {
       const errors = await handleIsValidForm();
 
@@ -61,23 +91,17 @@ const ViewModel = () => {
         return;
       }
 
-      const registerGymUserUseCase = container.get<RegisterGymUserUseCase>(
-        TYPES.RegisterGymUserUseCase
+      const editGymUserUseCase = container.get<EditGymUserUseCase>(
+        TYPES.EditGymUserUseCase
       );
-      const response = await registerGymUserUseCase.execute(gymData);
+
+      const response = await editGymUserUseCase.execute(
+        gymUser?.gymId!,
+        gymData
+      );
 
       if (!response) {
         console.log("error");
-        return;
-      }
-
-      const responseNextAuth = await signIn("credentials", {
-        email: gymData.email,
-        password: gymData.password,
-        redirect: false,
-      });
-
-      if (responseNextAuth?.error) {
         return;
       }
 
@@ -85,6 +109,10 @@ const ViewModel = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleClick = () => {
+    setIsClicked(!isClicked);
   };
 
   const handleSetGymName = (event: string) => {
@@ -95,24 +123,12 @@ const ViewModel = () => {
     setGymData({ ...gymData, email: event });
   };
 
-  const handleSetPassword = (event: string) => {
-    setGymData({ ...gymData, password: event });
-  };
-
   const handleSetAddress = (event: string) => {
     setGymData({ ...gymData, address: event });
   };
 
   const handleSetPhoneNumber = (event: string) => {
     setGymData({ ...gymData, phoneNumber: event });
-  };
-
-  const handleSetRegisterDate = (event: string) => {
-    setGymData({ ...gymData, registerDate: event });
-  };
-
-  const handleSetSubscriptionPlan = (event: string) => {
-    setGymData({ ...gymData, subscriptionPlan: event });
   };
 
   const handleSetComments = (event: string) => {
@@ -127,13 +143,13 @@ const ViewModel = () => {
     handleSubmit,
     handleSetGymName,
     handleSetEmail,
-    handleSetPassword,
     handleSetAddress,
     handleSetPhoneNumber,
-    handleSetRegisterDate,
-    handleSetSubscriptionPlan,
     handleSetComments,
     handleSetNit,
+    handleClick,
+    isClicked,
+    gymData,
     gymDataError,
   };
 };

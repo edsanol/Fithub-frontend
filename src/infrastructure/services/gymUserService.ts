@@ -34,4 +34,21 @@ export class GymUserServiceImpl implements GymUserService {
 
     return response.data;
   }
+
+  async editGymUser(id: number, gymUser: GymUser): Promise<boolean> {
+    const response = await this.http.put<TickerResponseApi<boolean>, GymUser>(
+      `/Gym/Edit/${id}`,
+      gymUser
+    );
+
+    return response.data;
+  }
+
+  async getGymUserById(id: number): Promise<GymUser> {
+    const response = await this.http.get<TickerResponseApi<GymUser>>(
+      `/Gym/${id}`
+    );
+
+    return response.data;
+  }
 }

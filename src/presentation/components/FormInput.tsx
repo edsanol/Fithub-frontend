@@ -23,6 +23,8 @@ interface FormInputProps {
   customInputClass?: string;
   labelPlacement?: "outside" | "inside" | "outside-left";
   placeholder?: string;
+  isReadOnly?: boolean;
+  value?: any;
   onChange?: (event: string) => void;
 }
 
@@ -39,6 +41,8 @@ const FormInput = ({
   customInputClass,
   labelPlacement,
   placeholder,
+  isReadOnly,
+  value,
   onChange,
 }: FormInputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +52,7 @@ const FormInput = ({
   return (
     <Input
       isRequired={isRequired || false}
+      isReadOnly={isReadOnly || false}
       isInvalid={isInvalid || false}
       color={color}
       errorMessage={errorMessage || ""}
@@ -60,6 +65,7 @@ const FormInput = ({
       className={customInputClass || ""}
       labelPlacement={labelPlacement || "inside"}
       placeholder={placeholder || ""}
+      value={value}
       onChange={handleChange}
     />
   );
