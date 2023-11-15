@@ -16,6 +16,9 @@ import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/regist
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
 import { EditGymUserUseCase } from "@/domain/useCases/GymUser/editGymUserUseCase";
 import { GetGymUserByIdUseCase } from "@/domain/useCases/GymUser/getGymUserByIdUseCase";
+import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
+import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
+import { DeleteAthleteUserUseCase } from "@/domain/useCases/AthleteUser/deleteAthleteUserUseCase";
 
 const container = new Container();
 
@@ -66,5 +69,14 @@ container
 container
   .bind<GetAthleteUserListUseCase>(TYPES.GetAthleteUserListUseCase)
   .to(GetAthleteUserListUseCase);
+container
+  .bind<GetAthleteUserByIdUseCase>(TYPES.GetAthleteUserByIdUseCase)
+  .to(GetAthleteUserByIdUseCase);
+container
+  .bind<EditAthleteUserUseCase>(TYPES.EditAthleteUserUseCase)
+  .to(EditAthleteUserUseCase);
+container
+  .bind<DeleteAthleteUserUseCase>(TYPES.DeleteAthleteUserUseCase)
+  .to(DeleteAthleteUserUseCase);
 
 export default container;

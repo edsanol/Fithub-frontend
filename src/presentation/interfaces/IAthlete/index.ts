@@ -7,9 +7,11 @@ export interface IAthlete {
   genre: string;
   birthDate: string;
   registerDate: string;
-  stateAthlete: string;
+  stateAthlete?: string;
   status: boolean;
-  token: string | null;
+  token?: string | null;
+  idGym?: number;
+  gymName?: string;
 }
 
 export interface IAthleteValidation {

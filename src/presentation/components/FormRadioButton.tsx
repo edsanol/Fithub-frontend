@@ -8,6 +8,8 @@ interface IFormRadioButtonProps {
   customClass?: string;
   options: any;
   isInvalid?: boolean;
+  value?: string;
+  isDisabled?: boolean;
   onChange?: (value: string) => void;
 }
 
@@ -16,6 +18,8 @@ const FormRadioButton = ({
   customClass,
   options,
   isInvalid,
+  value,
+  isDisabled,
   onChange,
 }: IFormRadioButtonProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,11 +28,13 @@ const FormRadioButton = ({
   return (
     <RadioGroup
       isRequired
+      isDisabled={isDisabled}
       isInvalid={isInvalid}
       label={label}
       orientation="horizontal"
       classNames={{ base: "dark" }}
       className={customClass || ""}
+      defaultValue={value}
       onChange={handleChange}
     >
       {options.map((option: any) => (

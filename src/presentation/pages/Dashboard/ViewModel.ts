@@ -4,12 +4,36 @@ import { useState } from "react";
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteColumns } from "@/assets/constants";
-import { IAthleteUserList } from "@/presentation/interfaces/IAthlete";
+import { IAthlete, IAthleteUserList } from "@/presentation/interfaces/IAthlete";
+import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
+import { useRouter } from "next/navigation";
+import { DeleteAthleteUserUseCase } from "@/domain/useCases/AthleteUser/deleteAthleteUserUseCase";
 
 const ViewModel = () => {
-  const [athlete, setAthletes] = useState<IAthleteUserList>({
+  const router = useRouter();
+
+  const [athletesList, setAthletesList] = useState<IAthleteUserList>({
     totalRecords: 0,
     items: [],
+  });
+
+  const [athleteUser, setAthleteUser] = useState<IAthlete>({
+    athleteId: 0,
+    athleteName: "",
+    athleteLastName: "",
+    email: "",
+    phoneNumber: "",
+    birthDate: "",
+    genre: "",
+    idGym: 0,
+    gymName: "",
+    registerDate: "",
+    status: true,
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState({
+    detailsModal: false,
+    deleteModal: false,
   });
 
   const handleSubmit = async (params: Partial<AthleteUserList>) => {
@@ -29,7 +53,47 @@ const ViewModel = () => {
         return;
       }
 
-      setAthletes(response);
+      setAthletesList(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAthleteUserById = async (id: number) => {
+    try {
+      const getAthleteUserById = container.get<GetAthleteUserByIdUseCase>(
+        TYPES.GetAthleteUserByIdUseCase
+      );
+
+      const response = await getAthleteUserById.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setAthleteUser(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteAthleteUser = async (athleteId: number) => {
+    try {
+      const deleteAthleteUserUseCase = container.get<DeleteAthleteUserUseCase>(
+        TYPES.DeleteAthleteUserUseCase
+      );
+
+      const response = await deleteAthleteUserUseCase.execute(athleteId);
+
+      setIsModalOpen({ detailsModal: false, deleteModal: false });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      await handleSubmit({});
     } catch (error) {
       console.log(error);
     }
@@ -43,11 +107,36 @@ const ViewModel = () => {
     await handleSubmit({ textFilter, numFilter: 1 });
   };
 
+  const handleRedirect = (athleteId: number) => {
+    router.push(`/create-user/${athleteId}`);
+  };
+
+  const toggleModal = (modalName: "detailsModal" | "deleteModal") => {
+    setIsModalOpen((prevState) => ({
+      ...prevState,
+      [modalName]: !prevState[modalName],
+    }));
+  };
+
+  const handleOpenModal = async (
+    athleteId: number,
+    modalName: "detailsModal" | "deleteModal"
+  ) => {
+    await getAthleteUserById(athleteId);
+    toggleModal(modalName);
+  };
+
   return {
     handleSetNumPage,
     handleSetTextFilter,
-    athlete,
+    handleOpenModal,
+    handleRedirect,
+    deleteAthleteUser,
+    toggleModal,
+    athletesList,
     AthleteColumns,
+    athleteUser,
+    isModalOpen,
   };
 };
 

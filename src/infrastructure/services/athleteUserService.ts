@@ -5,7 +5,7 @@ import { inject, injectable } from "inversify";
 import type { HttpClient } from "../api/http";
 import { TYPES } from "@/config/types";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
-import { IAthleteUserList } from "@/presentation/interfaces/IAthlete";
+import { IAthlete, IAthleteUserList } from "@/presentation/interfaces/IAthlete";
 
 @injectable()
 export class AthleteUserServiceImpl implements AthleteUserService {
@@ -29,6 +29,35 @@ export class AthleteUserServiceImpl implements AthleteUserService {
       TickerResponseApi<IAthleteUserList>,
       AthleteUserList
     >("/Athlete/List", data);
+
+    return response.data;
+  }
+
+  async getAthleteUserById(id: number): Promise<IAthlete> {
+    const response = await this.http.get<TickerResponseApi<IAthlete>>(
+      `/Athlete/${id}`
+    );
+
+    return response.data;
+  }
+
+  async editAthleteUser(
+    id: number,
+    athleteUser: AthleteUser
+  ): Promise<boolean> {
+    const response = await this.http.put<
+      TickerResponseApi<boolean>,
+      AthleteUser
+    >(`/Athlete/Edit/${id}`, athleteUser);
+
+    return response.data;
+  }
+
+  async deleteAthleteUser(id: number): Promise<boolean> {
+    const response = await this.http.put<TickerResponseApi<boolean>, null>(
+      `/Athlete/Delete/${id}`,
+      null
+    );
 
     return response.data;
   }

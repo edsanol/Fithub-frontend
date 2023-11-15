@@ -18,6 +18,7 @@ const CreateUser = () => {
     handleSetPhoneNumber,
     handleSetBirthDate,
     handleSetGenre,
+    athleteData,
     athleteDataError,
   } = ViewModel();
 
@@ -41,6 +42,7 @@ const CreateUser = () => {
                 size="lg"
                 classNames={{ base: "dark" }}
                 onChange={(value) => handleSetName(value)}
+                value={athleteData?.athleteName}
               />
               <FormInput
                 isRequired
@@ -57,6 +59,7 @@ const CreateUser = () => {
                 classNames={{ base: "dark" }}
                 customInputClass="mt-7 md:mt-0"
                 onChange={(value) => handleSetLastName(value)}
+                value={athleteData?.athleteLastName}
               />
             </div>
             <FormInput
@@ -74,6 +77,7 @@ const CreateUser = () => {
               classNames={{ base: "dark" }}
               customInputClass="mt-7"
               onChange={(value) => handleSetPhoneNumber(value)}
+              value={athleteData?.phoneNumber}
             />
             <FormInput
               isRequired
@@ -90,6 +94,7 @@ const CreateUser = () => {
               classNames={{ base: "dark" }}
               customInputClass="mt-7"
               onChange={(value) => handleSetEmail(value)}
+              value={athleteData?.email}
             />
             <FormInput
               isRequired
@@ -97,7 +102,7 @@ const CreateUser = () => {
               color={athleteDataError?.birthDateError ? "danger" : "default"}
               errorMessage={
                 athleteDataError?.birthDateError
-                  ? "Por favor ingresa un nombre válido"
+                  ? "Por favor ingresa una fecha válida"
                   : ""
               }
               type="date"
@@ -108,13 +113,15 @@ const CreateUser = () => {
               classNames={{ base: "dark" }}
               customInputClass="mt-5"
               onChange={(value) => handleSetBirthDate(value)}
+              value={athleteData?.birthDate.slice(0, 10)}
             />
             <FormRadioButton
               label="Selecciona el genero del deportista"
               isInvalid={athleteDataError?.genreError}
               customClass="mt-5"
-              options={genres}
               onChange={(value) => handleSetGenre(value)}
+              options={genres}
+              value={athleteData?.genre}
             />
             <PrimaryButton
               text="Crear deportista"

@@ -7,16 +7,25 @@ import {
 } from "@/presentation/helpers";
 import { IAthleteValidation } from "@/presentation/interfaces/IAthlete";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/registerAthleteUserUseCase";
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
+import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
+import { usePathname } from "next/navigation";
+import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
 
 const ViewModel = () => {
   const { data: session } = useSession();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const athleteId = pathname.match(/\/create-user\/(.*)/);
+
+  const athleteIdValue = athleteId ? athleteId[1] : null;
 
   const [athleteData, setAthleteData] = useState<AthleteUser>({
     athleteName: "",
@@ -26,8 +35,8 @@ const ViewModel = () => {
     genre: "",
     birthDate: "",
     registerDate: new Date().toISOString(),
-    idGym: 0,
-    gymName: "",
+    idGym: session ? session.user.gymId : 0,
+    gymName: session ? session.user.gymName : "",
     status: true,
   });
 
@@ -39,8 +48,6 @@ const ViewModel = () => {
     genreError: false,
     birthDateError: false,
   });
-
-  const router = useRouter();
 
   const handleIsValidForm = async () => {
     const errors: IAthleteValidation = {
@@ -66,12 +73,30 @@ const ViewModel = () => {
         return;
       }
 
-      const registerAthleteUserUseCase =
-        container.get<RegisterAthleteUserUseCase>(
-          TYPES.RegisterAthleteUserUseCase
+      if (athleteData.idGym === 0 || athleteData.gymName === "") {
+        console.log("error");
+        return;
+      }
+
+      let response;
+
+      if (athleteIdValue) {
+        const editAthleteUserUseCase = container.get<EditAthleteUserUseCase>(
+          TYPES.EditAthleteUserUseCase
         );
 
-      const response = await registerAthleteUserUseCase.execute(athleteData);
+        response = await editAthleteUserUseCase.execute(
+          Number(athleteIdValue),
+          athleteData
+        );
+      } else {
+        const registerAthleteUserUseCase =
+          container.get<RegisterAthleteUserUseCase>(
+            TYPES.RegisterAthleteUserUseCase
+          );
+
+        response = await registerAthleteUserUseCase.execute(athleteData);
+      }
 
       if (!response) {
         console.log("error");
@@ -84,21 +109,38 @@ const ViewModel = () => {
     }
   };
 
-  const handleSetGymData = useCallback(() => {
-    if (!session) {
-      return;
-    }
+  const getAthleteUserById = async (id: number) => {
+    try {
+      const getAthleteUserById = container.get<GetAthleteUserByIdUseCase>(
+        TYPES.GetAthleteUserByIdUseCase
+      );
 
-    setAthleteData((prevAthleteData) => ({
-      ...prevAthleteData,
-      idGym: session.user.gymId,
-      gymName: session.user.gymName,
-    }));
-  }, [session, setAthleteData]);
+      const response = await getAthleteUserById.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setAthleteData({
+        ...athleteData,
+        athleteName: response.athleteName,
+        athleteLastName: response.athleteLastName,
+        email: response.email,
+        phoneNumber: response.phoneNumber,
+        genre: response.genre,
+        birthDate: response.birthDate,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    handleSetGymData();
-  }, [handleSetGymData]);
+    if (athleteIdValue) {
+      getAthleteUserById(Number(athleteIdValue));
+    }
+  }, []);
 
   const handleSetName = (event: string) => {
     setAthleteData({ ...athleteData, athleteName: event });
@@ -134,6 +176,8 @@ const ViewModel = () => {
     handleSetPhoneNumber,
     handleSetBirthDate,
     handleSetGenre,
+    getAthleteUserById,
+    athleteData,
     athleteDataError,
   };
 };
