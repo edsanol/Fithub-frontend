@@ -25,6 +25,9 @@ const CreateUser = () => {
   return (
     <>
       <div className="h-full bg-[#000]">
+        <h1 className="w-full flex justify-center font-black text-3xl mb-8">
+          Crear deportista
+        </h1>
         <div className="w-full mx-auto bg-[#121417] rounded-xl p-5 md:p-10 xl:w-9/12">
           <form onSubmit={handleSubmit}>
             <div className="block md:flex md:gap-3">

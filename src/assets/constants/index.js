@@ -9,7 +9,7 @@ export const sidebarLinks = [
   {
     imgURL: Home,
     route: "/create-user",
-    label: "Crear Usuario",
+    label: "Crear Deportista",
   },
   {
     imgURL: Home,
