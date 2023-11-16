@@ -4,6 +4,8 @@ import type { HttpClient } from "../api/http";
 import { TYPES } from "@/config/types";
 import { Membership } from "@/domain/entities/Membership";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 
 @injectable()
 export class MembershipServiceImpl implements MembershipService {
@@ -18,6 +20,17 @@ export class MembershipServiceImpl implements MembershipService {
       TickerResponseApi<boolean>,
       Membership
     >("/Membership/Register", membership);
+
+    return response.data;
+  }
+
+  async getMembershipList(
+    data: PaginateData
+  ): Promise<PaginateResponseList<Membership>> {
+    const response = await this.http.post<
+      TickerResponseApi<PaginateResponseList<Membership>>,
+      PaginateData
+    >("/Membership", data);
 
     return response.data;
   }

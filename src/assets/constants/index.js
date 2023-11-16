@@ -45,6 +45,13 @@ export const AthleteColumns = [
   { name: "ACCIONES", uid: "actions" },
 ];
 
+export const MembershipColumns = [
+  { name: "NOMBRE", uid: "membershipName" },
+  { name: "PRECIO", uid: "cost" },
+  { name: "DURACIÓN (días)", uid: "durationInDays" },
+  { name: "ACCIONES", uid: "actions" },
+];
+
 export const genres = [
   {
     value: "M",

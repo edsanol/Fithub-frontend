@@ -10,14 +10,14 @@ import { IMembershipValidation } from "@/presentation/interfaces/IMembership";
 import { isNotEmpty, isValidName, isValidNumber } from "@/presentation/helpers";
 import { RegisterMembershipUseCase } from "@/domain/useCases/Membership/registerMembershipUseCase";
 import { useSession } from "next-auth/react";
+import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMembershipListUseCase";
+import { MembershipColumns } from "@/assets/constants";
 
 const ViewModel = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  console.log(session);
-
-  const [athletesList, setAthletesList] = useState<PaginateResponseList>({
+  const [membershipList, setMembershipList] = useState<PaginateResponseList>({
     totalRecords: 0,
     items: [],
   });
@@ -43,6 +43,7 @@ const ViewModel = () => {
     createModal: false,
     detailsModal: false,
     deleteModal: false,
+    editModal: false,
   });
 
   const handleIsValidForm = () => {
@@ -67,8 +68,6 @@ const ViewModel = () => {
         return;
       }
 
-      console.log(membership);
-
       if (membership.idGym === 0) {
         console.log("error");
         return;
@@ -90,14 +89,39 @@ const ViewModel = () => {
         createModal: false,
         detailsModal: false,
         deleteModal: false,
+        editModal: false,
       });
     } catch (error) {
       console.log(error);
     }
   };
 
+  const getPaginateMembershipList = async (params: Partial<PaginateData>) => {
+    try {
+      const getMembershipListUseCase = container.get<GetMembershipListUseCase>(
+        TYPES.GetMembershipListUseCase
+      );
+
+      console.log(params);
+
+      const response = await getMembershipListUseCase.execute({
+        numRecordsPage: 7,
+        ...params,
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setMembershipList(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const toggleModal = (
-    modalName: "createModal" | "detailsModal" | "deleteModal"
+    modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal"
   ) => {
     setIsModalOpen((prevState) => ({
       ...prevState,
@@ -107,9 +131,17 @@ const ViewModel = () => {
 
   const handleOpenModal = async (
     athleteId: number,
-    modalName: "detailsModal" | "deleteModal"
+    modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal"
   ) => {
     toggleModal(modalName);
+  };
+
+  const handleSetNumPage = async (numPage: number) => {
+    await getPaginateMembershipList({ numPage });
+  };
+
+  const handleSetTextFilter = async (textFilter: string) => {
+    await getPaginateMembershipList({ textFilter, numFilter: 1 });
   };
 
   const handleSetMembershipName = (event: string) => {
@@ -130,14 +162,17 @@ const ViewModel = () => {
 
   return {
     handleSubmit,
+    handleSetNumPage,
+    handleSetTextFilter,
     handleSetMembershipName,
     handleSetCost,
     handleSetDurationInDays,
     handleSetDescription,
     handleOpenModal,
     toggleModal,
+    MembershipColumns,
     membershipError,
-    athletesList,
+    membershipList,
     AthleteColumns,
     isModalOpen,
   };

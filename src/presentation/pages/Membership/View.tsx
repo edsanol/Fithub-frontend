@@ -11,16 +11,22 @@ import {
 } from "@/presentation/components";
 import WarningIcon from "@/assets/svg/WarningIcon";
 import { Button } from "@nextui-org/react";
+import { customRenderCell } from "./RenderCell";
 
 const Membership = () => {
   const {
     handleSubmit,
+    handleSetNumPage,
+    handleSetTextFilter,
     handleSetMembershipName,
     handleSetCost,
     handleSetDurationInDays,
     handleSetDescription,
-    membershipError,
+    handleOpenModal,
     toggleModal,
+    MembershipColumns,
+    membershipList,
+    membershipError,
     isModalOpen,
   } = ViewModel();
 
@@ -34,16 +40,16 @@ const Membership = () => {
           onClick={() => toggleModal("createModal")}
         />
       </div>
-      {/* <CustomTable
+      <CustomTable
         onSetNumPage={handleSetNumPage}
         onSetTextFilter={handleSetTextFilter}
         customRenderCell={(user, columnKey) =>
-          customRenderCell(user, columnKey, { handleOpenModal, handleRedirect })
+          customRenderCell(user, columnKey, { handleOpenModal })
         }
-        records={athletesList}
-        columns={AthleteColumns}
-        uniqueKeyField="athleteId"
-      /> */}
+        records={membershipList}
+        columns={MembershipColumns}
+        uniqueKeyField="membershipID"
+      />
       <CustomModal
         isOpen={isModalOpen.createModal}
         onOpenChange={() => toggleModal("createModal")}
