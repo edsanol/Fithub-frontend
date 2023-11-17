@@ -1,4 +1,3 @@
-import { PaginateData } from "@/domain/models/PaginateData";
 import { useState } from "react";
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
@@ -12,10 +11,13 @@ import { RegisterMembershipUseCase } from "@/domain/useCases/Membership/register
 import { useSession } from "next-auth/react";
 import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMembershipListUseCase";
 import { MembershipColumns } from "@/assets/constants";
+import { useEffect } from "react";
 
 const ViewModel = () => {
   const { data: session } = useSession();
   const router = useRouter();
+
+  const [idGym, setIdGym] = useState<number>(0);
 
   const [membershipList, setMembershipList] = useState<PaginateResponseList>({
     totalRecords: 0,
@@ -27,7 +29,6 @@ const ViewModel = () => {
     cost: 0,
     durationInDays: 0,
     description: "",
-    idGym: session ? session.user.gymId : 0,
   });
 
   const [membershipError, setMembershipError] = useState<IMembershipValidation>(
@@ -68,7 +69,7 @@ const ViewModel = () => {
         return;
       }
 
-      if (membership.idGym === 0) {
+      if (idGym === 0) {
         console.log("error");
         return;
       }
@@ -78,7 +79,10 @@ const ViewModel = () => {
           TYPES.RegisterMembershipUseCase
         );
 
-      const response = await registerMembershipUseCase.execute(membership);
+      const response = await registerMembershipUseCase.execute({
+        ...membership,
+        idGym,
+      });
 
       if (!response) {
         console.log("error");
@@ -91,22 +95,22 @@ const ViewModel = () => {
         deleteModal: false,
         editModal: false,
       });
+
+      await getPaginateMembershipList();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getPaginateMembershipList = async (params: Partial<PaginateData>) => {
+  const getPaginateMembershipList = async () => {
     try {
       const getMembershipListUseCase = container.get<GetMembershipListUseCase>(
         TYPES.GetMembershipListUseCase
       );
 
-      console.log(params);
-
       const response = await getMembershipListUseCase.execute({
+        textFilter: idGym.toString(),
         numRecordsPage: 7,
-        ...params,
       });
 
       if (!response) {
@@ -119,6 +123,18 @@ const ViewModel = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (session && session.user.gymId !== idGym) {
+      setIdGym(session.user.gymId);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (idGym !== 0) {
+      getPaginateMembershipList();
+    }
+  }, [idGym]);
 
   const toggleModal = (
     modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal"
@@ -134,14 +150,6 @@ const ViewModel = () => {
     modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal"
   ) => {
     toggleModal(modalName);
-  };
-
-  const handleSetNumPage = async (numPage: number) => {
-    await getPaginateMembershipList({ numPage });
-  };
-
-  const handleSetTextFilter = async (textFilter: string) => {
-    await getPaginateMembershipList({ textFilter, numFilter: 1 });
   };
 
   const handleSetMembershipName = (event: string) => {
@@ -162,8 +170,6 @@ const ViewModel = () => {
 
   return {
     handleSubmit,
-    handleSetNumPage,
-    handleSetTextFilter,
     handleSetMembershipName,
     handleSetCost,
     handleSetDurationInDays,

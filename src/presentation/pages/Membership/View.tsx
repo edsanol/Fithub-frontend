@@ -16,8 +16,6 @@ import { customRenderCell } from "./RenderCell";
 const Membership = () => {
   const {
     handleSubmit,
-    handleSetNumPage,
-    handleSetTextFilter,
     handleSetMembershipName,
     handleSetCost,
     handleSetDurationInDays,
@@ -41,14 +39,13 @@ const Membership = () => {
         />
       </div>
       <CustomTable
-        onSetNumPage={handleSetNumPage}
-        onSetTextFilter={handleSetTextFilter}
         customRenderCell={(user, columnKey) =>
           customRenderCell(user, columnKey, { handleOpenModal })
         }
         records={membershipList}
         columns={MembershipColumns}
         uniqueKeyField="membershipID"
+        customClassName="mt-8"
       />
       <CustomModal
         isOpen={isModalOpen.createModal}

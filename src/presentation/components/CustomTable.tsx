@@ -16,9 +16,10 @@ import { useSession } from "next-auth/react";
 import { IColumns } from "../interfaces/ICustomTable";
 
 interface CustomTableProps {
-  onSetNumPage: (numPage: number) => void;
-  onSetTextFilter: (textFilter: string) => void;
+  onSetNumPage?: (numPage: number) => void;
+  onSetTextFilter?: (textFilter: string) => void;
   customRenderCell: (user: any, columnKey: React.Key) => React.ReactNode;
+  customClassName?: string;
   records: any;
   columns: IColumns[];
   uniqueKeyField: string;
@@ -28,6 +29,7 @@ const CustomTable = ({
   onSetNumPage,
   onSetTextFilter,
   customRenderCell,
+  customClassName,
   records,
   columns,
   uniqueKeyField,
@@ -40,7 +42,9 @@ const CustomTable = ({
   useEffect(() => {
     try {
       setLoading(true);
-      onSetNumPage(page);
+      if (onSetNumPage) {
+        onSetNumPage(page);
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -53,7 +57,9 @@ const CustomTable = ({
     (textFilter: string) => {
       try {
         setLoading(true);
-        onSetTextFilter(textFilter);
+        if (onSetTextFilter) {
+          onSetTextFilter(textFilter);
+        }
       } catch (error) {
         console.log(error);
       } finally {
@@ -69,29 +75,34 @@ const CustomTable = ({
 
   return (
     <>
-      <Input
-        isClearable
-        className="w-full mb-3 p-2 sm:max-w-[44%]"
-        placeholder="Search by name..."
-        startContent={<SearchIcon />}
-        classNames={{ base: "dark" }}
-        onChange={(e) => handleTextFilter(e.target.value)}
-      />
+      {onSetTextFilter && (
+        <Input
+          isClearable
+          className="w-full mb-3 p-2 sm:max-w-[44%]"
+          placeholder="Search by name..."
+          startContent={<SearchIcon />}
+          classNames={{ base: "dark" }}
+          onChange={(e) => handleTextFilter(e.target.value)}
+        />
+      )}
       <Table
         aria-label="Example table with custom cells"
         classNames={{ base: "dark", wrapper: "min-h-[222px]" }}
+        className={customClassName}
         bottomContent={
-          <div className="flex w-full justify-center">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              color="secondary"
-              page={page}
-              total={Math.ceil(records.totalRecords / 7)}
-              onChange={(page) => setPage(page)}
-            />
-          </div>
+          onSetNumPage && (
+            <div className="flex w-full justify-center">
+              <Pagination
+                isCompact
+                showControls
+                showShadow
+                color="secondary"
+                page={page}
+                total={Math.ceil(records.totalRecords / 7)}
+                onChange={(page) => setPage(page)}
+              />
+            </div>
+          )
         }
       >
         <TableHeader columns={columns}>

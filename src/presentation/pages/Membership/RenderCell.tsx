@@ -3,6 +3,7 @@ import { Tooltip } from "@nextui-org/react";
 import EyeIcon from "@/assets/svg/EyeIcon";
 import EditIcon from "@/assets/svg/EditIcon";
 import DeleteIcon from "@/assets/svg/DeleteIcon";
+import { cleanAndFormatCurrency } from "@/presentation/helpers";
 
 interface customRenderCellProps {
   handleOpenModal: (
@@ -21,8 +22,12 @@ export const customRenderCell = (
   switch (columnKey) {
     case "membershipName":
       return <p className="text-bold text-sm capitalize">{cellValue}</p>;
-    case "phoneNumber":
-      return <p className="text-bold text-sm capitalize">{cellValue}</p>;
+    case "cost":
+      return (
+        <p className="text-bold text-sm capitalize">
+          {cleanAndFormatCurrency(cellValue)}
+        </p>
+      );
     case "durationInDays":
       return <p className="text-bold text-sm capitalize">{cellValue}</p>;
     case "actions":
