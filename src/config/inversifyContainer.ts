@@ -27,6 +27,7 @@ import { RegisterMembershipUseCase } from "@/domain/useCases/Membership/register
 import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMembershipListUseCase";
 import { GetMembershipByIdUseCase } from "@/domain/useCases/Membership/getMembershipByIdUseCase";
 import { EditMembershipUseCase } from "@/domain/useCases/Membership/editMembershipUseCase";
+import { DeleteMembershipUseCase } from "@/domain/useCases/Membership/deleteMembershipUseCase";
 
 const container = new Container();
 
@@ -110,5 +111,8 @@ container
 container
   .bind<EditMembershipUseCase>(TYPES.EditMembershipUseCase)
   .to(EditMembershipUseCase);
+container
+  .bind<DeleteMembershipUseCase>(TYPES.DeleteMembershipUseCase)
+  .to(DeleteMembershipUseCase);
 
 export default container;

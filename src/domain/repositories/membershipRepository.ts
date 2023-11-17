@@ -9,4 +9,5 @@ export interface MembershipRepository {
   ): Promise<PaginateResponseList<Membership>>;
   getMembershipById(id: number): Promise<Membership>;
   editMembership(id: number, membership: Membership): Promise<boolean>;
+  deleteMembership(id: number): Promise<boolean>;
 }

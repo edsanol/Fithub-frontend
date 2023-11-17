@@ -51,4 +51,12 @@ export class MembershipServiceImpl implements MembershipService {
 
     return response.data;
   }
+
+  async deleteMembership(id: number): Promise<boolean> {
+    const response = await this.http.delete<TickerResponseApi<boolean>>(
+      `/Membership/Delete/${id}`
+    );
+
+    return response.data;
+  }
 }

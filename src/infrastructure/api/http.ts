@@ -6,6 +6,7 @@ export interface HttpClient {
   post<T, U>(url: string, data: U): Promise<T>;
   put<T, U>(url: string, data: U): Promise<T>;
   get<T>(url: string): Promise<T>;
+  delete<T>(url: string): Promise<T>;
 }
 
 @injectable()
@@ -41,6 +42,11 @@ export class AxiosHttpClient implements HttpClient {
 
   async get<T>(url: string): Promise<T> {
     const response: AxiosResponse<T> = await this.axiosInstance.get(url);
+    return this.handleResponse(response);
+  }
+
+  async delete<T>(url: string): Promise<T> {
+    const response: AxiosResponse<T> = await this.axiosInstance.delete(url);
     return this.handleResponse(response);
   }
 }

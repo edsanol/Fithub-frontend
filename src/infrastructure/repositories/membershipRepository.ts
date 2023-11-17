@@ -39,4 +39,10 @@ export class MembershipRepositoryImpl implements MembershipRepository {
 
     return response;
   }
+
+  async deleteMembership(id: number): Promise<boolean> {
+    const response = await this.service.deleteMembership(id);
+
+    return response;
+  }
 }
