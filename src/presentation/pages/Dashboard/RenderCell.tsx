@@ -3,6 +3,7 @@ import { User, Chip, Tooltip, ChipProps } from "@nextui-org/react";
 import EyeIcon from "@/assets/svg/EyeIcon";
 import EditIcon from "@/assets/svg/EditIcon";
 import DeleteIcon from "@/assets/svg/DeleteIcon";
+import { AthleteUser } from "@/domain/entities/AthleteUser";
 
 interface customRenderCellProps {
   handleOpenModal: (
@@ -13,11 +14,11 @@ interface customRenderCellProps {
 }
 
 export const customRenderCell = (
-  user: any,
+  user: AthleteUser,
   columnKey: React.Key,
   { handleOpenModal, handleRedirect }: customRenderCellProps
 ) => {
-  const cellValue = user[columnKey as any];
+  const cellValue = user[columnKey as keyof AthleteUser];
   const statusColorMap: Record<string, ChipProps["color"]> = {
     activo: "success",
     inactivo: "danger",
@@ -47,7 +48,7 @@ export const customRenderCell = (
       return (
         <Chip
           className="capitalize"
-          color={statusColorMap[user.stateAthlete.toLowerCase()]}
+          color={statusColorMap[user.stateAthlete!.toLowerCase()]}
           size="sm"
           variant="flat"
         >
@@ -61,21 +62,21 @@ export const customRenderCell = (
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
               <EyeIcon
                 clickHandler={() =>
-                  handleOpenModal(user.athleteId, "detailsModal")
+                  handleOpenModal(user.athleteId!, "detailsModal")
                 }
               />
             </span>
           </Tooltip>
           <Tooltip content="Editar usuario" classNames={{ base: "dark" }}>
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EditIcon clickHandler={() => handleRedirect(user.athleteId)} />
+              <EditIcon clickHandler={() => handleRedirect(user.athleteId!)} />
             </span>
           </Tooltip>
           <Tooltip color="danger" content="Eliminar usuario">
             <span className="text-lg text-danger cursor-pointer active:opacity-50">
               <DeleteIcon
                 clickHandler={() =>
-                  handleOpenModal(user.athleteId, "deleteModal")
+                  handleOpenModal(user.athleteId!, "deleteModal")
                 }
               />
             </span>

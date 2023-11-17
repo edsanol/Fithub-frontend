@@ -18,6 +18,7 @@ const CreateUser = () => {
     handleSetPhoneNumber,
     handleSetBirthDate,
     handleSetGenre,
+    athleteIdValue,
     athleteData,
     athleteDataError,
   } = ViewModel();
@@ -26,7 +27,7 @@ const CreateUser = () => {
     <>
       <div className="h-full bg-[#000]">
         <h1 className="w-full flex justify-center font-black text-3xl mb-8">
-          Crear deportista
+          {athleteIdValue ? "Editar deportista" : "Crear deportista"}
         </h1>
         <div className="w-full mx-auto bg-[#121417] rounded-xl p-5 md:p-10 xl:w-9/12">
           <form onSubmit={handleSubmit}>
@@ -127,7 +128,7 @@ const CreateUser = () => {
               value={athleteData?.genre}
             />
             <PrimaryButton
-              text="Crear deportista"
+              text="Guardar"
               btnType="submit"
               customButtonClass="mt-8 w-full p-8"
             />
