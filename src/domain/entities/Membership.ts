@@ -1,4 +1,5 @@
 type constructorParams = {
+  membershipID?: number;
   membershipName: string;
   cost: number;
   durationInDays: number;
@@ -7,6 +8,7 @@ type constructorParams = {
 };
 
 export class Membership {
+  public membershipID?: number;
   public membershipName: string;
   public cost: number;
   public durationInDays: number;
@@ -14,12 +16,14 @@ export class Membership {
   public idGym?: number;
 
   constructor({
+    membershipID,
     membershipName,
     cost,
     durationInDays,
     description,
     idGym,
   }: constructorParams) {
+    this.membershipID = membershipID;
     this.membershipName = membershipName;
     this.cost = cost;
     this.durationInDays = durationInDays;

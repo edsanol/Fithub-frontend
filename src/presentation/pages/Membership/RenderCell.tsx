@@ -4,6 +4,7 @@ import EyeIcon from "@/assets/svg/EyeIcon";
 import EditIcon from "@/assets/svg/EditIcon";
 import DeleteIcon from "@/assets/svg/DeleteIcon";
 import { cleanAndFormatCurrency } from "@/presentation/helpers";
+import { Membership } from "@/domain/entities/Membership";
 
 interface customRenderCellProps {
   handleOpenModal: (
@@ -13,11 +14,11 @@ interface customRenderCellProps {
 }
 
 export const customRenderCell = (
-  membership: any,
+  membership: Membership,
   columnKey: React.Key,
   { handleOpenModal }: customRenderCellProps
 ) => {
-  const cellValue = membership[columnKey as any];
+  const cellValue = membership[columnKey as keyof Membership];
 
   switch (columnKey) {
     case "membershipName":
@@ -25,7 +26,7 @@ export const customRenderCell = (
     case "cost":
       return (
         <p className="text-bold text-sm capitalize">
-          {cleanAndFormatCurrency(cellValue)}
+          {cleanAndFormatCurrency(Number(cellValue))}
         </p>
       );
     case "durationInDays":
@@ -37,7 +38,7 @@ export const customRenderCell = (
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
               <EyeIcon
                 clickHandler={() =>
-                  handleOpenModal(membership.athleteId, "detailsModal")
+                  handleOpenModal(membership.membershipID!, "detailsModal")
                 }
               />
             </span>
@@ -46,7 +47,7 @@ export const customRenderCell = (
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
               <EditIcon
                 clickHandler={() =>
-                  handleOpenModal(membership.athleteId, "editModal")
+                  handleOpenModal(membership.membershipID!, "editModal")
                 }
               />
             </span>
@@ -55,7 +56,7 @@ export const customRenderCell = (
             <span className="text-lg text-danger cursor-pointer active:opacity-50">
               <DeleteIcon
                 clickHandler={() =>
-                  handleOpenModal(membership.athleteId, "deleteModal")
+                  handleOpenModal(membership.membershipID!, "deleteModal")
                 }
               />
             </span>

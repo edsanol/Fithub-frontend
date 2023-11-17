@@ -25,6 +25,8 @@ import { MembershipRepositoryImpl } from "@/infrastructure/repositories/membersh
 import { MembershipServiceImpl } from "@/infrastructure/services/membershipService";
 import { RegisterMembershipUseCase } from "@/domain/useCases/Membership/registerMembershipUseCase";
 import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMembershipListUseCase";
+import { GetMembershipByIdUseCase } from "@/domain/useCases/Membership/getMembershipByIdUseCase";
+import { EditMembershipUseCase } from "@/domain/useCases/Membership/editMembershipUseCase";
 
 const container = new Container();
 
@@ -102,5 +104,11 @@ container
 container
   .bind<GetMembershipListUseCase>(TYPES.GetMembershipListUseCase)
   .to(GetMembershipListUseCase);
+container
+  .bind<GetMembershipByIdUseCase>(TYPES.GetMembershipByIdUseCase)
+  .to(GetMembershipByIdUseCase);
+container
+  .bind<EditMembershipUseCase>(TYPES.EditMembershipUseCase)
+  .to(EditMembershipUseCase);
 
 export default container;

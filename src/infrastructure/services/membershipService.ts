@@ -34,4 +34,21 @@ export class MembershipServiceImpl implements MembershipService {
 
     return response.data;
   }
+
+  async getMembershipById(id: number): Promise<Membership> {
+    const response = await this.http.get<TickerResponseApi<Membership>>(
+      `/Membership/${id}`
+    );
+
+    return response.data;
+  }
+
+  async editMembership(id: number, membership: Membership): Promise<boolean> {
+    const response = await this.http.put<
+      TickerResponseApi<boolean>,
+      Membership
+    >(`/Membership/Edit/${id}`, membership);
+
+    return response.data;
+  }
 }

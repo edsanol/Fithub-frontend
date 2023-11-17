@@ -12,6 +12,8 @@ import { useSession } from "next-auth/react";
 import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMembershipListUseCase";
 import { MembershipColumns } from "@/assets/constants";
 import { useEffect } from "react";
+import { GetMembershipByIdUseCase } from "@/domain/useCases/Membership/getMembershipByIdUseCase";
+import { EditMembershipUseCase } from "@/domain/useCases/Membership/editMembershipUseCase";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -25,6 +27,7 @@ const ViewModel = () => {
   });
 
   const [membership, setMembership] = useState<Membership>({
+    membershipID: 0,
     membershipName: "",
     cost: 0,
     durationInDays: 0,
@@ -46,6 +49,10 @@ const ViewModel = () => {
     deleteModal: false,
     editModal: false,
   });
+
+  const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
+    "create"
+  );
 
   const handleIsValidForm = () => {
     const errors: IMembershipValidation = {
@@ -74,15 +81,31 @@ const ViewModel = () => {
         return;
       }
 
-      const registerMembershipUseCase =
-        container.get<RegisterMembershipUseCase>(
-          TYPES.RegisterMembershipUseCase
+      let response;
+
+      if (modalMode === "edit") {
+        const editMembershipUseCase = container.get<EditMembershipUseCase>(
+          TYPES.EditMembershipUseCase
         );
 
-      const response = await registerMembershipUseCase.execute({
-        ...membership,
-        idGym,
-      });
+        response = await editMembershipUseCase.execute(
+          membership.membershipID!,
+          {
+            ...membership,
+            idGym,
+          }
+        );
+      } else {
+        const registerMembershipUseCase =
+          container.get<RegisterMembershipUseCase>(
+            TYPES.RegisterMembershipUseCase
+          );
+
+        response = await registerMembershipUseCase.execute({
+          ...membership,
+          idGym,
+        });
+      }
 
       if (!response) {
         console.log("error");
@@ -124,6 +147,23 @@ const ViewModel = () => {
     }
   };
 
+  const getMembershipById = async (id: number) => {
+    try {
+      const getMembershipByIdUseCase = container.get<GetMembershipByIdUseCase>(
+        TYPES.GetMembershipByIdUseCase
+      );
+
+      const response = await getMembershipByIdUseCase.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setMembership(response);
+    } catch (error) {}
+  };
+
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
       setIdGym(session.user.gymId);
@@ -146,9 +186,29 @@ const ViewModel = () => {
   };
 
   const handleOpenModal = async (
-    athleteId: number,
+    id: number,
     modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal"
   ) => {
+    switch (modalName) {
+      case "editModal":
+        await getMembershipById(id);
+        setModalMode("edit");
+        break;
+      case "createModal":
+        setMembership({
+          membershipName: "",
+          cost: 0,
+          durationInDays: 0,
+          description: "",
+        });
+        setModalMode("create");
+        break;
+      case "detailsModal":
+        await getMembershipById(id);
+        setModalMode("view");
+        break;
+    }
+
     toggleModal(modalName);
   };
 
@@ -176,11 +236,13 @@ const ViewModel = () => {
     handleSetDescription,
     handleOpenModal,
     toggleModal,
+    membership,
     MembershipColumns,
     membershipError,
     membershipList,
     AthleteColumns,
     isModalOpen,
+    modalMode,
   };
 };
 

@@ -27,4 +27,16 @@ export class MembershipRepositoryImpl implements MembershipRepository {
 
     return response;
   }
+
+  async getMembershipById(id: number): Promise<Membership> {
+    const response = await this.service.getMembershipById(id);
+
+    return response;
+  }
+
+  async editMembership(id: number, membership: Membership): Promise<boolean> {
+    const response = await this.service.editMembership(id, membership);
+
+    return response;
+  }
 }

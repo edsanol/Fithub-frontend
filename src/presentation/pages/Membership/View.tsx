@@ -22,10 +22,12 @@ const Membership = () => {
     handleSetDescription,
     handleOpenModal,
     toggleModal,
+    membership,
     MembershipColumns,
     membershipList,
     membershipError,
     isModalOpen,
+    modalMode,
   } = ViewModel();
 
   return (
@@ -48,14 +50,27 @@ const Membership = () => {
         customClassName="mt-8"
       />
       <CustomModal
-        isOpen={isModalOpen.createModal}
-        onOpenChange={() => toggleModal("createModal")}
+        isOpen={
+          isModalOpen.createModal ||
+          isModalOpen.editModal ||
+          isModalOpen.detailsModal
+        }
+        onOpenChange={() =>
+          toggleModal(
+            modalMode === "create"
+              ? "createModal"
+              : modalMode === "edit"
+              ? "editModal"
+              : "detailsModal"
+          )
+        }
         size="2xl"
         content={
           <>
             <form className="mt-3" onSubmit={handleSubmit}>
               <FormInput
                 isRequired
+                isReadOnly={modalMode === "view" ? true : false}
                 isInvalid={membershipError?.membershipNameError}
                 color={
                   membershipError?.membershipNameError ? "danger" : "default"
@@ -71,9 +86,11 @@ const Membership = () => {
                 classNames={{ base: "dark" }}
                 customInputClass="mb-5"
                 onChange={(value) => handleSetMembershipName(value)}
+                value={membership?.membershipName}
               />
               <FormInput
                 isRequired
+                isReadOnly={modalMode === "view" ? true : false}
                 isInvalid={membershipError?.costError}
                 color={membershipError?.costError ? "danger" : "default"}
                 errorMessage={
@@ -87,9 +104,11 @@ const Membership = () => {
                 classNames={{ base: "dark" }}
                 customInputClass="mb-5"
                 onChange={(value) => handleSetCost(value)}
+                value={membership?.cost}
               />
               <FormInput
                 isRequired
+                isReadOnly={modalMode === "view" ? true : false}
                 isInvalid={membershipError?.durationInDaysError}
                 color={
                   membershipError?.durationInDaysError ? "danger" : "default"
@@ -104,10 +123,12 @@ const Membership = () => {
                 size="lg"
                 classNames={{ base: "dark" }}
                 onChange={(value) => handleSetDurationInDays(value)}
+                value={membership?.durationInDays}
               />
               <div className="mt-3">
                 <FormTextarea
                   isRequired
+                  isReadOnly={modalMode === "view" ? true : false}
                   isInvalid={membershipError?.descriptionError}
                   color={
                     membershipError?.descriptionError ? "danger" : "default"
@@ -122,32 +143,34 @@ const Membership = () => {
                   size="lg"
                   classNames={{ base: "dark" }}
                   onChange={(value) => handleSetDescription(value)}
+                  value={membership?.description}
                 />
               </div>
-              <div className="mt-5">
-                <PrimaryButton
-                  text="Crear"
-                  btnType="submit"
-                  customButtonClass="w-full p-8"
-                />
-              </div>
+              {modalMode === "create" || modalMode === "edit" ? (
+                <div className="mt-5">
+                  <PrimaryButton
+                    text={membership?.membershipID ? "Editar" : "Crear"}
+                    btnType="submit"
+                    customButtonClass="w-full p-8"
+                  />
+                </div>
+              ) : null}
             </form>
           </>
         }
-        // footerContent={
-        //   <>
-        //     <Button
-        //       color="danger"
-        //       variant="ghost"
-        //       onPress={() => toggleModal("createModal")}
-        //     >
-        //       Cerrar
-        //     </Button>
-        //     <Button color="primary" onClick={() => handleSubmit}>
-        //       Crear
-        //     </Button>
-        //   </>
-        // }
+        footerContent={
+          modalMode === "view" ? (
+            <>
+              <Button
+                color="danger"
+                variant="ghost"
+                onPress={() => toggleModal("detailsModal")}
+              >
+                Cerrar
+              </Button>
+            </>
+          ) : null
+        }
       />
       <CustomModal
         isOpen={isModalOpen.deleteModal}

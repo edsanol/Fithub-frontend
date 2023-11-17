@@ -7,4 +7,6 @@ export interface MembershipRepository {
   getMembershipList(
     data: PaginateData
   ): Promise<PaginateResponseList<Membership>>;
+  getMembershipById(id: number): Promise<Membership>;
+  editMembership(id: number, membership: Membership): Promise<boolean>;
 }
