@@ -17,6 +17,7 @@ const Membership = () => {
   const {
     handleSubmit,
     handleSetMembershipName,
+    deleteMembership,
     handleSetCost,
     handleSetDurationInDays,
     handleSetDescription,
@@ -37,7 +38,7 @@ const Membership = () => {
           text="Crear membresía"
           btnType="button"
           customButtonClass="w-64 p-8"
-          onClick={() => toggleModal("createModal")}
+          onClick={() => handleOpenModal("createModal")}
         />
       </div>
       <CustomTable
@@ -104,7 +105,7 @@ const Membership = () => {
                 classNames={{ base: "dark" }}
                 customInputClass="mb-5"
                 onChange={(value) => handleSetCost(value)}
-                value={membership?.cost}
+                value={membership?.cost !== 0 ? membership?.cost : null}
               />
               <FormInput
                 isRequired
@@ -123,7 +124,11 @@ const Membership = () => {
                 size="lg"
                 classNames={{ base: "dark" }}
                 onChange={(value) => handleSetDurationInDays(value)}
-                value={membership?.durationInDays}
+                value={
+                  membership?.durationInDays !== 0
+                    ? membership?.durationInDays
+                    : null
+                }
               />
               <div className="mt-3">
                 <FormTextarea
@@ -183,7 +188,7 @@ const Membership = () => {
                 <WarningIcon />
               </div>
               <p className="text-lg text-center mt-5">
-                ¿Estás seguro de eliminar este usuario?
+                ¿Estás seguro de eliminar esta membresía?
               </p>
               <p className="text-sm text-center text-default-400">
                 Esta acción no se puede deshacer.
@@ -202,12 +207,12 @@ const Membership = () => {
             </Button>
             <Button
               color="danger"
-              // onPress={() => {
-              //   if (athleteUser) {
-              //     deleteAthleteUser(athleteUser.athleteId!);
-              //   }
-              //   toggleModal("deleteModal");
-              // }}
+              onPress={() => {
+                if (membership) {
+                  deleteMembership(membership.membershipID!);
+                }
+                toggleModal("deleteModal");
+              }}
             >
               Si, eliminar
             </Button>

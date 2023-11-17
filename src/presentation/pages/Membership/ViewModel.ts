@@ -2,7 +2,6 @@ import { useState } from "react";
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteColumns } from "@/assets/constants";
-import { useRouter } from "next/navigation";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { Membership } from "@/domain/entities/Membership";
 import { IMembershipValidation } from "@/presentation/interfaces/IMembership";
@@ -14,10 +13,10 @@ import { MembershipColumns } from "@/assets/constants";
 import { useEffect } from "react";
 import { GetMembershipByIdUseCase } from "@/domain/useCases/Membership/getMembershipByIdUseCase";
 import { EditMembershipUseCase } from "@/domain/useCases/Membership/editMembershipUseCase";
+import { DeleteMembershipUseCase } from "@/domain/useCases/Membership/deleteMembershipUseCase";
 
 const ViewModel = () => {
   const { data: session } = useSession();
-  const router = useRouter();
 
   const [idGym, setIdGym] = useState<number>(0);
 
@@ -161,7 +160,28 @@ const ViewModel = () => {
       }
 
       setMembership(response);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteMembership = async (id: number) => {
+    try {
+      const deleteMembershipUseCase = container.get<DeleteMembershipUseCase>(
+        TYPES.DeleteMembershipUseCase
+      );
+
+      const response = await deleteMembershipUseCase.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      await getPaginateMembershipList();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -186,12 +206,13 @@ const ViewModel = () => {
   };
 
   const handleOpenModal = async (
-    id: number,
-    modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal"
+    modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal",
+    id?: number
   ) => {
+    console.log(modalName);
     switch (modalName) {
       case "editModal":
-        await getMembershipById(id);
+        await getMembershipById(id!);
         setModalMode("edit");
         break;
       case "createModal":
@@ -204,8 +225,11 @@ const ViewModel = () => {
         setModalMode("create");
         break;
       case "detailsModal":
-        await getMembershipById(id);
+        await getMembershipById(id!);
         setModalMode("view");
+        break;
+      case "deleteModal":
+        await getMembershipById(id!);
         break;
     }
 
@@ -231,6 +255,7 @@ const ViewModel = () => {
   return {
     handleSubmit,
     handleSetMembershipName,
+    deleteMembership,
     handleSetCost,
     handleSetDurationInDays,
     handleSetDescription,

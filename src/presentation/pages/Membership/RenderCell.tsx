@@ -8,8 +8,8 @@ import { Membership } from "@/domain/entities/Membership";
 
 interface customRenderCellProps {
   handleOpenModal: (
-    id: number,
-    modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal"
+    modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal",
+    id: number
   ) => void;
 }
 
@@ -38,7 +38,7 @@ export const customRenderCell = (
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
               <EyeIcon
                 clickHandler={() =>
-                  handleOpenModal(membership.membershipID!, "detailsModal")
+                  handleOpenModal("detailsModal", membership.membershipID!)
                 }
               />
             </span>
@@ -47,7 +47,7 @@ export const customRenderCell = (
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
               <EditIcon
                 clickHandler={() =>
-                  handleOpenModal(membership.membershipID!, "editModal")
+                  handleOpenModal("editModal", membership.membershipID!)
                 }
               />
             </span>
@@ -56,7 +56,7 @@ export const customRenderCell = (
             <span className="text-lg text-danger cursor-pointer active:opacity-50">
               <DeleteIcon
                 clickHandler={() =>
-                  handleOpenModal(membership.membershipID!, "deleteModal")
+                  handleOpenModal("deleteModal", membership.membershipID!)
                 }
               />
             </span>
