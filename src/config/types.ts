@@ -50,6 +50,8 @@ const TYPES = {
   RegisterDiscountUseCase: Symbol.for("RegisterDiscountUseCase"),
   GetDiscountsListUseCase: Symbol.for("GetDiscountsListUseCase"),
   GetDiscountByIdUseCase: Symbol.for("GetDiscountByIdUseCase"),
+  EditDiscountUseCase: Symbol.for("EditDiscountUseCase"),
+  DeleteDiscountUseCase: Symbol.for("DeleteDiscountUseCase"),
 };
 
 export { TYPES };

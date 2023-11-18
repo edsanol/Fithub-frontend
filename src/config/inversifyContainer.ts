@@ -35,6 +35,8 @@ import { DiscountsServiceImpl } from "@/infrastructure/services/discountsService
 import { RegisterDiscountUseCase } from "@/domain/useCases/Discounts/registerDiscounts";
 import { GetDiscountsListUseCase } from "@/domain/useCases/Discounts/getDiscountsList";
 import { GetDiscountByIdUseCase } from "@/domain/useCases/Discounts/getDiscountById";
+import { EditDiscountUseCase } from "@/domain/useCases/Discounts/editDiscount";
+import { DeleteDiscountUseCase } from "@/domain/useCases/Discounts/deleteDiscount";
 
 const container = new Container();
 
@@ -142,5 +144,11 @@ container
 container
   .bind<GetDiscountByIdUseCase>(TYPES.GetDiscountByIdUseCase)
   .to(GetDiscountByIdUseCase);
+container
+  .bind<EditDiscountUseCase>(TYPES.EditDiscountUseCase)
+  .to(EditDiscountUseCase);
+container
+  .bind<DeleteDiscountUseCase>(TYPES.DeleteDiscountUseCase)
+  .to(DeleteDiscountUseCase);
 
 export default container;

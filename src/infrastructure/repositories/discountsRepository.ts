@@ -33,4 +33,16 @@ export class DiscountsRepositoryImpl implements DiscountsRepository {
 
     return response;
   }
+
+  async editDiscount(id: number, discount: Discounts): Promise<boolean> {
+    const response = await this.service.editDiscount(id, discount);
+
+    return response;
+  }
+
+  async deleteDiscount(id: number): Promise<boolean> {
+    const response = await this.service.deleteDiscount(id);
+
+    return response;
+  }
 }

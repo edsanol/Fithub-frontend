@@ -8,4 +8,6 @@ export interface DiscountsService {
     data: PaginateData
   ): Promise<PaginateResponseList<Discounts>>;
   getDiscountById(id: number): Promise<Discounts>;
+  editDiscount(id: number, discount: Discounts): Promise<boolean>;
+  deleteDiscount(id: number): Promise<boolean>;
 }

@@ -42,4 +42,22 @@ export class DiscountsServiceImpl implements DiscountsService {
 
     return response.data;
   }
+
+  async editDiscount(id: number, discount: Discounts): Promise<boolean> {
+    const response = await this.http.put<TickerResponseApi<boolean>, Discounts>(
+      `/Discounts/Edit/${id}`,
+      discount
+    );
+
+    return response.data;
+  }
+
+  async deleteDiscount(id: number): Promise<boolean> {
+    const response = await this.http.put<TickerResponseApi<boolean>, null>(
+      `/Discounts/Delete/${id}`,
+      null
+    );
+
+    return response.data;
+  }
 }
