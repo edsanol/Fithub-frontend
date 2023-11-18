@@ -24,6 +24,7 @@ const Discounts = () => {
     handleSetComments,
     toggleModal,
     handleOpenModal,
+    discount,
     DiscountsColumns,
     discountsList,
     discountError,
@@ -88,10 +89,16 @@ const Discounts = () => {
                 size="lg"
                 classNames={{ base: "dark" }}
                 onChange={(value) => handleSetDiscountPercentage(value)}
+                value={
+                  discount?.discountPercentage !== 0
+                    ? discount?.discountPercentage
+                    : null
+                }
               />
               <div className="mt-3">
                 <FormSelect
                   isRequired
+                  isDisabled={modalMode === "view" ? true : false}
                   label="Membresías"
                   placeholder="Selecciona una membresía"
                   size="lg"
@@ -100,11 +107,13 @@ const Discounts = () => {
                   items={formatMembershipElements(membershipList.items)}
                   customInputClass="mt-3"
                   onChange={(value) => handleSetIdMembership(value)}
+                  value={discount?.idMembership}
                 />
               </div>
               <div className="block md:flex md:gap-3">
                 <FormInput
                   isRequired
+                  isReadOnly={modalMode === "view" ? true : false}
                   isInvalid={discountError?.startDateError}
                   color={discountError?.startDateError ? "danger" : "default"}
                   errorMessage={
@@ -120,9 +129,11 @@ const Discounts = () => {
                   classNames={{ base: "dark" }}
                   customInputClass="mt-5"
                   onChange={(value) => handleSetStartDate(value)}
+                  value={discount?.startDate.slice(0, 10)}
                 />
                 <FormInput
                   isRequired
+                  isReadOnly={modalMode === "view" ? true : false}
                   isInvalid={discountError?.endDateError}
                   color={discountError?.endDateError ? "danger" : "default"}
                   errorMessage={
@@ -138,6 +149,7 @@ const Discounts = () => {
                   classNames={{ base: "dark" }}
                   customInputClass="mt-5"
                   onChange={(value) => handleSetEndDate(value)}
+                  value={discount?.endDate.slice(0, 10)}
                 />
               </div>
               <div className="mt-3">
@@ -156,6 +168,7 @@ const Discounts = () => {
                   size="lg"
                   classNames={{ base: "dark" }}
                   onChange={(value) => handleSetComments(value)}
+                  value={discount?.comments}
                 />
               </div>
               {modalMode === "create" || modalMode === "edit" ? (

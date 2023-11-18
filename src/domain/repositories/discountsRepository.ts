@@ -7,4 +7,5 @@ export interface DiscountsRepository {
   getDiscountsList(
     data: PaginateData
   ): Promise<PaginateResponseList<Discounts>>;
+  getDiscountById(id: number): Promise<Discounts>;
 }

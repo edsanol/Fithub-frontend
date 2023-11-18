@@ -7,4 +7,5 @@ export interface DiscountsService {
   getDiscountsList(
     data: PaginateData
   ): Promise<PaginateResponseList<Discounts>>;
+  getDiscountById(id: number): Promise<Discounts>;
 }

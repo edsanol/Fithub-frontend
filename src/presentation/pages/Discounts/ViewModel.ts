@@ -10,6 +10,7 @@ import { IDiscountValidation } from "@/presentation/interfaces/IDiscounts";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { DiscountsColumns } from "@/assets/constants";
+import { GetDiscountByIdUseCase } from "@/domain/useCases/Discounts/getDiscountById";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -169,6 +170,25 @@ const ViewModel = () => {
     }
   };
 
+  const getDiscountById = async (id: number) => {
+    try {
+      const getDiscountByIdUseCase = container.get<GetDiscountByIdUseCase>(
+        TYPES.GetDiscountByIdUseCase
+      );
+
+      const response = await getDiscountByIdUseCase.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setDiscount(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const toggleModal = (
     modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal"
   ) => {
@@ -182,6 +202,31 @@ const ViewModel = () => {
     modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal",
     id?: number
   ) => {
+    switch (modalName) {
+      case "editModal":
+        await getDiscountById(id!);
+        setModalMode("edit");
+        break;
+      case "createModal":
+        setDiscount({
+          discountId: 0,
+          discountPercentage: 0,
+          startDate: "",
+          endDate: "",
+          idMembership: 0,
+          comments: "",
+        });
+        setModalMode("create");
+        break;
+      case "detailsModal":
+        await getDiscountById(id!);
+        setModalMode("view");
+        break;
+      case "deleteModal":
+        await getDiscountById(id!);
+        break;
+    }
+
     toggleModal(modalName);
   };
 
@@ -216,6 +261,7 @@ const ViewModel = () => {
     handleSetComments,
     toggleModal,
     handleOpenModal,
+    discount,
     DiscountsColumns,
     discountsList,
     discountError,

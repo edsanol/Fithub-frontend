@@ -27,4 +27,10 @@ export class DiscountsRepositoryImpl implements DiscountsRepository {
 
     return response;
   }
+
+  async getDiscountById(id: number): Promise<Discounts> {
+    const response = await this.service.getDiscountById(id);
+
+    return response;
+  }
 }

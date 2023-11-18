@@ -34,4 +34,12 @@ export class DiscountsServiceImpl implements DiscountsService {
 
     return response.data;
   }
+
+  async getDiscountById(id: number): Promise<Discounts> {
+    const response = await this.http.get<TickerResponseApi<Discounts>>(
+      `/Discounts/${id}`
+    );
+
+    return response.data;
+  }
 }
