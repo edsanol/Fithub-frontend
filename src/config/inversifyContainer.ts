@@ -28,6 +28,11 @@ import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMember
 import { GetMembershipByIdUseCase } from "@/domain/useCases/Membership/getMembershipByIdUseCase";
 import { EditMembershipUseCase } from "@/domain/useCases/Membership/editMembershipUseCase";
 import { DeleteMembershipUseCase } from "@/domain/useCases/Membership/deleteMembershipUseCase";
+import { DiscountsRepository } from "@/domain/repositories/discountsRepository";
+import { DiscountsService } from "@/domain/services/discountsService";
+import { DiscountsRepositoryImpl } from "@/infrastructure/repositories/discountsRepository";
+import { DiscountsServiceImpl } from "@/infrastructure/services/discountsService";
+import { RegisterDiscountUseCase } from "@/domain/useCases/Discounts/registerDiscounts";
 
 const container = new Container();
 
@@ -114,5 +119,20 @@ container
 container
   .bind<DeleteMembershipUseCase>(TYPES.DeleteMembershipUseCase)
   .to(DeleteMembershipUseCase);
+
+// DiscountsRepository
+container
+  .bind<DiscountsRepository>(TYPES.DiscountsRepository)
+  .to(DiscountsRepositoryImpl);
+
+// DiscountsService
+container
+  .bind<DiscountsService>(TYPES.DiscountsService)
+  .to(DiscountsServiceImpl);
+
+// DiscountsUseCases
+container
+  .bind<RegisterDiscountUseCase>(TYPES.RegisterDiscountUseCase)
+  .to(RegisterDiscountUseCase);
 
 export default container;

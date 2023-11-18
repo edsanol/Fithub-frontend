@@ -39,6 +39,15 @@ const TYPES = {
   GetMembershipByIdUseCase: Symbol.for("GetMembershipByIdUseCase"),
   EditMembershipUseCase: Symbol.for("EditMembershipUseCase"),
   DeleteMembershipUseCase: Symbol.for("DeleteMembershipUseCase"),
+
+  // DiscountsRepository
+  DiscountsRepository: Symbol.for("DiscountsRepository"),
+
+  // DiscountsService
+  DiscountsService: Symbol.for("DiscountsService"),
+
+  // DiscountsUseCases
+  RegisterDiscountUseCase: Symbol.for("RegisterDiscountUseCase"),
 };
 
 export { TYPES };

@@ -32,7 +32,7 @@ const Membership = () => {
   } = ViewModel();
 
   return (
-    <div>
+    <>
       <div className="flex justify-end">
         <PrimaryButton
           text="Crear membresía"
@@ -219,7 +219,7 @@ const Membership = () => {
           </>
         }
       />
-    </div>
+    </>
   );
 };
 
