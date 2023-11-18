@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { DiscountsColumns } from "@/assets/constants";
 import { GetDiscountByIdUseCase } from "@/domain/useCases/Discounts/getDiscountById";
 import { EditDiscountUseCase } from "@/domain/useCases/Discounts/editDiscount";
+import { DeleteDiscountUseCase } from "@/domain/useCases/Discounts/deleteDiscount";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -123,8 +124,6 @@ const ViewModel = () => {
         });
       }
 
-      console.log(response);
-
       if (!response) {
         console.log("error");
         return;
@@ -206,6 +205,25 @@ const ViewModel = () => {
     }
   };
 
+  const deleteDiscount = async (id: number) => {
+    try {
+      const deleteDiscountUseCase = container.get<DeleteDiscountUseCase>(
+        TYPES.DeleteDiscountUseCase
+      );
+
+      const response = await deleteDiscountUseCase.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      await getPaginateDiscountList();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const toggleModal = (
     modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal"
   ) => {
@@ -271,6 +289,7 @@ const ViewModel = () => {
 
   return {
     handleSubmit,
+    deleteDiscount,
     handleSetDiscountPercentage,
     handleSetStartDate,
     handleSetEndDate,

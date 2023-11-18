@@ -13,10 +13,12 @@ import ViewModel from "./ViewModel";
 import { Button } from "@nextui-org/react";
 import { formatMembershipElements } from "@/presentation/helpers";
 import { customRenderCell } from "./RenderCell";
+import WarningIcon from "@/assets/svg/WarningIcon";
 
 const Discounts = () => {
   const {
     handleSubmit,
+    deleteDiscount,
     handleSetDiscountPercentage,
     handleSetStartDate,
     handleSetEndDate,
@@ -193,6 +195,48 @@ const Discounts = () => {
               </Button>
             </>
           ) : null
+        }
+      />
+      <CustomModal
+        isOpen={isModalOpen.deleteModal}
+        onOpenChange={() => toggleModal("deleteModal")}
+        size="2xl"
+        content={
+          <>
+            <div className="mt-3 flex flex-col justify-center">
+              <div className="mx-auto">
+                <WarningIcon />
+              </div>
+              <p className="text-lg text-center mt-5">
+                ¿Estás seguro de eliminar este descuento?
+              </p>
+              <p className="text-sm text-center text-default-400">
+                Esta acción no se puede deshacer.
+              </p>
+            </div>
+          </>
+        }
+        footerContent={
+          <>
+            <Button
+              color="primary"
+              variant="ghost"
+              onPress={() => toggleModal("deleteModal")}
+            >
+              Cerrar
+            </Button>
+            <Button
+              color="danger"
+              onPress={() => {
+                if (discount) {
+                  deleteDiscount(discount.discountId!);
+                }
+                toggleModal("deleteModal");
+              }}
+            >
+              Si, eliminar
+            </Button>
+          </>
         }
       />
     </>
