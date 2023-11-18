@@ -18,6 +18,11 @@ export const sidebarLinks = [
   },
   {
     imgURL: Home,
+    route: "/discounts",
+    label: "Descuentos",
+  },
+  {
+    imgURL: Home,
     route: "/gym-profile",
     label: "Perfil",
   },
