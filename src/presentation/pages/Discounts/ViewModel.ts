@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { DiscountsColumns } from "@/assets/constants";
 import { GetDiscountByIdUseCase } from "@/domain/useCases/Discounts/getDiscountById";
+import { EditDiscountUseCase } from "@/domain/useCases/Discounts/editDiscount";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -99,14 +100,30 @@ const ViewModel = () => {
         return;
       }
 
-      const registerDiscount = container.get<RegisterDiscountUseCase>(
-        TYPES.RegisterDiscountUseCase
-      );
+      let response;
 
-      const response = await registerDiscount.execute({
-        ...discount,
-        idGym,
-      });
+      if (modalMode === "edit") {
+        const editDiscountUseCase = container.get<EditDiscountUseCase>(
+          TYPES.EditDiscountUseCase
+        );
+
+        response = await editDiscountUseCase.execute(discount.discountId!, {
+          ...discount,
+          idGym,
+          status: true,
+        });
+      } else {
+        const registerDiscount = container.get<RegisterDiscountUseCase>(
+          TYPES.RegisterDiscountUseCase
+        );
+
+        response = await registerDiscount.execute({
+          ...discount,
+          idGym,
+        });
+      }
+
+      console.log(response);
 
       if (!response) {
         console.log("error");

@@ -32,8 +32,6 @@ const FormSelect = ({
   value,
   onChange,
 }: FormSelectProps) => {
-  console.log("items", items);
-  console.log("value", value);
   return (
     <Select
       isRequired={isRequired || false}

@@ -32,8 +32,6 @@ const Discounts = () => {
     modalMode,
     membershipList,
   } = ViewModel();
-
-  console.log("discountsList", discountsList);
   return (
     <>
       <div className="flex justify-end">
