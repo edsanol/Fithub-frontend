@@ -2,12 +2,14 @@ import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { Discounts } from "@/domain/entities/Discounts";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { GetDiscountsListUseCase } from "@/domain/useCases/Discounts/getDiscountsList";
 import { RegisterDiscountUseCase } from "@/domain/useCases/Discounts/registerDiscounts";
 import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMembershipListUseCase";
 import { isNotEmpty, isValidNumber } from "@/presentation/helpers";
 import { IDiscountValidation } from "@/presentation/interfaces/IDiscounts";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { DiscountsColumns } from "@/assets/constants";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -19,6 +21,11 @@ const ViewModel = () => {
   );
 
   const [membershipList, setMembershipList] = useState<PaginateResponseList>({
+    totalRecords: 0,
+    items: [],
+  });
+
+  const [discountsList, setDiscountsList] = useState<PaginateResponseList>({
     totalRecords: 0,
     items: [],
   });
@@ -56,6 +63,7 @@ const ViewModel = () => {
   useEffect(() => {
     if (idGym !== 0) {
       getPaginateMembershipList();
+      getPaginateDiscountList();
     }
   }, [idGym]);
 
@@ -110,6 +118,8 @@ const ViewModel = () => {
         deleteModal: false,
         editModal: false,
       });
+
+      await getPaginateDiscountList();
     } catch (error) {
       console.log(error);
     }
@@ -137,7 +147,27 @@ const ViewModel = () => {
     }
   };
 
-  const getPaginateDiscountList = async () => {};
+  const getPaginateDiscountList = async () => {
+    try {
+      const getDiscontsListUseCase = container.get<GetDiscountsListUseCase>(
+        TYPES.GetDiscountsListUseCase
+      );
+
+      const response = await getDiscontsListUseCase.execute({
+        textFilter: idGym.toString(),
+        numRecordsPage: 7,
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setDiscountsList(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const toggleModal = (
     modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal"
@@ -186,6 +216,8 @@ const ViewModel = () => {
     handleSetComments,
     toggleModal,
     handleOpenModal,
+    DiscountsColumns,
+    discountsList,
     discountError,
     isModalOpen,
     modalMode,

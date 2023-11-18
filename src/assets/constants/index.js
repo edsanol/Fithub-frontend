@@ -57,6 +57,14 @@ export const MembershipColumns = [
   { name: "ACCIONES", uid: "actions" },
 ];
 
+export const DiscountsColumns = [
+  { name: "PORCENTAJE", uid: "discountPercentage" },
+  { name: "FECHA DE INICIO", uid: "startDate" },
+  { name: "FECHA DE CIERRE", uid: "endDate" },
+  { name: "ESTADO", uid: "status" },
+  { name: "ACCIONES", uid: "actions" },
+];
+
 export const genres = [
   {
     value: "M",

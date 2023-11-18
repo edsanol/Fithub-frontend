@@ -4,6 +4,8 @@ import { injectable, inject } from "inversify";
 import { TYPES } from "@/config/types";
 import { Discounts } from "@/domain/entities/Discounts";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 
 @injectable()
 export class DiscountsServiceImpl implements DiscountsService {
@@ -18,6 +20,17 @@ export class DiscountsServiceImpl implements DiscountsService {
       TickerResponseApi<boolean>,
       Discounts
     >("/Discounts/Register", discount);
+
+    return response.data;
+  }
+
+  async getDiscountsList(
+    data: PaginateData
+  ): Promise<PaginateResponseList<Discounts>> {
+    const response = await this.http.post<
+      TickerResponseApi<PaginateResponseList<Discounts>>,
+      PaginateData
+    >("/Discounts", data);
 
     return response.data;
   }

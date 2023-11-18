@@ -2,6 +2,7 @@
 
 import {
   CustomModal,
+  CustomTable,
   FormInput,
   FormSelect,
   FormTextarea,
@@ -11,6 +12,7 @@ import React from "react";
 import ViewModel from "./ViewModel";
 import { Button } from "@nextui-org/react";
 import { formatMembershipElements } from "@/presentation/helpers";
+import { customRenderCell } from "./RenderCell";
 
 const Discounts = () => {
   const {
@@ -22,11 +24,15 @@ const Discounts = () => {
     handleSetComments,
     toggleModal,
     handleOpenModal,
+    DiscountsColumns,
+    discountsList,
     discountError,
     isModalOpen,
     modalMode,
     membershipList,
   } = ViewModel();
+
+  console.log("discountsList", discountsList);
   return (
     <>
       <div className="flex justify-end">
@@ -37,6 +43,15 @@ const Discounts = () => {
           onClick={() => handleOpenModal("createModal")}
         />
       </div>
+      <CustomTable
+        customRenderCell={(user, columnKey) =>
+          customRenderCell(user, columnKey, { handleOpenModal })
+        }
+        records={discountsList}
+        columns={DiscountsColumns}
+        uniqueKeyField="discountId"
+        customClassName="mt-8"
+      />
       <CustomModal
         isOpen={
           isModalOpen.createModal ||
