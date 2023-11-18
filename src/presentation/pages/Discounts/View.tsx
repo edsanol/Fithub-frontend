@@ -14,11 +14,18 @@ import { formatMembershipElements } from "@/presentation/helpers";
 
 const Discounts = () => {
   const {
+    handleSubmit,
+    handleSetDiscountPercentage,
+    handleSetStartDate,
+    handleSetEndDate,
+    handleSetIdMembership,
+    handleSetComments,
+    toggleModal,
+    handleOpenModal,
+    discountError,
     isModalOpen,
     modalMode,
     membershipList,
-    toggleModal,
-    handleOpenModal,
   } = ViewModel();
   return (
     <>
@@ -48,14 +55,24 @@ const Discounts = () => {
         size="2xl"
         content={
           <>
-            <form className="mt-3">
+            <form className="mt-3" onSubmit={handleSubmit}>
               <FormInput
                 isRequired
                 isReadOnly={modalMode === "view" ? true : false}
+                isInvalid={discountError?.discountPercentageError}
+                color={
+                  discountError?.discountPercentageError ? "danger" : "default"
+                }
+                errorMessage={
+                  discountError?.discountPercentageError
+                    ? "Por favor ingresa un porcentaje de descuento válido"
+                    : ""
+                }
                 type="number"
                 label="Porcentaje de descuento"
                 size="lg"
                 classNames={{ base: "dark" }}
+                onChange={(value) => handleSetDiscountPercentage(value)}
               />
               <div className="mt-3">
                 <FormSelect
@@ -67,11 +84,19 @@ const Discounts = () => {
                   popoverProps={{ color: "foreground" }}
                   items={formatMembershipElements(membershipList.items)}
                   customInputClass="mt-3"
+                  onChange={(value) => handleSetIdMembership(value)}
                 />
               </div>
               <div className="block md:flex md:gap-3">
                 <FormInput
                   isRequired
+                  isInvalid={discountError?.startDateError}
+                  color={discountError?.startDateError ? "danger" : "default"}
+                  errorMessage={
+                    discountError?.startDateError
+                      ? "Por favor ingresa una fecha válida"
+                      : ""
+                  }
                   type="date"
                   label="Fecha de inicio"
                   placeholder="Fecha de inicio"
@@ -79,9 +104,17 @@ const Discounts = () => {
                   size="lg"
                   classNames={{ base: "dark" }}
                   customInputClass="mt-5"
+                  onChange={(value) => handleSetStartDate(value)}
                 />
                 <FormInput
                   isRequired
+                  isInvalid={discountError?.endDateError}
+                  color={discountError?.endDateError ? "danger" : "default"}
+                  errorMessage={
+                    discountError?.endDateError
+                      ? "Por favor ingresa una fecha válida"
+                      : ""
+                  }
                   type="date"
                   label="Fecha de cierre"
                   placeholder="Fecha de cierre"
@@ -89,16 +122,25 @@ const Discounts = () => {
                   size="lg"
                   classNames={{ base: "dark" }}
                   customInputClass="mt-5"
+                  onChange={(value) => handleSetEndDate(value)}
                 />
               </div>
               <div className="mt-3">
                 <FormTextarea
                   isRequired
+                  isInvalid={discountError?.commentsError}
+                  color={discountError?.commentsError ? "danger" : "default"}
+                  errorMessage={
+                    discountError?.commentsError
+                      ? "Por favor ingresa una descripción válida"
+                      : ""
+                  }
                   isReadOnly={modalMode === "view" ? true : false}
                   label="Descripción"
                   placeholder="Escribe una descripción de la promoción"
                   size="lg"
                   classNames={{ base: "dark" }}
+                  onChange={(value) => handleSetComments(value)}
                 />
               </div>
               {modalMode === "create" || modalMode === "edit" ? (

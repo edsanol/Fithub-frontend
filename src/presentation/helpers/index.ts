@@ -91,7 +91,6 @@ export const cleanAndFormatCurrency = (
 };
 
 export const formatMembershipElements = (membership: Membership[]) => {
-  console.log(membership);
   return membership.map((value) => ({
     value: value.membershipID,
     label: value.membershipName,
