@@ -3,6 +3,7 @@ import {
   nameRegex,
   nitRegex,
   notEmptyRegex,
+  numberRegex,
   passwordRegex,
   phoneRegex,
 } from "@/presentation/interfaces/regex";
@@ -60,4 +61,30 @@ export const isValidGenre = (genre: string): boolean => {
   }
 
   return false;
+};
+
+export const isValidNumber = (number: string): boolean => {
+  if (numberRegex.test(number)) {
+    return true;
+  }
+
+  return false;
+};
+
+export const cleanAndFormatCurrency = (
+  value: number,
+  locale = "es-CO",
+  currency = "COP"
+) => {
+  const cleanValue = value.toString().replace(/[^0-9]/g, "");
+
+  const number = parseFloat(cleanValue);
+  if (isNaN(number)) {
+    return "Invalid value";
+  }
+
+  return number.toLocaleString(locale, {
+    style: "currency",
+    currency,
+  });
 };

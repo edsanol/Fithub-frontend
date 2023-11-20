@@ -177,6 +177,7 @@ const ViewModel = () => {
     handleSetBirthDate,
     handleSetGenre,
     getAthleteUserById,
+    athleteIdValue,
     athleteData,
     athleteDataError,
   };

@@ -9,12 +9,12 @@ export const sidebarLinks = [
   {
     imgURL: Home,
     route: "/create-user",
-    label: "Crear Usuario",
+    label: "Crear Deportista",
   },
   {
     imgURL: Home,
-    route: "/search",
-    label: "Buscar",
+    route: "/membership",
+    label: "Membresías",
   },
   {
     imgURL: Home,
@@ -42,6 +42,13 @@ export const AthleteColumns = [
   { name: "NOMBRE", uid: "athleteName" },
   { name: "CONTACTO", uid: "phoneNumber" },
   { name: "ESTADO", uid: "stateAthlete" },
+  { name: "ACCIONES", uid: "actions" },
+];
+
+export const MembershipColumns = [
+  { name: "NOMBRE", uid: "membershipName" },
+  { name: "PRECIO", uid: "cost" },
+  { name: "DURACIÓN (días)", uid: "durationInDays" },
   { name: "ACCIONES", uid: "actions" },
 ];
 

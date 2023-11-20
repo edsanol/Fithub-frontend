@@ -19,6 +19,15 @@ import { GetGymUserByIdUseCase } from "@/domain/useCases/GymUser/getGymUserByIdU
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
 import { DeleteAthleteUserUseCase } from "@/domain/useCases/AthleteUser/deleteAthleteUserUseCase";
+import { MembershipRepository } from "@/domain/repositories/membershipRepository";
+import { MembershipService } from "@/domain/services/membershipService";
+import { MembershipRepositoryImpl } from "@/infrastructure/repositories/membershipRepository";
+import { MembershipServiceImpl } from "@/infrastructure/services/membershipService";
+import { RegisterMembershipUseCase } from "@/domain/useCases/Membership/registerMembershipUseCase";
+import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMembershipListUseCase";
+import { GetMembershipByIdUseCase } from "@/domain/useCases/Membership/getMembershipByIdUseCase";
+import { EditMembershipUseCase } from "@/domain/useCases/Membership/editMembershipUseCase";
+import { DeleteMembershipUseCase } from "@/domain/useCases/Membership/deleteMembershipUseCase";
 
 const container = new Container();
 
@@ -78,5 +87,32 @@ container
 container
   .bind<DeleteAthleteUserUseCase>(TYPES.DeleteAthleteUserUseCase)
   .to(DeleteAthleteUserUseCase);
+
+// MembershipRepository
+container
+  .bind<MembershipRepository>(TYPES.MembershipRepository)
+  .to(MembershipRepositoryImpl);
+
+// MembershipService
+container
+  .bind<MembershipService>(TYPES.MembershipService)
+  .to(MembershipServiceImpl);
+
+// MembershipUseCases
+container
+  .bind<RegisterMembershipUseCase>(TYPES.RegisterMembershipUseCase)
+  .to(RegisterMembershipUseCase);
+container
+  .bind<GetMembershipListUseCase>(TYPES.GetMembershipListUseCase)
+  .to(GetMembershipListUseCase);
+container
+  .bind<GetMembershipByIdUseCase>(TYPES.GetMembershipByIdUseCase)
+  .to(GetMembershipByIdUseCase);
+container
+  .bind<EditMembershipUseCase>(TYPES.EditMembershipUseCase)
+  .to(EditMembershipUseCase);
+container
+  .bind<DeleteMembershipUseCase>(TYPES.DeleteMembershipUseCase)
+  .to(DeleteMembershipUseCase);
 
 export default container;

@@ -4,6 +4,17 @@ import React from "react";
 import { Textarea } from "@nextui-org/react";
 
 interface FormTextareaProps {
+  isRequired?: boolean;
+  isInvalid?: boolean;
+  color?:
+    | "primary"
+    | "success"
+    | "warning"
+    | "danger"
+    | "default"
+    | "secondary"
+    | undefined;
+  errorMessage?: string;
   label: string;
   placeholder?: string;
   size?: "lg" | "md" | "sm";
@@ -14,6 +25,10 @@ interface FormTextareaProps {
 }
 
 const FormTextarea = ({
+  isRequired,
+  isInvalid,
+  color,
+  errorMessage,
   label,
   placeholder,
   size,
@@ -24,7 +39,11 @@ const FormTextarea = ({
 }: FormTextareaProps) => {
   return (
     <Textarea
+      isRequired={isRequired || false}
       isReadOnly={isReadOnly || false}
+      isInvalid={isInvalid || false}
+      color={color}
+      errorMessage={errorMessage || ""}
       defaultValue={value || ""}
       label={label}
       labelPlacement="outside"
