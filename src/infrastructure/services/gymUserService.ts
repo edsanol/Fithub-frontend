@@ -5,6 +5,7 @@ import type { HttpClient } from "../api/http";
 import { TYPES } from "@/config/types";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
 import { UserLogin } from "@/domain/entities/UserLogin";
+import { ResetPassword } from "@/domain/models/ResetPassword";
 
 @injectable()
 export class GymUserServiceImpl implements GymUserService {
@@ -48,6 +49,15 @@ export class GymUserServiceImpl implements GymUserService {
     const response = await this.http.get<TickerResponseApi<GymUser>>(
       `/Gym/${id}`
     );
+
+    return response.data;
+  }
+
+  async changePassword(data: ResetPassword): Promise<boolean> {
+    const response = await this.http.post<
+      TickerResponseApi<boolean>,
+      ResetPassword
+    >("/Gym/ChangePassword", data);
 
     return response.data;
   }

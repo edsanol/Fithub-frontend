@@ -96,3 +96,25 @@ export const formatMembershipElements = (membership: Membership[]) => {
     label: value.membershipName,
   }));
 };
+
+export const isValidChangePassword = (
+  oldPassword: string,
+  newPassword: string
+): boolean => {
+  if (oldPassword === newPassword) {
+    return false;
+  }
+
+  return true;
+};
+
+export const isValidNewPassword = (
+  newPassword: string,
+  confirmPassword: string
+): boolean => {
+  if (newPassword === confirmPassword) {
+    return true;
+  }
+
+  return false;
+};
