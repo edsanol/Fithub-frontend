@@ -18,3 +18,10 @@ export interface IGymDataValidation {
   phoneNumberError: boolean;
   nitError: boolean;
 }
+
+export interface IChangePasswordValidation {
+  emailError: boolean;
+  passwordError: boolean;
+  newPasswordError: boolean;
+  confirmPasswordError: boolean;
+}
