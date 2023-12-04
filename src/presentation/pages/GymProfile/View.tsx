@@ -31,13 +31,13 @@ const GymProfile = () => {
     <>
       <div className="h-full bg-[#000]">
         <div className="w-full mx-auto bg-[#121417] rounded-xl p-5 md:p-10 xl:w-10/12">
-          <Avatar
+          {/* <Avatar
             showFallback
             src="https://images.unsplash.com/broken"
             className="w-32 h-32 mx-auto text-large"
-          />
+          /> */}
           <div className="w-3/5 mx-auto mt-5 flex justify-center md:w-1/2">
-            <h1 className="text-base lg:text-xl">{gymData.gymName}</h1>
+            <h1 className="text-base lg:text-xl">Datos del gimnasio</h1>
           </div>
 
           <div className="w-full flex justify-end mt-3">
@@ -106,6 +106,7 @@ const GymProfile = () => {
                 size="lg"
                 classNames={{ base: "dark" }}
                 customInputClass="mt-5"
+                value={gymData?.nit}
                 onChange={(value) => handleSetNit(value)}
               />
               <FormInput
@@ -176,7 +177,7 @@ const GymProfile = () => {
               }
             />
             <FormLink
-              href="/login"
+              href="/change-password"
               text="Cambiar contraseña"
               customLinkClass="mt-3"
             />

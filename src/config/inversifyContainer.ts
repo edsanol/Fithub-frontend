@@ -28,6 +28,7 @@ import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMember
 import { GetMembershipByIdUseCase } from "@/domain/useCases/Membership/getMembershipByIdUseCase";
 import { EditMembershipUseCase } from "@/domain/useCases/Membership/editMembershipUseCase";
 import { DeleteMembershipUseCase } from "@/domain/useCases/Membership/deleteMembershipUseCase";
+import { ChangePasswordUseCase } from "@/domain/useCases/GymUser/changePasswordUseCase";
 
 const container = new Container();
 
@@ -60,6 +61,9 @@ container
 container
   .bind<GetGymUserByIdUseCase>(TYPES.GetGymUserByIdUseCase)
   .to(GetGymUserByIdUseCase);
+container
+  .bind<ChangePasswordUseCase>(TYPES.ChangePasswordUseCase)
+  .to(ChangePasswordUseCase);
 
 // AthleteUserService
 container

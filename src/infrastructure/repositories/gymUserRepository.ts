@@ -1,6 +1,7 @@
 import { TYPES } from "@/config/types";
 import { GymUser } from "@/domain/entities/GymUser";
 import { UserLogin } from "@/domain/entities/UserLogin";
+import { ResetPassword } from "@/domain/models/ResetPassword";
 import { GymUserRepository } from "@/domain/repositories/gymUserRepository";
 import type { GymUserService } from "@/domain/services/gymUserService";
 import { inject, injectable } from "inversify";
@@ -33,6 +34,12 @@ export class GymUserRepositoryImpl implements GymUserRepository {
 
   async getGymUserById(id: number): Promise<GymUser> {
     const response = await this.service.getGymUserById(id);
+
+    return response;
+  }
+
+  async changePassword(data: ResetPassword): Promise<boolean> {
+    const response = await this.service.changePassword(data);
 
     return response;
   }
