@@ -1,3 +1,4 @@
+import { Membership } from "@/domain/entities/Membership";
 import {
   emailRegex,
   nameRegex,
@@ -87,6 +88,13 @@ export const cleanAndFormatCurrency = (
     style: "currency",
     currency,
   });
+};
+
+export const formatMembershipElements = (membership: Membership[]) => {
+  return membership.map((value) => ({
+    value: value.membershipID,
+    label: value.membershipName,
+  }));
 };
 
 export const isValidChangePassword = (

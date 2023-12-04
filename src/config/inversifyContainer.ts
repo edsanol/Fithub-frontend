@@ -28,6 +28,15 @@ import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMember
 import { GetMembershipByIdUseCase } from "@/domain/useCases/Membership/getMembershipByIdUseCase";
 import { EditMembershipUseCase } from "@/domain/useCases/Membership/editMembershipUseCase";
 import { DeleteMembershipUseCase } from "@/domain/useCases/Membership/deleteMembershipUseCase";
+import { DiscountsRepository } from "@/domain/repositories/discountsRepository";
+import { DiscountsService } from "@/domain/services/discountsService";
+import { DiscountsRepositoryImpl } from "@/infrastructure/repositories/discountsRepository";
+import { DiscountsServiceImpl } from "@/infrastructure/services/discountsService";
+import { RegisterDiscountUseCase } from "@/domain/useCases/Discounts/registerDiscounts";
+import { GetDiscountsListUseCase } from "@/domain/useCases/Discounts/getDiscountsList";
+import { GetDiscountByIdUseCase } from "@/domain/useCases/Discounts/getDiscountById";
+import { EditDiscountUseCase } from "@/domain/useCases/Discounts/editDiscount";
+import { DeleteDiscountUseCase } from "@/domain/useCases/Discounts/deleteDiscount";
 import { ChangePasswordUseCase } from "@/domain/useCases/GymUser/changePasswordUseCase";
 
 const container = new Container();
@@ -118,5 +127,32 @@ container
 container
   .bind<DeleteMembershipUseCase>(TYPES.DeleteMembershipUseCase)
   .to(DeleteMembershipUseCase);
+
+// DiscountsRepository
+container
+  .bind<DiscountsRepository>(TYPES.DiscountsRepository)
+  .to(DiscountsRepositoryImpl);
+
+// DiscountsService
+container
+  .bind<DiscountsService>(TYPES.DiscountsService)
+  .to(DiscountsServiceImpl);
+
+// DiscountsUseCases
+container
+  .bind<RegisterDiscountUseCase>(TYPES.RegisterDiscountUseCase)
+  .to(RegisterDiscountUseCase);
+container
+  .bind<GetDiscountsListUseCase>(TYPES.GetDiscountsListUseCase)
+  .to(GetDiscountsListUseCase);
+container
+  .bind<GetDiscountByIdUseCase>(TYPES.GetDiscountByIdUseCase)
+  .to(GetDiscountByIdUseCase);
+container
+  .bind<EditDiscountUseCase>(TYPES.EditDiscountUseCase)
+  .to(EditDiscountUseCase);
+container
+  .bind<DeleteDiscountUseCase>(TYPES.DeleteDiscountUseCase)
+  .to(DeleteDiscountUseCase);
 
 export default container;

@@ -5,6 +5,7 @@ import { Select, SelectItem } from "@nextui-org/react";
 
 interface FormSelectProps {
   isRequired?: boolean;
+  isDisabled?: boolean;
   label: string;
   placeholder?: string;
   size?: "lg" | "md" | "sm";
@@ -19,6 +20,7 @@ interface FormSelectProps {
 
 const FormSelect = ({
   isRequired,
+  isDisabled,
   label,
   placeholder,
   size,
@@ -33,6 +35,7 @@ const FormSelect = ({
   return (
     <Select
       isRequired={isRequired || false}
+      isDisabled={isDisabled || false}
       label={label}
       placeholder={placeholder || ""}
       size={size || "lg"}
@@ -40,7 +43,7 @@ const FormSelect = ({
       popoverProps={popoverProps || ""}
       description={description || ""}
       className={customInputClass || ""}
-      defaultSelectedKeys={value || ""}
+      defaultSelectedKeys={value ? [value.toString()] : []}
     >
       {items.map((item: any) => (
         <SelectItem

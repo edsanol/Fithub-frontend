@@ -18,6 +18,11 @@ export const sidebarLinks = [
   },
   {
     imgURL: Home,
+    route: "/discounts",
+    label: "Descuentos",
+  },
+  {
+    imgURL: Home,
     route: "/gym-profile",
     label: "Perfil",
   },
@@ -49,6 +54,14 @@ export const MembershipColumns = [
   { name: "NOMBRE", uid: "membershipName" },
   { name: "PRECIO", uid: "cost" },
   { name: "DURACIÓN (días)", uid: "durationInDays" },
+  { name: "ACCIONES", uid: "actions" },
+];
+
+export const DiscountsColumns = [
+  { name: "PORCENTAJE", uid: "discountPercentage" },
+  { name: "FECHA DE INICIO", uid: "startDate" },
+  { name: "FECHA DE CIERRE", uid: "endDate" },
+  { name: "ESTADO", uid: "status" },
   { name: "ACCIONES", uid: "actions" },
 ];
 

@@ -9,7 +9,7 @@ type constructorParams = {
   idGym?: number;
   gymName?: string;
   registerDate: string;
-  status: true;
+  status: boolean;
   stateAthlete?: string;
   token?: string | null;
 };
@@ -25,7 +25,7 @@ export class AthleteUser {
   public idGym?: number;
   public gymName?: string;
   public registerDate: string;
-  public status: true;
+  public status: boolean;
   public stateAthlete?: string;
   public token?: string | null;
 

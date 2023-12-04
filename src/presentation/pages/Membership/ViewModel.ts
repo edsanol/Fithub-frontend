@@ -209,7 +209,6 @@ const ViewModel = () => {
     modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal",
     id?: number
   ) => {
-    console.log(modalName);
     switch (modalName) {
       case "editModal":
         await getMembershipById(id!);
