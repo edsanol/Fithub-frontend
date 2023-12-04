@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import container from "@/config/inversifyContainer";
 import { RegisterGymUserUseCase } from "@/domain/useCases/GymUser/registerGymUserUseCase";
@@ -14,9 +14,15 @@ import {
 } from "@/presentation/helpers";
 import { IGymDataValidation } from "@/presentation/interfaces/IAuth";
 import { GymUser } from "@/domain/entities/GymUser";
+import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMembershipListUseCase";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 
 const ViewModel = () => {
+  const { data: session } = useSession();
+
   const router = useRouter();
+
+  const [idGym, setIdGym] = useState<number>(0);
 
   const [gymData, setGymData] = useState<GymUser>({
     gymName: "",
@@ -36,6 +42,10 @@ const ViewModel = () => {
     addressError: false,
     phoneNumberError: false,
     nitError: false,
+  });
+  const [membershipList, setMembershipList] = useState<PaginateResponseList>({
+    totalRecords: 0,
+    items: [],
   });
 
   const handleIsValidForm = () => {
@@ -88,6 +98,40 @@ const ViewModel = () => {
     }
   };
 
+  const getPaginateMembershipList = async () => {
+    try {
+      const getMembershipListUseCase = container.get<GetMembershipListUseCase>(
+        TYPES.GetMembershipListUseCase
+      );
+
+      const response = await getMembershipListUseCase.execute({
+        textFilter: idGym.toString(),
+        numRecordsPage: 7,
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setMembershipList(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (session && session.user.gymId !== idGym) {
+      setIdGym(session.user.gymId);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (idGym !== 0) {
+      getPaginateMembershipList();
+    }
+  }, [idGym]);
+
   const handleSetGymName = (event: string) => {
     setGymData({ ...gymData, gymName: event });
   };
@@ -136,6 +180,7 @@ const ViewModel = () => {
     handleSetComments,
     handleSetNit,
     gymDataError,
+    membershipList,
   };
 };
 
