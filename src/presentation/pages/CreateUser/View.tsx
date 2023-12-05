@@ -5,10 +5,12 @@ import {
   DashboardHeader,
   FormInput,
   FormRadioButton,
+  FormSelect,
   PrimaryButton,
 } from "@/presentation/components";
 import React from "react";
 import ViewModel from "./ViewModel";
+import { formatMembershipElements } from "@/presentation/helpers";
 
 const CreateUser = () => {
   const {
@@ -19,8 +21,10 @@ const CreateUser = () => {
     handleSetPhoneNumber,
     handleSetBirthDate,
     handleSetGenre,
+    handleSetIdMembership,
     athleteData,
     athleteDataError,
+    membershipList,
   } = ViewModel();
 
   return (
@@ -100,6 +104,18 @@ const CreateUser = () => {
               customInputClass="mt-7"
               onChange={(value) => handleSetEmail(value)}
               value={athleteData?.email}
+            />
+            <FormSelect
+              isRequired
+              label="Membresías"
+              placeholder="Selecciona un plan"
+              size="lg"
+              classNames={{ base: "dark" }}
+              popoverProps={{ color: "foreground" }}
+              items={formatMembershipElements(membershipList.items)}
+              onChange={(value) => handleSetIdMembership(value)}
+              customInputClass="mt-5"
+              // value={athleteData?.idMembership}
             />
             <FormInput
               isRequired

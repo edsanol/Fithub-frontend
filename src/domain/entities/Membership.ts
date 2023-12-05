@@ -5,6 +5,7 @@ type constructorParams = {
   durationInDays: number;
   description: string;
   idGym?: number;
+  status?: boolean;
 };
 
 export class Membership {
@@ -14,6 +15,7 @@ export class Membership {
   public durationInDays: number;
   public description: string;
   public idGym?: number;
+  public status?: boolean;
 
   constructor({
     membershipID,
@@ -22,6 +24,7 @@ export class Membership {
     durationInDays,
     description,
     idGym,
+    status,
   }: constructorParams) {
     this.membershipID = membershipID;
     this.membershipName = membershipName;
@@ -29,5 +32,6 @@ export class Membership {
     this.durationInDays = durationInDays;
     this.description = description;
     this.idGym = idGym;
+    this.status = status;
   }
 }
