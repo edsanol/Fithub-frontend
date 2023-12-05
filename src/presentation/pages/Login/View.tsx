@@ -44,7 +44,7 @@ const Login = () => {
             onChange={(value) => handleSetEmail(value)}
           />
           <FormLink
-            href="/login"
+            href="/recovery-password"
             text="¿Has olvidado tu contraseña?"
             customLinkClass="mt-8 text-sm lg:text-base"
           />

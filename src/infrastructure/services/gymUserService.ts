@@ -61,4 +61,13 @@ export class GymUserServiceImpl implements GymUserService {
 
     return response.data;
   }
+
+  async recoverPassword(email: string): Promise<boolean> {
+    const response = await this.http.post<
+      TickerResponseApi<boolean>,
+      typeof email
+    >("/Gym/RecoverPassword", email);
+
+    return response.data;
+  }
 }

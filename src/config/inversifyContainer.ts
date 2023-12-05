@@ -38,6 +38,7 @@ import { GetDiscountByIdUseCase } from "@/domain/useCases/Discounts/getDiscountB
 import { EditDiscountUseCase } from "@/domain/useCases/Discounts/editDiscount";
 import { DeleteDiscountUseCase } from "@/domain/useCases/Discounts/deleteDiscount";
 import { ChangePasswordUseCase } from "@/domain/useCases/GymUser/changePasswordUseCase";
+import { RecoverPasswordUseCase } from "@/domain/useCases/GymUser/recoverPasswordUseCase";
 
 const container = new Container();
 
@@ -73,6 +74,9 @@ container
 container
   .bind<ChangePasswordUseCase>(TYPES.ChangePasswordUseCase)
   .to(ChangePasswordUseCase);
+container
+  .bind<RecoverPasswordUseCase>(TYPES.RecoverPasswordUseCase)
+  .to(RecoverPasswordUseCase);
 
 // AthleteUserService
 container
