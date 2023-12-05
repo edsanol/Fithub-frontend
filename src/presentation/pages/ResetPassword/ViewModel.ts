@@ -1,7 +1,7 @@
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { ResetPassword } from "@/domain/models/ResetPassword";
-import { ResetPasswordUseCase } from "@/domain/useCases/GymUser/ResetPasswordUseCase";
+import { ResetPasswordUseCase } from "@/domain/useCases/GymUser/resetPasswordUseCase";
 import {
   isNotEmpty,
   isValidNewPassword,

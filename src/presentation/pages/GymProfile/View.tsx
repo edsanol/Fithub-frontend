@@ -3,6 +3,7 @@
 import React from "react";
 import { Avatar } from "@nextui-org/react";
 import {
+  DashboardHeader,
   FormInput,
   FormLink,
   FormTextarea,
@@ -31,13 +32,12 @@ const GymProfile = () => {
     <>
       <div className="h-full bg-[#000]">
         <div className="w-full mx-auto bg-[#121417] rounded-xl p-5 md:p-10 xl:w-10/12">
-          {/* <Avatar
-            showFallback
-            src="https://images.unsplash.com/broken"
-            className="w-32 h-32 mx-auto text-large"
-          /> */}
-          <div className="w-3/5 mx-auto mt-5 flex justify-center md:w-1/2">
-            <h1 className="text-base lg:text-xl">Datos del gimnasio</h1>
+          <div className="w-3/5 mx-auto mt-5 flex flex-col justify-center md:w-1/2">
+            <DashboardHeader
+              title="Tu Espacio Fitness Personal"
+              description="Aquí podrás ver y actualizar todos tus detalles relacionados con
+              el gimnasio"
+            />
           </div>
 
           <div className="w-full flex justify-end mt-3">

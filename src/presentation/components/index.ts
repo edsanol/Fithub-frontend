@@ -12,6 +12,7 @@ import FormLink from "./FormLink";
 import FormRadioButton from "./FormRadioButton";
 import CustomModal from "./CustomModal";
 import CustomTable from "./CustomTable";
+import DashboardHeader from "./DashboardHeader";
 
 export {
   PrimaryButton,
@@ -28,4 +29,5 @@ export {
   FormRadioButton,
   CustomModal,
   CustomTable,
+  DashboardHeader,
 };
