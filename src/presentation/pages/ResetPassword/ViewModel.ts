@@ -1,14 +1,18 @@
+import container from "@/config/inversifyContainer";
+import { TYPES } from "@/config/types";
 import { ResetPassword } from "@/domain/models/ResetPassword";
+import { ResetPasswordUseCase } from "@/domain/useCases/GymUser/ResetPasswordUseCase";
 import {
   isNotEmpty,
   isValidNewPassword,
   isValidPassword,
 } from "@/presentation/helpers";
 import { IResetPasswordValidation } from "@/presentation/interfaces/IAuth";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const ViewModel = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
@@ -50,7 +54,18 @@ const ViewModel = () => {
         return;
       }
 
-      console.log(resetPasswordData);
+      const resetPasswordUseCase = container.get<ResetPasswordUseCase>(
+        TYPES.ResetPasswordUseCase
+      );
+
+      const response = await resetPasswordUseCase.execute(resetPasswordData);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      router.push("/login");
     } catch (error) {
       console.log(error);
     }

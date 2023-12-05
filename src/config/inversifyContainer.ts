@@ -39,7 +39,7 @@ import { EditDiscountUseCase } from "@/domain/useCases/Discounts/editDiscount";
 import { DeleteDiscountUseCase } from "@/domain/useCases/Discounts/deleteDiscount";
 import { ChangePasswordUseCase } from "@/domain/useCases/GymUser/changePasswordUseCase";
 import { RecoverPasswordUseCase } from "@/domain/useCases/GymUser/recoverPasswordUseCase";
-import { ResetPasswordUseCase } from "@/domain/useCases/GymUser/ResetPasswordUseCase";
+import { ResetPasswordUseCase } from "@/domain/useCases/GymUser/resetPasswordUseCase";
 
 const container = new Container();
 

@@ -13,7 +13,6 @@ const ResetPassword = () => {
     handleSubmit,
     handleSetConfirmPassword,
     handleSetNewPassword,
-    resetPasswordData,
     resetPasswordDataError,
   } = ViewModel();
 
