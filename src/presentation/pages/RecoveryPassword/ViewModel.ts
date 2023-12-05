@@ -1,19 +1,22 @@
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
+import { ResetPassword } from "@/domain/models/ResetPassword";
 import { RecoverPasswordUseCase } from "@/domain/useCases/GymUser/recoverPasswordUseCase";
 import { isValidEmail } from "@/presentation/helpers";
 import { IRecoversPasswordValidation } from "@/presentation/interfaces/IAuth";
 import { useState } from "react";
 
 const ViewModel = () => {
-  const [email, setEmail] = useState<string>("");
+  const [resetPasswordData, setResetPasswordData] = useState<ResetPassword>({
+    email: "",
+  });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const [emailError, setEmailError] = useState<boolean>(false);
 
   const handleIsValidForm = () => {
     const errors: IRecoversPasswordValidation = {
-      emailError: !isValidEmail(email),
+      emailError: !isValidEmail(resetPasswordData.email!),
     };
 
     setEmailError(errors.emailError);
@@ -35,7 +38,7 @@ const ViewModel = () => {
         TYPES.RecoverPasswordUseCase
       );
 
-      const response = await recoverPasswordUseCase.execute(email);
+      const response = await recoverPasswordUseCase.execute(resetPasswordData);
 
       if (!response) {
         console.log("error");
@@ -48,7 +51,10 @@ const ViewModel = () => {
   };
 
   const handleEmail = (value: string) => {
-    setEmail(value);
+    setResetPasswordData({
+      ...resetPasswordData,
+      email: value,
+    });
   };
 
   const toggleModal = () => {

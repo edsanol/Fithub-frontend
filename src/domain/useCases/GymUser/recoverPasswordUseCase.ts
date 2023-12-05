@@ -1,4 +1,5 @@
 import { TYPES } from "@/config/types";
+import { ResetPassword } from "@/domain/models/ResetPassword";
 import type { GymUserRepository } from "@/domain/repositories/gymUserRepository";
 import { inject, injectable } from "inversify";
 
@@ -9,7 +10,7 @@ export class RecoverPasswordUseCase {
     private gymUserRepository: GymUserRepository
   ) {}
 
-  async execute(email: string): Promise<boolean> {
-    return await this.gymUserRepository.recoverPassword(email);
+  async execute(data: ResetPassword): Promise<boolean> {
+    return await this.gymUserRepository.recoverPassword(data);
   }
 }

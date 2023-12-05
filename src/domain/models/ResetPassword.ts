@@ -1,14 +1,14 @@
 type constructorParams = {
-  newPassword: string;
-  confirmPassword: string;
+  newPassword?: string;
+  confirmPassword?: string;
   email?: string;
   token?: string;
   oldPassword?: string;
 };
 
 export class ResetPassword {
-  public newPassword: string;
-  public confirmPassword: string;
+  public newPassword?: string;
+  public confirmPassword?: string;
   public email?: string;
   public token?: string;
   public oldPassword?: string;

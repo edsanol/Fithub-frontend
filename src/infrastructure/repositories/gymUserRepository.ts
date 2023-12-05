@@ -44,8 +44,8 @@ export class GymUserRepositoryImpl implements GymUserRepository {
     return response;
   }
 
-  async recoverPassword(email: string): Promise<boolean> {
-    const response = await this.service.recoverPassword(email);
+  async recoverPassword(data: ResetPassword): Promise<boolean> {
+    const response = await this.service.recoverPassword(data);
 
     return response;
   }

@@ -29,3 +29,9 @@ export interface IChangePasswordValidation {
 export interface IRecoversPasswordValidation {
   emailError: boolean;
 }
+
+export interface IResetPasswordValidation {
+  tokenError: boolean;
+  newPasswordError: boolean;
+  confirmPasswordError: boolean;
+}
