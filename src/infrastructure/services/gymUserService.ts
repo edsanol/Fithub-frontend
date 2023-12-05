@@ -70,4 +70,13 @@ export class GymUserServiceImpl implements GymUserService {
 
     return response.data;
   }
+
+  async resetPassword(data: ResetPassword): Promise<boolean> {
+    const response = await this.http.post<
+      TickerResponseApi<boolean>,
+      ResetPassword
+    >("/Gym/ResetPassword", data);
+
+    return response.data;
+  }
 }

@@ -15,6 +15,7 @@ const TYPES = {
   GetGymUserByIdUseCase: Symbol.for("GetGymUserByIdUseCase"),
   ChangePasswordUseCase: Symbol.for("ChangePasswordUseCase"),
   RecoverPasswordUseCase: Symbol.for("RecoverPasswordUseCase"),
+  ResetPasswordUseCase: Symbol.for("ResetPasswordUseCase"),
 
   // AthleteUserService
   AthleteUserService: Symbol.for("AthleteUserService"),

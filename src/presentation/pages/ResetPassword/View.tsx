@@ -17,8 +17,6 @@ const ResetPassword = () => {
     resetPasswordDataError,
   } = ViewModel();
 
-  // console.log(resetPasswordData);
-
   return (
     <div className="w-full h-full bg-[#000]">
       <AuthHeader />
