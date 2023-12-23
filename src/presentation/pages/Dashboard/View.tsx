@@ -7,6 +7,7 @@ import {
   FormRadioButton,
   CustomModal,
   CustomTable,
+  DashboardHeader,
 } from "@/presentation/components";
 import { genres } from "@/assets/constants";
 import WarningIcon from "@/assets/svg/WarningIcon";
@@ -29,6 +30,12 @@ const Dashboard = () => {
 
   return (
     <div>
+      <DashboardHeader
+        title="Gestiona tus Atletas"
+        description="
+        Explora la lista completa de tus atletas y encuéntralos rápidamente usando el filtro por nombre. Visualiza todos sus detalles y, si es necesario, elimina perfiles de manera sencilla."
+        customClassName="mb-5"
+      />
       <CustomTable
         onSetNumPage={handleSetNumPage}
         onSetTextFilter={handleSetTextFilter}

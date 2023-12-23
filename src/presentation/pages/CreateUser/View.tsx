@@ -2,6 +2,7 @@
 
 import { genres } from "@/assets/constants";
 import {
+  DashboardHeader,
   FormInput,
   FormRadioButton,
   PrimaryButton,
@@ -18,7 +19,6 @@ const CreateUser = () => {
     handleSetPhoneNumber,
     handleSetBirthDate,
     handleSetGenre,
-    athleteIdValue,
     athleteData,
     athleteDataError,
   } = ViewModel();
@@ -26,10 +26,11 @@ const CreateUser = () => {
   return (
     <>
       <div className="h-full bg-[#000]">
-        <h1 className="w-full flex justify-center font-black text-3xl mb-8">
-          {athleteIdValue ? "Editar deportista" : "Crear deportista"}
-        </h1>
-        <div className="w-full mx-auto bg-[#121417] rounded-xl p-5 md:p-10 xl:w-9/12">
+        <DashboardHeader
+          title="Configura el Perfil de tus Atletas"
+          description="Personaliza la información de tus deportistas"
+        />
+        <div className="w-full mx-auto mt-5 bg-[#121417] rounded-xl p-5 md:p-10 xl:w-9/12">
           <form onSubmit={handleSubmit}>
             <div className="block md:flex md:gap-3">
               <FormInput

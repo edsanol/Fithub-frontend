@@ -3,6 +3,7 @@
 import {
   CustomModal,
   CustomTable,
+  DashboardHeader,
   FormInput,
   FormSelect,
   FormTextarea,
@@ -36,7 +37,12 @@ const Discounts = () => {
   } = ViewModel();
   return (
     <>
-      <div className="flex justify-end">
+      <DashboardHeader
+        title="Personaliza tus Descuentos"
+        description="Aquí podrás ver y actualizar todos tus detalles relacionados con
+        los descuentos de tus membresías."
+      />
+      <div className="flex justify-center mt-3 md:justify-end">
         <PrimaryButton
           text="Crear descuento"
           btnType="button"

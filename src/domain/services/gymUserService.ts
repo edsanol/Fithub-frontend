@@ -8,4 +8,6 @@ export interface GymUserService {
   editGymUser(id: number, gymUser: GymUser): Promise<boolean>;
   getGymUserById(id: number): Promise<GymUser>;
   changePassword(data: ResetPassword): Promise<boolean>;
+  recoverPassword(data: ResetPassword): Promise<boolean>;
+  resetPassword(data: ResetPassword): Promise<boolean>;
 }

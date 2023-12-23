@@ -8,6 +8,7 @@ import {
   CustomTable,
   PrimaryButton,
   FormTextarea,
+  DashboardHeader,
 } from "@/presentation/components";
 import WarningIcon from "@/assets/svg/WarningIcon";
 import { Button } from "@nextui-org/react";
@@ -33,7 +34,12 @@ const Membership = () => {
 
   return (
     <>
-      <div className="flex justify-end">
+      <DashboardHeader
+        title="Personaliza tus Membresías"
+        description="Aquí podrás ver y actualizar todos tus detalles relacionados con
+        las membresías"
+      />
+      <div className="flex justify-center mt-3 md:justify-end">
         <PrimaryButton
           text="Crear membresía"
           btnType="button"

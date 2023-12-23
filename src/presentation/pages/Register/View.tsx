@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { subscriptionsPlans } from "@/assets/constants";
 import {
   AuthHeader,
   FormInput,
@@ -12,6 +11,7 @@ import {
   PrimaryButton,
 } from "@/presentation/components";
 import ViewModel from "./ViewModel";
+import { formatMembershipElements } from "@/presentation/helpers";
 
 const Register = () => {
   const {
@@ -26,6 +26,7 @@ const Register = () => {
     handleSetComments,
     handleSetNit,
     gymDataError,
+    membershipList,
   } = ViewModel();
 
   return (
@@ -141,7 +142,7 @@ const Register = () => {
                 size="lg"
                 classNames={{ base: "dark" }}
                 popoverProps={{ color: "foreground" }}
-                items={subscriptionsPlans}
+                items={formatMembershipElements(membershipList.items)}
                 onChange={(value) => handleSetSubscriptionPlan(value)}
               />
             </div>
