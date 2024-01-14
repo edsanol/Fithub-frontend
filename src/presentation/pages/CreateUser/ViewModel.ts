@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   isNotEmpty,
   isValidEmail,
@@ -31,6 +32,7 @@ const ViewModel = () => {
 
   const [idGym, setIdGym] = useState<number>(0);
   const [gymName, setGymName] = useState<string>("");
+  const [token, setToken] = useState<string>("");
   const [athleteData, setAthleteData] = useState<AthleteUser>({
     athleteName: "",
     athleteLastName: "",
@@ -117,19 +119,22 @@ const ViewModel = () => {
             TYPES.RegisterAthleteUserUseCase
           );
 
-        response = await registerAthleteUserUseCase.execute({
-          athleteName: athleteData.athleteName,
-          athleteLastName: athleteData.athleteLastName,
-          email: athleteData.email,
-          phoneNumber: athleteData.phoneNumber,
-          birthDate: athleteData.birthDate,
-          genre: athleteData.genre,
-          idGym,
-          gymName,
-          registerDate: athleteData.registerDate,
-          status: athleteData.status,
-          idMembership: athleteData.idMembership,
-        });
+        response = await registerAthleteUserUseCase.execute(
+          {
+            athleteName: athleteData.athleteName,
+            athleteLastName: athleteData.athleteLastName,
+            email: athleteData.email,
+            phoneNumber: athleteData.phoneNumber,
+            birthDate: athleteData.birthDate,
+            genre: athleteData.genre,
+            idGym,
+            gymName,
+            registerDate: athleteData.registerDate,
+            status: athleteData.status,
+            idMembership: athleteData.idMembership,
+          },
+          token
+        );
       }
 
       if (!response) {
@@ -198,6 +203,7 @@ const ViewModel = () => {
     if (session && session.user.gymId !== idGym) {
       setIdGym(session.user.gymId);
       setGymName(session.user.gymName);
+      setToken(session.user.token);
     }
   }, [session]);
 

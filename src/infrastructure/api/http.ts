@@ -1,9 +1,9 @@
 import { TYPES } from "@/config/types";
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { injectable, inject } from "inversify";
 
 export interface HttpClient {
-  post<T, U>(url: string, data: U): Promise<T>;
+  post<T, U>(url: string, data: U, config?: AxiosRequestConfig): Promise<T>;
   put<T, U>(url: string, data: U): Promise<T>;
   get<T>(url: string): Promise<T>;
   delete<T>(url: string): Promise<T>;
@@ -30,8 +30,16 @@ export class AxiosHttpClient implements HttpClient {
     throw new Error(response.statusText);
   }
 
-  async post<T, U>(url: string, data: U): Promise<T> {
-    const response: AxiosResponse<T> = await this.axiosInstance.post(url, data);
+  async post<T, U>(
+    url: string,
+    data: U,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
+    const response: AxiosResponse<T> = await this.axiosInstance.post(
+      url,
+      data,
+      config
+    );
     return this.handleResponse(response);
   }
 

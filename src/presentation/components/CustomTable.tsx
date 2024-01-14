@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
@@ -16,8 +17,8 @@ import { useSession } from "next-auth/react";
 import { IColumns } from "../interfaces/ICustomTable";
 
 interface CustomTableProps {
-  onSetNumPage?: (numPage: number) => void;
-  onSetTextFilter?: (textFilter: string) => void;
+  onSetNumPage?: (numPage: number, token: string) => void;
+  onSetTextFilter?: (textFilter: string, token: string) => void;
   customRenderCell: (user: any, columnKey: React.Key) => React.ReactNode;
   customClassName?: string;
   records: any;
@@ -36,29 +37,35 @@ const CustomTable = ({
 }: CustomTableProps) => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState("");
 
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (session && session.user.token) {
+      setToken(session.user.token);
+    }
+  }, [session]);
 
   useEffect(() => {
     try {
       setLoading(true);
-      if (onSetNumPage) {
-        onSetNumPage(page);
+      if (token && onSetNumPage) {
+        onSetNumPage(page, token);
       }
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [page, token]);
 
   const handleTextFilter = useCallback(
     (textFilter: string) => {
       try {
         setLoading(true);
-        if (onSetTextFilter) {
-          onSetTextFilter(textFilter);
+        if (token && onSetTextFilter) {
+          onSetTextFilter(textFilter, token);
         }
       } catch (error) {
         console.log(error);
@@ -66,7 +73,7 @@ const CustomTable = ({
         setLoading(false);
       }
     },
-    [onSetTextFilter]
+    [onSetTextFilter, token]
   );
 
   if (status === "loading" || loading) {
@@ -85,46 +92,48 @@ const CustomTable = ({
           onChange={(e) => handleTextFilter(e.target.value)}
         />
       )}
-      <Table
-        aria-label="Example table with custom cells"
-        classNames={{ base: "dark", wrapper: "min-h-[222px]" }}
-        className={customClassName}
-        bottomContent={
-          onSetNumPage && (
-            <div className="flex w-full justify-center">
-              <Pagination
-                isCompact
-                showControls
-                showShadow
-                color="secondary"
-                page={page}
-                total={Math.ceil(records.totalRecords / 7)}
-                onChange={(page) => setPage(page)}
-              />
-            </div>
-          )
-        }
-      >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody items={records.items}>
-          {(item: any) => (
-            <TableRow key={item[uniqueKeyField]}>
-              {(columnKey) => (
-                <TableCell>{customRenderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      {token && (
+        <Table
+          aria-label="Example table with custom cells"
+          classNames={{ base: "dark", wrapper: "min-h-[222px]" }}
+          className={customClassName}
+          bottomContent={
+            onSetNumPage && (
+              <div className="flex w-full justify-center">
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  color="secondary"
+                  page={page}
+                  total={Math.ceil(records.totalRecords / 7)}
+                  onChange={(page) => setPage(page)}
+                />
+              </div>
+            )
+          }
+        >
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                align={column.uid === "actions" ? "center" : "start"}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={records.items}>
+            {(item: any) => (
+              <TableRow key={item[uniqueKeyField]}>
+                {(columnKey) => (
+                  <TableCell>{customRenderCell(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      )}
     </>
   );
 };

@@ -8,6 +8,10 @@ type constructorParams = {
   subscriptionPlan: string;
   comments: string;
   nit: string;
+  token?: string;
+  stateGym?: string;
+  status?: boolean;
+  memberNumber?: number;
 };
 
 export class GymUser {
@@ -20,6 +24,10 @@ export class GymUser {
   public subscriptionPlan: string;
   public comments: string;
   public nit: string;
+  public token?: string;
+  public stateGym?: string;
+  public status?: boolean;
+  public memberNumber?: number;
 
   constructor({
     gymName,
@@ -31,6 +39,10 @@ export class GymUser {
     subscriptionPlan,
     comments,
     nit,
+    token,
+    stateGym,
+    status,
+    memberNumber,
   }: constructorParams) {
     this.gymName = gymName;
     this.email = email;
@@ -41,5 +53,9 @@ export class GymUser {
     this.subscriptionPlan = subscriptionPlan;
     this.comments = comments;
     this.nit = nit;
+    this.token = token;
+    this.stateGym = stateGym;
+    this.status = status;
+    this.memberNumber = memberNumber;
   }
 }

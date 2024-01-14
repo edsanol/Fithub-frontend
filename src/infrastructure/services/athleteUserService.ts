@@ -15,22 +15,34 @@ export class AthleteUserServiceImpl implements AthleteUserService {
     this.http = http;
   }
 
-  async registerAthleteUser(athleteUser: AthleteUser): Promise<boolean> {
+  async registerAthleteUser(
+    athleteUser: AthleteUser,
+    token: string
+  ): Promise<boolean> {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
     const response = await this.http.post<
       TickerResponseApi<boolean>,
       AthleteUser
-    >("/Athlete/Register", athleteUser);
+    >("/Athlete/Register", athleteUser, { headers });
 
     return response.data;
   }
 
   async getAthleteUserList(
-    data: PaginateData
+    data: PaginateData,
+    token: string
   ): Promise<PaginateResponseList<AthleteUser>> {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
     const response = await this.http.post<
       TickerResponseApi<PaginateResponseList<AthleteUser>>,
       PaginateData
-    >("/Athlete/List", data);
+    >("/Athlete/List", data, { headers });
 
     return response.data;
   }

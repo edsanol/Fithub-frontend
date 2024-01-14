@@ -37,17 +37,20 @@ const ViewModel = () => {
     deleteModal: false,
   });
 
-  const handleSubmit = async (params: Partial<PaginateData>) => {
+  const handleSubmit = async (params: Partial<PaginateData>, token: string) => {
     try {
       const getAthleteUserListUseCase =
         container.get<GetAthleteUserListUseCase>(
           TYPES.GetAthleteUserListUseCase
         );
 
-      const response = await getAthleteUserListUseCase.execute({
-        numRecordsPage: 7,
-        ...params,
-      });
+      const response = await getAthleteUserListUseCase.execute(
+        {
+          numRecordsPage: 7,
+          ...params,
+        },
+        token
+      );
 
       if (!response) {
         console.log("error");
@@ -94,18 +97,18 @@ const ViewModel = () => {
         return;
       }
 
-      await handleSubmit({});
+      await handleSubmit({}, "");
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleSetNumPage = async (numPage: number) => {
-    await handleSubmit({ numPage });
+  const handleSetNumPage = async (numPage: number, token: string) => {
+    await handleSubmit({ numPage }, token);
   };
 
-  const handleSetTextFilter = async (textFilter: string) => {
-    await handleSubmit({ textFilter, numFilter: 1 });
+  const handleSetTextFilter = async (textFilter: string, token: string) => {
+    await handleSubmit({ textFilter, numFilter: 1 }, token);
   };
 
   const handleRedirect = (athleteId: number) => {
