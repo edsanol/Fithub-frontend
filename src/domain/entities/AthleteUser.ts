@@ -12,6 +12,11 @@ type constructorParams = {
   status: boolean;
   stateAthlete?: string;
   token?: string | null;
+  startDate?: string;
+  endDate?: string;
+  membershipName?: string;
+  cost?: number;
+  idMembership?: number;
 };
 
 export class AthleteUser {
@@ -28,6 +33,11 @@ export class AthleteUser {
   public status: boolean;
   public stateAthlete?: string;
   public token?: string | null;
+  public startDate?: string;
+  public endDate?: string;
+  public membershipName?: string;
+  public cost?: number;
+  public idMembership?: number;
 
   constructor({
     athleteId,
@@ -43,6 +53,11 @@ export class AthleteUser {
     status,
     stateAthlete,
     token,
+    startDate,
+    endDate,
+    membershipName,
+    cost,
+    idMembership,
   }: constructorParams) {
     this.athleteId = athleteId;
     this.athleteName = athleteName;
@@ -57,5 +72,10 @@ export class AthleteUser {
     this.status = status;
     this.stateAthlete = stateAthlete;
     this.token = token;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.membershipName = membershipName;
+    this.cost = cost;
+    this.idMembership = idMembership;
   }
 }

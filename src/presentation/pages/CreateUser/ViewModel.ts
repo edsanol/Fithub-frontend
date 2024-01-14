@@ -17,6 +17,8 @@ import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { usePathname } from "next/navigation";
 import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
+import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMembershipListUseCase";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -27,6 +29,8 @@ const ViewModel = () => {
 
   const athleteIdValue = athleteId ? athleteId[1] : null;
 
+  const [idGym, setIdGym] = useState<number>(0);
+  const [gymName, setGymName] = useState<string>("");
   const [athleteData, setAthleteData] = useState<AthleteUser>({
     athleteName: "",
     athleteLastName: "",
@@ -35,11 +39,13 @@ const ViewModel = () => {
     genre: "",
     birthDate: "",
     registerDate: new Date().toISOString(),
-    idGym: session ? session.user.gymId : 0,
-    gymName: session ? session.user.gymName : "",
     status: true,
+    startDate: "",
+    endDate: "",
+    membershipName: "",
+    cost: 0,
+    idMembership: 0,
   });
-
   const [athleteDataError, setAthleteDataError] = useState<IAthleteValidation>({
     nameError: false,
     lastNameError: false,
@@ -47,6 +53,10 @@ const ViewModel = () => {
     phoneNumberError: false,
     genreError: false,
     birthDateError: false,
+  });
+  const [membershipList, setMembershipList] = useState<PaginateResponseList>({
+    totalRecords: 0,
+    items: [],
   });
 
   const handleIsValidForm = async () => {
@@ -73,7 +83,7 @@ const ViewModel = () => {
         return;
       }
 
-      if (athleteData.idGym === 0 || athleteData.gymName === "") {
+      if (idGym === 0 || gymName === "") {
         console.log("error");
         return;
       }
@@ -87,7 +97,19 @@ const ViewModel = () => {
 
         response = await editAthleteUserUseCase.execute(
           Number(athleteIdValue),
-          athleteData
+          {
+            athleteName: athleteData.athleteName,
+            athleteLastName: athleteData.athleteLastName,
+            email: athleteData.email,
+            phoneNumber: athleteData.phoneNumber,
+            birthDate: athleteData.birthDate,
+            genre: athleteData.genre,
+            idGym,
+            gymName,
+            registerDate: athleteData.registerDate,
+            status: athleteData.status,
+            idMembership: athleteData.idMembership,
+          }
         );
       } else {
         const registerAthleteUserUseCase =
@@ -95,7 +117,19 @@ const ViewModel = () => {
             TYPES.RegisterAthleteUserUseCase
           );
 
-        response = await registerAthleteUserUseCase.execute(athleteData);
+        response = await registerAthleteUserUseCase.execute({
+          athleteName: athleteData.athleteName,
+          athleteLastName: athleteData.athleteLastName,
+          email: athleteData.email,
+          phoneNumber: athleteData.phoneNumber,
+          birthDate: athleteData.birthDate,
+          genre: athleteData.genre,
+          idGym,
+          gymName,
+          registerDate: athleteData.registerDate,
+          status: athleteData.status,
+          idMembership: athleteData.idMembership,
+        });
       }
 
       if (!response) {
@@ -130,17 +164,54 @@ const ViewModel = () => {
         phoneNumber: response.phoneNumber,
         genre: response.genre,
         birthDate: response.birthDate,
+        membershipName: response.membershipName,
+        endDate: response.endDate,
+        startDate: response.startDate,
       });
     } catch (error) {
       console.log(error);
     }
   };
 
+  const getPaginateMembershipList = async () => {
+    try {
+      const getMembershipListUseCase = container.get<GetMembershipListUseCase>(
+        TYPES.GetMembershipListUseCase
+      );
+
+      const response = await getMembershipListUseCase.execute({
+        textFilter: idGym.toString(),
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setMembershipList(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (session && session.user.gymId !== idGym) {
+      setIdGym(session.user.gymId);
+      setGymName(session.user.gymName);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (idGym !== 0) {
+      getPaginateMembershipList();
+    }
+  }, [idGym]);
+
   useEffect(() => {
     if (athleteIdValue) {
       getAthleteUserById(Number(athleteIdValue));
     }
-  }, []);
+  }, [athleteIdValue]);
 
   const handleSetName = (event: string) => {
     setAthleteData({ ...athleteData, athleteName: event });
@@ -168,6 +239,10 @@ const ViewModel = () => {
     setAthleteData({ ...athleteData, genre: event });
   };
 
+  const handleSetIdMembership = (event: string) => {
+    setAthleteData({ ...athleteData, idMembership: Number(event) });
+  };
+
   return {
     handleSubmit,
     handleSetName,
@@ -176,10 +251,12 @@ const ViewModel = () => {
     handleSetPhoneNumber,
     handleSetBirthDate,
     handleSetGenre,
+    handleSetIdMembership,
     getAthleteUserById,
     athleteIdValue,
     athleteData,
     athleteDataError,
+    membershipList,
   };
 };
 

@@ -43,11 +43,13 @@ const Login = () => {
             customInputClass="mt-10"
             onChange={(value) => handleSetEmail(value)}
           />
-          <FormLink
-            href="/recovery-password"
-            text="¿Has olvidado tu contraseña?"
-            customLinkClass="mt-8 text-sm lg:text-base"
-          />
+          <div className="flex justify-end">
+            <FormLink
+              href="/recovery-password"
+              text="¿Has olvidado tu contraseña?"
+              customLinkClass="mt-8 text-sm lg:text-base"
+            />
+          </div>
           <FormInputPassword
             isRequired
             isInvalid={passwordError}

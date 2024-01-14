@@ -11,7 +11,7 @@ import {
   PrimaryButton,
 } from "@/presentation/components";
 import ViewModel from "./ViewModel";
-import { formatMembershipElements } from "@/presentation/helpers";
+import { subscriptionsPlans } from "@/assets/constants";
 
 const Register = () => {
   const {
@@ -26,7 +26,6 @@ const Register = () => {
     handleSetComments,
     handleSetNit,
     gymDataError,
-    membershipList,
   } = ViewModel();
 
   return (
@@ -142,7 +141,7 @@ const Register = () => {
                 size="lg"
                 classNames={{ base: "dark" }}
                 popoverProps={{ color: "foreground" }}
-                items={formatMembershipElements(membershipList.items)}
+                items={subscriptionsPlans}
                 onChange={(value) => handleSetSubscriptionPlan(value)}
               />
             </div>
