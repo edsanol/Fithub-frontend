@@ -10,7 +10,10 @@ export class RegisterAthleteUserUseCase {
     private athleteUserRepository: AthleteUserRepository
   ) {}
 
-  async execute(athleteUser: AthleteUser): Promise<boolean> {
-    return await this.athleteUserRepository.registerAthleteUser(athleteUser);
+  async execute(athleteUser: AthleteUser, token: string): Promise<boolean> {
+    return await this.athleteUserRepository.registerAthleteUser(
+      athleteUser,
+      token
+    );
   }
 }
