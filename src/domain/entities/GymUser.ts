@@ -9,6 +9,7 @@ type constructorParams = {
   comments: string;
   nit: string;
   token?: string;
+  refreshToken?: string;
   stateGym?: string;
   status?: boolean;
   memberNumber?: number;
@@ -25,6 +26,7 @@ export class GymUser {
   public comments: string;
   public nit: string;
   public token?: string;
+  public refreshToken?: string;
   public stateGym?: string;
   public status?: boolean;
   public memberNumber?: number;
@@ -40,6 +42,7 @@ export class GymUser {
     comments,
     nit,
     token,
+    refreshToken,
     stateGym,
     status,
     memberNumber,
@@ -54,6 +57,7 @@ export class GymUser {
     this.comments = comments;
     this.nit = nit;
     this.token = token;
+    this.refreshToken = refreshToken;
     this.stateGym = stateGym;
     this.status = status;
     this.memberNumber = memberNumber;
