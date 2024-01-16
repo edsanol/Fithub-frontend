@@ -11,10 +11,14 @@
   "dependencies": {
     "@nextui-org/react": "^2.1.13",
     "@nextui-org/theme": "^2.1.9",
+    "@types/js-cookie": "^3.0.6",
     "axios": "^1.6.0",
+    "crypto-js": "^4.2.0",
     "framer-motion": "^10.16.4",
     "inversify": "^6.0.2",
     "inversify-binding-decorators": "^4.0.0",
+    "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "next": "13.5.4",
     "next-auth": "^4.24.4",
     "next-themes": "^0.2.1",
@@ -23,6 +27,7 @@
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
