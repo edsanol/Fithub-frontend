@@ -6,9 +6,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import Logout from "@/assets/svg/logout.svg";
+import { signOut } from "next-auth/react";
+import Cookies from "js-cookie";
 
 const LeftSidebar = () => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const logout = () => {
+    Cookies.remove("authToken");
+    Cookies.remove("refreshToken");
+    signOut();
+
+    router.push("/login");
+  };
 
   return (
     <section className="custom-scrollbar sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto bg-[#121417] pb-5 pt-28 max-md:hidden">
@@ -39,7 +50,7 @@ const LeftSidebar = () => {
       </div>
 
       <div className="mt-10 px-6">
-        <div className="flex cursor-pointer gap-4 p-4">
+        <div className="flex cursor-pointer gap-4 p-4" onClick={logout}>
           <Image src={Logout} alt="logout" width={24} height={24} />
           <p className="text-[#fff] max-lg:hidden">Logout</p>
         </div>

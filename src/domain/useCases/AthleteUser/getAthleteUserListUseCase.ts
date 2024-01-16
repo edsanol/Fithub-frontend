@@ -13,9 +13,8 @@ export class GetAthleteUserListUseCase {
   ) {}
 
   async execute(
-    data: PaginateData,
-    token: string
+    data: PaginateData
   ): Promise<PaginateResponseList<AthleteUser>> {
-    return await this.athleteUserRepository.getAthleteUserList(data, token);
+    return await this.athleteUserRepository.getAthleteUserList(data);
   }
 }

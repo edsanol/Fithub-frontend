@@ -45,7 +45,8 @@ export const subscriptionsPlans = [
 
 export const AthleteColumns = [
   { name: "NOMBRE", uid: "athleteName" },
-  { name: "CONTACTO", uid: "phoneNumber" },
+  { name: "DATOS PERSONALES", uid: "phoneNumber" },
+  { name: "FECHA DE CIERRE", uid: "endDate" },
   { name: "ESTADO", uid: "stateAthlete" },
   { name: "ACCIONES", uid: "actions" },
 ];

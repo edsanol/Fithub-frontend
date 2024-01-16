@@ -14,20 +14,16 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
     this.service = service;
   }
 
-  async registerAthleteUser(
-    athleteUser: AthleteUser,
-    token: string
-  ): Promise<boolean> {
-    const response = await this.service.registerAthleteUser(athleteUser, token);
+  async registerAthleteUser(athleteUser: AthleteUser): Promise<boolean> {
+    const response = await this.service.registerAthleteUser(athleteUser);
 
     return response;
   }
 
   async getAthleteUserList(
-    data: PaginateData,
-    token: string
+    data: PaginateData
   ): Promise<PaginateResponseList<AthleteUser>> {
-    const response = await this.service.getAthleteUserList(data, token);
+    const response = await this.service.getAthleteUserList(data);
 
     return response;
   }
