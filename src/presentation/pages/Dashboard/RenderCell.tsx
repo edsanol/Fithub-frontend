@@ -44,7 +44,14 @@ export const customRenderCell = (
           </p>
         </div>
       );
+    case "endDate":
+      return (
+        <div className="flex flex-col">
+          <p className="text-bold text-sm capitalize">{cellValue}</p>
+        </div>
+      );
     case "stateAthlete":
+      console.log(user.stateAthlete);
       return (
         <Chip
           className="capitalize"

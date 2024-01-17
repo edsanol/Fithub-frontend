@@ -3,13 +3,9 @@ import { PaginateData } from "../models/PaginateData";
 import { PaginateResponseList } from "../models/PaginateResponseList";
 
 export interface AthleteUserService {
-  registerAthleteUser(
-    athleteUser: AthleteUser,
-    token: string
-  ): Promise<boolean>;
+  registerAthleteUser(athleteUser: AthleteUser): Promise<boolean>;
   getAthleteUserList(
-    data: PaginateData,
-    token: string
+    data: PaginateData
   ): Promise<PaginateResponseList<AthleteUser>>;
   getAthleteUserById(id: number): Promise<AthleteUser>;
   editAthleteUser(id: number, athleteUser: AthleteUser): Promise<boolean>;

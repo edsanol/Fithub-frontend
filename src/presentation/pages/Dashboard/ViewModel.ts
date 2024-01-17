@@ -44,23 +44,39 @@ const ViewModel = () => {
           TYPES.GetAthleteUserListUseCase
         );
 
-      const response = await getAthleteUserListUseCase.execute(
-        {
-          numRecordsPage: 7,
-          ...params,
-        },
-        token
-      );
+      const response = await getAthleteUserListUseCase.execute({
+        numRecordsPage: 7,
+        ...params,
+      });
 
       if (!response) {
         console.log("error");
         return;
       }
 
+      response.items.map((athlete) => {
+        mapperAthleteUser(athlete);
+      });
+
       setAthletesList(response);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const mapperAthleteUser = (athleteUser: AthleteUser) => {
+    if (!athleteUser.startDate || !athleteUser.endDate) {
+      return;
+    }
+
+    const startDate = new Date(athleteUser.startDate);
+    const endDate = new Date(athleteUser.endDate);
+
+    if (startDate > endDate) {
+      athleteUser.stateAthlete = "Inactivo";
+    }
+
+    athleteUser.stateAthlete = "Activo";
   };
 
   const getAthleteUserById = async (id: number) => {
