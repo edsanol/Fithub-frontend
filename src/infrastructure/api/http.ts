@@ -25,8 +25,6 @@ export class AxiosHttpClient implements HttpClient {
       },
     });
 
-    const authToken = Cookies.get("authToken");
-
     this.axiosInstance.interceptors.request.use(async (config) => {
       await this.handleTokenRefresh(config);
       return config;
@@ -57,7 +55,9 @@ export class AxiosHttpClient implements HttpClient {
         config.headers.Authorization = `Bearer ${authToken}`;
       }
     } else {
-      this.handleAuthenticationError();
+      if (config.headers) {
+        config.headers.Authorization = `Bearer`;
+      }
     }
   }
 
