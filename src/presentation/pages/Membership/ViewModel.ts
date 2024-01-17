@@ -31,6 +31,7 @@ const ViewModel = () => {
     cost: 0,
     durationInDays: 0,
     description: "",
+    status: true,
   });
 
   const [membershipError, setMembershipError] = useState<IMembershipValidation>(
@@ -251,6 +252,10 @@ const ViewModel = () => {
     setMembership({ ...membership, description: event });
   };
 
+  const handleMembershipStatus = (event: boolean) => {
+    setMembership({ ...membership, status: event });
+  };
+
   return {
     handleSubmit,
     handleSetMembershipName,
@@ -258,6 +263,7 @@ const ViewModel = () => {
     handleSetCost,
     handleSetDurationInDays,
     handleSetDescription,
+    handleMembershipStatus,
     handleOpenModal,
     toggleModal,
     membership,

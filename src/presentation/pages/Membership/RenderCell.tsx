@@ -1,5 +1,5 @@
 import React from "react";
-import { Tooltip } from "@nextui-org/react";
+import { Chip, ChipProps, Tooltip } from "@nextui-org/react";
 import EyeIcon from "@/assets/svg/EyeIcon";
 import EditIcon from "@/assets/svg/EditIcon";
 import DeleteIcon from "@/assets/svg/DeleteIcon";
@@ -19,6 +19,10 @@ export const customRenderCell = (
   { handleOpenModal }: customRenderCellProps
 ) => {
   const cellValue = membership[columnKey as keyof Membership];
+  const statusColorMap: Record<string, ChipProps["color"]> = {
+    true: "success",
+    false: "danger",
+  };
 
   switch (columnKey) {
     case "membershipName":
@@ -31,6 +35,17 @@ export const customRenderCell = (
       );
     case "durationInDays":
       return <p className="text-bold text-sm capitalize">{cellValue}</p>;
+    case "status":
+      return (
+        <Chip
+          className="capitalize"
+          size="sm"
+          variant="flat"
+          color={statusColorMap[membership.status!.toString()]}
+        >
+          {cellValue ? "Activo" : "Inactivo"}
+        </Chip>
+      );
     case "actions":
       return (
         <div className="relative flex items-center gap-2">

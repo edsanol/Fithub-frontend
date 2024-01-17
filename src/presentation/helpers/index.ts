@@ -90,10 +90,16 @@ export const cleanAndFormatCurrency = (
   });
 };
 
-export const formatMembershipElements = (membership: Membership[]) => {
-  return membership.map((value) => ({
-    value: value.membershipID,
-    label: value.membershipName,
+export const formatMembershipElements = (memberships: Membership[]) => {
+  // Filtrar primero las membresías con status true
+  const filteredMemberships = memberships.filter(
+    (membership) => membership.status === true
+  );
+
+  // Luego mapear los elementos filtrados
+  return filteredMemberships.map((membership) => ({
+    value: membership.membershipID,
+    label: membership.membershipName,
   }));
 };
 

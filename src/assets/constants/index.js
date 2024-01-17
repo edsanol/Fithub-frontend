@@ -1,4 +1,7 @@
 import Home from "@/assets/svg/home.svg";
+import User from "@/assets/svg/user.svg";
+import Profile from "@/assets/svg/profile.svg";
+import Membership from "@/assets/svg/tag.svg";
 
 export const sidebarLinks = [
   {
@@ -7,22 +10,17 @@ export const sidebarLinks = [
     label: "Dashboard",
   },
   {
-    imgURL: Home,
+    imgURL: User,
     route: "/create-user",
     label: "Crear Deportista",
   },
   {
-    imgURL: Home,
+    imgURL: Membership,
     route: "/membership",
     label: "Membresías",
   },
   {
-    imgURL: Home,
-    route: "/discounts",
-    label: "Descuentos",
-  },
-  {
-    imgURL: Home,
+    imgURL: Profile,
     route: "/gym-profile",
     label: "Perfil",
   },
@@ -46,6 +44,7 @@ export const subscriptionsPlans = [
 export const AthleteColumns = [
   { name: "NOMBRE", uid: "athleteName" },
   { name: "DATOS PERSONALES", uid: "phoneNumber" },
+  { name: "FECHA DE INICIO", uid: "startDate" },
   { name: "FECHA DE CIERRE", uid: "endDate" },
   { name: "ESTADO", uid: "stateAthlete" },
   { name: "ACCIONES", uid: "actions" },
@@ -55,6 +54,7 @@ export const MembershipColumns = [
   { name: "NOMBRE", uid: "membershipName" },
   { name: "PRECIO", uid: "cost" },
   { name: "DURACIÓN (días)", uid: "durationInDays" },
+  { name: "ESTADO", uid: "status" },
   { name: "ACCIONES", uid: "actions" },
 ];
 
