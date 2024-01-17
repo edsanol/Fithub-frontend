@@ -4,21 +4,18 @@ import React from "react";
 import { sidebarLinks } from "@/assets/constants";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Logout from "@/assets/svg/logout.svg";
 import { signOut } from "next-auth/react";
 import Cookies from "js-cookie";
 
 const LeftSidebar = () => {
   const pathname = usePathname();
-  const router = useRouter();
 
   const logout = () => {
     Cookies.remove("authToken");
     Cookies.remove("refreshToken");
     signOut();
-
-    router.push("/login");
   };
 
   return (
