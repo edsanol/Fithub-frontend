@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import container from "@/config/inversifyContainer";
@@ -14,10 +14,12 @@ import {
 } from "@/presentation/helpers";
 import { IGymDataValidation } from "@/presentation/interfaces/IAuth";
 import { GymUser } from "@/domain/entities/GymUser";
-import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { cipherData } from "@/config/secureData";
+import Cookies from "js-cookie";
 
 const ViewModel = () => {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const [gymData, setGymData] = useState<GymUser>({
     gymName: "",
@@ -88,6 +90,14 @@ const ViewModel = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (session?.user.token) {
+      Cookies.set("authToken", session.user.token, { expires: 1 });
+      const tokenEncrypted = cipherData(session?.user.refreshToken);
+      Cookies.set("refreshToken", tokenEncrypted, { expires: 1 });
+    }
+  }, [session]);
 
   const handleSetGymName = (event: string) => {
     setGymData({ ...gymData, gymName: event });
