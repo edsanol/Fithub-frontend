@@ -3,7 +3,7 @@ export const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 export const passwordRegex =
   /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+}{:;<>,.?\-|]{8,}$/;
 
-export const nameRegex = /^[A-Za-z\s']+$/;
+export const nameRegex = /^[\wáéíóúÁÉÍÓÚñÑ\s,']+$/u;
 
 export const phoneRegex = /^\d{10}$/;
 
