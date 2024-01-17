@@ -58,7 +58,7 @@ export const customRenderCell = (
               />
             </span>
           </Tooltip>
-          <Tooltip content="Editar usuario" classNames={{ base: "dark" }}>
+          <Tooltip content="Editar membresía" classNames={{ base: "dark" }}>
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
               <EditIcon
                 clickHandler={() =>
@@ -67,7 +67,7 @@ export const customRenderCell = (
               />
             </span>
           </Tooltip>
-          <Tooltip color="danger" content="Eliminar usuario">
+          <Tooltip color="danger" content="Desactivar membresía">
             <span className="text-lg text-danger cursor-pointer active:opacity-50">
               <DeleteIcon
                 clickHandler={() =>
