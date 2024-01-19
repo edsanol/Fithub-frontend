@@ -45,7 +45,7 @@ const ViewModel = () => {
     endDate: "",
     membershipName: "",
     cost: 0,
-    idMembership: 0,
+    membershipId: 0,
   });
   const [athleteDataError, setAthleteDataError] = useState<IAthleteValidation>({
     nameError: false,
@@ -109,7 +109,7 @@ const ViewModel = () => {
             gymName,
             registerDate: athleteData.registerDate,
             status: athleteData.status,
-            idMembership: athleteData.idMembership,
+            membershipId: athleteData.membershipId,
           }
         );
       } else {
@@ -129,7 +129,7 @@ const ViewModel = () => {
           gymName,
           registerDate: athleteData.registerDate,
           status: athleteData.status,
-          idMembership: athleteData.idMembership,
+          membershipId: athleteData.membershipId,
         });
       }
 
@@ -166,6 +166,7 @@ const ViewModel = () => {
         genre: response.genre,
         birthDate: response.birthDate,
         membershipName: response.membershipName,
+        membershipId: response.membershipId,
         endDate: response.endDate,
         startDate: response.startDate,
       });
@@ -241,7 +242,7 @@ const ViewModel = () => {
   };
 
   const handleSetIdMembership = (event: string) => {
-    setAthleteData({ ...athleteData, idMembership: Number(event) });
+    setAthleteData({ ...athleteData, membershipId: Number(event) });
   };
 
   return {

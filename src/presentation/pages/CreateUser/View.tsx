@@ -105,18 +105,20 @@ const CreateUser = () => {
               onChange={(value) => handleSetEmail(value)}
               value={athleteData?.email}
             />
-            <FormSelect
-              isRequired
-              label="Membresías"
-              placeholder="Selecciona un plan"
-              size="lg"
-              classNames={{ base: "dark" }}
-              popoverProps={{ color: "foreground" }}
-              items={formatMembershipElements(membershipList.items)}
-              onChange={(value) => handleSetIdMembership(value)}
-              customInputClass="mt-5"
-              // value={athleteData?.idMembership}
-            />
+            {athleteData.membershipId && (
+              <FormSelect
+                isRequired
+                label="Membresías"
+                placeholder="Selecciona un plan"
+                size="lg"
+                classNames={{ base: "dark" }}
+                popoverProps={{ color: "foreground" }}
+                items={formatMembershipElements(membershipList.items)}
+                onChange={(value) => handleSetIdMembership(value)}
+                customInputClass="mt-5"
+                value={athleteData?.membershipId}
+              />
+            )}
             <FormInput
               isRequired
               isInvalid={athleteDataError?.birthDateError}
@@ -136,14 +138,16 @@ const CreateUser = () => {
               onChange={(value) => handleSetBirthDate(value)}
               value={athleteData?.birthDate.slice(0, 10)}
             />
-            <FormRadioButton
-              label="Selecciona el genero del deportista"
-              isInvalid={athleteDataError?.genreError}
-              customClass="mt-5"
-              onChange={(value) => handleSetGenre(value)}
-              options={genres}
-              value={athleteData?.genre}
-            />
+            {athleteData.genre && (
+              <FormRadioButton
+                label="Selecciona el genero del deportista"
+                isInvalid={athleteDataError?.genreError}
+                customClass="mt-5"
+                onChange={(value) => handleSetGenre(value)}
+                options={genres}
+                value={athleteData?.genre}
+              />
+            )}
             <PrimaryButton
               text="Guardar"
               btnType="submit"

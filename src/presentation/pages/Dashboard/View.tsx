@@ -97,6 +97,16 @@ const Dashboard = () => {
               <FormInput
                 isRequired
                 isReadOnly
+                type="text"
+                label="Membresía"
+                size="lg"
+                classNames={{ base: "dark" }}
+                customInputClass="mt-7"
+                value={athleteUser?.membershipName}
+              />
+              <FormInput
+                isRequired
+                isReadOnly
                 type="date"
                 label="Fecha de nacimiento"
                 placeholder="Fecha de nacimiento"

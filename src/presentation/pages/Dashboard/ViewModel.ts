@@ -30,6 +30,7 @@ const ViewModel = () => {
     gymName: "",
     registerDate: "",
     status: true,
+    membershipName: "",
   });
 
   const [isModalOpen, setIsModalOpen] = useState({
