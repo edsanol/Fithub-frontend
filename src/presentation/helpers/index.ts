@@ -1,4 +1,4 @@
-import { Membership } from "@/domain/entities/Membership";
+import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import {
   emailRegex,
   nameRegex,
@@ -90,14 +90,8 @@ export const cleanAndFormatCurrency = (
   });
 };
 
-export const formatMembershipElements = (memberships: Membership[]) => {
-  // Filtrar primero las membresías con status true
-  const filteredMemberships = memberships.filter(
-    (membership) => membership.status === true
-  );
-
-  // Luego mapear los elementos filtrados
-  return filteredMemberships.map((membership) => ({
+export const formatMembershipElements = (memberships: MembershipByGymId[]) => {
+  return memberships.map((membership) => ({
     value: membership.membershipID,
     label: membership.membershipName,
   }));

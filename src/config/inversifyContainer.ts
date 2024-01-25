@@ -40,6 +40,7 @@ import { DeleteDiscountUseCase } from "@/domain/useCases/Discounts/deleteDiscoun
 import { ChangePasswordUseCase } from "@/domain/useCases/GymUser/changePasswordUseCase";
 import { RecoverPasswordUseCase } from "@/domain/useCases/GymUser/recoverPasswordUseCase";
 import { ResetPasswordUseCase } from "@/domain/useCases/GymUser/resetPasswordUseCase";
+import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 
 const container = new Container();
 
@@ -135,6 +136,9 @@ container
 container
   .bind<DeleteMembershipUseCase>(TYPES.DeleteMembershipUseCase)
   .to(DeleteMembershipUseCase);
+container
+  .bind<GetMembershipByGymIdUseCase>(TYPES.GetMembershipByGymIdUseCase)
+  .to(GetMembershipByGymIdUseCase);
 
 // DiscountsRepository
 container

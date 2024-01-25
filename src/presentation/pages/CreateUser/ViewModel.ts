@@ -18,8 +18,8 @@ import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { usePathname } from "next/navigation";
 import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
-import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMembershipListUseCase";
-import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
+import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -46,7 +46,9 @@ const ViewModel = () => {
     membershipName: "",
     cost: 0,
     membershipId: 0,
+    idMembership: 0,
   });
+
   const [athleteDataError, setAthleteDataError] = useState<IAthleteValidation>({
     nameError: false,
     lastNameError: false,
@@ -55,10 +57,8 @@ const ViewModel = () => {
     genreError: false,
     birthDateError: false,
   });
-  const [membershipList, setMembershipList] = useState<PaginateResponseList>({
-    totalRecords: 0,
-    items: [],
-  });
+
+  const [membership, setMembership] = useState<MembershipByGymId[]>([]);
 
   const handleIsValidForm = async () => {
     const errors: IAthleteValidation = {
@@ -129,7 +129,7 @@ const ViewModel = () => {
           gymName,
           registerDate: athleteData.registerDate,
           status: athleteData.status,
-          membershipId: athleteData.membershipId,
+          idMembership: athleteData.membershipId,
         });
       }
 
@@ -175,22 +175,20 @@ const ViewModel = () => {
     }
   };
 
-  const getPaginateMembershipList = async () => {
+  const getMembershipByGymId = async () => {
     try {
-      const getMembershipListUseCase = container.get<GetMembershipListUseCase>(
-        TYPES.GetMembershipListUseCase
+      const GetMembershipByGymId = container.get<GetMembershipByGymIdUseCase>(
+        TYPES.GetMembershipByGymIdUseCase
       );
 
-      const response = await getMembershipListUseCase.execute({
-        textFilter: idGym.toString(),
-      });
+      const response = await GetMembershipByGymId.execute(idGym);
 
       if (!response) {
         console.log("error");
         return;
       }
 
-      setMembershipList(response);
+      setMembership(response);
     } catch (error) {
       console.log(error);
     }
@@ -205,7 +203,7 @@ const ViewModel = () => {
 
   useEffect(() => {
     if (idGym !== 0) {
-      getPaginateMembershipList();
+      getMembershipByGymId();
     }
   }, [idGym]);
 
@@ -258,7 +256,7 @@ const ViewModel = () => {
     athleteIdValue,
     athleteData,
     athleteDataError,
-    membershipList,
+    membership,
   };
 };
 

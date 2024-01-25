@@ -1,5 +1,6 @@
 import { TYPES } from "@/config/types";
 import { Membership } from "@/domain/entities/Membership";
+import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { MembershipRepository } from "@/domain/repositories/membershipRepository";
@@ -42,6 +43,12 @@ export class MembershipRepositoryImpl implements MembershipRepository {
 
   async deleteMembership(id: number): Promise<boolean> {
     const response = await this.service.deleteMembership(id);
+
+    return response;
+  }
+
+  async getMembershipByGymId(gymId: number): Promise<MembershipByGymId[]> {
+    const response = await this.service.getMembershipByGymId(gymId);
 
     return response;
   }

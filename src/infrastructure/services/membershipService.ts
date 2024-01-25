@@ -6,6 +6,7 @@ import { Membership } from "@/domain/entities/Membership";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 
 @injectable()
 export class MembershipServiceImpl implements MembershipService {
@@ -57,6 +58,14 @@ export class MembershipServiceImpl implements MembershipService {
       `/Membership/Delete/${id}`,
       null
     );
+
+    return response.data;
+  }
+
+  async getMembershipByGymId(gymId: number): Promise<MembershipByGymId[]> {
+    const response = await this.http.get<
+      TickerResponseApi<MembershipByGymId[]>
+    >(`/Membership/Select/${gymId}`);
 
     return response.data;
   }

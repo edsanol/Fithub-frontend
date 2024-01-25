@@ -42,6 +42,7 @@ const TYPES = {
   GetMembershipByIdUseCase: Symbol.for("GetMembershipByIdUseCase"),
   EditMembershipUseCase: Symbol.for("EditMembershipUseCase"),
   DeleteMembershipUseCase: Symbol.for("DeleteMembershipUseCase"),
+  GetMembershipByGymIdUseCase: Symbol.for("GetMembershipByGymIdUseCase"),
 
   // DiscountsRepository
   DiscountsRepository: Symbol.for("DiscountsRepository"),
