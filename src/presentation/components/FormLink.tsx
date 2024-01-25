@@ -1,7 +1,6 @@
 "use client";
 
 import { Link } from "@nextui-org/react";
-import React from "react";
 
 interface FormLinkProps {
   customLinkClass?: string;

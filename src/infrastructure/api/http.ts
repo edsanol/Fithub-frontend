@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import { signOut } from "next-auth/react";
 
 export interface HttpClient {
-  post<T, U>(url: string, data: U, config?: AxiosRequestConfig): Promise<T>;
+  post<T, U>(url: string, data: U): Promise<T>;
   put<T, U>(url: string, data: U): Promise<T>;
   get<T>(url: string): Promise<T>;
   delete<T>(url: string): Promise<T>;
@@ -98,16 +98,8 @@ export class AxiosHttpClient implements HttpClient {
     throw new Error(response.statusText);
   }
 
-  async post<T, U>(
-    url: string,
-    data: U,
-    config?: AxiosRequestConfig
-  ): Promise<T> {
-    const response: AxiosResponse<T> = await this.axiosInstance.post(
-      url,
-      data,
-      config
-    );
+  async post<T, U>(url: string, data: U): Promise<T> {
+    const response: AxiosResponse<T> = await this.axiosInstance.post(url, data);
     return this.handleResponse(response);
   }
 

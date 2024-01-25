@@ -1,5 +1,3 @@
-import React from "react";
-
 const AuthHeader = () => {
   return (
     <div className="w-full h-auto bg-[#121417] p-5">

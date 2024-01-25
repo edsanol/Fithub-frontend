@@ -1,5 +1,4 @@
 import Register from "@/presentation/pages/Register";
-import React from "react";
 
 const RegisterPage = () => {
   return (

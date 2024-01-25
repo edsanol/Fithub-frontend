@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { RadioGroup, Radio } from "@nextui-org/react";
 
 interface IFormRadioButtonProps {
