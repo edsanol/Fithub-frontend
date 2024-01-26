@@ -8,7 +8,6 @@ import {
   FormSelect,
   PrimaryButton,
 } from "@/presentation/components";
-import React from "react";
 import ViewModel from "./ViewModel";
 import { formatMembershipElements } from "@/presentation/helpers";
 
@@ -24,7 +23,7 @@ const CreateUser = () => {
     handleSetIdMembership,
     athleteData,
     athleteDataError,
-    membershipList,
+    membership,
   } = ViewModel();
 
   return (
@@ -112,10 +111,10 @@ const CreateUser = () => {
               size="lg"
               classNames={{ base: "dark" }}
               popoverProps={{ color: "foreground" }}
-              items={formatMembershipElements(membershipList.items)}
+              items={formatMembershipElements(membership)}
               onChange={(value) => handleSetIdMembership(value)}
               customInputClass="mt-5"
-              // value={athleteData?.idMembership}
+              value={athleteData?.membershipId}
             />
             <FormInput
               isRequired

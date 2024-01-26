@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Select, SelectItem } from "@nextui-org/react";
 
 interface FormSelectProps {
@@ -33,29 +32,33 @@ const FormSelect = ({
   onChange,
 }: FormSelectProps) => {
   return (
-    <Select
-      isRequired={isRequired || false}
-      isDisabled={isDisabled || false}
-      label={label}
-      placeholder={placeholder || ""}
-      size={size || "lg"}
-      classNames={classNames || ""}
-      popoverProps={popoverProps || ""}
-      description={description || ""}
-      className={customInputClass || ""}
-      defaultSelectedKeys={value ? [value.toString()] : []}
-    >
-      {items.map((item: any) => (
-        <SelectItem
-          key={item.value}
-          value={String(item.value)}
+    <>
+      {items && (
+        <Select
+          isRequired={isRequired || false}
+          isDisabled={isDisabled || false}
+          label={label}
+          placeholder={placeholder || ""}
+          size={size || "lg"}
           classNames={classNames || ""}
-          onClick={() => onChange && onChange(String(item.value))}
+          popoverProps={popoverProps || ""}
+          description={description || ""}
+          className={customInputClass || ""}
+          defaultSelectedKeys={value ? [value.toString()] : ""}
         >
-          {item.label}
-        </SelectItem>
-      ))}
-    </Select>
+          {items.map((item: any) => (
+            <SelectItem
+              key={item.value}
+              value={String(item.value)}
+              classNames={classNames || ""}
+              onClick={() => onChange && onChange(String(item.value))}
+            >
+              {item.label}
+            </SelectItem>
+          ))}
+        </Select>
+      )}
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import {
   AuthHeader,
   CustomModal,
   FormInput,
+  FormLink,
   PrimaryButton,
 } from "@/presentation/components";
 import React from "react";
@@ -45,6 +46,14 @@ const RecoveryPassword = () => {
             customButtonClass="mt-10 w-full p-8"
           />
         </form>
+
+        <div className="flex justify-center">
+          <FormLink
+            href="/login"
+            text="Regresar al inicio de sesión"
+            customLinkClass="mt-8 text-sm lg:text-base"
+          />
+        </div>
       </div>
       <CustomModal
         isOpen={isModalOpen}

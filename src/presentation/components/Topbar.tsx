@@ -1,5 +1,4 @@
 import Link from "next/link";
-import React from "react";
 import LogoIcon from "@/assets/svg/LogoIcon";
 import Image from "next/image";
 import Logout from "@/assets/svg/logout.svg";

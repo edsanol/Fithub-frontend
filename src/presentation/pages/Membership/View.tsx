@@ -9,6 +9,7 @@ import {
   PrimaryButton,
   FormTextarea,
   DashboardHeader,
+  FormSwitch,
 } from "@/presentation/components";
 import WarningIcon from "@/assets/svg/WarningIcon";
 import { Button } from "@nextui-org/react";
@@ -22,6 +23,7 @@ const Membership = () => {
     handleSetCost,
     handleSetDurationInDays,
     handleSetDescription,
+    handleMembershipStatus,
     handleOpenModal,
     toggleModal,
     membership,
@@ -157,6 +159,15 @@ const Membership = () => {
                   value={membership?.description}
                 />
               </div>
+              {modalMode === "edit" && (
+                <div className="mt-3">
+                  <FormSwitch
+                    label="Estado de la membresía"
+                    defaultSelected={membership?.status}
+                    onChange={(value) => handleMembershipStatus(value)}
+                  />
+                </div>
+              )}
               {modalMode === "create" || modalMode === "edit" ? (
                 <div className="mt-5">
                   <PrimaryButton

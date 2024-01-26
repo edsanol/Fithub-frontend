@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { sidebarLinks } from "@/assets/constants";
 import Link from "next/link";
 import Image from "next/image";

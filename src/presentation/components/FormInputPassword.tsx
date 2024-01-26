@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { EyeSlashFilledIcon } from "@/assets/svg/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "@/assets/svg/EyeFilledIcon";
 import { Input } from "@nextui-org/react";

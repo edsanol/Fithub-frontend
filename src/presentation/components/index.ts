@@ -13,6 +13,7 @@ import FormRadioButton from "./FormRadioButton";
 import CustomModal from "./CustomModal";
 import CustomTable from "./CustomTable";
 import DashboardHeader from "./DashboardHeader";
+import FormSwitch from "./FormSwitch";
 
 export {
   PrimaryButton,
@@ -30,4 +31,5 @@ export {
   CustomModal,
   CustomTable,
   DashboardHeader,
+  FormSwitch,
 };

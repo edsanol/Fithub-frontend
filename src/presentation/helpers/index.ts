@@ -1,4 +1,4 @@
-import { Membership } from "@/domain/entities/Membership";
+import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import {
   emailRegex,
   nameRegex,
@@ -90,10 +90,10 @@ export const cleanAndFormatCurrency = (
   });
 };
 
-export const formatMembershipElements = (membership: Membership[]) => {
-  return membership.map((value) => ({
-    value: value.membershipID,
-    label: value.membershipName,
+export const formatMembershipElements = (memberships: MembershipByGymId[]) => {
+  return memberships.map((membership) => ({
+    value: membership.membershipID,
+    label: membership.membershipName,
   }));
 };
 
