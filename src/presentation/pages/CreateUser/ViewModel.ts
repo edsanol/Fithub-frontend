@@ -18,7 +18,6 @@ import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { usePathname } from "next/navigation";
 import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
-import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 
 const ViewModel = () => {
@@ -175,37 +174,12 @@ const ViewModel = () => {
     }
   };
 
-  const getMembershipByGymId = async () => {
-    try {
-      const GetMembershipByGymId = container.get<GetMembershipByGymIdUseCase>(
-        TYPES.GetMembershipByGymIdUseCase
-      );
-
-      const response = await GetMembershipByGymId.execute(idGym);
-
-      if (!response) {
-        console.log("error");
-        return;
-      }
-
-      setMembership(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
       setIdGym(session.user.gymId);
       setGymName(session.user.gymName);
     }
   }, [session]);
-
-  useEffect(() => {
-    if (idGym !== 0) {
-      getMembershipByGymId();
-    }
-  }, [idGym]);
 
   useEffect(() => {
     if (athleteIdValue) {
