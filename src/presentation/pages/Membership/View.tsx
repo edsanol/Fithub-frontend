@@ -205,10 +205,10 @@ const Membership = () => {
                 <WarningIcon />
               </div>
               <p className="text-lg text-center mt-5">
-                ¿Estás seguro de eliminar esta membresía?
+                ¿Estás seguro de desactivar esta membresía?
               </p>
               <p className="text-sm text-center text-default-400">
-                Esta acción no se puede deshacer.
+                Puedes volver a activarla en la edición.
               </p>
             </div>
           </>
@@ -232,6 +232,37 @@ const Membership = () => {
               }}
             >
               Si, eliminar
+            </Button>
+          </>
+        }
+      />
+      <CustomModal
+        isOpen={isModalOpen.infoModal}
+        onOpenChange={() => toggleModal("deleteModal")}
+        size="2xl"
+        content={
+          <>
+            <div className="mt-3 flex flex-col justify-center">
+              <div className="mx-auto">
+                <WarningIcon />
+              </div>
+              <p className="text-lg text-center mt-5">
+                No puedes eliminar esta membresía
+              </p>
+              <p className="text-sm text-center text-default-400">
+                Esta membresía está siendo utilizada por un usuario.
+              </p>
+            </div>
+          </>
+        }
+        footerContent={
+          <>
+            <Button
+              color="primary"
+              variant="ghost"
+              onPress={() => toggleModal("infoModal")}
+            >
+              Cerrar
             </Button>
           </>
         }

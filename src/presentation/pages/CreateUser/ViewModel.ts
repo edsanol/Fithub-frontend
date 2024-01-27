@@ -19,6 +19,7 @@ import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtle
 import { usePathname } from "next/navigation";
 import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
+import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -45,7 +46,6 @@ const ViewModel = () => {
     membershipName: "",
     cost: 0,
     membershipId: 0,
-    idMembership: 0,
   });
 
   const [athleteDataError, setAthleteDataError] = useState<IAthleteValidation>({
@@ -128,7 +128,7 @@ const ViewModel = () => {
           gymName,
           registerDate: athleteData.registerDate,
           status: athleteData.status,
-          idMembership: athleteData.membershipId,
+          membershipId: athleteData.membershipId,
         });
       }
 
@@ -174,12 +174,37 @@ const ViewModel = () => {
     }
   };
 
+  const getMembershipByGymId = async () => {
+    try {
+      const GetMembershipByGymId = container.get<GetMembershipByGymIdUseCase>(
+        TYPES.GetMembershipByGymIdUseCase
+      );
+
+      const response = await GetMembershipByGymId.execute(idGym);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setMembership(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
       setIdGym(session.user.gymId);
       setGymName(session.user.gymName);
     }
   }, [session]);
+
+  useEffect(() => {
+    if (idGym !== 0) {
+      getMembershipByGymId();
+    }
+  }, [idGym]);
 
   useEffect(() => {
     if (athleteIdValue) {
