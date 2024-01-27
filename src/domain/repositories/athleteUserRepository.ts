@@ -1,6 +1,7 @@
 import { AthleteUser } from "../entities/AthleteUser";
 import { PaginateData } from "../models/PaginateData";
 import { PaginateResponseList } from "../models/PaginateResponseList";
+import { UpdateMembershipToAthlete } from "../models/UpdateMembershipToAthlete";
 
 export interface AthleteUserRepository {
   registerAthleteUser(athleteUser: AthleteUser): Promise<boolean>;
@@ -10,4 +11,5 @@ export interface AthleteUserRepository {
   getAthleteUserById(id: number): Promise<AthleteUser>;
   editAthleteUser(id: number, athleteUser: AthleteUser): Promise<boolean>;
   deleteAthleteUser(id: number): Promise<boolean>;
+  updateMembershipToAthlete(data: UpdateMembershipToAthlete): Promise<boolean>;
 }

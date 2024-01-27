@@ -2,6 +2,7 @@ import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { UpdateMembershipToAthlete } from "@/domain/models/UpdateMembershipToAthlete";
 import { AthleteUserRepository } from "@/domain/repositories/athleteUserRepository";
 import type { AthleteUserService } from "@/domain/services/athleteUserService";
 import { inject, injectable } from "inversify";
@@ -45,6 +46,14 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
 
   async deleteAthleteUser(id: number): Promise<boolean> {
     const response = await this.service.deleteAthleteUser(id);
+
+    return response;
+  }
+
+  async updateMembershipToAthlete(
+    data: UpdateMembershipToAthlete
+  ): Promise<boolean> {
+    const response = await this.service.updateMembershipToAthlete(data);
 
     return response;
   }
