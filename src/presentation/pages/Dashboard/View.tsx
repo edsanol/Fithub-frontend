@@ -8,24 +8,30 @@ import {
   CustomModal,
   CustomTable,
   DashboardHeader,
+  FormSelect,
+  PrimaryButton,
 } from "@/presentation/components";
 import { genres } from "@/assets/constants";
 import WarningIcon from "@/assets/svg/WarningIcon";
 import { Button } from "@nextui-org/react";
 import { customRenderCell } from "./RenderCell";
+import { formatMembershipElements } from "@/presentation/helpers";
 
 const Dashboard = () => {
   const {
-    handleSetNumPage,
-    handleSetTextFilter,
-    handleOpenModal,
-    handleRedirect,
-    deleteAthleteUser,
-    toggleModal,
-    athletesList,
     AthleteColumns,
+    athletesList,
     athleteUser,
     isModalOpen,
+    membership,
+    deleteAthleteUser,
+    handleOpenModal,
+    handleRedirect,
+    handleSetIdMembership,
+    handleSetNumPage,
+    handleSetTextFilter,
+    toggleModal,
+    updateMembership,
   } = ViewModel();
 
   return (
@@ -139,6 +145,38 @@ const Dashboard = () => {
             >
               Cerrar
             </Button>
+          </>
+        }
+      />
+      <CustomModal
+        isOpen={isModalOpen.editMembershipModal}
+        onOpenChange={() => toggleModal("editMembershipModal")}
+        size="2xl"
+        content={
+          <>
+            <DashboardHeader
+              title="Editar membresía de atleta"
+              description="Selecciona una membresía para asignarla al atleta."
+            />
+            <form className="mt-3" onSubmit={updateMembership}>
+              <FormSelect
+                isRequired
+                label="Membresías"
+                placeholder="Selecciona un plan"
+                size="lg"
+                classNames={{ base: "dark" }}
+                popoverProps={{ color: "foreground" }}
+                items={formatMembershipElements(membership)}
+                onChange={(value) => handleSetIdMembership(value)}
+              />
+              <div className="mt-5">
+                <PrimaryButton
+                  text={"Guardar"}
+                  btnType="submit"
+                  customButtonClass="w-full p-8 mt-5"
+                />
+              </div>
+            </form>
           </>
         }
       />
