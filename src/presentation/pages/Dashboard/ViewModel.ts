@@ -67,6 +67,7 @@ const ViewModel = () => {
 
   const mapperAthleteUser = (athleteUser: AthleteUser) => {
     if (!athleteUser.startDate || !athleteUser.endDate) {
+      athleteUser.stateAthlete = "Inactivo";
       return;
     }
 

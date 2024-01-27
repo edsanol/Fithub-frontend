@@ -102,7 +102,11 @@ const Dashboard = () => {
                 size="lg"
                 classNames={{ base: "dark" }}
                 customInputClass="mt-7"
-                value={athleteUser?.membershipName}
+                value={
+                  athleteUser?.membershipName
+                    ? athleteUser?.membershipName
+                    : "Sin membresía"
+                }
               />
               <FormInput
                 isRequired
