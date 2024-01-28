@@ -7,20 +7,20 @@ import {
   isValidName,
   isValidPhone,
 } from "@/presentation/helpers";
-import { IAthleteValidation } from "@/presentation/interfaces/IAthlete";
-import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { useSession } from "next-auth/react";
-import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/registerAthleteUserUseCase";
-import container from "@/config/inversifyContainer";
-import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
-import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
-import { usePathname } from "next/navigation";
 import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
-import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
+import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
+import { IAthleteValidation } from "@/presentation/interfaces/IAthlete";
+import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
+import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/registerAthleteUserUseCase";
+import { TYPES } from "@/config/types";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import container from "@/config/inversifyContainer";
+import { useEffect } from "react";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -78,6 +78,25 @@ const ViewModel = () => {
 
     return Promise.resolve(errors);
   };
+
+  useEffect(() => {
+    if (session && session.user.gymId !== idGym) {
+      setIdGym(session.user.gymId);
+      setGymName(session.user.gymName);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (idGym !== 0) {
+      getMembershipByGymId();
+    }
+  }, [idGym]);
+
+  useEffect(() => {
+    if (athleteIdValue) {
+      getAthleteUserById(Number(athleteIdValue));
+    }
+  }, [athleteIdValue]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -199,25 +218,6 @@ const ViewModel = () => {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    if (session && session.user.gymId !== idGym) {
-      setIdGym(session.user.gymId);
-      setGymName(session.user.gymName);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    if (idGym !== 0) {
-      getMembershipByGymId();
-    }
-  }, [idGym]);
-
-  useEffect(() => {
-    if (athleteIdValue) {
-      getAthleteUserById(Number(athleteIdValue));
-    }
-  }, [athleteIdValue]);
 
   const handleSetName = (event: string) => {
     setAthleteData({ ...athleteData, athleteName: event });

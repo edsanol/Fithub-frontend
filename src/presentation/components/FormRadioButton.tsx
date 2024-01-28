@@ -24,8 +24,10 @@ const FormRadioButton = ({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange && onChange(event.target.value);
   };
+
   return (
     <RadioGroup
+      key={value}
       isRequired
       isDisabled={isDisabled}
       isInvalid={isInvalid}

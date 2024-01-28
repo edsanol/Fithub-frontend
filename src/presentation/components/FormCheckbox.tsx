@@ -6,7 +6,6 @@ interface FormCheckboxProps {
   label: string;
   selected: boolean;
   customClassNames?: string;
-  customTextClassNames?: string;
   onValueChange?: (value: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -14,7 +13,6 @@ const FormCheckbox = ({
   label,
   selected,
   customClassNames,
-  customTextClassNames,
   onValueChange,
 }: FormCheckboxProps) => {
   return (
@@ -24,7 +22,7 @@ const FormCheckbox = ({
       classNames={{ base: "dark" }}
       onChange={(value) => onValueChange && onValueChange(value)}
     >
-      <p className={customTextClassNames}>{label}</p>
+      <p className="text-white text-sm">{label}</p>
     </Checkbox>
   );
 };

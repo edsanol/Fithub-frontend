@@ -1,6 +1,5 @@
 "use client";
 
-import { genres } from "@/assets/constants";
 import {
   DashboardHeader,
   FormCheckbox,
@@ -9,9 +8,10 @@ import {
   FormSelect,
   PrimaryButton,
 } from "@/presentation/components";
-import ViewModel from "./ViewModel";
 import { formatMembershipElements } from "@/presentation/helpers";
+import { genres } from "@/assets/constants";
 import AccessCodeInput from "./components/AccessCodeInput";
+import ViewModel from "./ViewModel";
 
 const CreateUser = () => {
   const {
@@ -136,7 +136,6 @@ const CreateUser = () => {
                 label="¿Desea editar el código de acceso del deportista?"
                 selected={isCheck}
                 customClassNames="mt-2"
-                customTextClassNames="text-white"
                 onValueChange={handleSetIsCheck}
               />
             )}
