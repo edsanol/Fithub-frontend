@@ -7,6 +7,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/react";
+import { useEffect, useState } from "react";
 
 interface CustomModalProps {
   onOpenChange: (state: boolean) => void;
@@ -33,6 +34,19 @@ const CustomModal = ({
   content,
   footerContent,
 }: CustomModalProps) => {
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   return (
     <>
       <Modal
@@ -40,6 +54,8 @@ const CustomModal = ({
         onOpenChange={onOpenChange}
         classNames={{ base: "dark" }}
         size={size}
+        placement="top-center"
+        scrollBehavior={isSmallScreen ? "inside" : "outside"}
       >
         <ModalContent>
           <>

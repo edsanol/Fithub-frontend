@@ -4,11 +4,12 @@ import EyeIcon from "@/assets/svg/EyeIcon";
 import EditIcon from "@/assets/svg/EditIcon";
 import DeleteIcon from "@/assets/svg/DeleteIcon";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
+import MembershipIcon from "@/assets/svg/MembershipIcon";
 
 interface customRenderCellProps {
   handleOpenModal: (
     id: number,
-    modalName: "detailsModal" | "deleteModal"
+    modalName: "detailsModal" | "deleteModal" | "editMembershipModal"
   ) => void;
   handleRedirect: (id: number) => void;
 }
@@ -47,17 +48,20 @@ export const customRenderCell = (
     case "startDate":
       return (
         <div className="flex flex-col">
-          <p className="text-bold text-sm capitalize">{cellValue}</p>
+          <p className="text-bold text-sm capitalize">
+            {cellValue ? cellValue : "Sin registro"}
+          </p>
         </div>
       );
     case "endDate":
       return (
         <div className="flex flex-col">
-          <p className="text-bold text-sm capitalize">{cellValue}</p>
+          <p className="text-bold text-sm capitalize">
+            {cellValue ? cellValue : "Sin registro"}
+          </p>
         </div>
       );
     case "stateAthlete":
-      console.log(user.stateAthlete);
       return (
         <Chip
           className="capitalize"
@@ -85,6 +89,19 @@ export const customRenderCell = (
               <EditIcon clickHandler={() => handleRedirect(user.athleteId!)} />
             </span>
           </Tooltip>
+          {!user.endDate ||
+          !user.startDate ||
+          user.stateAthlete === "Inactivo" ? (
+            <Tooltip content="Editar membresía" classNames={{ base: "dark" }}>
+              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                <MembershipIcon
+                  clickHandler={() =>
+                    handleOpenModal(user.athleteId!, "editMembershipModal")
+                  }
+                />
+              </span>
+            </Tooltip>
+          ) : null}
           <Tooltip color="danger" content="Eliminar usuario">
             <span className="text-lg text-danger cursor-pointer active:opacity-50">
               <DeleteIcon

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from "react";
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
@@ -48,6 +49,7 @@ const ViewModel = () => {
     detailsModal: false,
     deleteModal: false,
     editModal: false,
+    infoModal: false,
   });
 
   const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
@@ -117,6 +119,7 @@ const ViewModel = () => {
         detailsModal: false,
         deleteModal: false,
         editModal: false,
+        infoModal: false,
       });
 
       await getPaginateMembershipList();
@@ -181,7 +184,7 @@ const ViewModel = () => {
 
       await getPaginateMembershipList();
     } catch (error) {
-      console.log(error);
+      toggleModal("infoModal");
     }
   };
 
@@ -198,7 +201,12 @@ const ViewModel = () => {
   }, [idGym]);
 
   const toggleModal = (
-    modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal"
+    modalName:
+      | "createModal"
+      | "detailsModal"
+      | "deleteModal"
+      | "editModal"
+      | "infoModal"
   ) => {
     setIsModalOpen((prevState) => ({
       ...prevState,
@@ -207,7 +215,12 @@ const ViewModel = () => {
   };
 
   const handleOpenModal = async (
-    modalName: "createModal" | "detailsModal" | "deleteModal" | "editModal",
+    modalName:
+      | "createModal"
+      | "detailsModal"
+      | "deleteModal"
+      | "editModal"
+      | "infoModal",
     id?: number
   ) => {
     switch (modalName) {

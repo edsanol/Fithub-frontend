@@ -18,8 +18,8 @@ import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { usePathname } from "next/navigation";
 import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
-import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
+import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -46,7 +46,6 @@ const ViewModel = () => {
     membershipName: "",
     cost: 0,
     membershipId: 0,
-    idMembership: 0,
   });
 
   const [athleteDataError, setAthleteDataError] = useState<IAthleteValidation>({
@@ -129,7 +128,7 @@ const ViewModel = () => {
           gymName,
           registerDate: athleteData.registerDate,
           status: athleteData.status,
-          idMembership: athleteData.membershipId,
+          membershipId: athleteData.membershipId,
         });
       }
 

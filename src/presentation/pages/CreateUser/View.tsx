@@ -24,6 +24,7 @@ const CreateUser = () => {
     athleteData,
     athleteDataError,
     membership,
+    athleteIdValue,
   } = ViewModel();
 
   return (
@@ -104,18 +105,20 @@ const CreateUser = () => {
               onChange={(value) => handleSetEmail(value)}
               value={athleteData?.email}
             />
-            <FormSelect
-              isRequired
-              label="Membresías"
-              placeholder="Selecciona un plan"
-              size="lg"
-              classNames={{ base: "dark" }}
-              popoverProps={{ color: "foreground" }}
-              items={formatMembershipElements(membership)}
-              onChange={(value) => handleSetIdMembership(value)}
-              customInputClass="mt-5"
-              value={athleteData?.membershipId}
-            />
+            {!athleteIdValue && (
+              <FormSelect
+                isRequired
+                label="Membresías"
+                placeholder="Selecciona un plan"
+                size="lg"
+                classNames={{ base: "dark" }}
+                popoverProps={{ color: "foreground" }}
+                items={formatMembershipElements(membership)}
+                onChange={(value) => handleSetIdMembership(value)}
+                customInputClass="mt-5"
+                value={athleteData?.membershipId}
+              />
+            )}
             <FormInput
               isRequired
               isInvalid={athleteDataError?.birthDateError}

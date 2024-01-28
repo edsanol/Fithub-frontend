@@ -1,12 +1,12 @@
 "use client";
 
 import { sidebarLinks } from "@/assets/constants";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import Logout from "@/assets/svg/logout.svg";
 import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
+import Image from "next/image";
+import Link from "next/link";
+import Logout from "@/assets/svg/logout.svg";
 
 const LeftSidebar = () => {
   const pathname = usePathname();
