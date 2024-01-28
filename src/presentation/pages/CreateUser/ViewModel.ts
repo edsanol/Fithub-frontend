@@ -61,6 +61,7 @@ const ViewModel = () => {
   });
 
   const [membership, setMembership] = useState<MembershipByGymId[]>([]);
+  const [isCheck, setIsCheck] = useState<boolean>(false);
 
   const handleIsValidForm = async () => {
     const errors: IAthleteValidation = {
@@ -252,6 +253,10 @@ const ViewModel = () => {
     setAthleteData({ ...athleteData, cardAccessCode: event });
   };
 
+  const handleSetIsCheck = () => {
+    setIsCheck(!isCheck);
+  };
+
   return {
     handleSubmit,
     handleSetName,
@@ -262,11 +267,13 @@ const ViewModel = () => {
     handleSetGenre,
     handleSetIdMembership,
     handleSetCardAccessCode,
+    handleSetIsCheck,
     getAthleteUserById,
     athleteIdValue,
     athleteData,
     athleteDataError,
     membership,
+    isCheck,
   };
 };
 

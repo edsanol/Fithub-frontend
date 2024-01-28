@@ -3,6 +3,7 @@
 import { genres } from "@/assets/constants";
 import {
   DashboardHeader,
+  FormCheckbox,
   FormInput,
   FormRadioButton,
   FormSelect,
@@ -10,6 +11,7 @@ import {
 } from "@/presentation/components";
 import ViewModel from "./ViewModel";
 import { formatMembershipElements } from "@/presentation/helpers";
+import AccessCodeInput from "./components/AccessCodeInput";
 
 const CreateUser = () => {
   const {
@@ -22,10 +24,12 @@ const CreateUser = () => {
     handleSetGenre,
     handleSetIdMembership,
     handleSetCardAccessCode,
+    handleSetIsCheck,
     athleteData,
     athleteDataError,
     membership,
     athleteIdValue,
+    isCheck,
   } = ViewModel();
 
   return (
@@ -106,37 +110,41 @@ const CreateUser = () => {
               onChange={(value) => handleSetEmail(value)}
               value={athleteData?.email}
             />
-            <FormInput
-              isRequired
-              isInvalid={athleteDataError?.cardAccessCodeError}
-              color={
-                athleteDataError?.cardAccessCodeError ? "danger" : "default"
-              }
-              errorMessage={
-                athleteDataError?.cardAccessCodeError
-                  ? "Por favor ingresa un código de acceso válido"
-                  : ""
-              }
-              type="text"
-              label="Código de acceso"
-              size="lg"
-              classNames={{ base: "dark" }}
-              customInputClass="mt-7"
-              onChange={(value) => handleSetCardAccessCode(value)}
-              value={athleteData?.cardAccessCode}
-            />
             {!athleteIdValue && (
-              <FormSelect
-                isRequired
-                label="Membresías"
-                placeholder="Selecciona un plan"
-                size="lg"
-                classNames={{ base: "dark" }}
-                popoverProps={{ color: "foreground" }}
-                items={formatMembershipElements(membership)}
-                onChange={(value) => handleSetIdMembership(value)}
-                customInputClass="mt-5"
-                value={athleteData?.membershipId}
+              <>
+                <AccessCodeInput
+                  athleteData={athleteData}
+                  athleteDataError={athleteDataError}
+                  handleSetCardAccessCode={handleSetCardAccessCode}
+                />
+                <FormSelect
+                  isRequired
+                  label="Membresías"
+                  placeholder="Selecciona un plan"
+                  size="lg"
+                  classNames={{ base: "dark" }}
+                  popoverProps={{ color: "foreground" }}
+                  items={formatMembershipElements(membership)}
+                  onChange={(value) => handleSetIdMembership(value)}
+                  customInputClass="mt-5"
+                  value={athleteData?.membershipId}
+                />
+              </>
+            )}
+            {athleteIdValue && (
+              <FormCheckbox
+                label="¿Desea editar el código de acceso del deportista?"
+                selected={isCheck}
+                customClassNames="mt-2"
+                customTextClassNames="text-white"
+                onValueChange={handleSetIsCheck}
+              />
+            )}
+            {isCheck && (
+              <AccessCodeInput
+                athleteData={athleteData}
+                athleteDataError={athleteDataError}
+                handleSetCardAccessCode={handleSetCardAccessCode}
               />
             )}
             <FormInput

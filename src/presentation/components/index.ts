@@ -14,6 +14,7 @@ import CustomModal from "./CustomModal";
 import CustomTable from "./CustomTable";
 import DashboardHeader from "./DashboardHeader";
 import FormSwitch from "./FormSwitch";
+import FormCheckbox from "./FormCheckbox";
 
 export {
   PrimaryButton,
@@ -32,4 +33,5 @@ export {
   CustomTable,
   DashboardHeader,
   FormSwitch,
+  FormCheckbox,
 };
