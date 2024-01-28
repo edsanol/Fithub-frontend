@@ -17,7 +17,6 @@ type constructorParams = {
   membershipName?: string;
   cost?: number;
   membershipId?: number;
-  idMembership?: number;
 };
 
 export class AthleteUser {
@@ -39,7 +38,6 @@ export class AthleteUser {
   public membershipName?: string;
   public cost?: number;
   public membershipId?: number;
-  public idMembership?: number;
 
   constructor({
     athleteId,
@@ -60,7 +58,6 @@ export class AthleteUser {
     membershipName,
     cost,
     membershipId,
-    idMembership,
   }: constructorParams) {
     this.athleteId = athleteId;
     this.athleteName = athleteName;
@@ -80,6 +77,5 @@ export class AthleteUser {
     this.membershipName = membershipName;
     this.cost = cost;
     this.membershipId = membershipId;
-    this.idMembership = idMembership;
   }
 }
