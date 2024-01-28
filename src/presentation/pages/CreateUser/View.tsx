@@ -21,6 +21,7 @@ const CreateUser = () => {
     handleSetBirthDate,
     handleSetGenre,
     handleSetIdMembership,
+    handleSetCardAccessCode,
     athleteData,
     athleteDataError,
     membership,
@@ -104,6 +105,25 @@ const CreateUser = () => {
               customInputClass="mt-7"
               onChange={(value) => handleSetEmail(value)}
               value={athleteData?.email}
+            />
+            <FormInput
+              isRequired
+              isInvalid={athleteDataError?.cardAccessCodeError}
+              color={
+                athleteDataError?.cardAccessCodeError ? "danger" : "default"
+              }
+              errorMessage={
+                athleteDataError?.cardAccessCodeError
+                  ? "Por favor ingresa un código de acceso válido"
+                  : ""
+              }
+              type="text"
+              label="Código de acceso"
+              size="lg"
+              classNames={{ base: "dark" }}
+              customInputClass="mt-7"
+              onChange={(value) => handleSetCardAccessCode(value)}
+              value={athleteData?.cardAccessCode}
             />
             {!athleteIdValue && (
               <FormSelect

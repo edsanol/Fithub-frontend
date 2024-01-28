@@ -1,5 +1,6 @@
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import {
+  cardCodeRegex,
   emailRegex,
   nameRegex,
   nitRegex,
@@ -34,6 +35,14 @@ export const isValidNit = (nit: string): boolean => {
 
 export const isValidName = (name: string): boolean => {
   if (nameRegex.test(name)) {
+    return true;
+  }
+
+  return false;
+};
+
+export const isValidCardCode = (cardCode: string): boolean => {
+  if (cardCodeRegex.test(cardCode)) {
     return true;
   }
 

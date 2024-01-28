@@ -21,6 +21,7 @@ export interface IAthleteValidation {
   phoneNumberError: boolean;
   genreError: boolean;
   birthDateError: boolean;
+  cardAccessCodeError: boolean;
 }
 
 export interface IAthleteUserList {

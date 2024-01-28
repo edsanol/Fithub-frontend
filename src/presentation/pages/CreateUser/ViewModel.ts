@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   isNotEmpty,
+  isValidCardCode,
   isValidEmail,
   isValidGenre,
   isValidName,
@@ -46,6 +47,7 @@ const ViewModel = () => {
     membershipName: "",
     cost: 0,
     membershipId: 0,
+    cardAccessCode: "",
   });
 
   const [athleteDataError, setAthleteDataError] = useState<IAthleteValidation>({
@@ -55,6 +57,7 @@ const ViewModel = () => {
     phoneNumberError: false,
     genreError: false,
     birthDateError: false,
+    cardAccessCodeError: false,
   });
 
   const [membership, setMembership] = useState<MembershipByGymId[]>([]);
@@ -67,6 +70,7 @@ const ViewModel = () => {
       phoneNumberError: !isValidPhone(athleteData.phoneNumber),
       genreError: !isValidGenre(athleteData.genre),
       birthDateError: !isNotEmpty(athleteData.birthDate),
+      cardAccessCodeError: !isValidCardCode(athleteData.cardAccessCode),
     };
 
     setAthleteDataError(errors);
@@ -109,6 +113,7 @@ const ViewModel = () => {
             registerDate: athleteData.registerDate,
             status: athleteData.status,
             membershipId: athleteData.membershipId,
+            cardAccessCode: athleteData.cardAccessCode,
           }
         );
       } else {
@@ -129,6 +134,7 @@ const ViewModel = () => {
           registerDate: athleteData.registerDate,
           status: athleteData.status,
           membershipId: athleteData.membershipId,
+          cardAccessCode: athleteData.cardAccessCode,
         });
       }
 
@@ -242,6 +248,10 @@ const ViewModel = () => {
     setAthleteData({ ...athleteData, membershipId: Number(event) });
   };
 
+  const handleSetCardAccessCode = (event: string) => {
+    setAthleteData({ ...athleteData, cardAccessCode: event });
+  };
+
   return {
     handleSubmit,
     handleSetName,
@@ -251,6 +261,7 @@ const ViewModel = () => {
     handleSetBirthDate,
     handleSetGenre,
     handleSetIdMembership,
+    handleSetCardAccessCode,
     getAthleteUserById,
     athleteIdValue,
     athleteData,
