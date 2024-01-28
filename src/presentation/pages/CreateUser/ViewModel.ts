@@ -194,6 +194,7 @@ const ViewModel = () => {
         membershipId: response.membershipId,
         endDate: response.endDate,
         startDate: response.startDate,
+        cardAccessCode: response.cardAccessCode,
       });
     } catch (error) {
       console.log(error);
