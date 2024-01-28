@@ -16,7 +16,7 @@ const Topbar = () => {
 
   return (
     <nav className="fixed top-0 z-30 flex w-full items-center justify-between px-6 py-3 bg-[#121417]">
-      <Link href="/" className="flex items-center gap-4">
+      <Link href="/dashboard" className="flex items-center gap-4">
         <LogoIcon />
         <p className="text-2xl leading-{140%} font-bold">FitHub</p>
       </Link>

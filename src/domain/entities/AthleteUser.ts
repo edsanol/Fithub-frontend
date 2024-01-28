@@ -6,10 +6,11 @@ type constructorParams = {
   phoneNumber: string;
   birthDate: string;
   genre: string;
-  idGym?: number;
-  gymName?: string;
+  cardAccessCode: string;
   registerDate: string;
   status: boolean;
+  idGym?: number;
+  gymName?: string;
   stateAthlete?: string;
   token?: string | null;
   startDate?: string;
@@ -27,6 +28,7 @@ export class AthleteUser {
   public phoneNumber: string;
   public birthDate: string;
   public genre: string;
+  public cardAccessCode: string;
   public idGym?: number;
   public gymName?: string;
   public registerDate: string;
@@ -47,6 +49,7 @@ export class AthleteUser {
     phoneNumber,
     birthDate,
     genre,
+    cardAccessCode,
     idGym,
     gymName,
     registerDate,
@@ -66,6 +69,7 @@ export class AthleteUser {
     this.phoneNumber = phoneNumber;
     this.birthDate = birthDate;
     this.genre = genre;
+    this.cardAccessCode = cardAccessCode;
     this.idGym = idGym;
     this.gymName = gymName;
     this.registerDate = registerDate;

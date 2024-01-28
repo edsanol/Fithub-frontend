@@ -1,15 +1,17 @@
 "use client";
 
-import { genres } from "@/assets/constants";
 import {
   DashboardHeader,
+  FormCheckbox,
   FormInput,
   FormRadioButton,
   FormSelect,
   PrimaryButton,
 } from "@/presentation/components";
-import ViewModel from "./ViewModel";
 import { formatMembershipElements } from "@/presentation/helpers";
+import { genres } from "@/assets/constants";
+import AccessCodeInput from "./components/AccessCodeInput";
+import ViewModel from "./ViewModel";
 
 const CreateUser = () => {
   const {
@@ -21,10 +23,13 @@ const CreateUser = () => {
     handleSetBirthDate,
     handleSetGenre,
     handleSetIdMembership,
+    handleSetCardAccessCode,
+    handleSetIsCheck,
     athleteData,
     athleteDataError,
     membership,
     athleteIdValue,
+    isCheck,
   } = ViewModel();
 
   return (
@@ -106,17 +111,39 @@ const CreateUser = () => {
               value={athleteData?.email}
             />
             {!athleteIdValue && (
-              <FormSelect
-                isRequired
-                label="Membresías"
-                placeholder="Selecciona un plan"
-                size="lg"
-                classNames={{ base: "dark" }}
-                popoverProps={{ color: "foreground" }}
-                items={formatMembershipElements(membership)}
-                onChange={(value) => handleSetIdMembership(value)}
-                customInputClass="mt-5"
-                value={athleteData?.membershipId}
+              <>
+                <AccessCodeInput
+                  athleteData={athleteData}
+                  athleteDataError={athleteDataError}
+                  handleSetCardAccessCode={handleSetCardAccessCode}
+                />
+                <FormSelect
+                  isRequired
+                  label="Membresías"
+                  placeholder="Selecciona un plan"
+                  size="lg"
+                  classNames={{ base: "dark" }}
+                  popoverProps={{ color: "foreground" }}
+                  items={formatMembershipElements(membership)}
+                  onChange={(value) => handleSetIdMembership(value)}
+                  customInputClass="mt-5"
+                  value={athleteData?.membershipId}
+                />
+              </>
+            )}
+            {athleteIdValue && (
+              <FormCheckbox
+                label="¿Desea editar el código de acceso del deportista?"
+                selected={isCheck}
+                customClassNames="mt-2"
+                onValueChange={handleSetIsCheck}
+              />
+            )}
+            {isCheck && (
+              <AccessCodeInput
+                athleteData={athleteData}
+                athleteDataError={athleteDataError}
+                handleSetCardAccessCode={handleSetCardAccessCode}
               />
             )}
             <FormInput
