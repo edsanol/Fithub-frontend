@@ -15,6 +15,13 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import container from "@/config/inversifyContainer";
 import { UpdateMembershipToAthleteUseCase } from "@/domain/useCases/AthleteUser/updateMembershipToAthlete";
+import { GetDashboardDataUseCase } from "@/domain/useCases/Dashboard/getDashboardData";
+import { DashboardDataValues } from "@/domain/models/DashboardDataValues";
+import { BarGraphicValues } from "@/domain/models/BarGraphicValues";
+import { GetDailyAssistanceGraphicUseCase } from "@/domain/useCases/Dashboard/getDailyAssistanceGraphic";
+import { PieGraphicValues } from "@/domain/models/PieGraphicValues";
+import { GetMembershipGraphicUseCase } from "@/domain/useCases/Dashboard/getMembershipGraphic";
+import { GetIncomeGraphicUseCase } from "@/domain/useCases/Dashboard/getIncomeGraphic";
 
 const ViewModel = () => {
   const { data: session } = useSession();
@@ -38,6 +45,7 @@ const ViewModel = () => {
     registerDate: "",
     status: true,
     membershipName: "",
+    cardAccessCode: "", // Add the missing property 'cardAccessCode'
   });
 
   const [updateMembershipToAthlete, setUpdateMembershipToAthlete] =
@@ -55,6 +63,17 @@ const ViewModel = () => {
     editMembershipModal: false,
   });
 
+  const [dashboardData, setDashboardData] = useState<DashboardDataValues>();
+  const [getDailyAssistanceGraphic, setGetDailyAssistanceGraphic] = useState<
+    BarGraphicValues[]
+  >([]);
+  const [getMembershipGraphic, setGetMembershipGraphic] = useState<
+    PieGraphicValues[]
+  >([]);
+  const [getIncomeGraphic, setGetIncomeGraphic] = useState<BarGraphicValues[]>(
+    []
+  );
+
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
       setIdGym(session.user.gymId);
@@ -64,8 +83,80 @@ const ViewModel = () => {
   useEffect(() => {
     if (idGym !== 0) {
       getMembershipByGymId();
+      getDashboardData();
+      getDailyAssistance();
+      getMembershipGraph();
+      getIncomeGraph();
     }
   }, [idGym]);
+
+  const getDashboardData = async () => {
+    const getDashboardDataUseCase = container.get<GetDashboardDataUseCase>(
+      TYPES.GetDashboardDataUseCase
+    );
+    const response = await getDashboardDataUseCase.execute();
+
+    if (!response) {
+      console.log("error");
+      return;
+    }
+
+    setDashboardData(response);
+  };
+
+  const getDailyAssistance = async () => {
+    const getDailyAssistanceGraphicUseCase =
+      container.get<GetDailyAssistanceGraphicUseCase>(
+        TYPES.GetDailyAssistanceGraphicUseCase
+      );
+
+    const response = await getDailyAssistanceGraphicUseCase.execute(
+      "2024-01-01",
+      "2024-02-08"
+    );
+
+    if (!response) {
+      console.log("error");
+      return;
+    }
+
+    setGetDailyAssistanceGraphic(response);
+  };
+
+  const getMembershipGraph = async () => {
+    const getMembershipGraphicUseCase =
+      container.get<GetMembershipGraphicUseCase>(
+        TYPES.GetMembershipGraphicUseCase
+      );
+
+    const response = await getMembershipGraphicUseCase.execute();
+
+    if (!response) {
+      console.log("error");
+      return;
+    }
+
+    setGetMembershipGraphic(response);
+  };
+
+  const getIncomeGraph = async () => {
+    const getIncomeGraphicUseCase = container.get<GetIncomeGraphicUseCase>(
+      TYPES.GetIncomeGraphicUseCase
+    );
+
+    const response = await getIncomeGraphicUseCase.execute(
+      "2024-01-01",
+      "2024-02-08"
+    );
+
+    if (!response) {
+      console.log("error");
+      return;
+    }
+
+    console.log(response);
+    setGetIncomeGraphic(response);
+  };
 
   const handleSubmit = async (params: Partial<PaginateData>) => {
     try {
@@ -254,6 +345,10 @@ const ViewModel = () => {
     athleteUser,
     isModalOpen,
     membership,
+    dashboardData,
+    getDailyAssistanceGraphic,
+    getMembershipGraphic,
+    getIncomeGraphic,
     deleteAthleteUser,
     handleOpenModal,
     handleRedirect,

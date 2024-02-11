@@ -16,6 +16,12 @@ import WarningIcon from "@/assets/svg/WarningIcon";
 import { Button } from "@nextui-org/react";
 import { customRenderCell } from "./RenderCell";
 import { formatMembershipElements } from "@/presentation/helpers";
+import CustomDashboardGraph from "@/presentation/components/CustomDashboardGraph";
+import CustomDashboardData from "@/presentation/components/CustomDashboardData";
+import CustomDashboardDoubleGraph from "@/presentation/components/CustomDashboardDoubleGraph";
+import CustomAssistanceGraph from "@/presentation/components/CustomAssistanceGraph";
+import CustomMembershipDistributionGraph from "@/presentation/components/CustomMembershipDistributionGraph";
+import CustomIncomeGraph from "@/presentation/components/CustomIncomeGraph";
 
 const Dashboard = () => {
   const {
@@ -24,6 +30,10 @@ const Dashboard = () => {
     athleteUser,
     isModalOpen,
     membership,
+    dashboardData,
+    getDailyAssistanceGraphic,
+    getMembershipGraphic,
+    getIncomeGraphic,
     deleteAthleteUser,
     handleOpenModal,
     handleRedirect,
@@ -37,11 +47,23 @@ const Dashboard = () => {
   return (
     <div>
       <DashboardHeader
-        title="Gestiona tus Atletas"
+        title="Gestiona tu Gimnasio"
         description="
         Explora la lista completa de tus atletas y encuéntralos rápidamente usando el filtro por nombre. Visualiza todos sus detalles y, si es necesario, elimina perfiles de manera sencilla."
         customClassName="mb-5"
       />
+      <div className="flex flex-wrap gap-4 justify-between">
+        <CustomDashboardData data={dashboardData} />
+        <CustomDashboardDoubleGraph dashboardData={dashboardData} />
+        <CustomDashboardGraph dashboardData={dashboardData} />
+      </div>
+      <div className="flex flex-wrap gap-2 justify-center py-8 lg:justify-between">
+        <CustomAssistanceGraph initialData={getDailyAssistanceGraphic} />
+        <CustomMembershipDistributionGraph initialData={getMembershipGraphic} />
+      </div>
+      <div className="flex flex-wrap gap-2 justify-center py-8 lg:justify-between">
+        <CustomIncomeGraph initialData={getIncomeGraphic} />
+      </div>
       <CustomTable
         onSetNumPage={handleSetNumPage}
         onSetTextFilter={handleSetTextFilter}
