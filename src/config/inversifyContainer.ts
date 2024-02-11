@@ -42,6 +42,14 @@ import { RecoverPasswordUseCase } from "@/domain/useCases/GymUser/recoverPasswor
 import { ResetPasswordUseCase } from "@/domain/useCases/GymUser/resetPasswordUseCase";
 import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 import { UpdateMembershipToAthleteUseCase } from "@/domain/useCases/AthleteUser/updateMembershipToAthlete";
+import { DashboardDataService } from "@/domain/services/dashboardDataService";
+import { DashboardDataServiceImpl } from "@/infrastructure/services/dashboardDataService";
+import { DashboardDataRepository } from "@/domain/repositories/dashboardDataRepository";
+import { DashboardDataRepositoryImpl } from "@/infrastructure/repositories/dashboardDataRepository";
+import { GetDashboardDataUseCase } from "@/domain/useCases/Dashboard/getDashboardData";
+import { GetDailyAssistanceGraphicUseCase } from "@/domain/useCases/Dashboard/getDailyAssistanceGraphic";
+import { GetIncomeGraphicUseCase } from "@/domain/useCases/Dashboard/getIncomeGraphic";
+import { GetMembershipGraphicUseCase } from "@/domain/useCases/Dashboard/getMembershipGraphic";
 
 const container = new Container();
 
@@ -172,5 +180,31 @@ container
 container
   .bind<DeleteDiscountUseCase>(TYPES.DeleteDiscountUseCase)
   .to(DeleteDiscountUseCase);
+
+// DashboardDataService
+container
+  .bind<DashboardDataService>(TYPES.DashboardDataService)
+  .to(DashboardDataServiceImpl);
+
+// DashboardDataRepository
+container
+  .bind<DashboardDataRepository>(TYPES.DashboardDataRepository)
+  .to(DashboardDataRepositoryImpl);
+
+// DashboardDataUseCases
+container
+  .bind<GetDashboardDataUseCase>(TYPES.GetDashboardDataUseCase)
+  .to(GetDashboardDataUseCase);
+container
+  .bind<GetDailyAssistanceGraphicUseCase>(
+    TYPES.GetDailyAssistanceGraphicUseCase
+  )
+  .to(GetDailyAssistanceGraphicUseCase);
+container
+  .bind<GetIncomeGraphicUseCase>(TYPES.GetIncomeGraphicUseCase)
+  .to(GetIncomeGraphicUseCase);
+container
+  .bind<GetMembershipGraphicUseCase>(TYPES.GetMembershipGraphicUseCase)
+  .to(GetMembershipGraphicUseCase);
 
 export default container;

@@ -59,6 +59,20 @@ const TYPES = {
   GetDiscountByIdUseCase: Symbol.for("GetDiscountByIdUseCase"),
   EditDiscountUseCase: Symbol.for("EditDiscountUseCase"),
   DeleteDiscountUseCase: Symbol.for("DeleteDiscountUseCase"),
+
+  // DashboardService
+  DashboardDataService: Symbol.for("DashboardDataService"),
+
+  // DashboardRepository
+  DashboardDataRepository: Symbol.for("DashboardDataRepository"),
+
+  // DashboardDataUseCases
+  GetDashboardDataUseCase: Symbol.for("GetDashboardDataUseCase"),
+  GetDailyAssistanceGraphicUseCase: Symbol.for(
+    "GetDailyAssistanceGraphicUseCase"
+  ),
+  GetIncomeGraphicUseCase: Symbol.for("GetIncomeGraphicUseCase"),
+  GetMembershipGraphicUseCase: Symbol.for("GetMembershipGraphicUseCase"),
 };
 
 export { TYPES };
