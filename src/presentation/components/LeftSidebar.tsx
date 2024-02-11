@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import ArrowLeftIcon from "@/assets/svg/ArrowLeftIcon";
 import UserIcon from "@/assets/svg/UserIcon";
 import SidebarLinkGroup from "./SidebarLinkGroup";
+import DashboardIcon from "@/assets/svg/DashboardIcon";
 
 interface SidebarProps {
   sidebarOpen: boolean;
