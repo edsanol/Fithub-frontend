@@ -18,22 +18,22 @@ export default function DashboardLayout({
 
   return (
     <>
-      <main className="flex flex-row">
+      <div className="flex h-screen overflow-hidden">
         <LeftSidebar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
 
         <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-          <Topbar />
+          <Topbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-          <section className="flex min-h-screen flex-1 flex-col items-center px-6 pb-10 pt-28 max-md:pb-32 sm:px-10 overflow-auto bg-black">
-            <div className="w-full max-w-4xl md:max-w-7xl">{children}</div>
-          </section>
+          <main>
+            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+              {children}
+            </div>
+          </main>
         </div>
-      </main>
-
-      <Bottombar />
+      </div>
     </>
   );
 }
