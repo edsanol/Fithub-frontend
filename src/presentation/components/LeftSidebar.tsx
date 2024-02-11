@@ -9,6 +9,8 @@ import Link from "next/link";
 import Logout from "@/assets/svg/logout.svg";
 import { useEffect, useRef, useState } from "react";
 import ArrowLeftIcon from "@/assets/svg/ArrowLeftIcon";
+import UserIcon from "@/assets/svg/UserIcon";
+import SidebarLinkGroup from "./SidebarLinkGroup";
 
 interface SidebarProps {
   sidebarOpen: boolean;
