@@ -3,8 +3,6 @@
 import { signOut } from "next-auth/react";
 import Cookies from "js-cookie";
 import Image from "next/image";
-import Link from "next/link";
-import LogoIcon from "@/assets/svg/LogoIcon";
 import Logout from "@/assets/svg/logout.svg";
 import MenuIcon from "@/assets/svg/MenuIcon";
 
@@ -31,6 +29,12 @@ const Topbar = (props: {
         >
           <MenuIcon />
         </button>
+
+        <div className="flex items-center gap-1">
+          <div className="block md:hidden" onClick={logout}>
+            <Image src={Logout} alt="logout" width={24} height={24} />
+          </div>
+        </div>
       </div>
     </header>
   );

@@ -12,6 +12,7 @@ import ArrowLeftIcon from "@/assets/svg/ArrowLeftIcon";
 import UserIcon from "@/assets/svg/UserIcon";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import DashboardIcon from "@/assets/svg/DashboardIcon";
+import CloseIcon from "@/assets/svg/CloseIcon";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -77,26 +78,14 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-end px-6 py-5.5 lg:py-6.5 mb-6">
-          <button
-            ref={trigger}
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            aria-controls="sidebar"
-            aria-expanded={sidebarOpen}
-            className="block lg:hidden"
-          >
-            <ArrowLeftIcon />
-          </button>
-        </div>
-
-        <div className="flex items justify-center">
+        <div className="flex items justify-center mt-5">
           <Link href="/dashboard">
             <p className="text-2xl text-[#3669FC] font-black">FitHub</p>
           </Link>
         </div>
 
         <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
-          <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
+          <nav className="mt-5 py-4 px-4 lg:px-6">
             <div>
               <h3 className="mb-4 text-sm font-semibold text-bodydark2">
                 Menu principal
@@ -106,8 +95,9 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <li>
                   <Link
                     href="/dashboard"
-                    className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                      pathname.includes("dashboard") && "bg-[#3669FC]"
+                    className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-sm duration-300 ease-in-out hover:bg-[#2A2E30] dark:hover:bg-meta-4 ${
+                      pathname.includes("dashboard") &&
+                      "bg-[#3669FC] hover:bg-[#3669FC]"
                     }`}
                   >
                     <DashboardIcon />
@@ -125,10 +115,10 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       <>
                         <Link
                           href="#"
-                          className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-[#2A2E30] ${
                             (pathname === "/users" ||
                               pathname.includes("user")) &&
-                            "bg-[#3669FC]"
+                            "bg-[#3669FC] hover:bg-[#3669FC]"
                           }`}
                           onClick={(e) => {
                             e.preventDefault();
@@ -140,8 +130,8 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           <UserIcon />
                           Deportistas
                           <svg
-                            className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
-                              open && "rotate-180"
+                            className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current transition-transform duration-300 ease-in-out ${
+                              open ? "rotate-180" : "rotate-0"
                             }`}
                             width="20"
                             height="20"
@@ -159,17 +149,17 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </Link>
 
                         <div
-                          className={`translate transform overflow-hidden ${
-                            !open && "hidden"
+                          className={`transition-opacity opacity-0 duration-700 ease-in-out overflow-hidden ${
+                            open ? "opacity-100 max-h-96" : "max-h-0"
                           }`}
                         >
                           <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                             <li>
                               <Link
                                 href="/create-user"
-                                className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                  pathname === "/forms/form-elements" &&
-                                  "text-white"
+                                className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-white duration-300 ease-in-out hover:text-[#2A2E30] ${
+                                  pathname === "/create-user" &&
+                                  "text-[#2A2E30]"
                                 }`}
                               >
                                 Crear deportista
@@ -177,10 +167,9 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             </li>
                             <li>
                               <Link
-                                href="/forms/form-layout"
-                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                  pathname === "/forms/form-layout" &&
-                                  "text-white"
+                                href="/user-list"
+                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#2A2E30] ${
+                                  pathname === "/user-list" && "text-[#2A2E30]"
                                 }`}
                               >
                                 Listado deportistas
