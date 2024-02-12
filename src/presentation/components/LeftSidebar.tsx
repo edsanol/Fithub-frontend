@@ -1,18 +1,18 @@
 "use client";
 
-import { sidebarLinks } from "@/assets/constants";
 import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
-import Image from "next/image";
 import Link from "next/link";
 import Logout from "@/assets/svg/logout.svg";
 import { useEffect, useRef, useState } from "react";
-import ArrowLeftIcon from "@/assets/svg/ArrowLeftIcon";
 import UserIcon from "@/assets/svg/UserIcon";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import DashboardIcon from "@/assets/svg/DashboardIcon";
-import CloseIcon from "@/assets/svg/CloseIcon";
+import MembershipIcon from "@/assets/svg/MembershipIcon";
+import { SidebarItems, SidebarLinkGroupItems } from "./SidebarItems";
+import ProfileIcon from "@/assets/svg/ProfileIcon";
+import ArrowDownIcon from "@/assets/svg/ArrowDownIcon";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -93,16 +93,12 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               <ul className="mb-6 flex flex-col gap-4">
                 <li>
-                  <Link
-                    href="/dashboard"
-                    className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-sm duration-300 ease-in-out hover:bg-[#2A2E30] dark:hover:bg-meta-4 ${
-                      pathname.includes("dashboard") &&
-                      "bg-[#3669FC] hover:bg-[#3669FC]"
-                    }`}
-                  >
-                    <DashboardIcon />
-                    Dashboard
-                  </Link>
+                  <SidebarItems
+                    url="/dashboard"
+                    route="dashboard"
+                    icon={<DashboardIcon />}
+                    label="Dashboard"
+                  />
                 </li>
 
                 <SidebarLinkGroup
@@ -113,40 +109,18 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   {(handleClick, open) => {
                     return (
                       <>
-                        <Link
-                          href="#"
-                          className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-[#2A2E30] ${
-                            (pathname === "/users" ||
-                              pathname.includes("user")) &&
-                            "bg-[#3669FC] hover:bg-[#3669FC]"
-                          }`}
-                          onClick={(e) => {
-                            e.preventDefault();
+                        <SidebarItems
+                          url="#"
+                          icon={<UserIcon />}
+                          route="user"
+                          label="Deportistas"
+                          handleClick={() => {
                             sidebarExpanded
                               ? handleClick()
                               : setSidebarExpanded(true);
                           }}
-                        >
-                          <UserIcon />
-                          Deportistas
-                          <svg
-                            className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current transition-transform duration-300 ease-in-out ${
-                              open ? "rotate-180" : "rotate-0"
-                            }`}
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-                              fill=""
-                            />
-                          </svg>
-                        </Link>
+                          secondaryIcon={<ArrowDownIcon open={open} />}
+                        />
 
                         <div
                           className={`transition-opacity opacity-0 duration-700 ease-in-out overflow-hidden ${
@@ -155,25 +129,16 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         >
                           <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                             <li>
-                              <Link
-                                href="/create-user"
-                                className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-white duration-300 ease-in-out hover:text-[#2A2E30] ${
-                                  pathname === "/create-user" &&
-                                  "text-[#2A2E30]"
-                                }`}
-                              >
-                                Crear deportista
-                              </Link>
+                              <SidebarLinkGroupItems
+                                label="Crear deportista"
+                                url="/create-user"
+                              />
                             </li>
                             <li>
-                              <Link
-                                href="/user-list"
-                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#2A2E30] ${
-                                  pathname === "/user-list" && "text-[#2A2E30]"
-                                }`}
-                              >
-                                Listado deportistas
-                              </Link>
+                              <SidebarLinkGroupItems
+                                label="Listado deportistas"
+                                url="/user-list"
+                              />
                             </li>
                           </ul>
                         </div>
@@ -183,16 +148,12 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </SidebarLinkGroup>
 
                 <li>
-                  <Link
-                    href="/membership"
-                    className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-[#2A2E30] dark:hover:bg-meta-4 ${
-                      pathname.includes("membership") &&
-                      "bg-[#3669FC] hover:bg-[#3669FC]"
-                    }`}
-                  >
-                    <UserIcon />
-                    Membresías
-                  </Link>
+                  <SidebarItems
+                    url="/membership"
+                    route="membership"
+                    icon={<MembershipIcon />}
+                    label="Membresías"
+                  />
                 </li>
               </ul>
             </div>
@@ -204,40 +165,12 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               <ul className="mb-6 flex flex-col gap-1.5">
                 <li>
-                  <Link
-                    href="/gym-profile"
-                    className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-[#2A2E30] dark:hover:bg-meta-4 ${
-                      pathname.includes("gym-profile") &&
-                      "bg-[#3669FC] hover:bg-[#3669FC]"
-                    }`}
-                  >
-                    <svg
-                      className="fill-current"
-                      width="18"
-                      height="19"
-                      viewBox="0 0 18 19"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_130_9756)">
-                        <path
-                          d="M15.7501 0.55835H2.2501C1.29385 0.55835 0.506348 1.34585 0.506348 2.3021V15.8021C0.506348 16.7584 1.29385 17.574 2.27822 17.574H15.7782C16.7345 17.574 17.5501 16.7865 17.5501 15.8021V2.3021C17.522 1.34585 16.7063 0.55835 15.7501 0.55835ZM6.69385 10.599V6.4646H11.3063V10.5709H6.69385V10.599ZM11.3063 11.8646V16.3083H6.69385V11.8646H11.3063ZM1.77197 6.4646H5.45635V10.5709H1.77197V6.4646ZM12.572 6.4646H16.2563V10.5709H12.572V6.4646ZM2.2501 1.82397H15.7501C16.0313 1.82397 16.2563 2.04897 16.2563 2.33022V5.2271H1.77197V2.3021C1.77197 2.02085 1.96885 1.82397 2.2501 1.82397ZM1.77197 15.8021V11.8646H5.45635V16.3083H2.2501C1.96885 16.3083 1.77197 16.0834 1.77197 15.8021ZM15.7501 16.3083H12.572V11.8646H16.2563V15.8021C16.2563 16.0834 16.0313 16.3083 15.7501 16.3083Z"
-                          fill=""
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_130_9756">
-                          <rect
-                            width="18"
-                            height="18"
-                            fill="white"
-                            transform="translate(0 0.052124)"
-                          />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                    Perfil
-                  </Link>
+                  <SidebarItems
+                    url="/gym-profile"
+                    route="gym-profile"
+                    icon={<ProfileIcon />}
+                    label="Perfil"
+                  />
                 </li>
               </ul>
             </div>
