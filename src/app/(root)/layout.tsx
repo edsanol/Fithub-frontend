@@ -1,6 +1,6 @@
 "use client";
 
-import { Bottombar, LeftSidebar, Topbar } from "@/presentation/components";
+import { LeftSidebar, Topbar } from "@/presentation/components";
 import type { Metadata } from "next";
 import { useState } from "react";
 

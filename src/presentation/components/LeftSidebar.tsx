@@ -185,8 +185,9 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <li>
                   <Link
                     href="/membership"
-                    className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                      pathname.includes("membership") && "bg-[#3669FC]"
+                    className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-[#2A2E30] dark:hover:bg-meta-4 ${
+                      pathname.includes("membership") &&
+                      "bg-[#3669FC] hover:bg-[#3669FC]"
                     }`}
                   >
                     <UserIcon />
@@ -205,8 +206,9 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <li>
                   <Link
                     href="/gym-profile"
-                    className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                      pathname.includes("gym-profile") && "bg-[#3669FC]"
+                    className={`group relative flex items-center gap-2.5 rounded-lg p-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-[#2A2E30] dark:hover:bg-meta-4 ${
+                      pathname.includes("gym-profile") &&
+                      "bg-[#3669FC] hover:bg-[#3669FC]"
                     }`}
                   >
                     <svg
