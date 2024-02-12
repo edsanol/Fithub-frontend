@@ -6,7 +6,7 @@ const ProfileIcon = () => {
         width="18"
         height="19"
         viewBox="0 0 18 19"
-        fill="none"
+        fill="#FFFFFF"
         xmlns="http://www.w3.org/2000/svg"
       >
         <g clipPath="url(#clip0_130_9756)">

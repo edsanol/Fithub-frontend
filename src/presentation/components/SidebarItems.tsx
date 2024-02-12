@@ -40,20 +40,24 @@ export const SidebarItems = ({
 interface SidebarLinkGroupProps {
   label: string;
   url: string;
+  route: string;
 }
 
 export const SidebarLinkGroupItems = ({
   label,
   url,
+  route,
 }: SidebarLinkGroupProps) => {
   const pathname = usePathname();
+
+  console.log(pathname === route, `de ${label}`);
 
   return (
     <>
       <Link
         href={url}
-        className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-white duration-300 ease-in-out hover:text-[#2A2E30] ${
-          pathname === `${url}` && "text-[#2A2E30]"
+        className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-sm text-white duration-300 ease-in-out hover:text-[#2A2E30] ${
+          pathname === route ? "text-[#2A2E30]" : "text-white"
         }`}
       >
         {label}

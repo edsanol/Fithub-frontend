@@ -5,13 +5,14 @@ interface ArrowDownIconProps {
 const ArrowDownIcon = ({ open }: ArrowDownIconProps) => {
   return (
     <svg
-      className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current transition-transform duration-300 ease-in-out ${
+      className={`absolute top-1/2 -translate-y-1/2 fill-current transition-transform duration-300 ease-in-out ${
         open ? "rotate-180" : "rotate-0"
       }`}
+      style={{ right: "1.5rem" }}
       width="20"
       height="20"
       viewBox="0 0 20 20"
-      fill="none"
+      fill="#FFFFFF"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

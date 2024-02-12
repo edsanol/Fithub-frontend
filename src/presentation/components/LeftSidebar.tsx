@@ -132,12 +132,14 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               <SidebarLinkGroupItems
                                 label="Crear deportista"
                                 url="/create-user"
+                                route="/create-user"
                               />
                             </li>
                             <li>
                               <SidebarLinkGroupItems
                                 label="Listado deportistas"
                                 url="/user-list"
+                                route="/user-list"
                               />
                             </li>
                           </ul>
