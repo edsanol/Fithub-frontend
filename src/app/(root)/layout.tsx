@@ -1,29 +1,39 @@
-import { Bottombar, LeftSidebar, Topbar } from "@/presentation/components";
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "FitHub Connect - Dashboard Administrativo",
-  description: "Dashboard Administrativo para FitHub Connect",
-};
+import { LeftSidebar, Topbar } from "@/presentation/components";
+import type { Metadata } from "next";
+import { useState } from "react";
+
+// export const metadata: Metadata = {
+//   title: "FitHub Connect - Dashboard Administrativo",
+//   description: "Dashboard Administrativo para FitHub Connect",
+// };
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <>
-      <Topbar />
+      <div className="flex h-screen overflow-hidden">
+        <LeftSidebar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
 
-      <main className="flex flex-row">
-        <LeftSidebar />
+        <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+          <Topbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-        <section className="flex min-h-screen flex-1 flex-col items-center px-6 pb-10 pt-28 max-md:pb-32 sm:px-10 overflow-auto bg-black">
-          <div className="w-full max-w-4xl md:max-w-7xl">{children}</div>
-        </section>
-      </main>
-
-      <Bottombar />
+          <main>
+            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+              {children}
+            </div>
+          </main>
+        </div>
+      </div>
     </>
   );
 }

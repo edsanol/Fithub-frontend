@@ -15,6 +15,7 @@ import CustomTable from "./CustomTable";
 import DashboardHeader from "./DashboardHeader";
 import FormSwitch from "./FormSwitch";
 import FormCheckbox from "./FormCheckbox";
+import SidebarLinkGroup from "./SidebarLinkGroup";
 
 export {
   PrimaryButton,
@@ -34,4 +35,5 @@ export {
   DashboardHeader,
   FormSwitch,
   FormCheckbox,
+  SidebarLinkGroup,
 };

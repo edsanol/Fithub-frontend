@@ -39,7 +39,7 @@ const CreateUser = () => {
           title="Configura el Perfil de tus Atletas"
           description="Personaliza la información de tus deportistas"
         />
-        <div className="w-full mx-auto mt-5 bg-[#121417] rounded-xl p-5 md:p-10 xl:w-9/12">
+        <div className="w-full mx-auto mt-5 bg-[#121417] rounded-xl p-5 md:p-10 xl:w-11/12">
           <form onSubmit={handleSubmit}>
             <div className="block md:flex md:gap-3">
               <FormInput

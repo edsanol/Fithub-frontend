@@ -1,26 +1,26 @@
-import { SVGProps } from "react";
+interface ArrowDownIconProps {
+  open?: boolean;
+}
 
-const ArrowDownIcon = (props: SVGProps<SVGSVGElement>) => {
+const ArrowDownIcon = ({ open }: ArrowDownIconProps) => {
   return (
     <svg
+      className={`absolute top-1/2 -translate-y-1/2 fill-current transition-transform duration-300 ease-in-out ${
+        open ? "rotate-180" : "rotate-0"
+      }`}
+      style={{ right: "1.5rem" }}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="#FFFFFF"
       xmlns="http://www.w3.org/2000/svg"
-      width={32}
-      height={32}
-      fill="none"
-      {...props}
     >
-      <g clipPath="url(#a)">
-        <path
-          fill="#6122B5"
-          fillOpacity={0.35}
-          d="M16 32c8.836 0 16-7.164 16-16S24.836 0 16 0 0 7.164 0 16s7.164 16 16 16ZM8.972 15.642a1.23 1.23 0 0 1 1.741-.007l4.056 4.025V9.385a1.23 1.23 0 0 1 2.462 0V19.66l4.056-4.025a1.232 1.232 0 0 1 1.734 1.75l-6.154 6.106a1.23 1.23 0 0 1-1.734 0L8.98 17.386a1.23 1.23 0 0 1-.007-1.743Z"
-        />
-      </g>
-      <defs>
-        <clipPath id="a">
-          <path fill="#fff" d="M0 0h32v32H0z" />
-        </clipPath>
-      </defs>
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+        fill=""
+      />
     </svg>
   );
 };
