@@ -18,6 +18,7 @@
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.6.0",
     "crypto-js": "^4.2.0",
+    "date-fns": "^3.3.1",
     "framer-motion": "^10.16.4",
     "inversify": "^6.0.2",
     "inversify-binding-decorators": "^4.0.0",

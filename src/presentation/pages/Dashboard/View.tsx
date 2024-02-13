@@ -27,7 +27,7 @@ const Dashboard = () => {
         <CustomAssistanceGraph initialData={getDailyAssistanceGraphic} />
         <CustomMembershipDistributionGraph initialData={getMembershipGraphic} />
       </div>
-      <div className="flex flex-wrap gap-2 justify-center py-8 lg:justify-between">
+      <div className="flex flex-wrap gap-2 justify-center py-1 lg:justify-between">
         <CustomIncomeGraph initialData={getIncomeGraphic} />
       </div>
     </div>
