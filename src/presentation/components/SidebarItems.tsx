@@ -50,8 +50,6 @@ export const SidebarLinkGroupItems = ({
 }: SidebarLinkGroupProps) => {
   const pathname = usePathname();
 
-  console.log(pathname === route, `de ${label}`);
-
   return (
     <>
       <Link
