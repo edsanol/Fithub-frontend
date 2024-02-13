@@ -67,7 +67,7 @@ const CustomIncomeGraph = ({ initialData }: CustomIncomeGraphProps) => {
   }, [data, colors]);
 
   return (
-    <div className="bg-[#18181B] w-[92%] h-[26rem] flex justify-center items-center my-2 sm:w-[94%] lg:w-[100%] rounded-[2rem]">
+    <div className="bg-[#18181B] w-[92%] h-[26rem] flex justify-center items-center mt-5 sm:w-[94%] lg:w-[100%] rounded-[2rem]">
       <div className="w-[90%] h-[94%]">
         <p className="text-xl font-bold text-white">Ingresos Mensuales</p>
         <div ref={chartContainerRef} />

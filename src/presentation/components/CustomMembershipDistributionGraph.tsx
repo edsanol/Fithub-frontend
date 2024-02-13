@@ -67,7 +67,7 @@ const CustomMembershipDistributionGraph = ({
                   data: pieData,
                 },
               ]}
-              width={400}
+              width={700}
               height={300}
             />
           ) : (

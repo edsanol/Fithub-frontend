@@ -61,7 +61,7 @@ const CustomAssistanceGraph = ({ initialData }: CustomAssistanceGraphProps) => {
   }, [data, colors]);
 
   return (
-    <div className="w-[92%] h-[24rem] bg-[#18181B] flex justify-center items-center my-2 sm:w-[92%] lg:w-[48%] rounded-[2rem]">
+    <div className="w-[95%] h-[24rem] p-5 bg-[#18181B] rounded-[2rem] lg:w-[49%]">
       <div className="w-[90%] h-[94%]">
         <p className="text-xl font-bold text-white">Asistencia Diaria</p>
         <div ref={chartContainerRef} />
