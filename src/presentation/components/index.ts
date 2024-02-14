@@ -20,6 +20,7 @@ import CustomAssistanceGraph from "./CustomAssistanceGraph";
 import CustomDashboardGraph from "./CustomDashboardGraph";
 import CustomDashboardDoubleGraph from "./CustomDashboardDoubleGraph";
 import CustomDashboardData from "./CustomDashboardData";
+import FormSearchInput from "./FormSearchInput";
 
 export {
   PrimaryButton,
@@ -44,4 +45,5 @@ export {
   CustomDashboardGraph,
   CustomDashboardDoubleGraph,
   CustomDashboardData,
+  FormSearchInput,
 };
