@@ -23,11 +23,11 @@ const Dashboard = () => {
         <CustomDashboardDoubleGraph dashboardData={dashboardData} />
         <CustomDashboardGraph dashboardData={dashboardData} />
       </div>
-      <div className="flex flex-wrap gap-2 justify-center py-8 lg:justify-between">
+      <div className="flex flex-wrap gap-2 justify-center mt-5 lg:justify-between">
         <CustomAssistanceGraph initialData={getDailyAssistanceGraphic} />
         <CustomMembershipDistributionGraph initialData={getMembershipGraphic} />
       </div>
-      <div className="flex flex-wrap gap-2 justify-center py-1 lg:justify-between">
+      <div className="flex flex-wrap gap-2 justify-center lg:justify-between">
         <CustomIncomeGraph initialData={getIncomeGraphic} />
       </div>
     </div>

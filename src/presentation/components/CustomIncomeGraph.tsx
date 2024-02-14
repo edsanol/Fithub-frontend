@@ -1,7 +1,15 @@
-import * as React from "react";
-import { BarChart } from "@mui/x-charts/BarChart";
-import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
+"use client";
+
+import { createChart, ColorType } from "lightweight-charts";
+import { MutableRefObject, useEffect, useRef } from "react";
+
+const colors = {
+  backgroundColor: "#18181B",
+  lineColor: "#8946CE",
+  textColor: "white",
+  areaTopColor: "white",
+  areaBottomColor: "rgba(41, 98, 255, 0.28)",
+};
 
 interface CustomIncomeGraphProps {
   initialData: any[];
@@ -10,45 +18,61 @@ interface CustomIncomeGraphProps {
 const CustomIncomeGraph = ({ initialData }: CustomIncomeGraphProps) => {
   const data = initialData;
 
-  const dataset = data;
+  const chartContainerRef: MutableRefObject<any> = useRef();
 
-  const formattedData = dataset.map((data) => ({
-    ...data,
-    time: format(parseISO(data.time), "dd MMMM, yyyy", { locale: es }),
-  }));
+  useEffect(() => {
+    const handleResize = () => {
+      chart.applyOptions({ width: chartContainerRef.current?.clientWidth });
+    };
 
-  const chartSetting = {
-    width: 900,
-    height: 340,
-  };
+    const chart = createChart(chartContainerRef.current, {
+      layout: {
+        background: { type: ColorType.Solid, color: colors.backgroundColor },
+        textColor: colors.textColor,
+      },
+      width: chartContainerRef.current.clientWidth,
+      height: 300,
+      grid: {
+        vertLines: {
+          visible: false,
+        },
+        horzLines: {
+          visible: false,
+        },
+      },
+      rightPriceScale: {
+        borderVisible: false,
+      },
+      timeScale: {
+        borderVisible: false,
+      },
+    });
+    chart.timeScale().fitContent();
 
-  const valueFormatter = (value: number) => `${value}`;
+    const newSeries = chart.addAreaSeries({
+      lineColor: "rgba(171, 71, 188, 1)",
+      topColor: "rgba(171, 71, 188, 0.56)",
+      bottomColor: "rgba(171, 71, 188, 0.04)",
+      lineWidth: 2,
+    });
+    newSeries.setData(data);
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+
+      chart.remove();
+    };
+  }, [data, colors]);
 
   return (
-    <>
-      <div className="bg-[#18181B] w-[92%] h-[26rem] flex justify-center items-center my-2 sm:w-[94%] lg:w-[100%] rounded-[2rem]">
-        <div className="w-[90%] h-[94%]">
-          <p className="text-xl font-bold text-white">Ingresos Mensuales</p>
-          <div className="flex justify-center items-center mt-5">
-            {formattedData.length > 0 && (
-              <BarChart
-                dataset={formattedData}
-                xAxis={[{ scaleType: "band", dataKey: "time" }]}
-                series={[
-                  {
-                    dataKey: "value",
-                    label: "Ingresos Mensuales",
-                    valueFormatter,
-                    color: "#8946CE",
-                  },
-                ]}
-                {...chartSetting}
-              />
-            )}
-          </div>
-        </div>
+    <div className="bg-[#18181B] w-[92%] h-[26rem] flex justify-center items-center mt-5 sm:w-[94%] lg:w-[100%] rounded-[2rem]">
+      <div className="w-[90%] h-[94%]">
+        <p className="text-xl font-bold text-white">Ingresos Mensuales</p>
+        <div ref={chartContainerRef} />
       </div>
-    </>
+    </div>
   );
 };
 
