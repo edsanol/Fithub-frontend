@@ -142,6 +142,13 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 route="/user-list"
                               />
                             </li>
+                            <li>
+                              <SidebarLinkGroupItems
+                                label="Progreso deportistas"
+                                url="/user-progress"
+                                route="/user-progress"
+                              />
+                            </li>
                           </ul>
                         </div>
                       </>

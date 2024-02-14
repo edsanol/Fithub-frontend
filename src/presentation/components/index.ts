@@ -16,6 +16,10 @@ import DashboardHeader from "./DashboardHeader";
 import FormSwitch from "./FormSwitch";
 import FormCheckbox from "./FormCheckbox";
 import SidebarLinkGroup from "./SidebarLinkGroup";
+import CustomAssistanceGraph from "./CustomAssistanceGraph";
+import CustomDashboardGraph from "./CustomDashboardGraph";
+import CustomDashboardDoubleGraph from "./CustomDashboardDoubleGraph";
+import CustomDashboardData from "./CustomDashboardData";
 
 export {
   PrimaryButton,
@@ -36,4 +40,8 @@ export {
   FormSwitch,
   FormCheckbox,
   SidebarLinkGroup,
+  CustomAssistanceGraph,
+  CustomDashboardGraph,
+  CustomDashboardDoubleGraph,
+  CustomDashboardData,
 };
