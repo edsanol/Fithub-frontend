@@ -1,9 +1,6 @@
 "use client";
 
 import {
-  CustomDashboardData,
-  CustomDashboardDoubleGraph,
-  CustomDashboardGraph,
   CustomModal,
   CustomProgressCard,
   CustomTable,
@@ -14,18 +11,9 @@ import {
 } from "@/presentation/components";
 import ViewModel from "./ViewModel";
 import { customRenderCell } from "./render-cell/RenderCell";
-import { MeasurementsProgress } from "@/domain/entities/MeasurementsProgress";
-
-const dashboardData = {
-  totalAthletes: 12,
-  activeAthletes: 6,
-  activeAthletesPercentage: 50,
-  inactiveAthletes: 6,
-  inactiveAthletesPercentage: 50,
-  dailyAssistance: 0,
-  newAthletesByMonth: 0,
-  incomeByMonth: 10000,
-};
+import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
+import Gluteus from "@/assets/svg/Gluteus";
+import { mapperMuscleIcon } from "@/presentation/helpers";
 
 const UserProgress = () => {
   const {
@@ -91,19 +79,19 @@ const UserProgress = () => {
 
       {shouldShowComponents && (
         <>
-          <div className="gap-2 grid grid-cols-2 sm:grid-cols-4 mt-5">
-            {/* {
-              measurementProgressByLastMonth.map((item: any) => (
+          <div className="gap-2 grid grid-cols-2 sm:grid-cols-5 mt-5">
+            {measurementProgressByLastMonth.map(
+              (measurement: MeasurementProgressByLastMonth, index) => (
                 <CustomProgressCard
-                  key={item.measurementsProgressID}
-                  icon={item.icon}
-                  muscle={item.muscle}
-                  measurement={item.measurement}
-                  progress={item.progress}
-                  progressPercentage={item.progressPercentage}
+                  key={index}
+                  icon={mapperMuscleIcon(measurement.muscle)}
+                  muscle={measurement.muscle}
+                  measurement={measurement.measurement}
+                  progress={measurement.progress}
+                  progressPercentage={measurement.progressPercentage}
                 />
-              ))
-            } */}
+              )
+            )}
           </div>
 
           <div className="mt-5">

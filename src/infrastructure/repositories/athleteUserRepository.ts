@@ -79,7 +79,7 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
 
   async getMeasurementProgressByLastMonth(
     id: number
-  ): Promise<MeasurementProgressByLastMonth> {
+  ): Promise<MeasurementProgressByLastMonth[]> {
     const response = await this.service.getMeasurementProgressByLastMonth(id);
 
     return response;

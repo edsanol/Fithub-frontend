@@ -69,12 +69,7 @@ const ViewModel = () => {
       items: [],
     });
   const [measurementProgressByLastMonth, setMeasurementProgressByLastMonth] =
-    useState<MeasurementProgressByLastMonth>({
-      muscle: "",
-      progress: 0,
-      measurement: 0,
-      progressPercentage: 0,
-    });
+    useState<MeasurementProgressByLastMonth[]>([]);
 
   useEffect(() => {
     if (userSelected && userSelected.athleteId !== 0) {

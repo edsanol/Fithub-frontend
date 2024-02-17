@@ -16,9 +16,15 @@ const ViewModel = () => {
 
   const [idGym, setIdGym] = useState<number>(0);
   const [dashboardData, setDashboardData] = useState<DashboardDataValues>();
-  const [getDailyAssistanceGraphic, setGetDailyAssistanceGraphic] = useState<BarGraphicValues[]>([]);
-  const [getMembershipGraphic, setGetMembershipGraphic] = useState<PieGraphicValues[]>([]);
-  const [getIncomeGraphic, setGetIncomeGraphic] = useState<BarGraphicValues[]>([]);
+  const [getDailyAssistanceGraphic, setGetDailyAssistanceGraphic] = useState<
+    BarGraphicValues[]
+  >([]);
+  const [getMembershipGraphic, setGetMembershipGraphic] = useState<
+    PieGraphicValues[]
+  >([]);
+  const [getIncomeGraphic, setGetIncomeGraphic] = useState<BarGraphicValues[]>(
+    []
+  );
 
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
@@ -99,7 +105,6 @@ const ViewModel = () => {
       return;
     }
 
-    console.log(response);
     setGetIncomeGraphic(response);
   };
 

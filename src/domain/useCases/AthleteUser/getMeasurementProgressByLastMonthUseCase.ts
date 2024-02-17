@@ -10,7 +10,7 @@ export class GetMeasurementProgressByLastMonthUseCase {
     private athleteUserRepository: AthleteUserRepository
   ) {}
 
-  async execute(id: number): Promise<MeasurementProgressByLastMonth> {
+  async execute(id: number): Promise<MeasurementProgressByLastMonth[]> {
     return await this.athleteUserRepository.getMeasurementProgressByLastMonth(
       id
     );

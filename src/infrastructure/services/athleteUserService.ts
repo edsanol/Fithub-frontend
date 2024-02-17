@@ -106,9 +106,9 @@ export class AthleteUserServiceImpl implements AthleteUserService {
 
   async getMeasurementProgressByLastMonth(
     id: number
-  ): Promise<MeasurementProgressByLastMonth> {
+  ): Promise<MeasurementProgressByLastMonth[]> {
     const response = await this.http.get<
-      TickerResponseApi<MeasurementProgressByLastMonth>
+      TickerResponseApi<MeasurementProgressByLastMonth[]>
     >(`/Athlete/GetMeasurementsByLastMonth?athleteID=${id}`);
 
     return response.data;

@@ -21,5 +21,5 @@ export interface AthleteUserRepository {
   ): Promise<PaginateResponseList<MeasurementsProgress>>;
   getMeasurementProgressByLastMonth(
     id: number
-  ): Promise<MeasurementProgressByLastMonth>;
+  ): Promise<MeasurementProgressByLastMonth[]>;
 }
