@@ -13,6 +13,8 @@ import MembershipIcon from "@/assets/svg/MembershipIcon";
 import { SidebarItems, SidebarLinkGroupItems } from "./SidebarItems";
 import ProfileIcon from "@/assets/svg/ProfileIcon";
 import ArrowDownIcon from "@/assets/svg/ArrowDownIcon";
+import ArrowLeftIcon from "@/assets/svg/ArrowLeftIcon";
+import Image from "next/image";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -78,6 +80,16 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
+        <button
+          ref={trigger}
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-controls="sidebar"
+          aria-expanded={sidebarOpen}
+          className="flex justify-end lg:hidden"
+        >
+          <ArrowLeftIcon />
+        </button>
+
         <div className="flex items justify-center mt-5">
           <Link href="/dashboard">
             <p className="text-2xl text-[#3669FC] font-black">FitHub</p>
@@ -142,6 +154,13 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 route="/user-list"
                               />
                             </li>
+                            <li>
+                              <SidebarLinkGroupItems
+                                label="Progreso deportistas"
+                                url="/user-progress"
+                                route="/user-progress"
+                              />
+                            </li>
                           </ul>
                         </div>
                       </>
@@ -177,6 +196,16 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </ul>
             </div>
           </nav>
+        </div>
+
+        <div
+          className="hidden mt-auto cursor-pointer relative md:block"
+          onClick={logout}
+        >
+          <div className="flex items-center justify-center gap-1">
+            <p className="text-sm">Logout</p>
+            <Image src={Logout} alt="logout" width={24} height={24} />
+          </div>
         </div>
       </aside>
     </>
