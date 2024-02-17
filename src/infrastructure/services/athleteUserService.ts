@@ -8,6 +8,7 @@ import { TickerResponseApi } from "../api/model/TickerResponseApi";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { UpdateMembershipToAthlete } from "@/domain/models/UpdateMembershipToAthlete";
 import { MeasurementsProgress } from "@/domain/entities/MeasurementsProgress";
+import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
 
 @injectable()
 export class AthleteUserServiceImpl implements AthleteUserService {
@@ -99,6 +100,16 @@ export class AthleteUserServiceImpl implements AthleteUserService {
       TickerResponseApi<PaginateResponseList<MeasurementsProgress>>,
       PaginateData
     >(`/Athlete/GetMeasurementProgressList?athleteID=${id}`, data);
+
+    return response.data;
+  }
+
+  async getMeasurementProgressByLastMonth(
+    id: number
+  ): Promise<MeasurementProgressByLastMonth> {
+    const response = await this.http.get<
+      TickerResponseApi<MeasurementProgressByLastMonth>
+    >(`/Athlete/GetMeasurementsByLastMonth?athleteID=${id}`);
 
     return response.data;
   }

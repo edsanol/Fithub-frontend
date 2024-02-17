@@ -5,6 +5,7 @@ import {
   CustomDashboardDoubleGraph,
   CustomDashboardGraph,
   CustomModal,
+  CustomProgressCard,
   CustomTable,
   DashboardHeader,
   FormInput,
@@ -35,6 +36,7 @@ const UserProgress = () => {
     isModalOpen,
     measurementProgressList,
     MeasurementProgressColumns,
+    measurementProgressByLastMonth,
     handleChange,
     handleSelectSuggestion,
     toggleModal,
@@ -89,10 +91,19 @@ const UserProgress = () => {
 
       {shouldShowComponents && (
         <>
-          <div className="flex flex-wrap gap-4 justify-between mt-8">
-            <CustomDashboardData data={dashboardData} />
-            <CustomDashboardDoubleGraph dashboardData={dashboardData} />
-            <CustomDashboardGraph dashboardData={dashboardData} />
+          <div className="gap-2 grid grid-cols-2 sm:grid-cols-4 mt-5">
+            {/* {
+              measurementProgressByLastMonth.map((item: any) => (
+                <CustomProgressCard
+                  key={item.measurementsProgressID}
+                  icon={item.icon}
+                  muscle={item.muscle}
+                  measurement={item.measurement}
+                  progress={item.progress}
+                  progressPercentage={item.progressPercentage}
+                />
+              ))
+            } */}
           </div>
 
           <div className="mt-5">

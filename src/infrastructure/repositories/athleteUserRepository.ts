@@ -1,6 +1,7 @@
 import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { MeasurementsProgress } from "@/domain/entities/MeasurementsProgress";
+import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { UpdateMembershipToAthlete } from "@/domain/models/UpdateMembershipToAthlete";
@@ -72,6 +73,14 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
     data: PaginateData
   ): Promise<PaginateResponseList<MeasurementsProgress>> {
     const response = await this.service.getMeasurementProgressList(id, data);
+
+    return response;
+  }
+
+  async getMeasurementProgressByLastMonth(
+    id: number
+  ): Promise<MeasurementProgressByLastMonth> {
+    const response = await this.service.getMeasurementProgressByLastMonth(id);
 
     return response;
   }

@@ -1,5 +1,6 @@
 import { AthleteUser } from "../entities/AthleteUser";
 import { MeasurementsProgress } from "../entities/MeasurementsProgress";
+import { MeasurementProgressByLastMonth } from "../models/MeasurementProgressByLastMonth";
 import { PaginateData } from "../models/PaginateData";
 import { PaginateResponseList } from "../models/PaginateResponseList";
 import { UpdateMembershipToAthlete } from "../models/UpdateMembershipToAthlete";
@@ -18,4 +19,7 @@ export interface AthleteUserRepository {
     id: number,
     data: PaginateData
   ): Promise<PaginateResponseList<MeasurementsProgress>>;
+  getMeasurementProgressByLastMonth(
+    id: number
+  ): Promise<MeasurementProgressByLastMonth>;
 }

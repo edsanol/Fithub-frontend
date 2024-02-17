@@ -38,6 +38,9 @@ const TYPES = {
   GetMeasurementProgressListUseCase: Symbol.for(
     "GetMeasurementProgressListUseCase"
   ),
+  GetMeasurementProgressByLastMonthUseCase: Symbol.for(
+    "GetMeasurementProgressByLastMonthUseCase"
+  ),
 
   // MembershipRepository
   MembershipRepository: Symbol.for("MembershipRepository"),

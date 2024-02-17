@@ -10,6 +10,8 @@ import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthl
 import { GetMeasurementProgressListUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressListUseCase";
 import { useCallback, useEffect, useState } from "react";
 import { MeasurementProgressColumns } from "@/assets/constants";
+import { GetMeasurementProgressByLastMonthUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressByLastMonthUseCase";
+import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
 
 const useDebounce = (value: string, delay: number = 500) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -66,6 +68,13 @@ const ViewModel = () => {
       totalRecords: 0,
       items: [],
     });
+  const [measurementProgressByLastMonth, setMeasurementProgressByLastMonth] =
+    useState<MeasurementProgressByLastMonth>({
+      muscle: "",
+      progress: 0,
+      measurement: 0,
+      progressPercentage: 0,
+    });
 
   useEffect(() => {
     if (userSelected && userSelected.athleteId !== 0) {
@@ -75,6 +84,7 @@ const ViewModel = () => {
       });
 
       getAthleteMeasurementProgressList({ numPage: 1 });
+      getMeasurementProgressByLastMonth();
     }
   }, [userSelected]);
 
@@ -186,6 +196,28 @@ const ViewModel = () => {
     }
   };
 
+  const getMeasurementProgressByLastMonth = async () => {
+    try {
+      const getMeasurementProgress =
+        container.get<GetMeasurementProgressByLastMonthUseCase>(
+          TYPES.GetMeasurementProgressByLastMonthUseCase
+        );
+
+      const response = await getMeasurementProgress.execute(
+        userSelected.athleteId!
+      );
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setMeasurementProgressByLastMonth(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSetNumPage = async (numPage: number) => {
     await getAthleteMeasurementProgressList({ numPage });
   };
@@ -249,6 +281,7 @@ const ViewModel = () => {
     isModalOpen,
     measurementProgressList,
     MeasurementProgressColumns,
+    measurementProgressByLastMonth,
     handleChange,
     handleSelectSuggestion,
     toggleModal,

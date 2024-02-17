@@ -52,6 +52,7 @@ import { GetIncomeGraphicUseCase } from "@/domain/useCases/Dashboard/getIncomeGr
 import { GetMembershipGraphicUseCase } from "@/domain/useCases/Dashboard/getMembershipGraphic";
 import { CreateMeasurementProgressUseCase } from "@/domain/useCases/AthleteUser/createMeasurementProgressUseCase";
 import { GetMeasurementProgressListUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressListUseCase";
+import { GetMeasurementProgressByLastMonthUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressByLastMonthUseCase";
 
 const container = new Container();
 
@@ -135,6 +136,11 @@ container
     TYPES.GetMeasurementProgressListUseCase
   )
   .to(GetMeasurementProgressListUseCase);
+container
+  .bind<GetMeasurementProgressByLastMonthUseCase>(
+    TYPES.GetMeasurementProgressByLastMonthUseCase
+  )
+  .to(GetMeasurementProgressByLastMonthUseCase);
 
 // MembershipRepository
 container
