@@ -226,9 +226,14 @@ const ViewModel = () => {
   };
 
   const handleOpenModal = async (
-    modalName: "createModal" | "progressModal"
+    modalName: "createModal" | "progressModal",
+    muscle?: string
   ) => {
     toggleModal(modalName);
+
+    if (modalName === "progressModal") {
+      console.log(muscle);
+    }
   };
 
   const handleSetGlueteus = (gluteus: number) => {

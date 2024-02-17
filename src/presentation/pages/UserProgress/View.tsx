@@ -89,7 +89,9 @@ const UserProgress = () => {
                   measurement={measurement.measurement}
                   progress={measurement.progress}
                   progressPercentage={measurement.progressPercentage}
-                  onPress={() => handleOpenModal("progressModal")}
+                  onPress={() =>
+                    handleOpenModal("progressModal", measurement.muscle)
+                  }
                 />
               )
             )}

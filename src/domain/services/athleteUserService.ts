@@ -1,5 +1,6 @@
 import { AthleteUser } from "../entities/AthleteUser";
 import { MeasurementsProgress } from "../entities/MeasurementsProgress";
+import { BarGraphicValues } from "../models/BarGraphicValues";
 import { MeasurementProgressByLastMonth } from "../models/MeasurementProgressByLastMonth";
 import { PaginateData } from "../models/PaginateData";
 import { PaginateResponseList } from "../models/PaginateResponseList";
@@ -22,4 +23,10 @@ export interface AthleteUserService {
   getMeasurementProgressByLastMonth(
     id: number
   ): Promise<MeasurementProgressByLastMonth[]>;
+  getMeasurementsGraphic(
+    athleteID: number,
+    muscle: string,
+    startDate: string,
+    endDate: string
+  ): Promise<BarGraphicValues[]>;
 }
