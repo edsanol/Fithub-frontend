@@ -3,6 +3,7 @@ import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { MeasurementsProgress } from "@/domain/entities/MeasurementsProgress";
+import { CreateMeasurementProgressUseCase } from "@/domain/useCases/AthleteUser/createMeasurementProgressUseCase";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
 import { useCallback, useEffect, useState } from "react";
 
@@ -58,6 +59,15 @@ const ViewModel = () => {
     });
 
   useEffect(() => {
+    if (userSelected && userSelected.athleteId !== 0) {
+      setMeasurementsProgress({
+        ...measurementsProgress,
+        idAthlete: userSelected.athleteId!,
+      });
+    }
+  }, [userSelected]);
+
+  useEffect(() => {
     if (forceHideSuggestions) {
       setShowSuggestions(false);
       return;
@@ -91,7 +101,23 @@ const ViewModel = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    console.log(measurementsProgress);
+    if (measurementsProgress.idAthlete === 0) {
+      return;
+    }
+
+    const createMeasurementProgress =
+      container.get<CreateMeasurementProgressUseCase>(
+        TYPES.CreateMeasurementProgressUseCase
+      );
+
+    const response = createMeasurementProgress.execute(measurementsProgress);
+
+    if (!response) {
+      console.log("error");
+      return;
+    }
+
+    setIsModalOpen({ createModal: false });
   };
 
   const getAthleteUserByFilter = async (
