@@ -7,6 +7,7 @@ interface CustomProgressCardProps {
   measurement: number;
   progress: number;
   progressPercentage: number;
+  onPress?: () => void;
 }
 
 const CustomProgressCard = ({
@@ -15,14 +16,19 @@ const CustomProgressCard = ({
   measurement,
   progress,
   progressPercentage,
+  onPress,
 }: CustomProgressCardProps) => {
+  const handleOnPress = () => {
+    if (onPress) onPress();
+  };
+
   const IconComponent = icon;
 
   return (
     <Card
       shadow="sm"
       isPressable
-      onPress={() => console.log("item pressed")}
+      onPress={handleOnPress}
       classNames={{ base: "dark" }}
     >
       <CardHeader className="block">

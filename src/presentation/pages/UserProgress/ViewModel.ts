@@ -47,6 +47,7 @@ const ViewModel = () => {
   const [forceHideSuggestions, setForceHideSuggestions] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState({
     createModal: false,
+    progressModal: false,
   });
   const [measurementsProgress, setMeasurementsProgress] =
     useState<MeasurementsProgress>({
@@ -136,7 +137,7 @@ const ViewModel = () => {
     await getAthleteMeasurementProgressList({
       numPage: 1,
     });
-    setIsModalOpen({ createModal: false });
+    setIsModalOpen({ createModal: false, progressModal: false });
   };
 
   const getAthleteUserByFilter = async (
@@ -217,14 +218,16 @@ const ViewModel = () => {
     await getAthleteMeasurementProgressList({ numPage });
   };
 
-  const toggleModal = (modalName: "createModal") => {
+  const toggleModal = (modalName: "createModal" | "progressModal") => {
     setIsModalOpen((prevState) => ({
       ...prevState,
       [modalName]: !prevState[modalName],
     }));
   };
 
-  const handleOpenModal = async (modalName: "createModal") => {
+  const handleOpenModal = async (
+    modalName: "createModal" | "progressModal"
+  ) => {
     toggleModal(modalName);
   };
 

@@ -89,6 +89,7 @@ const UserProgress = () => {
                   measurement={measurement.measurement}
                   progress={measurement.progress}
                   progressPercentage={measurement.progressPercentage}
+                  onPress={() => handleOpenModal("progressModal")}
                 />
               )
             )}
@@ -224,6 +225,13 @@ const UserProgress = () => {
             </form>
           </>
         }
+      />
+
+      <CustomModal
+        isOpen={isModalOpen.progressModal}
+        onOpenChange={() => toggleModal("progressModal")}
+        size="2xl"
+        content={<>Hola mundo</>}
       />
     </>
   );
