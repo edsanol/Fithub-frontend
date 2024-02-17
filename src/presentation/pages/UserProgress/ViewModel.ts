@@ -1,37 +1,46 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import container from "@/config/inversifyContainer";
+import { TYPES } from "@/config/types";
+import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { MeasurementsProgress } from "@/domain/entities/MeasurementsProgress";
-import { useEffect, useState } from "react";
+import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
+import { useCallback, useEffect, useState } from "react";
 
-interface PersonasInterface {
-  id: number;
-  nombre: string;
-}
+const useDebounce = (value: string, delay: number = 500) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
 
-const personas = [
-  { id: 1, nombre: "Alejandro Gómez" },
-  { id: 2, nombre: "María Fernández" },
-  { id: 3, nombre: "Carlos Martínez" },
-  { id: 4, nombre: "Lucía Hernández" },
-  { id: 5, nombre: "Esteban Paredes" },
-  { id: 6, nombre: "Daniela Rivera" },
-  { id: 7, nombre: "Miguel Ángel López" },
-  { id: 8, nombre: "Sofía Guzmán" },
-  { id: 9, nombre: "Jorge Enriquez" },
-  { id: 10, nombre: "Isabel Cortés" },
-];
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 const ViewModel = () => {
-  const [suggestions, setSuggestions] = useState<PersonasInterface[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [search, setSearch] = useState("");
-  const [timerId, setTimerId] = useState(null);
+  const [suggestions, setSuggestions] = useState<AthleteUser[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const debouncedSearch = useDebounce(search);
+  const [userSelected, setUserSelected] = useState<AthleteUser>({
+    athleteId: 0,
+    athleteName: "",
+    athleteLastName: "",
+    email: "",
+    phoneNumber: "",
+    birthDate: "",
+    genre: "",
+    idGym: 0,
+    gymName: "",
+    registerDate: "",
+    status: true,
+    membershipName: "",
+    cardAccessCode: "",
+  });
   const [forceHideSuggestions, setForceHideSuggestions] = useState(false);
-  const [userSelected, setUserSelected] = useState("");
-
   const [isModalOpen, setIsModalOpen] = useState({
     createModal: false,
   });
-
   const [measurementsProgress, setMeasurementsProgress] =
     useState<MeasurementsProgress>({
       measurementsProgressID: 0,
@@ -51,50 +60,65 @@ const ViewModel = () => {
     });
 
   useEffect(() => {
-    if (timerId) clearTimeout(timerId);
-
     if (forceHideSuggestions) {
       setShowSuggestions(false);
       return;
     }
 
-    let newTimerId: any;
-
-    newTimerId = setTimeout(() => {
-      if (search.trim() === "") {
+    const fetchSuggestions = async () => {
+      if (debouncedSearch.trim() === "") {
         setSuggestions([]);
         setShowSuggestions(false);
       } else {
-        const filterResults = personas.filter((persona) =>
-          persona.nombre.toLowerCase().includes(search.toLowerCase())
-        );
-        setSuggestions(filterResults);
+        await getAthleteUserByFilter({ textFilter: debouncedSearch });
         setShowSuggestions(true);
       }
-    }, 500);
+    };
 
-    setTimerId(newTimerId);
+    fetchSuggestions();
+  }, [debouncedSearch, forceHideSuggestions]);
 
-    return () => clearTimeout(newTimerId);
-  }, [search, forceHideSuggestions]);
-
-  const handleChange = (search: string) => {
-    setSearch(search);
+  const handleChange = useCallback((value: string) => {
+    setSearch(value);
     setForceHideSuggestions(false);
-  };
+  }, []);
 
-  const handleSelectSuggestion = (userSelected: string) => {
-    setSearch(userSelected);
+  const handleSelectSuggestion = useCallback((userSelected: AthleteUser) => {
+    setSearch(userSelected.athleteName + " " + userSelected.athleteLastName);
     setUserSelected(userSelected);
     setShowSuggestions(false);
     setForceHideSuggestions(true);
-    if (timerId) clearTimeout(timerId);
-  };
+  }, []);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     console.log(measurementsProgress);
+  };
+
+  const getAthleteUserByFilter = async (
+    params: Partial<{ textFilter: string }>
+  ) => {
+    try {
+      const getAthleteUserListUseCase =
+        container.get<GetAthleteUserListUseCase>(
+          TYPES.GetAthleteUserListUseCase
+        );
+      const response = await getAthleteUserListUseCase.execute({
+        numFilter: 1,
+        numRecordsPage: 100,
+        ...params,
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setSuggestions(response.items);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const toggleModal = (modalName: "createModal") => {
@@ -103,6 +127,10 @@ const ViewModel = () => {
       [modalName]: !prevState[modalName],
     }));
   };
+
+  useEffect(() => {
+    console.log("userSelected", userSelected);
+  }, [userSelected]);
 
   const handleOpenModal = async (modalName: "createModal") => {
     toggleModal(modalName);

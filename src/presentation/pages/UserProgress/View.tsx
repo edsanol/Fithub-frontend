@@ -49,7 +49,9 @@ const UserProgress = () => {
     handleSubmit,
   } = ViewModel();
 
-  const shouldShowComponents = userSelected && search === userSelected;
+  const selectedUserFullName = `${userSelected?.athleteName} ${userSelected?.athleteLastName}`;
+
+  const shouldShowComponents = userSelected && search === selectedUserFullName;
 
   return (
     <>
