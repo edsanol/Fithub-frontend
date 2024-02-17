@@ -66,6 +66,20 @@ export const DiscountsColumns = [
   { name: "ACCIONES", uid: "actions" },
 ];
 
+export const MeasurementProgressColumns = [
+  { name: "FECHA", uid: "date" },
+  { name: "PESO", uid: "weight" },
+  { name: "ALTURA", uid: "height" },
+  { name: "GLUTEÓS", uid: "gluteus" },
+  { name: "BICEPS", uid: "biceps" },
+  { name: "PECHO", uid: "chest" },
+  { name: "CINTURA", uid: "waist" },
+  { name: "PIERNA", uid: "thigh" },
+  { name: "PANTORRILLA", uid: "calf" },
+  { name: "ESPALDA", uid: "shoulders" },
+  { name: "ANTEBRAZO", uid: "forearm" },
+];
+
 export const genres = [
   {
     value: "M",

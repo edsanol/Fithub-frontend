@@ -11,6 +11,7 @@ type constructorParams = {
   forearm: number;
   height: number;
   weight: number;
+  date?: string;
 };
 
 export class MeasurementsProgress {
@@ -26,6 +27,7 @@ export class MeasurementsProgress {
   public forearm: number;
   public height: number;
   public weight: number;
+  public date?: string;
 
   constructor({
     measurementsProgressID,
@@ -40,6 +42,7 @@ export class MeasurementsProgress {
     forearm,
     height,
     weight,
+    date,
   }: constructorParams) {
     this.measurementsProgressID = measurementsProgressID;
     this.idAthlete = idAthlete;
@@ -53,5 +56,6 @@ export class MeasurementsProgress {
     this.forearm = forearm;
     this.height = height;
     this.weight = weight;
+    this.date = date;
   }
 }

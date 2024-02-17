@@ -90,4 +90,16 @@ export class AthleteUserServiceImpl implements AthleteUserService {
 
     return response.data;
   }
+
+  async getMeasurementProgressList(
+    id: number,
+    data: PaginateData
+  ): Promise<PaginateResponseList<MeasurementsProgress>> {
+    const response = await this.http.post<
+      TickerResponseApi<PaginateResponseList<MeasurementsProgress>>,
+      PaginateData
+    >(`/Athlete/GetMeasurementProgressList?athleteID=${id}`, data);
+
+    return response.data;
+  }
 }

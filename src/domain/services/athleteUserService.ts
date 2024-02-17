@@ -14,4 +14,8 @@ export interface AthleteUserService {
   deleteAthleteUser(id: number): Promise<boolean>;
   updateMembershipToAthlete(data: UpdateMembershipToAthlete): Promise<boolean>;
   createMeasurementProgress(data: MeasurementsProgress): Promise<boolean>;
+  getMeasurementProgressList(
+    id: number,
+    data: PaginateData
+  ): Promise<PaginateResponseList<MeasurementsProgress>>;
 }

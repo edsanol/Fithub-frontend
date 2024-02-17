@@ -5,12 +5,15 @@ import {
   CustomDashboardDoubleGraph,
   CustomDashboardGraph,
   CustomModal,
+  CustomTable,
   DashboardHeader,
   FormInput,
   FormSearchInput,
   PrimaryButton,
 } from "@/presentation/components";
 import ViewModel from "./ViewModel";
+import { customRenderCell } from "./render-cell/RenderCell";
+import { MeasurementsProgress } from "@/domain/entities/MeasurementsProgress";
 
 const dashboardData = {
   totalAthletes: 12,
@@ -30,6 +33,8 @@ const UserProgress = () => {
     showSuggestions,
     userSelected,
     isModalOpen,
+    measurementProgressList,
+    MeasurementProgressColumns,
     handleChange,
     handleSelectSuggestion,
     toggleModal,
@@ -45,6 +50,7 @@ const UserProgress = () => {
     handleSetHeight,
     handleSetWeight,
     handleSubmit,
+    handleSetNumPage,
   } = ViewModel();
 
   const selectedUserFullName = `${userSelected?.athleteName} ${userSelected?.athleteLastName}`;
@@ -82,11 +88,25 @@ const UserProgress = () => {
       </div>
 
       {shouldShowComponents && (
-        <div className="flex flex-wrap gap-4 justify-between mt-8">
-          <CustomDashboardData data={dashboardData} />
-          <CustomDashboardDoubleGraph dashboardData={dashboardData} />
-          <CustomDashboardGraph dashboardData={dashboardData} />
-        </div>
+        <>
+          <div className="flex flex-wrap gap-4 justify-between mt-8">
+            <CustomDashboardData data={dashboardData} />
+            <CustomDashboardDoubleGraph dashboardData={dashboardData} />
+            <CustomDashboardGraph dashboardData={dashboardData} />
+          </div>
+
+          <div className="mt-5">
+            <CustomTable
+              onSetNumPage={handleSetNumPage}
+              customRenderCell={(record, columnKey) =>
+                customRenderCell(record, columnKey)
+              }
+              records={measurementProgressList}
+              columns={MeasurementProgressColumns}
+              uniqueKeyField="measurementsProgressID"
+            />
+          </div>
+        </>
       )}
 
       <CustomModal

@@ -3,9 +3,13 @@ import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { MeasurementsProgress } from "@/domain/entities/MeasurementsProgress";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { CreateMeasurementProgressUseCase } from "@/domain/useCases/AthleteUser/createMeasurementProgressUseCase";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
+import { GetMeasurementProgressListUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressListUseCase";
 import { useCallback, useEffect, useState } from "react";
+import { MeasurementProgressColumns } from "@/assets/constants";
 
 const useDebounce = (value: string, delay: number = 500) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -57,6 +61,11 @@ const ViewModel = () => {
       height: 0,
       weight: 0,
     });
+  const [measurementProgressList, setMeasurementProgressList] =
+    useState<PaginateResponseList>({
+      totalRecords: 0,
+      items: [],
+    });
 
   useEffect(() => {
     if (userSelected && userSelected.athleteId !== 0) {
@@ -64,6 +73,8 @@ const ViewModel = () => {
         ...measurementsProgress,
         idAthlete: userSelected.athleteId!,
       });
+
+      getAthleteMeasurementProgressList({ numPage: 1 });
     }
   }, [userSelected]);
 
@@ -98,7 +109,7 @@ const ViewModel = () => {
     setForceHideSuggestions(true);
   }, []);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (measurementsProgress.idAthlete === 0) {
@@ -117,6 +128,9 @@ const ViewModel = () => {
       return;
     }
 
+    await getAthleteMeasurementProgressList({
+      numPage: 1,
+    });
     setIsModalOpen({ createModal: false });
   };
 
@@ -143,6 +157,37 @@ const ViewModel = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const getAthleteMeasurementProgressList = async (
+    params: Partial<PaginateData>
+  ) => {
+    try {
+      const id = userSelected.athleteId!;
+
+      const getMeasurementProgressListUseCase =
+        container.get<GetMeasurementProgressListUseCase>(
+          TYPES.GetMeasurementProgressListUseCase
+        );
+
+      const response = await getMeasurementProgressListUseCase.execute(id, {
+        numRecordsPage: 7,
+        ...params,
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setMeasurementProgressList(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSetNumPage = async (numPage: number) => {
+    await getAthleteMeasurementProgressList({ numPage });
   };
 
   const toggleModal = (modalName: "createModal") => {
@@ -202,6 +247,8 @@ const ViewModel = () => {
     showSuggestions,
     userSelected,
     isModalOpen,
+    measurementProgressList,
+    MeasurementProgressColumns,
     handleChange,
     handleSelectSuggestion,
     toggleModal,
@@ -217,6 +264,7 @@ const ViewModel = () => {
     handleSetHeight,
     handleSetWeight,
     handleSubmit,
+    handleSetNumPage,
   };
 };
 

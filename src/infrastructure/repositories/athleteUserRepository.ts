@@ -66,4 +66,13 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
 
     return response;
   }
+
+  async getMeasurementProgressList(
+    id: number,
+    data: PaginateData
+  ): Promise<PaginateResponseList<MeasurementsProgress>> {
+    const response = await this.service.getMeasurementProgressList(id, data);
+
+    return response;
+  }
 }
