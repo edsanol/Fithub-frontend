@@ -7,6 +7,7 @@ import { TYPES } from "@/config/types";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { UpdateMembershipToAthlete } from "@/domain/models/UpdateMembershipToAthlete";
+import { MeasurementsProgress } from "@/domain/entities/MeasurementsProgress";
 
 @injectable()
 export class AthleteUserServiceImpl implements AthleteUserService {
@@ -75,6 +76,17 @@ export class AthleteUserServiceImpl implements AthleteUserService {
       athleteId: data.athleteId,
       membershipId: data.membershipId,
     });
+
+    return response.data;
+  }
+
+  async createMeasurementProgress(
+    data: MeasurementsProgress
+  ): Promise<boolean> {
+    const response = await this.http.post<
+      TickerResponseApi<boolean>,
+      MeasurementsProgress
+    >("/Athlete/RecordMeasurementProgress", data);
 
     return response.data;
   }

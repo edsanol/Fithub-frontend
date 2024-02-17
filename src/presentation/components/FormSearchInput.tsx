@@ -29,8 +29,6 @@ const FormSearchInput = ({
     onSelectSuggestion(userSelected);
   };
 
-  console.log("suggestions", suggestions);
-
   return (
     <>
       <div className="w-full">

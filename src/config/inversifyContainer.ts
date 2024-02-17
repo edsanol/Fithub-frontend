@@ -50,6 +50,7 @@ import { GetDashboardDataUseCase } from "@/domain/useCases/Dashboard/getDashboar
 import { GetDailyAssistanceGraphicUseCase } from "@/domain/useCases/Dashboard/getDailyAssistanceGraphic";
 import { GetIncomeGraphicUseCase } from "@/domain/useCases/Dashboard/getIncomeGraphic";
 import { GetMembershipGraphicUseCase } from "@/domain/useCases/Dashboard/getMembershipGraphic";
+import { CreateMeasurementProgressUseCase } from "@/domain/useCases/AthleteUser/createMeasurementProgressUseCase";
 
 const container = new Container();
 
@@ -123,6 +124,11 @@ container
     TYPES.UpdateMembershipToAthleteUseCase
   )
   .to(UpdateMembershipToAthleteUseCase);
+container
+  .bind<CreateMeasurementProgressUseCase>(
+    TYPES.CreateMeasurementProgressUseCase
+  )
+  .to(CreateMeasurementProgressUseCase);
 
 // MembershipRepository
 container

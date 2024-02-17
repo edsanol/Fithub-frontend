@@ -49,14 +49,12 @@ const ViewModel = () => {
       biceps: 0,
       chest: 0,
       waist: 0,
-      hips: 0,
       thigh: 0,
       calf: 0,
       shoulders: 0,
       forearm: 0,
       height: 0,
       weight: 0,
-      date: "",
     });
 
   useEffect(() => {
@@ -128,10 +126,6 @@ const ViewModel = () => {
     }));
   };
 
-  useEffect(() => {
-    console.log("userSelected", userSelected);
-  }, [userSelected]);
-
   const handleOpenModal = async (modalName: "createModal") => {
     toggleModal(modalName);
   };
@@ -150,10 +144,6 @@ const ViewModel = () => {
 
   const handleSetWaist = (waist: number) => {
     setMeasurementsProgress({ ...measurementsProgress, waist });
-  };
-
-  const handleSetHips = (hips: number) => {
-    setMeasurementsProgress({ ...measurementsProgress, hips });
   };
 
   const handleSetThigh = (thigh: number) => {
@@ -180,12 +170,6 @@ const ViewModel = () => {
     setMeasurementsProgress({ ...measurementsProgress, weight });
   };
 
-  const handleSetDate = (date: string) => {
-    const registerDate = new Date(date).toISOString();
-
-    setMeasurementsProgress({ ...measurementsProgress, date: registerDate });
-  };
-
   return {
     search,
     suggestions,
@@ -200,14 +184,12 @@ const ViewModel = () => {
     handleSetBiceps,
     handleSetChest,
     handleSetWaist,
-    handleSetHips,
     handleSetThigh,
     handleSetCalf,
     handleSetShoulders,
     handleSetForearm,
     handleSetHeight,
     handleSetWeight,
-    handleSetDate,
     handleSubmit,
   };
 };

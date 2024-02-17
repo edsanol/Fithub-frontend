@@ -38,14 +38,12 @@ const UserProgress = () => {
     handleSetBiceps,
     handleSetChest,
     handleSetWaist,
-    handleSetHips,
     handleSetThigh,
     handleSetCalf,
     handleSetShoulders,
     handleSetForearm,
     handleSetHeight,
     handleSetWeight,
-    handleSetDate,
     handleSubmit,
   } = ViewModel();
 
@@ -162,20 +160,20 @@ const UserProgress = () => {
                 <FormInput
                   isRequired
                   type="number"
-                  label="Caderas (cm)"
-                  size="lg"
-                  classNames={{ base: "dark" }}
-                  customInputClass="mb-5"
-                  onChange={(value) => handleSetHips(Number(value))}
-                />
-                <FormInput
-                  isRequired
-                  type="number"
                   label="Espalda (cm)"
                   size="lg"
                   classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetShoulders(Number(value))}
+                />
+                <FormInput
+                  isRequired
+                  type="number"
+                  label="Pantorrilla (cm)"
+                  size="lg"
+                  classNames={{ base: "dark" }}
+                  customInputClass="mb-5"
+                  onChange={(value) => handleSetCalf(Number(value))}
                 />
               </div>
               <div className="flex flex-col md:flex-row md:gap-2">
@@ -198,27 +196,6 @@ const UserProgress = () => {
                   onChange={(value) => handleSetThigh(Number(value))}
                 />
               </div>
-              <div className="flex flex-col md:flex-row md:gap-2">
-                <FormInput
-                  isRequired
-                  type="number"
-                  label="Pantorrilla (cm)"
-                  size="lg"
-                  classNames={{ base: "dark" }}
-                  customInputClass="mb-5"
-                  onChange={(value) => handleSetCalf(Number(value))}
-                />
-              </div>
-              <FormInput
-                isRequired
-                type="date"
-                label="Fecha del registro"
-                placeholder="Selecciona una fecha"
-                labelPlacement="outside"
-                size="lg"
-                classNames={{ base: "dark" }}
-                onChange={(value) => handleSetDate(value)}
-              />
 
               <PrimaryButton
                 text={"Crear"}

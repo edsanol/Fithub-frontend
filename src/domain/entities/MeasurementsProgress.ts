@@ -5,14 +5,12 @@ type constructorParams = {
   biceps: number;
   chest: number;
   waist: number;
-  hips: number;
   thigh: number;
   calf: number;
   shoulders: number;
   forearm: number;
   height: number;
   weight: number;
-  date: string;
 };
 
 export class MeasurementsProgress {
@@ -22,14 +20,12 @@ export class MeasurementsProgress {
   public biceps: number;
   public chest: number;
   public waist: number;
-  public hips: number;
   public thigh: number;
   public calf: number;
   public shoulders: number;
   public forearm: number;
   public height: number;
   public weight: number;
-  public date: string;
 
   constructor({
     measurementsProgressID,
@@ -38,14 +34,12 @@ export class MeasurementsProgress {
     biceps,
     chest,
     waist,
-    hips,
     thigh,
     calf,
     shoulders,
     forearm,
     height,
     weight,
-    date,
   }: constructorParams) {
     this.measurementsProgressID = measurementsProgressID;
     this.idAthlete = idAthlete;
@@ -53,13 +47,11 @@ export class MeasurementsProgress {
     this.biceps = biceps;
     this.chest = chest;
     this.waist = waist;
-    this.hips = hips;
     this.thigh = thigh;
     this.calf = calf;
     this.shoulders = shoulders;
     this.forearm = forearm;
     this.height = height;
     this.weight = weight;
-    this.date = date;
   }
 }
