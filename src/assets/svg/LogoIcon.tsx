@@ -1,5 +1,3 @@
-import React from "react";
-
 const LogoIcon = () => {
   return (
     <svg width={28} height={28}>
