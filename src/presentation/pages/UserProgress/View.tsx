@@ -12,7 +12,6 @@ import {
 import ViewModel from "./ViewModel";
 import { customRenderCell } from "./components/render-cell/RenderCell";
 import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
-import Gluteus from "@/assets/svg/Gluteus";
 import { mapperMuscleIcon } from "@/presentation/helpers";
 import ProgressChart from "./components/progress-chart/ProgressChart";
 

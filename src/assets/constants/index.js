@@ -3,10 +3,10 @@ import {
   MembershipColumns,
   DiscountsColumns,
   MeasurementProgressColumns,
-} from "./columns";
+} from "./columns/Columns";
 
-import { subscriptionsPlans } from "./subscriptions-plans";
-import { genres } from "./genres";
+import { subscriptionsPlans } from "./subscriptions-plans/SubscriptionsPlans";
+import { genres } from "./genres/Genres";
 
 export {
   AthleteColumns,

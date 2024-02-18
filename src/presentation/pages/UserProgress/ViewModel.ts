@@ -14,17 +14,7 @@ import { GetMeasurementProgressByLastMonthUseCase } from "@/domain/useCases/Athl
 import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
 import { GetMeasurementsGraphicUseCase } from "@/domain/useCases/AthleteUser/getMeasurementsGraphicUseCase";
 import { BarGraphicValues } from "@/domain/models/BarGraphicValues";
-
-const useDebounce = (value: string, delay: number = 500) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedValue(value), delay);
-    return () => clearTimeout(handler);
-  }, [value, delay]);
-
-  return debouncedValue;
-};
+import { useDebounce } from "@/hooks/useDebounce";
 
 const ViewModel = () => {
   const [search, setSearch] = useState("");
