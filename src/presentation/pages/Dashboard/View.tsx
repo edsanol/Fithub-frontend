@@ -1,12 +1,12 @@
 "use client";
 
 import ViewModel from "./ViewModel";
-import CustomDashboardGraph from "@/presentation/components/CustomDashboardGraph";
-import CustomDashboardData from "@/presentation/components/CustomDashboardData";
-import CustomDashboardDoubleGraph from "@/presentation/components/CustomDashboardDoubleGraph";
-import CustomAssistanceGraph from "@/presentation/components/CustomAssistanceGraph";
-import CustomMembershipDistributionGraph from "@/presentation/components/CustomMembershipDistributionGraph";
-import CustomIncomeGraph from "@/presentation/components/CustomIncomeGraph";
+import CustomDashboardGraph from "@/presentation/components/shared/charts/CustomDashboardGraph";
+import CustomDashboardData from "@/presentation/components/shared/cards/CustomDashboardData";
+import CustomDashboardDoubleGraph from "@/presentation/components/shared/charts/CustomDashboardDoubleGraph";
+import CustomAssistanceGraph from "@/presentation/components/shared/charts/CustomAssistanceGraph";
+import CustomMembershipDistributionGraph from "@/presentation/components/shared/charts/CustomMembershipDistributionGraph";
+import CustomIncomeGraph from "@/presentation/components/shared/charts/CustomIncomeGraph";
 
 const Dashboard = () => {
   const {

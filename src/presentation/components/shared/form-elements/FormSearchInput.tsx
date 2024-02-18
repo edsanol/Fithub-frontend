@@ -1,7 +1,7 @@
 "use client";
 
 import { Input } from "@nextui-org/react";
-import { SearchIcon } from "./SearchIconV2";
+import { SearchIcon } from "@/assets/svg/SearchIconV2";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
 
 interface FormSearchInputProps {

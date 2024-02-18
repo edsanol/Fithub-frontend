@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardFooter, CardHeader } from "@nextui-org/react";
-import { mapperMuscleNames } from "../helpers";
+import { mapperMuscleNames } from "../../../helpers";
 
 interface CustomProgressCardProps {
   icon: any;
