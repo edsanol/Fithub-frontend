@@ -14,7 +14,7 @@ import {
 } from "@nextui-org/react";
 import SearchIcon from "@/assets/svg/SearchIcon";
 import { useSession } from "next-auth/react";
-import { IColumns } from "../interfaces/ICustomTable";
+import { IColumns } from "@/presentation/interfaces";
 
 interface CustomTableProps {
   onSetNumPage?: (numPage: number, token: string) => void;

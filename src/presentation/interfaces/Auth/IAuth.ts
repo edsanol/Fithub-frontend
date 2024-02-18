@@ -1,15 +1,3 @@
-export interface IGymData {
-  gymName: string;
-  email: string;
-  password: string;
-  address: string;
-  phoneNumber: string;
-  registerDate: string;
-  subscriptionPlan: string;
-  comments: string;
-  nit: string;
-}
-
 export interface IGymDataValidation {
   gymNameError: boolean;
   emailError: boolean;
@@ -26,7 +14,7 @@ export interface IChangePasswordValidation {
   confirmPasswordError: boolean;
 }
 
-export interface IRecoversPasswordValidation {
+export interface IRecoverPasswordValidation {
   emailError: boolean;
 }
 

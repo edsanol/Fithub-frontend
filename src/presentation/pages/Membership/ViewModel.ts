@@ -5,7 +5,7 @@ import { TYPES } from "@/config/types";
 import { AthleteColumns } from "@/assets/constants";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { Membership } from "@/domain/entities/Membership";
-import { IMembershipValidation } from "@/presentation/interfaces/IMembership";
+import { IMembershipValidation } from "@/presentation/interfaces";
 import { isNotEmpty, isValidName, isValidNumber } from "@/presentation/helpers";
 import { RegisterMembershipUseCase } from "@/domain/useCases/Membership/registerMembershipUseCase";
 import { useSession } from "next-auth/react";

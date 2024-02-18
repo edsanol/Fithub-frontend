@@ -3,7 +3,7 @@ import { TYPES } from "@/config/types";
 import { ResetPassword } from "@/domain/models/ResetPassword";
 import { RecoverPasswordUseCase } from "@/domain/useCases/GymUser/recoverPasswordUseCase";
 import { isValidEmail } from "@/presentation/helpers";
-import { IRecoversPasswordValidation } from "@/presentation/interfaces/IAuth";
+import { IRecoverPasswordValidation } from "@/presentation/interfaces";
 import { useState } from "react";
 
 const ViewModel = () => {
@@ -15,7 +15,7 @@ const ViewModel = () => {
   const [emailError, setEmailError] = useState<boolean>(false);
 
   const handleIsValidForm = () => {
-    const errors: IRecoversPasswordValidation = {
+    const errors: IRecoverPasswordValidation = {
       emailError: !isValidEmail(resetPasswordData.email!),
     };
 

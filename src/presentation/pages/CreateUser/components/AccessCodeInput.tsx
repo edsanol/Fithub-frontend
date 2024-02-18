@@ -1,6 +1,6 @@
 import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { FormInput } from "@/presentation/components";
-import { IAthleteValidation } from "@/presentation/interfaces/IAthlete";
+import { IAthleteValidation } from "@/presentation/interfaces/Athlete/IAthlete";
 
 interface AccessCodeInputProps {
   athleteDataError: IAthleteValidation;

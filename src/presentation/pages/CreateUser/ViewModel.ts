@@ -11,7 +11,7 @@ import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
 import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
 import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
-import { IAthleteValidation } from "@/presentation/interfaces/IAthlete";
+import { IAthleteValidation } from "@/presentation/interfaces";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/registerAthleteUserUseCase";
 import { TYPES } from "@/config/types";

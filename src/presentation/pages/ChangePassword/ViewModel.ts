@@ -8,7 +8,7 @@ import {
   isValidNewPassword,
   isValidPassword,
 } from "@/presentation/helpers";
-import { IChangePasswordValidation } from "@/presentation/interfaces/IAuth";
+import { IChangePasswordValidation } from "@/presentation/interfaces";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 

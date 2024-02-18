@@ -12,7 +12,7 @@ import {
   isValidPassword,
   isValidPhone,
 } from "@/presentation/helpers";
-import { IGymDataValidation } from "@/presentation/interfaces/IAuth";
+import { IGymDataValidation } from "@/presentation/interfaces";
 import { GymUser } from "@/domain/entities/GymUser";
 import { cipherData } from "@/config/secureData";
 import Cookies from "js-cookie";
