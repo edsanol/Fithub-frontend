@@ -1,37 +1,56 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import container from "@/config/inversifyContainer";
+import { TYPES } from "@/config/types";
+import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { MeasurementsProgress } from "@/domain/entities/MeasurementsProgress";
-import { useEffect, useState } from "react";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { CreateMeasurementProgressUseCase } from "@/domain/useCases/AthleteUser/createMeasurementProgressUseCase";
+import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
+import { GetMeasurementProgressListUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressListUseCase";
+import { useCallback, useEffect, useState } from "react";
+import { MeasurementProgressColumns } from "@/assets/constants";
+import { GetMeasurementProgressByLastMonthUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressByLastMonthUseCase";
+import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
+import { GetMeasurementsGraphicUseCase } from "@/domain/useCases/AthleteUser/getMeasurementsGraphicUseCase";
+import { BarGraphicValues } from "@/domain/models/BarGraphicValues";
 
-interface PersonasInterface {
-  id: number;
-  nombre: string;
-}
+const useDebounce = (value: string, delay: number = 500) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
 
-const personas = [
-  { id: 1, nombre: "Alejandro Gómez" },
-  { id: 2, nombre: "María Fernández" },
-  { id: 3, nombre: "Carlos Martínez" },
-  { id: 4, nombre: "Lucía Hernández" },
-  { id: 5, nombre: "Esteban Paredes" },
-  { id: 6, nombre: "Daniela Rivera" },
-  { id: 7, nombre: "Miguel Ángel López" },
-  { id: 8, nombre: "Sofía Guzmán" },
-  { id: 9, nombre: "Jorge Enriquez" },
-  { id: 10, nombre: "Isabel Cortés" },
-];
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 const ViewModel = () => {
-  const [suggestions, setSuggestions] = useState<PersonasInterface[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [search, setSearch] = useState("");
-  const [timerId, setTimerId] = useState(null);
+  const [suggestions, setSuggestions] = useState<AthleteUser[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const debouncedSearch = useDebounce(search);
+  const [userSelected, setUserSelected] = useState<AthleteUser>({
+    athleteId: 0,
+    athleteName: "",
+    athleteLastName: "",
+    email: "",
+    phoneNumber: "",
+    birthDate: "",
+    genre: "",
+    idGym: 0,
+    gymName: "",
+    registerDate: "",
+    status: true,
+    membershipName: "",
+    cardAccessCode: "",
+  });
   const [forceHideSuggestions, setForceHideSuggestions] = useState(false);
-  const [userSelected, setUserSelected] = useState("");
-
   const [isModalOpen, setIsModalOpen] = useState({
     createModal: false,
+    progressModal: false,
   });
-
   const [measurementsProgress, setMeasurementsProgress] =
     useState<MeasurementsProgress>({
       measurementsProgressID: 0,
@@ -40,72 +59,209 @@ const ViewModel = () => {
       biceps: 0,
       chest: 0,
       waist: 0,
-      hips: 0,
       thigh: 0,
       calf: 0,
       shoulders: 0,
       forearm: 0,
       height: 0,
       weight: 0,
-      date: "",
     });
+  const [measurementProgressList, setMeasurementProgressList] =
+    useState<PaginateResponseList>({
+      totalRecords: 0,
+      items: [],
+    });
+  const [measurementProgressByLastMonth, setMeasurementProgressByLastMonth] =
+    useState<MeasurementProgressByLastMonth[]>([]);
+  const [graphicValues, setGraphicValues] = useState<BarGraphicValues[]>([]);
 
   useEffect(() => {
-    if (timerId) clearTimeout(timerId);
+    if (userSelected && userSelected.athleteId !== 0) {
+      setMeasurementsProgress({
+        ...measurementsProgress,
+        idAthlete: userSelected.athleteId!,
+      });
 
+      getAthleteMeasurementProgressList({ numPage: 1 });
+      getMeasurementProgressByLastMonth();
+    }
+  }, [userSelected]);
+
+  useEffect(() => {
     if (forceHideSuggestions) {
       setShowSuggestions(false);
       return;
     }
 
-    let newTimerId: any;
-
-    newTimerId = setTimeout(() => {
-      if (search.trim() === "") {
+    const fetchSuggestions = async () => {
+      if (debouncedSearch.trim() === "") {
         setSuggestions([]);
         setShowSuggestions(false);
       } else {
-        const filterResults = personas.filter((persona) =>
-          persona.nombre.toLowerCase().includes(search.toLowerCase())
-        );
-        setSuggestions(filterResults);
+        await getAthleteUserByFilter({ textFilter: debouncedSearch });
         setShowSuggestions(true);
       }
-    }, 500);
+    };
 
-    setTimerId(newTimerId);
+    fetchSuggestions();
+  }, [debouncedSearch, forceHideSuggestions]);
 
-    return () => clearTimeout(newTimerId);
-  }, [search, forceHideSuggestions]);
-
-  const handleChange = (search: string) => {
-    setSearch(search);
+  const handleChange = useCallback((value: string) => {
+    setSearch(value);
     setForceHideSuggestions(false);
-  };
+  }, []);
 
-  const handleSelectSuggestion = (userSelected: string) => {
-    setSearch(userSelected);
+  const handleSelectSuggestion = useCallback((userSelected: AthleteUser) => {
+    setSearch(userSelected.athleteName + " " + userSelected.athleteLastName);
     setUserSelected(userSelected);
     setShowSuggestions(false);
     setForceHideSuggestions(true);
-    if (timerId) clearTimeout(timerId);
-  };
+  }, []);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    console.log(measurementsProgress);
+    if (measurementsProgress.idAthlete === 0) {
+      return;
+    }
+
+    const createMeasurementProgress =
+      container.get<CreateMeasurementProgressUseCase>(
+        TYPES.CreateMeasurementProgressUseCase
+      );
+
+    const response = createMeasurementProgress.execute(measurementsProgress);
+
+    if (!response) {
+      console.log("error");
+      return;
+    }
+
+    await getAthleteMeasurementProgressList({
+      numPage: 1,
+    });
+    setIsModalOpen({ createModal: false, progressModal: false });
   };
 
-  const toggleModal = (modalName: "createModal") => {
+  const getAthleteUserByFilter = async (
+    params: Partial<{ textFilter: string }>
+  ) => {
+    try {
+      const getAthleteUserListUseCase =
+        container.get<GetAthleteUserListUseCase>(
+          TYPES.GetAthleteUserListUseCase
+        );
+      const response = await getAthleteUserListUseCase.execute({
+        numFilter: 1,
+        numRecordsPage: 100,
+        ...params,
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setSuggestions(response.items);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAthleteMeasurementProgressList = async (
+    params: Partial<PaginateData>
+  ) => {
+    try {
+      const id = userSelected.athleteId!;
+
+      const getMeasurementProgressListUseCase =
+        container.get<GetMeasurementProgressListUseCase>(
+          TYPES.GetMeasurementProgressListUseCase
+        );
+
+      const response = await getMeasurementProgressListUseCase.execute(id, {
+        numRecordsPage: 7,
+        ...params,
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setMeasurementProgressList(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMeasurementProgressByLastMonth = async () => {
+    try {
+      const getMeasurementProgress =
+        container.get<GetMeasurementProgressByLastMonthUseCase>(
+          TYPES.GetMeasurementProgressByLastMonthUseCase
+        );
+
+      const response = await getMeasurementProgress.execute(
+        userSelected.athleteId!
+      );
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setMeasurementProgressByLastMonth(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMeasurementsGraphic = async (muscle: string) => {
+    try {
+      const getMeasurementsGraphic =
+        container.get<GetMeasurementsGraphicUseCase>(
+          TYPES.GetMeasurementsGraphicUseCase
+        );
+
+      const response = await getMeasurementsGraphic.execute(
+        userSelected.athleteId!,
+        muscle,
+        "2024-01-01",
+        "2024-02-17"
+      );
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setGraphicValues(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSetNumPage = async (numPage: number) => {
+    await getAthleteMeasurementProgressList({ numPage });
+  };
+
+  const toggleModal = (modalName: "createModal" | "progressModal") => {
     setIsModalOpen((prevState) => ({
       ...prevState,
       [modalName]: !prevState[modalName],
     }));
   };
 
-  const handleOpenModal = async (modalName: "createModal") => {
+  const handleOpenModal = async (
+    modalName: "createModal" | "progressModal",
+    muscle?: string
+  ) => {
     toggleModal(modalName);
+
+    if (modalName === "progressModal" && muscle) {
+      await getMeasurementsGraphic(muscle);
+    }
   };
 
   const handleSetGlueteus = (gluteus: number) => {
@@ -122,10 +278,6 @@ const ViewModel = () => {
 
   const handleSetWaist = (waist: number) => {
     setMeasurementsProgress({ ...measurementsProgress, waist });
-  };
-
-  const handleSetHips = (hips: number) => {
-    setMeasurementsProgress({ ...measurementsProgress, hips });
   };
 
   const handleSetThigh = (thigh: number) => {
@@ -152,18 +304,16 @@ const ViewModel = () => {
     setMeasurementsProgress({ ...measurementsProgress, weight });
   };
 
-  const handleSetDate = (date: string) => {
-    const registerDate = new Date(date).toISOString();
-
-    setMeasurementsProgress({ ...measurementsProgress, date: registerDate });
-  };
-
   return {
     search,
     suggestions,
     showSuggestions,
     userSelected,
     isModalOpen,
+    measurementProgressList,
+    MeasurementProgressColumns,
+    measurementProgressByLastMonth,
+    graphicValues,
     handleChange,
     handleSelectSuggestion,
     toggleModal,
@@ -172,15 +322,14 @@ const ViewModel = () => {
     handleSetBiceps,
     handleSetChest,
     handleSetWaist,
-    handleSetHips,
     handleSetThigh,
     handleSetCalf,
     handleSetShoulders,
     handleSetForearm,
     handleSetHeight,
     handleSetWeight,
-    handleSetDate,
     handleSubmit,
+    handleSetNumPage,
   };
 };
 

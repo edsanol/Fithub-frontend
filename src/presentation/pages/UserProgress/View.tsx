@@ -1,27 +1,20 @@
 "use client";
 
 import {
-  CustomDashboardData,
-  CustomDashboardDoubleGraph,
-  CustomDashboardGraph,
   CustomModal,
+  CustomProgressCard,
+  CustomTable,
   DashboardHeader,
   FormInput,
   FormSearchInput,
   PrimaryButton,
 } from "@/presentation/components";
 import ViewModel from "./ViewModel";
-
-const dashboardData = {
-  totalAthletes: 12,
-  activeAthletes: 6,
-  activeAthletesPercentage: 50,
-  inactiveAthletes: 6,
-  inactiveAthletesPercentage: 50,
-  dailyAssistance: 0,
-  newAthletesByMonth: 0,
-  incomeByMonth: 10000,
-};
+import { customRenderCell } from "./components/render-cell/RenderCell";
+import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
+import Gluteus from "@/assets/svg/Gluteus";
+import { mapperMuscleIcon } from "@/presentation/helpers";
+import ProgressChart from "./components/progress-chart/ProgressChart";
 
 const UserProgress = () => {
   const {
@@ -30,6 +23,10 @@ const UserProgress = () => {
     showSuggestions,
     userSelected,
     isModalOpen,
+    measurementProgressList,
+    MeasurementProgressColumns,
+    measurementProgressByLastMonth,
+    graphicValues,
     handleChange,
     handleSelectSuggestion,
     toggleModal,
@@ -38,18 +35,19 @@ const UserProgress = () => {
     handleSetBiceps,
     handleSetChest,
     handleSetWaist,
-    handleSetHips,
     handleSetThigh,
     handleSetCalf,
     handleSetShoulders,
     handleSetForearm,
     handleSetHeight,
     handleSetWeight,
-    handleSetDate,
     handleSubmit,
+    handleSetNumPage,
   } = ViewModel();
 
-  const shouldShowComponents = userSelected && search === userSelected;
+  const selectedUserFullName = `${userSelected?.athleteName} ${userSelected?.athleteLastName}`;
+
+  const shouldShowComponents = userSelected && search === selectedUserFullName;
 
   return (
     <>
@@ -82,11 +80,37 @@ const UserProgress = () => {
       </div>
 
       {shouldShowComponents && (
-        <div className="flex flex-wrap gap-4 justify-between mt-8">
-          <CustomDashboardData data={dashboardData} />
-          <CustomDashboardDoubleGraph dashboardData={dashboardData} />
-          <CustomDashboardGraph dashboardData={dashboardData} />
-        </div>
+        <>
+          <div className="gap-2 grid grid-cols-2 sm:grid-cols-5 mt-5">
+            {measurementProgressByLastMonth.map(
+              (measurement: MeasurementProgressByLastMonth, index) => (
+                <CustomProgressCard
+                  key={index}
+                  icon={mapperMuscleIcon(measurement.muscle)}
+                  muscle={measurement.muscle}
+                  measurement={measurement.measurement}
+                  progress={measurement.progress}
+                  progressPercentage={measurement.progressPercentage}
+                  onPress={() =>
+                    handleOpenModal("progressModal", measurement.muscle)
+                  }
+                />
+              )
+            )}
+          </div>
+
+          <div className="mt-5">
+            <CustomTable
+              onSetNumPage={handleSetNumPage}
+              customRenderCell={(record, columnKey) =>
+                customRenderCell(record, columnKey)
+              }
+              records={measurementProgressList}
+              columns={MeasurementProgressColumns}
+              uniqueKeyField="measurementsProgressID"
+            />
+          </div>
+        </>
       )}
 
       <CustomModal
@@ -160,20 +184,20 @@ const UserProgress = () => {
                 <FormInput
                   isRequired
                   type="number"
-                  label="Caderas (cm)"
-                  size="lg"
-                  classNames={{ base: "dark" }}
-                  customInputClass="mb-5"
-                  onChange={(value) => handleSetHips(Number(value))}
-                />
-                <FormInput
-                  isRequired
-                  type="number"
                   label="Espalda (cm)"
                   size="lg"
                   classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetShoulders(Number(value))}
+                />
+                <FormInput
+                  isRequired
+                  type="number"
+                  label="Pantorrilla (cm)"
+                  size="lg"
+                  classNames={{ base: "dark" }}
+                  customInputClass="mb-5"
+                  onChange={(value) => handleSetCalf(Number(value))}
                 />
               </div>
               <div className="flex flex-col md:flex-row md:gap-2">
@@ -196,27 +220,6 @@ const UserProgress = () => {
                   onChange={(value) => handleSetThigh(Number(value))}
                 />
               </div>
-              <div className="flex flex-col md:flex-row md:gap-2">
-                <FormInput
-                  isRequired
-                  type="number"
-                  label="Pantorrilla (cm)"
-                  size="lg"
-                  classNames={{ base: "dark" }}
-                  customInputClass="mb-5"
-                  onChange={(value) => handleSetCalf(Number(value))}
-                />
-              </div>
-              <FormInput
-                isRequired
-                type="date"
-                label="Fecha del registro"
-                placeholder="Selecciona una fecha"
-                labelPlacement="outside"
-                size="lg"
-                classNames={{ base: "dark" }}
-                onChange={(value) => handleSetDate(value)}
-              />
 
               <PrimaryButton
                 text={"Crear"}
@@ -224,6 +227,17 @@ const UserProgress = () => {
                 customButtonClass="w-full mt-5 p-8"
               />
             </form>
+          </>
+        }
+      />
+
+      <CustomModal
+        isOpen={isModalOpen.progressModal}
+        onOpenChange={() => toggleModal("progressModal")}
+        size="2xl"
+        content={
+          <>
+            <ProgressChart initialData={graphicValues} />
           </>
         }
       />

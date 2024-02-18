@@ -50,6 +50,10 @@ import { GetDashboardDataUseCase } from "@/domain/useCases/Dashboard/getDashboar
 import { GetDailyAssistanceGraphicUseCase } from "@/domain/useCases/Dashboard/getDailyAssistanceGraphic";
 import { GetIncomeGraphicUseCase } from "@/domain/useCases/Dashboard/getIncomeGraphic";
 import { GetMembershipGraphicUseCase } from "@/domain/useCases/Dashboard/getMembershipGraphic";
+import { CreateMeasurementProgressUseCase } from "@/domain/useCases/AthleteUser/createMeasurementProgressUseCase";
+import { GetMeasurementProgressListUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressListUseCase";
+import { GetMeasurementProgressByLastMonthUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressByLastMonthUseCase";
+import { GetMeasurementsGraphicUseCase } from "@/domain/useCases/AthleteUser/getMeasurementsGraphicUseCase";
 
 const container = new Container();
 
@@ -123,6 +127,24 @@ container
     TYPES.UpdateMembershipToAthleteUseCase
   )
   .to(UpdateMembershipToAthleteUseCase);
+container
+  .bind<CreateMeasurementProgressUseCase>(
+    TYPES.CreateMeasurementProgressUseCase
+  )
+  .to(CreateMeasurementProgressUseCase);
+container
+  .bind<GetMeasurementProgressListUseCase>(
+    TYPES.GetMeasurementProgressListUseCase
+  )
+  .to(GetMeasurementProgressListUseCase);
+container
+  .bind<GetMeasurementProgressByLastMonthUseCase>(
+    TYPES.GetMeasurementProgressByLastMonthUseCase
+  )
+  .to(GetMeasurementProgressByLastMonthUseCase);
+container
+  .bind<GetMeasurementsGraphicUseCase>(TYPES.GetMeasurementsGraphicUseCase)
+  .to(GetMeasurementsGraphicUseCase);
 
 // MembershipRepository
 container

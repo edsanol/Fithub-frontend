@@ -32,6 +32,16 @@ const TYPES = {
   UpdateMembershipToAthleteUseCase: Symbol.for(
     "UpdateMembershipToAthleteUseCase"
   ),
+  CreateMeasurementProgressUseCase: Symbol.for(
+    "CreateMeasurementProgressUseCase"
+  ),
+  GetMeasurementProgressListUseCase: Symbol.for(
+    "GetMeasurementProgressListUseCase"
+  ),
+  GetMeasurementProgressByLastMonthUseCase: Symbol.for(
+    "GetMeasurementProgressByLastMonthUseCase"
+  ),
+  GetMeasurementsGraphicUseCase: Symbol.for("GetMeasurementsGraphicUseCase"),
 
   // MembershipRepository
   MembershipRepository: Symbol.for("MembershipRepository"),

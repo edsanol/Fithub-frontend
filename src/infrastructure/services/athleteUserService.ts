@@ -7,6 +7,9 @@ import { TYPES } from "@/config/types";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { UpdateMembershipToAthlete } from "@/domain/models/UpdateMembershipToAthlete";
+import { MeasurementsProgress } from "@/domain/entities/MeasurementsProgress";
+import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
+import { BarGraphicValues } from "@/domain/models/BarGraphicValues";
 
 @injectable()
 export class AthleteUserServiceImpl implements AthleteUserService {
@@ -75,6 +78,52 @@ export class AthleteUserServiceImpl implements AthleteUserService {
       athleteId: data.athleteId,
       membershipId: data.membershipId,
     });
+
+    return response.data;
+  }
+
+  async createMeasurementProgress(
+    data: MeasurementsProgress
+  ): Promise<boolean> {
+    const response = await this.http.post<
+      TickerResponseApi<boolean>,
+      MeasurementsProgress
+    >("/Athlete/RecordMeasurementProgress", data);
+
+    return response.data;
+  }
+
+  async getMeasurementProgressList(
+    id: number,
+    data: PaginateData
+  ): Promise<PaginateResponseList<MeasurementsProgress>> {
+    const response = await this.http.post<
+      TickerResponseApi<PaginateResponseList<MeasurementsProgress>>,
+      PaginateData
+    >(`/Athlete/GetMeasurementProgressList?athleteID=${id}`, data);
+
+    return response.data;
+  }
+
+  async getMeasurementProgressByLastMonth(
+    id: number
+  ): Promise<MeasurementProgressByLastMonth[]> {
+    const response = await this.http.get<
+      TickerResponseApi<MeasurementProgressByLastMonth[]>
+    >(`/Athlete/GetMeasurementsByLastMonth?athleteID=${id}`);
+
+    return response.data;
+  }
+
+  async getMeasurementsGraphic(
+    athleteID: number,
+    muscle: string,
+    startDate: string,
+    endDate: string
+  ): Promise<BarGraphicValues[]> {
+    const response = await this.http.get<TickerResponseApi<BarGraphicValues[]>>(
+      `/Athlete/GetMeasurementsGraphic?athleteID=${athleteID}&muscle=${muscle}&startDate=${startDate}&endDate=${endDate}`
+    );
 
     return response.data;
   }

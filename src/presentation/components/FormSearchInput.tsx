@@ -1,19 +1,15 @@
 import { Input } from "@nextui-org/react";
 import { SearchIcon } from "./SearchIconV2";
-
-interface PersonasInterface {
-  id: number;
-  nombre: string;
-}
+import { AthleteUser } from "@/domain/entities/AthleteUser";
 
 interface FormSearchInputProps {
   label: string;
   placeholder: string;
-  suggestions: PersonasInterface[];
+  suggestions: AthleteUser[];
   showSuggestions: boolean;
   value?: string;
   onChange: (event: string) => void;
-  onSelectSuggestion: (user: string) => void;
+  onSelectSuggestion: (user: AthleteUser) => void;
 }
 
 const FormSearchInput = ({
@@ -29,7 +25,7 @@ const FormSearchInput = ({
     onChange(event.target.value);
   };
 
-  const handleSelectSuggestion = (userSelected: string) => {
+  const handleSelectSuggestion = (userSelected: AthleteUser) => {
     onSelectSuggestion(userSelected);
   };
 
@@ -73,13 +69,13 @@ const FormSearchInput = ({
           <ul className="absolute z-10 w-[90%] bg-[#18181B] shadow-lg rounded-lg max-h-60 overflow-auto md:w-[95%]">
             {suggestions.map((record) => (
               <li
-                key={record.id}
+                key={record.athleteId}
                 className="p-2 hover:bg-[#2A2E30] cursor-pointer"
                 onMouseDown={() => {
-                  handleSelectSuggestion(record.nombre);
+                  handleSelectSuggestion(record);
                 }}
               >
-                {record.nombre}
+                {record.athleteName} {record.athleteLastName}
               </li>
             ))}
           </ul>

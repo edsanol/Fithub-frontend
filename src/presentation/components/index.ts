@@ -21,6 +21,7 @@ import CustomDashboardGraph from "./CustomDashboardGraph";
 import CustomDashboardDoubleGraph from "./CustomDashboardDoubleGraph";
 import CustomDashboardData from "./CustomDashboardData";
 import FormSearchInput from "./FormSearchInput";
+import CustomProgressCard from "./CustomProgressCard";
 
 export {
   PrimaryButton,
@@ -46,4 +47,5 @@ export {
   CustomDashboardDoubleGraph,
   CustomDashboardData,
   FormSearchInput,
+  CustomProgressCard,
 };

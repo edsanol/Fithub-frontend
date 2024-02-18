@@ -1,5 +1,8 @@
 import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
+import { MeasurementsProgress } from "@/domain/entities/MeasurementsProgress";
+import { BarGraphicValues } from "@/domain/models/BarGraphicValues";
+import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { UpdateMembershipToAthlete } from "@/domain/models/UpdateMembershipToAthlete";
@@ -54,6 +57,47 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
     data: UpdateMembershipToAthlete
   ): Promise<boolean> {
     const response = await this.service.updateMembershipToAthlete(data);
+
+    return response;
+  }
+
+  async createMeasurementProgress(
+    data: MeasurementsProgress
+  ): Promise<boolean> {
+    const response = await this.service.createMeasurementProgress(data);
+
+    return response;
+  }
+
+  async getMeasurementProgressList(
+    id: number,
+    data: PaginateData
+  ): Promise<PaginateResponseList<MeasurementsProgress>> {
+    const response = await this.service.getMeasurementProgressList(id, data);
+
+    return response;
+  }
+
+  async getMeasurementProgressByLastMonth(
+    id: number
+  ): Promise<MeasurementProgressByLastMonth[]> {
+    const response = await this.service.getMeasurementProgressByLastMonth(id);
+
+    return response;
+  }
+
+  async getMeasurementsGraphic(
+    athleteID: number,
+    muscle: string,
+    startDate: string,
+    endDate: string
+  ): Promise<BarGraphicValues[]> {
+    const response = await this.service.getMeasurementsGraphic(
+      athleteID,
+      muscle,
+      startDate,
+      endDate
+    );
 
     return response;
   }
