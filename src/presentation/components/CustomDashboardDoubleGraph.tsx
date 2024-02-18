@@ -1,3 +1,5 @@
+"use client";
+
 import { DashboardDataValues } from "@/domain/models/DashboardDataValues";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useEffect, useState } from "react";

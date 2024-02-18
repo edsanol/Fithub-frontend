@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardFooter, CardHeader } from "@nextui-org/react";
 import { mapperMuscleNames } from "../helpers";
 

@@ -22,6 +22,8 @@ import CustomDashboardDoubleGraph from "./CustomDashboardDoubleGraph";
 import CustomDashboardData from "./CustomDashboardData";
 import FormSearchInput from "./FormSearchInput";
 import CustomProgressCard from "./CustomProgressCard";
+import SidebarLayout from "./layout/sidebar-layout/SidebarLayout";
+import TopbarLayout from "./layout/topbar-layout/TopbarLayout";
 
 export {
   PrimaryButton,
@@ -48,4 +50,6 @@ export {
   CustomDashboardData,
   FormSearchInput,
   CustomProgressCard,
+  SidebarLayout,
+  TopbarLayout,
 };

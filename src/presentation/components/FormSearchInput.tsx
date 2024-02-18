@@ -1,3 +1,5 @@
+"use client";
+
 import { Input } from "@nextui-org/react";
 import { SearchIcon } from "./SearchIconV2";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
