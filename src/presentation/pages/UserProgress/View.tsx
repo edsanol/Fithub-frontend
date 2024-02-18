@@ -10,10 +10,11 @@ import {
   PrimaryButton,
 } from "@/presentation/components";
 import ViewModel from "./ViewModel";
-import { customRenderCell } from "./render-cell/RenderCell";
+import { customRenderCell } from "./components/render-cell/RenderCell";
 import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
 import Gluteus from "@/assets/svg/Gluteus";
 import { mapperMuscleIcon } from "@/presentation/helpers";
+import ProgressChart from "./components/progress-chart/ProgressChart";
 
 const UserProgress = () => {
   const {
@@ -25,6 +26,7 @@ const UserProgress = () => {
     measurementProgressList,
     MeasurementProgressColumns,
     measurementProgressByLastMonth,
+    graphicValues,
     handleChange,
     handleSelectSuggestion,
     toggleModal,
@@ -233,7 +235,11 @@ const UserProgress = () => {
         isOpen={isModalOpen.progressModal}
         onOpenChange={() => toggleModal("progressModal")}
         size="2xl"
-        content={<>Hola mundo</>}
+        content={
+          <>
+            <ProgressChart initialData={graphicValues} />
+          </>
+        }
       />
     </>
   );

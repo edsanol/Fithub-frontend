@@ -12,6 +12,8 @@ import { useCallback, useEffect, useState } from "react";
 import { MeasurementProgressColumns } from "@/assets/constants";
 import { GetMeasurementProgressByLastMonthUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressByLastMonthUseCase";
 import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
+import { GetMeasurementsGraphicUseCase } from "@/domain/useCases/AthleteUser/getMeasurementsGraphicUseCase";
+import { BarGraphicValues } from "@/domain/models/BarGraphicValues";
 
 const useDebounce = (value: string, delay: number = 500) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -71,6 +73,7 @@ const ViewModel = () => {
     });
   const [measurementProgressByLastMonth, setMeasurementProgressByLastMonth] =
     useState<MeasurementProgressByLastMonth[]>([]);
+  const [graphicValues, setGraphicValues] = useState<BarGraphicValues[]>([]);
 
   useEffect(() => {
     if (userSelected && userSelected.athleteId !== 0) {
@@ -214,6 +217,31 @@ const ViewModel = () => {
     }
   };
 
+  const getMeasurementsGraphic = async (muscle: string) => {
+    try {
+      const getMeasurementsGraphic =
+        container.get<GetMeasurementsGraphicUseCase>(
+          TYPES.GetMeasurementsGraphicUseCase
+        );
+
+      const response = await getMeasurementsGraphic.execute(
+        userSelected.athleteId!,
+        muscle,
+        "2024-01-01",
+        "2024-02-17"
+      );
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setGraphicValues(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSetNumPage = async (numPage: number) => {
     await getAthleteMeasurementProgressList({ numPage });
   };
@@ -231,8 +259,8 @@ const ViewModel = () => {
   ) => {
     toggleModal(modalName);
 
-    if (modalName === "progressModal") {
-      console.log(muscle);
+    if (modalName === "progressModal" && muscle) {
+      await getMeasurementsGraphic(muscle);
     }
   };
 
@@ -285,6 +313,7 @@ const ViewModel = () => {
     measurementProgressList,
     MeasurementProgressColumns,
     measurementProgressByLastMonth,
+    graphicValues,
     handleChange,
     handleSelectSuggestion,
     toggleModal,
