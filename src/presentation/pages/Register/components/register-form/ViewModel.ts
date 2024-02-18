@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import container from "@/config/inversifyContainer";
@@ -13,15 +13,21 @@ import {
   isValidPhone,
 } from "@/presentation/helpers";
 import { IGymDataValidation } from "@/presentation/interfaces";
-import { GymUser } from "@/domain/entities/GymUser";
 import { cipherData } from "@/config/secureData";
 import Cookies from "js-cookie";
+import { GymUser } from "@/domain/entities/GymUser";
 
-const ViewModel = () => {
-  const router = useRouter();
-  const { data: session } = useSession();
+interface State {
+  gymData: GymUser;
+  gymDataError: IGymDataValidation;
+}
 
-  const [gymData, setGymData] = useState<GymUser>({
+type Action =
+  | { type: "SET_FIELD"; field: keyof GymUser; value: string }
+  | { type: "SET_ERROR"; errors: IGymDataValidation };
+
+const initialState: State = {
+  gymData: {
     gymName: "",
     email: "",
     password: "",
@@ -31,18 +37,56 @@ const ViewModel = () => {
     subscriptionPlan: "Premium",
     comments: "",
     nit: "",
-  });
-  const [gymDataError, setGymDataError] = useState<IGymDataValidation>({
+  },
+  gymDataError: {
     gymNameError: false,
     emailError: false,
     passwordError: false,
     addressError: false,
     phoneNumberError: false,
     nitError: false,
-  });
+  },
+};
 
-  const handleIsValidForm = () => {
-    const errors: IGymDataValidation = {
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "SET_FIELD":
+      return {
+        ...state,
+        gymData: { ...state.gymData, [action.field]: action.value },
+      };
+    case "SET_ERROR":
+      return {
+        ...state,
+        gymDataError: { ...state.gymDataError, ...action.errors },
+      };
+    default:
+      return state;
+  }
+}
+
+const ViewModel = () => {
+  const [{ gymData, gymDataError }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session?.user.token) {
+      Cookies.set("authToken", session.user.token, { expires: 1 });
+      const tokenEncrypted = cipherData(session?.user.refreshToken);
+      Cookies.set("refreshToken", tokenEncrypted, { expires: 1 });
+    }
+  }, [session]);
+
+  const setField = (field: keyof GymUser, value: string) => {
+    dispatch({ type: "SET_FIELD", field, value });
+  };
+
+  const handleIsValidForm = async () => {
+    const errors = {
       emailError: !isValidEmail(gymData.email),
       passwordError: !isValidPassword(gymData.password!),
       gymNameError: !isValidName(gymData.gymName),
@@ -51,9 +95,8 @@ const ViewModel = () => {
       addressError: !isNotEmpty(gymData.address),
     };
 
-    setGymDataError(errors);
-
-    return Promise.resolve(errors);
+    dispatch({ type: "SET_ERROR", errors });
+    return errors;
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -91,61 +134,9 @@ const ViewModel = () => {
     }
   };
 
-  useEffect(() => {
-    if (session?.user.token) {
-      Cookies.set("authToken", session.user.token, { expires: 1 });
-      const tokenEncrypted = cipherData(session?.user.refreshToken);
-      Cookies.set("refreshToken", tokenEncrypted, { expires: 1 });
-    }
-  }, [session]);
-
-  const handleSetGymName = (event: string) => {
-    setGymData({ ...gymData, gymName: event });
-  };
-
-  const handleSetEmail = (event: string) => {
-    setGymData({ ...gymData, email: event });
-  };
-
-  const handleSetPassword = (event: string) => {
-    setGymData({ ...gymData, password: event });
-  };
-
-  const handleSetAddress = (event: string) => {
-    setGymData({ ...gymData, address: event });
-  };
-
-  const handleSetPhoneNumber = (event: string) => {
-    setGymData({ ...gymData, phoneNumber: event });
-  };
-
-  const handleSetRegisterDate = (event: string) => {
-    setGymData({ ...gymData, registerDate: event });
-  };
-
-  const handleSetSubscriptionPlan = (event: string) => {
-    setGymData({ ...gymData, subscriptionPlan: event });
-  };
-
-  const handleSetComments = (event: string) => {
-    setGymData({ ...gymData, comments: event });
-  };
-
-  const handleSetNit = (event: string) => {
-    setGymData({ ...gymData, nit: event });
-  };
-
   return {
     handleSubmit,
-    handleSetGymName,
-    handleSetEmail,
-    handleSetPassword,
-    handleSetAddress,
-    handleSetPhoneNumber,
-    handleSetRegisterDate,
-    handleSetSubscriptionPlan,
-    handleSetComments,
-    handleSetNit,
+    setField,
     gymDataError,
   };
 };
