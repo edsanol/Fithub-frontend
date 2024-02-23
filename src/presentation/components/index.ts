@@ -15,10 +15,9 @@ import DashboardHeader from "./shared/headers/DashboardHeader";
 import FormSwitch from "./shared/form-elements/FormSwitch";
 import FormCheckbox from "./shared/form-elements/FormCheckbox";
 import SidebarLinkGroup from "./ui/left-sidebar/components/SidebarLinkGroup";
-import CustomAssistanceGraph from "./shared/charts/CustomAssistanceGraph";
-import CustomDashboardGraph from "./shared/charts/CustomDashboardGraph";
-import CustomDashboardDoubleGraph from "./shared/charts/CustomDashboardDoubleGraph";
-import CustomDashboardData from "./shared/cards/CustomDashboardData";
+import CustomAreaGraph from "./shared/charts/CustomAreaGraph";
+import CustomPieGraph from "./shared/charts/CustomPieGraph";
+import CustomScaleGraph from "./shared/charts/CustomScaleGraph";
 import FormSearchInput from "./shared/form-elements/FormSearchInput";
 import CustomProgressCard from "./shared/cards/CustomProgressCard";
 import SidebarLayout from "./layout/SidebarLayout";
@@ -42,10 +41,9 @@ export {
   FormSwitch,
   FormCheckbox,
   SidebarLinkGroup,
-  CustomAssistanceGraph,
-  CustomDashboardGraph,
-  CustomDashboardDoubleGraph,
-  CustomDashboardData,
+  CustomAreaGraph,
+  CustomPieGraph,
+  CustomScaleGraph,
   FormSearchInput,
   CustomProgressCard,
   SidebarLayout,

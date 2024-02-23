@@ -1,5 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { ColorType, createChart } from "lightweight-charts";
+"use client";
+
+import { createChart, ColorType } from "lightweight-charts";
 import { MutableRefObject, useEffect, useRef } from "react";
 
 const colors = {
@@ -10,11 +11,11 @@ const colors = {
   areaBottomColor: "rgba(41, 98, 255, 0.28)",
 };
 
-interface ProgressChartProps {
+interface CustomAreaGraphProps {
   initialData: any[];
 }
 
-const ProgressChart = ({ initialData }: ProgressChartProps) => {
+const CustomAreaGraph = ({ initialData }: CustomAreaGraphProps) => {
   const data = initialData;
 
   const chartContainerRef: MutableRefObject<any> = useRef();
@@ -62,4 +63,4 @@ const ProgressChart = ({ initialData }: ProgressChartProps) => {
   return <div ref={chartContainerRef} />;
 };
 
-export default ProgressChart;
+export default CustomAreaGraph;

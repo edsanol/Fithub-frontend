@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CustomAreaGraph,
   CustomModal,
   CustomProgressCard,
   CustomTable,
@@ -13,7 +14,6 @@ import ViewModel from "./ViewModel";
 import { customRenderCell } from "./components/render-cell/RenderCell";
 import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
 import { mapperMuscleIcon } from "@/presentation/helpers";
-import ProgressChart from "./components/progress-chart/ProgressChart";
 
 const UserProgress = () => {
   const {
@@ -226,7 +226,7 @@ const UserProgress = () => {
         size="2xl"
         content={
           <>
-            <ProgressChart initialData={graphicValues} />
+            <CustomAreaGraph initialData={graphicValues} />
           </>
         }
       />
