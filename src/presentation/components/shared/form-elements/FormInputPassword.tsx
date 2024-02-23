@@ -19,7 +19,6 @@ interface FormInputPasswordProps {
   errorMessage?: string;
   label: string;
   size?: "lg" | "md" | "sm";
-  classNames?: any;
   description?: string;
   customInputClass?: string;
   onChange?: (event: string) => void;
@@ -32,7 +31,6 @@ const FormInputPassword = ({
   errorMessage,
   label,
   size,
-  classNames,
   description,
   customInputClass,
   onChange,
@@ -68,7 +66,7 @@ const FormInputPassword = ({
       }
       type={isVisible ? "text" : "password"}
       size={size || "lg"}
-      classNames={classNames || ""}
+      classNames={{ base: "dark" }}
       description={description || ""}
       className={customInputClass || ""}
       onChange={handleChange}

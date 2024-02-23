@@ -37,7 +37,6 @@ const ResetPassword = () => {
             }
             label="Nueva contraseña"
             size="lg"
-            classNames={{ base: "dark" }}
             onChange={(value) => handleSetNewPassword(value)}
             customInputClass="mt-8"
           />
@@ -56,7 +55,6 @@ const ResetPassword = () => {
             }
             label="Confirmar contraseña"
             size="lg"
-            classNames={{ base: "dark" }}
             onChange={(value) => handleSetConfirmPassword(value)}
             customInputClass="mt-5"
           />

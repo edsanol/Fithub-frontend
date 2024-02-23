@@ -36,7 +36,6 @@ const RecoveryPassword = () => {
             type="email"
             label="Correo electrónico"
             size="lg"
-            classNames={{ base: "dark" }}
             customInputClass="mt-5"
             onChange={(value) => handleEmail(value)}
           />

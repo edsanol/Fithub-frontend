@@ -8,7 +8,6 @@ interface FormSelectProps {
   label: string;
   placeholder?: string;
   size?: "lg" | "md" | "sm";
-  classNames?: any;
   description?: string;
   popoverProps?: any;
   customInputClass?: string;
@@ -23,7 +22,6 @@ const FormSelect = ({
   label,
   placeholder,
   size,
-  classNames,
   description,
   popoverProps,
   customInputClass,
@@ -40,7 +38,7 @@ const FormSelect = ({
           label={label}
           placeholder={placeholder || ""}
           size={size || "lg"}
-          classNames={classNames || ""}
+          classNames={{ base: "dark" }}
           popoverProps={popoverProps || ""}
           description={description || ""}
           className={customInputClass || ""}
@@ -50,7 +48,7 @@ const FormSelect = ({
             <SelectItem
               key={item.value}
               value={String(item.value)}
-              classNames={classNames || ""}
+              classNames={{ base: "dark" }}
               onClick={() => onChange && onChange(String(item.value))}
             >
               {item.label}

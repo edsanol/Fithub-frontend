@@ -39,7 +39,6 @@ const ChangePassword = () => {
             type="email"
             label="Correo electrónico"
             size="lg"
-            classNames={{ base: "dark" }}
             onChange={(value) => handleSetEmail(value)}
             customInputClass="mt-10"
           />
@@ -56,7 +55,6 @@ const ChangePassword = () => {
             }
             label="Contraseña actual"
             size="lg"
-            classNames={{ base: "dark" }}
             onChange={(value) => handleSetPassword(value)}
             customInputClass="mt-5"
           />
@@ -74,7 +72,6 @@ const ChangePassword = () => {
               }
               label="Nueva contraseña"
               size="lg"
-              classNames={{ base: "dark" }}
               onChange={(value) => handleSetNewPassword(value)}
               customInputClass="mt-5"
             />
@@ -93,7 +90,6 @@ const ChangePassword = () => {
               }
               label="Confirmar contraseña"
               size="lg"
-              classNames={{ base: "dark" }}
               onChange={(value) => handleSetConfirmPassword(value)}
               customInputClass="mt-5"
             />

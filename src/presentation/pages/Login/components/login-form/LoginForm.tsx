@@ -32,7 +32,6 @@ export const LoginForm = () => {
         type="email"
         label="Correo electrónico"
         size="lg"
-        classNames={{ base: "dark" }}
         customInputClass="mt-10"
         onChange={(value) => handleSetEmail(value)}
       />
@@ -54,7 +53,6 @@ export const LoginForm = () => {
         }
         label="Contraseña"
         size="lg"
-        classNames={{ base: "dark" }}
         onChange={(value) => handleSetPassword(value)}
       />
       <PrimaryButton

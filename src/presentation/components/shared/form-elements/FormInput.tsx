@@ -17,7 +17,6 @@ interface FormInputProps {
   type: string;
   label: string;
   size?: "lg" | "md" | "sm";
-  classNames?: any;
   description?: string;
   customInputClass?: string;
   labelPlacement?: "outside" | "inside" | "outside-left";
@@ -35,7 +34,6 @@ const FormInput = ({
   type,
   label,
   size,
-  classNames,
   description,
   customInputClass,
   labelPlacement,
@@ -59,7 +57,7 @@ const FormInput = ({
       type={type}
       label={label}
       size={size || "lg"}
-      classNames={classNames || ""}
+      classNames={{ base: 'dark' }}
       description={description || ""}
       className={customInputClass || ""}
       labelPlacement={labelPlacement || "inside"}

@@ -26,7 +26,6 @@ const AccessCodeInput = ({
       type="text"
       label="Código de acceso"
       size="lg"
-      classNames={{ base: "dark" }}
       customInputClass="mt-5"
       onChange={(value) => handleSetCardAccessCode(value)}
       value={athleteData?.cardAccessCode}

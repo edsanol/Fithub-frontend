@@ -32,7 +32,6 @@ const RegisterForm = () => {
             type="text"
             label="Nombre"
             size="lg"
-            classNames={{ base: "dark" }}
             onChange={(value) => setField("gymName", value)}
           />
           <FormInput
@@ -47,7 +46,6 @@ const RegisterForm = () => {
             type="text"
             label="Dirección"
             size="lg"
-            classNames={{ base: "dark" }}
             customInputClass="mt-5 md:mt-0"
             onChange={(value) => setField("address", value)}
           />
@@ -63,7 +61,6 @@ const RegisterForm = () => {
             type="text"
             label="NIT o razón social"
             size="lg"
-            classNames={{ base: "dark" }}
             customInputClass="mt-5"
             onChange={(value) => setField("nit", value)}
           />
@@ -79,7 +76,6 @@ const RegisterForm = () => {
             type="text"
             label="Número de teléfono"
             size="lg"
-            classNames={{ base: "dark" }}
             customInputClass="mt-5"
             onChange={(value) => setField("phoneNumber", value)}
           />
@@ -96,7 +92,6 @@ const RegisterForm = () => {
           type="email"
           label="Correo electrónico"
           size="lg"
-          classNames={{ base: "dark" }}
           description="Este correo será utilizado para iniciar sesión"
           customInputClass="mt-5"
           onChange={(value) => setField("email", value)}
@@ -112,7 +107,6 @@ const RegisterForm = () => {
           }
           label="Contraseña"
           size="lg"
-          classNames={{ base: "dark" }}
           customInputClass="mt-5"
           onChange={(value) => setField("password", value)}
         />
@@ -122,7 +116,6 @@ const RegisterForm = () => {
             label="Membresías"
             placeholder="Selecciona un plan"
             size="lg"
-            classNames={{ base: "dark" }}
             popoverProps={{ color: "foreground" }}
             items={subscriptionsPlans}
             onChange={(value) => setField("subscriptionPlan", value)}
@@ -133,7 +126,6 @@ const RegisterForm = () => {
             label="Comentarios adicionales"
             placeholder="Escribe tus comentarios"
             size="lg"
-            classNames={{ base: "dark" }}
             onChange={(value) => setField("comments", value)}
           />
         </div>

@@ -54,7 +54,6 @@ const CreateUser = () => {
                 type="text"
                 label="Nombres"
                 size="lg"
-                classNames={{ base: "dark" }}
                 onChange={(value) => handleSetName(value)}
                 value={athleteData?.athleteName}
               />
@@ -70,7 +69,6 @@ const CreateUser = () => {
                 type="text"
                 label="Apellidos"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-7 md:mt-0"
                 onChange={(value) => handleSetLastName(value)}
                 value={athleteData?.athleteLastName}
@@ -88,7 +86,6 @@ const CreateUser = () => {
               type="text"
               label="Número de teléfono"
               size="lg"
-              classNames={{ base: "dark" }}
               customInputClass="mt-7"
               onChange={(value) => handleSetPhoneNumber(value)}
               value={athleteData?.phoneNumber}
@@ -105,7 +102,6 @@ const CreateUser = () => {
               type="email"
               label="Correo electrónico"
               size="lg"
-              classNames={{ base: "dark" }}
               customInputClass="mt-7"
               onChange={(value) => handleSetEmail(value)}
               value={athleteData?.email}
@@ -122,7 +118,6 @@ const CreateUser = () => {
                   label="Membresías"
                   placeholder="Selecciona un plan"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   popoverProps={{ color: "foreground" }}
                   items={formatMembershipElements(membership)}
                   onChange={(value) => handleSetIdMembership(value)}
@@ -160,7 +155,6 @@ const CreateUser = () => {
               placeholder="Fecha de nacimiento"
               labelPlacement="outside"
               size="lg"
-              classNames={{ base: "dark" }}
               customInputClass="mt-5"
               onChange={(value) => handleSetBirthDate(value)}
               value={athleteData?.birthDate.slice(0, 10)}

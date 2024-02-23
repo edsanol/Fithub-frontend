@@ -68,7 +68,6 @@ const UserList = () => {
                   type="text"
                   label="Nombres"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   value={athleteUser?.athleteName}
                 />
                 <FormInput
@@ -77,7 +76,6 @@ const UserList = () => {
                   type="text"
                   label="Apellidos"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mt-7 md:mt-0"
                   value={athleteUser?.athleteLastName}
                 />
@@ -88,7 +86,6 @@ const UserList = () => {
                 type="text"
                 label="Número de teléfono"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-7"
                 value={athleteUser?.phoneNumber}
               />
@@ -98,7 +95,6 @@ const UserList = () => {
                 type="email"
                 label="Correo electrónico"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-7"
                 value={athleteUser?.email}
               />
@@ -108,7 +104,6 @@ const UserList = () => {
                 type="text"
                 label="Membresía"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-7"
                 value={
                   athleteUser?.membershipName
@@ -124,7 +119,6 @@ const UserList = () => {
                 placeholder="Fecha de nacimiento"
                 labelPlacement="outside"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-5"
                 value={athleteUser?.birthDate.slice(0, 10)}
               />
@@ -167,7 +161,6 @@ const UserList = () => {
                 label="Membresías"
                 placeholder="Selecciona un plan"
                 size="lg"
-                classNames={{ base: "dark" }}
                 popoverProps={{ color: "foreground" }}
                 items={formatMembershipElements(membership)}
                 onChange={(value) => handleSetIdMembership(value)}

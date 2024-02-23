@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Avatar } from "@nextui-org/react";
 import {
   DashboardHeader,
   FormInput,
@@ -67,7 +66,6 @@ const GymProfile = () => {
                 type="text"
                 label="Nombre"
                 size="lg"
-                classNames={{ base: "dark" }}
                 value={gymData?.gymName}
                 onChange={(value) => handleSetGymName(value)}
               />
@@ -84,7 +82,6 @@ const GymProfile = () => {
                 type="text"
                 label="Dirección"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-5 md:mt-0"
                 value={gymData?.address}
                 onChange={(value) => handleSetAddress(value)}
@@ -104,7 +101,6 @@ const GymProfile = () => {
                 type="text"
                 label="NIT o razón social"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-5"
                 value={gymData?.nit}
                 onChange={(value) => handleSetNit(value)}
@@ -122,7 +118,6 @@ const GymProfile = () => {
                 type="text"
                 label="Número de teléfono"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-5"
                 value={gymData?.phoneNumber}
                 onChange={(value) => handleSetPhoneNumber(value)}
@@ -141,7 +136,6 @@ const GymProfile = () => {
               type="email"
               label="Correo electrónico"
               size="lg"
-              classNames={{ base: "dark" }}
               customInputClass="mt-5"
               value={gymData?.email}
               onChange={(value) => handleSetEmail(value)}
@@ -153,7 +147,6 @@ const GymProfile = () => {
                 type="text"
                 label="Membresías"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-5"
                 value={gymData?.subscriptionPlan}
               />
@@ -165,7 +158,6 @@ const GymProfile = () => {
                 label="Comentarios adicionales"
                 placeholder="Escribe tus comentarios"
                 size="lg"
-                classNames={{ base: "dark" }}
                 onChange={(value) => handleSetComments(value)}
               />
             </div>

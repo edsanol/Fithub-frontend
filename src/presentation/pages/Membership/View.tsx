@@ -92,7 +92,6 @@ const Membership = () => {
                 type="text"
                 label="Nombre de la membresía"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mb-5"
                 onChange={(value) => handleSetMembershipName(value)}
                 value={membership?.membershipName}
@@ -110,7 +109,6 @@ const Membership = () => {
                 type="number"
                 label="Precio"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mb-5"
                 onChange={(value) => handleSetCost(value)}
                 value={membership?.cost !== 0 ? membership?.cost : null}
@@ -130,7 +128,6 @@ const Membership = () => {
                 type="number"
                 label="Duración (días)"
                 size="lg"
-                classNames={{ base: "dark" }}
                 onChange={(value) => handleSetDurationInDays(value)}
                 value={
                   membership?.durationInDays !== 0
@@ -154,7 +151,6 @@ const Membership = () => {
                   label="Descripción"
                   placeholder="Escribe una descripción de la membresía"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   onChange={(value) => handleSetDescription(value)}
                   value={membership?.description}
                 />

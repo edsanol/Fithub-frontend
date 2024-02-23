@@ -125,7 +125,6 @@ const UserProgress = () => {
                   type="number"
                   label="Peso (kg)"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetWeight(Number(value))}
                 />
@@ -134,7 +133,6 @@ const UserProgress = () => {
                   type="number"
                   label="Altura (cm)"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetHeight(Number(value))}
                 />
@@ -145,7 +143,6 @@ const UserProgress = () => {
                   type="number"
                   label="Gluteos (cm)"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetGlueteus(Number(value))}
                 />
@@ -154,7 +151,6 @@ const UserProgress = () => {
                   type="number"
                   label="Biceps (cm)"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetBiceps(Number(value))}
                 />
@@ -165,7 +161,6 @@ const UserProgress = () => {
                   type="number"
                   label="Pecho (cm)"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetChest(Number(value))}
                 />
@@ -174,7 +169,6 @@ const UserProgress = () => {
                   type="number"
                   label="Cintura (cm)"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetWaist(Number(value))}
                 />
@@ -185,7 +179,6 @@ const UserProgress = () => {
                   type="number"
                   label="Espalda (cm)"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetShoulders(Number(value))}
                 />
@@ -194,7 +187,6 @@ const UserProgress = () => {
                   type="number"
                   label="Pantorrilla (cm)"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetCalf(Number(value))}
                 />
@@ -205,7 +197,6 @@ const UserProgress = () => {
                   type="number"
                   label="Antebrazo (cm)"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetForearm(Number(value))}
                 />
@@ -214,7 +205,6 @@ const UserProgress = () => {
                   type="number"
                   label="Muslo (cm)"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mb-5"
                   onChange={(value) => handleSetThigh(Number(value))}
                 />
