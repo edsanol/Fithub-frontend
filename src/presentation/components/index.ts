@@ -22,6 +22,7 @@ import FormSearchInput from "./shared/form-elements/FormSearchInput";
 import CustomProgressCard from "./shared/cards/CustomProgressCard";
 import SidebarLayout from "./layout/SidebarLayout";
 import TopbarLayout from "./layout/TopbarLayout";
+import InfoModal from "./shared/modals/InfoModal";
 
 export {
   PrimaryButton,
@@ -48,4 +49,5 @@ export {
   CustomProgressCard,
   SidebarLayout,
   TopbarLayout,
+  InfoModal,
 };
