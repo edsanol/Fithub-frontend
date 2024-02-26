@@ -28,7 +28,7 @@ const AccessCodeInput = ({
       size="lg"
       customInputClass="mt-5"
       onChange={(value) => handleSetCardAccessCode(value)}
-      value={athleteData?.cardAccessCode}
+      value={athleteData?.cardAccessCode || ""}
     />
   );
 };

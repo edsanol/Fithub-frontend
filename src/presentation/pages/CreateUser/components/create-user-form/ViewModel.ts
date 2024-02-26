@@ -18,22 +18,28 @@ import { TYPES } from "@/config/types";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import container from "@/config/inversifyContainer";
 import { useEffect } from "react";
 
-const ViewModel = () => {
-  const { data: session } = useSession();
-  const pathname = usePathname();
-  const router = useRouter();
+interface State {
+  athleteData: AthleteUser;
+  athleteDataError: IAthleteValidation;
+  membership: MembershipByGymId[];
+  isCheck: boolean;
+}
 
-  const athleteId = pathname.match(/\/create-user\/(.*)/);
+type Value = string | number;
 
-  const athleteIdValue = athleteId ? athleteId[1] : null;
+type Action =
+  | { type: "SET_FIELD"; field: keyof AthleteUser; value: Value }
+  | { type: "SET_ATHLETE_DATA"; athleteData: AthleteUser }
+  | { type: "SET_ERROR"; errors: IAthleteValidation }
+  | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] }
+  | { type: "SET_CHECK"; isCheck: boolean };
 
-  const [idGym, setIdGym] = useState<number>(0);
-  const [gymName, setGymName] = useState<string>("");
-  const [athleteData, setAthleteData] = useState<AthleteUser>({
+const initialState: State = {
+  athleteData: {
     athleteName: "",
     athleteLastName: "",
     email: "",
@@ -48,9 +54,8 @@ const ViewModel = () => {
     cost: 0,
     membershipId: 0,
     cardAccessCode: "",
-  });
-
-  const [athleteDataError, setAthleteDataError] = useState<IAthleteValidation>({
+  },
+  athleteDataError: {
     nameError: false,
     lastNameError: false,
     emailError: false,
@@ -58,12 +63,59 @@ const ViewModel = () => {
     genreError: false,
     birthDateError: false,
     cardAccessCodeError: false,
-  });
+  },
+  membership: [],
+  isCheck: false,
+};
 
-  const [membership, setMembership] = useState<MembershipByGymId[]>([]);
-  const [isCheck, setIsCheck] = useState<boolean>(false);
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "SET_FIELD":
+      return {
+        ...state,
+        athleteData: { ...state.athleteData, [action.field]: action.value },
+      };
+    case "SET_ATHLETE_DATA":
+      return {
+        ...state,
+        athleteData: action.athleteData,
+      };
+    case "SET_ERROR":
+      return {
+        ...state,
+        athleteDataError: { ...state.athleteDataError, ...action.errors },
+      };
+    case "SET_MEMBERSHIP":
+      return {
+        ...state,
+        membership: action.membership,
+      };
+    case "SET_CHECK":
+      return {
+        ...state,
+        isCheck: action.isCheck,
+      };
+    default:
+      return state;
+  }
+}
 
-  const handleIsValidForm = async () => {
+const ViewModel = () => {
+  const [{ athleteData, athleteDataError, membership, isCheck }, dispatch] =
+    useReducer(reducer, initialState);
+  const pathname = usePathname();
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  const athleteId = pathname.match(/\/create-user\/(.*)/);
+  const athleteIdValue = athleteId ? athleteId[1] : null;
+
+  const [idGym, setIdGym] = useState<number>(0);
+  const [gymName, setGymName] = useState<string>("");
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleIsValidForm = () => {
     const errors: IAthleteValidation = {
       emailError: !isValidEmail(athleteData.email),
       nameError: !isValidName(athleteData.athleteName),
@@ -74,9 +126,8 @@ const ViewModel = () => {
       cardAccessCodeError: !isValidCardCode(athleteData.cardAccessCode),
     };
 
-    setAthleteDataError(errors);
-
-    return Promise.resolve(errors);
+    dispatch({ type: "SET_ERROR", errors });
+    return errors;
   };
 
   useEffect(() => {
@@ -101,7 +152,7 @@ const ViewModel = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const errors = await handleIsValidForm();
+      const errors = handleIsValidForm();
 
       if (Object.values(errors).some(Boolean)) {
         return;
@@ -111,6 +162,8 @@ const ViewModel = () => {
         console.log("error");
         return;
       }
+
+      const { cost, endDate, membershipName, startDate, ...data } = athleteData;
 
       let response;
 
@@ -122,18 +175,9 @@ const ViewModel = () => {
         response = await editAthleteUserUseCase.execute(
           Number(athleteIdValue),
           {
-            athleteName: athleteData.athleteName,
-            athleteLastName: athleteData.athleteLastName,
-            email: athleteData.email,
-            phoneNumber: athleteData.phoneNumber,
-            birthDate: athleteData.birthDate,
-            genre: athleteData.genre,
+            ...data,
             idGym,
             gymName,
-            registerDate: athleteData.registerDate,
-            status: athleteData.status,
-            membershipId: athleteData.membershipId,
-            cardAccessCode: athleteData.cardAccessCode,
           }
         );
       } else {
@@ -143,18 +187,9 @@ const ViewModel = () => {
           );
 
         response = await registerAthleteUserUseCase.execute({
-          athleteName: athleteData.athleteName,
-          athleteLastName: athleteData.athleteLastName,
-          email: athleteData.email,
-          phoneNumber: athleteData.phoneNumber,
-          birthDate: athleteData.birthDate,
-          genre: athleteData.genre,
+          ...data,
           idGym,
           gymName,
-          registerDate: athleteData.registerDate,
-          status: athleteData.status,
-          membershipId: athleteData.membershipId,
-          cardAccessCode: athleteData.cardAccessCode,
         });
       }
 
@@ -164,8 +199,10 @@ const ViewModel = () => {
       }
 
       router.push("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
@@ -182,22 +219,11 @@ const ViewModel = () => {
         return;
       }
 
-      setAthleteData({
-        ...athleteData,
-        athleteName: response.athleteName,
-        athleteLastName: response.athleteLastName,
-        email: response.email,
-        phoneNumber: response.phoneNumber,
-        genre: response.genre,
-        birthDate: response.birthDate,
-        membershipName: response.membershipName,
-        membershipId: response.membershipId,
-        endDate: response.endDate,
-        startDate: response.startDate,
-        cardAccessCode: response.cardAccessCode,
-      });
-    } catch (error) {
+      dispatch({ type: "SET_ATHLETE_DATA", athleteData: response });
+    } catch (error: any) {
       console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
@@ -214,67 +240,35 @@ const ViewModel = () => {
         return;
       }
 
-      setMembership(response);
-    } catch (error) {
+      dispatch({ type: "SET_MEMBERSHIP", membership: response });
+    } catch (error: any) {
       console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
-  const handleSetName = (event: string) => {
-    setAthleteData({ ...athleteData, athleteName: event });
+  const setField = (field: keyof AthleteUser, value: Value) => {
+    dispatch({ type: "SET_FIELD", field, value });
   };
 
-  const handleSetLastName = (event: string) => {
-    setAthleteData({ ...athleteData, athleteLastName: event });
-  };
-
-  const handleSetEmail = (event: string) => {
-    setAthleteData({ ...athleteData, email: event });
-  };
-
-  const handleSetPhoneNumber = (event: string) => {
-    setAthleteData({ ...athleteData, phoneNumber: event });
-  };
-
-  const handleSetBirthDate = (event: string) => {
-    const birthDate = new Date(event).toISOString();
-
-    setAthleteData({ ...athleteData, birthDate: birthDate });
-  };
-
-  const handleSetGenre = (event: string) => {
-    setAthleteData({ ...athleteData, genre: event });
-  };
-
-  const handleSetIdMembership = (event: string) => {
-    setAthleteData({ ...athleteData, membershipId: Number(event) });
-  };
-
-  const handleSetCardAccessCode = (event: string) => {
-    setAthleteData({ ...athleteData, cardAccessCode: event });
-  };
-
-  const handleSetIsCheck = () => {
-    setIsCheck(!isCheck);
+  const setCheck = (isCheck: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch({ type: "SET_CHECK", isCheck: isCheck.target.checked });
   };
 
   return {
     handleSubmit,
-    handleSetName,
-    handleSetLastName,
-    handleSetEmail,
-    handleSetPhoneNumber,
-    handleSetBirthDate,
-    handleSetGenre,
-    handleSetIdMembership,
-    handleSetCardAccessCode,
-    handleSetIsCheck,
     getAthleteUserById,
+    setField,
+    setCheck,
+    setErrorModal,
     athleteIdValue,
     athleteData,
     athleteDataError,
     membership,
     isCheck,
+    errorModal,
+    errorMessage,
   };
 };
 
