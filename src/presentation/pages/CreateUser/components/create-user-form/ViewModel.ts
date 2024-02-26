@@ -202,7 +202,9 @@ const ViewModel = () => {
     } catch (error: any) {
       console.log(error);
       setErrorModal(true);
-      setErrorMessage(error.response.data.message);
+      setErrorMessage(
+        error.response.data.message || "Error al registrar el usuario"
+      );
     }
   };
 
