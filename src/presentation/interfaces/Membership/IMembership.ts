@@ -4,3 +4,5 @@ export interface IMembershipValidation {
   durationInDaysError: boolean;
   descriptionError: boolean;
 }
+
+export type IMembershipModal = "createModal" | "detailsModal" | "deleteModal" | "editModal" | "infoModal";

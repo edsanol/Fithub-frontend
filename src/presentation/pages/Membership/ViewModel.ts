@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteColumns } from "@/assets/constants";
@@ -15,46 +15,128 @@ import { useEffect } from "react";
 import { GetMembershipByIdUseCase } from "@/domain/useCases/Membership/getMembershipByIdUseCase";
 import { EditMembershipUseCase } from "@/domain/useCases/Membership/editMembershipUseCase";
 import { DeleteMembershipUseCase } from "@/domain/useCases/Membership/deleteMembershipUseCase";
+import { IMembershipModal } from "@/presentation/interfaces/Membership/IMembership";
 
-const ViewModel = () => {
-  const { data: session } = useSession();
+interface State {
+  membershipList: PaginateResponseList;
+  membership: Membership;
+  membershipError: IMembershipValidation;
+  isModalOpen: {
+    createModal: boolean;
+    detailsModal: boolean;
+    deleteModal: boolean;
+    editModal: boolean;
+    infoModal: boolean;
+  };
+  modalMode: "create" | "edit" | "view";
+}
 
-  const [idGym, setIdGym] = useState<number>(0);
+type Value = string | boolean;
 
-  const [membershipList, setMembershipList] = useState<PaginateResponseList>({
+type Action =
+  | { type: "SET_FIELD"; field: keyof Membership; value: Value }
+  | { type: "SET_MEMBERSHIP_LIST"; membershipList: PaginateResponseList }
+  | { type: "SET_MEMBERSHIP"; membership: Membership }
+  | { type: "SET_MEMBERSHIP_ERROR"; membershipError: IMembershipValidation }
+  | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
+  | { type: "SET_MODAL_MODE"; modalMode: "create" | "edit" | "view" };
+
+const initialState: State = {
+  membershipList: {
     totalRecords: 0,
     items: [],
-  });
-
-  const [membership, setMembership] = useState<Membership>({
+  },
+  membership: {
     membershipID: 0,
     membershipName: "",
     cost: 0,
     durationInDays: 0,
     description: "",
     status: true,
-  });
-
-  const [membershipError, setMembershipError] = useState<IMembershipValidation>(
-    {
-      membershipNameError: false,
-      costError: false,
-      durationInDaysError: false,
-      descriptionError: false,
-    }
-  );
-
-  const [isModalOpen, setIsModalOpen] = useState({
+  },
+  membershipError: {
+    membershipNameError: false,
+    costError: false,
+    durationInDaysError: false,
+    descriptionError: false,
+  },
+  isModalOpen: {
     createModal: false,
     detailsModal: false,
     deleteModal: false,
     editModal: false,
     infoModal: false,
-  });
+  },
+  modalMode: "create",
+};
 
-  const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
-    "create"
-  );
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "SET_FIELD":
+      return {
+        ...state,
+        membership: {
+          ...state.membership,
+          [action.field]: action.value,
+        },
+      };
+    case "SET_MEMBERSHIP_LIST":
+      return {
+        ...state,
+        membershipList: action.membershipList,
+      };
+    case "SET_MEMBERSHIP":
+      return {
+        ...state,
+        membership: action.membership,
+      };
+    case "SET_MEMBERSHIP_ERROR":
+      return {
+        ...state,
+        membershipError: action.membershipError,
+      };
+    case "TOGGLE_MODAL":
+      return {
+        ...state,
+        isModalOpen: {
+          ...state.isModalOpen,
+          [action.modalName]:
+            action.value ??
+            !state.isModalOpen[action.modalName as keyof State["isModalOpen"]],
+        },
+      };
+    case "SET_MODAL_MODE":
+      return {
+        ...state,
+        modalMode: action.modalMode,
+      };
+    default:
+      return state;
+  }
+}
+
+const ViewModel = () => {
+  const [
+    { membershipList, membership, membershipError, isModalOpen, modalMode },
+    dispatch,
+  ] = useReducer(reducer, initialState);
+  const { data: session } = useSession();
+
+  const [idGym, setIdGym] = useState<number>(0);
+  const [error, setError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  useEffect(() => {
+    if (session && session.user.gymId !== idGym) {
+      setIdGym(session.user.gymId);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (idGym !== 0) {
+      getPaginateMembershipList();
+    }
+  }, [idGym]);
 
   const handleIsValidForm = () => {
     const errors: IMembershipValidation = {
@@ -64,15 +146,14 @@ const ViewModel = () => {
       descriptionError: !isNotEmpty(membership.description),
     };
 
-    setMembershipError(errors);
-
-    return Promise.resolve(errors);
+    dispatch({ type: "SET_MEMBERSHIP_ERROR", membershipError: errors });
+    return errors;
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const errors = await handleIsValidForm();
+      const errors = handleIsValidForm();
 
       if (Object.values(errors).some(Boolean)) {
         return;
@@ -114,17 +195,13 @@ const ViewModel = () => {
         return;
       }
 
-      setIsModalOpen({
-        createModal: false,
-        detailsModal: false,
-        deleteModal: false,
-        editModal: false,
-        infoModal: false,
-      });
-
       await getPaginateMembershipList();
-    } catch (error) {
+      
+      modalMode === "create" ? toggleModal("createModal", false) : toggleModal("editModal", false);
+    } catch (error: any) {
       console.log(error);
+      setError(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
@@ -144,9 +221,11 @@ const ViewModel = () => {
         return;
       }
 
-      setMembershipList(response);
-    } catch (error) {
+      dispatch({ type: "SET_MEMBERSHIP_LIST", membershipList: response });
+    } catch (error: any) {
       console.log(error);
+      setError(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
@@ -163,9 +242,11 @@ const ViewModel = () => {
         return;
       }
 
-      setMembership(response);
-    } catch (error) {
+      dispatch({ type: "SET_MEMBERSHIP", membership: response });
+    } catch (error: any) {
       console.log(error);
+      setError(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
@@ -183,58 +264,29 @@ const ViewModel = () => {
       }
 
       await getPaginateMembershipList();
-    } catch (error) {
-      toggleModal("infoModal");
+    } catch (error: any) {
+      console.log(error);
+      setError(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
-  useEffect(() => {
-    if (session && session.user.gymId !== idGym) {
-      setIdGym(session.user.gymId);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    if (idGym !== 0) {
-      getPaginateMembershipList();
-    }
-  }, [idGym]);
-
-  const toggleModal = (
-    modalName:
-      | "createModal"
-      | "detailsModal"
-      | "deleteModal"
-      | "editModal"
-      | "infoModal"
-  ) => {
-    setIsModalOpen((prevState) => ({
-      ...prevState,
-      [modalName]: !prevState[modalName],
-    }));
+  const toggleModal = (modalName: string, value?: boolean) => {
+    dispatch({ type: "TOGGLE_MODAL", modalName, value });
   };
 
-  const handleOpenModal = async (
-    modalName:
-      | "createModal"
-      | "detailsModal"
-      | "deleteModal"
-      | "editModal"
-      | "infoModal",
-    id?: number
-  ) => {
+  const setModalMode = (modalMode: "create" | "edit" | "view") => {
+    dispatch({ type: "SET_MODAL_MODE", modalMode });
+  };
+
+  const handleOpenModal = async (modalName: IMembershipModal, id?: number) => {
     switch (modalName) {
       case "editModal":
         await getMembershipById(id!);
         setModalMode("edit");
         break;
       case "createModal":
-        setMembership({
-          membershipName: "",
-          cost: 0,
-          durationInDays: 0,
-          description: "",
-        });
+        dispatch({ type: "SET_MEMBERSHIP", membership: { membershipID: 0, membershipName: "", cost: 0, durationInDays: 0, description: "", status: true, }});
         setModalMode("create");
         break;
       case "detailsModal":
@@ -249,36 +301,17 @@ const ViewModel = () => {
     toggleModal(modalName);
   };
 
-  const handleSetMembershipName = (event: string) => {
-    setMembership({ ...membership, membershipName: event });
-  };
-
-  const handleSetCost = (event: string) => {
-    setMembership({ ...membership, cost: Number(event) });
-  };
-
-  const handleSetDurationInDays = (event: string) => {
-    setMembership({ ...membership, durationInDays: Number(event) });
-  };
-
-  const handleSetDescription = (event: string) => {
-    setMembership({ ...membership, description: event });
-  };
-
-  const handleMembershipStatus = (event: boolean) => {
-    setMembership({ ...membership, status: event });
+  const setField = (field: keyof Membership, value: Value) => {
+    dispatch({ type: "SET_FIELD", field, value });
   };
 
   return {
     handleSubmit,
-    handleSetMembershipName,
+    setField,
     deleteMembership,
-    handleSetCost,
-    handleSetDurationInDays,
-    handleSetDescription,
-    handleMembershipStatus,
     handleOpenModal,
     toggleModal,
+    setError,
     membership,
     MembershipColumns,
     membershipError,
@@ -286,6 +319,8 @@ const ViewModel = () => {
     AthleteColumns,
     isModalOpen,
     modalMode,
+    error,
+    errorMessage,
   };
 };
 
