@@ -7,12 +7,11 @@ import { IRecoverPasswordValidation } from "@/presentation/interfaces";
 import { useState } from "react";
 
 const ViewModel = () => {
-  const [resetPasswordData, setResetPasswordData] = useState<ResetPassword>({
-    email: "",
-  });
+  const [resetPasswordData, setResetPasswordData] = useState<ResetPassword>({ email: "" });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
   const [emailError, setEmailError] = useState<boolean>(false);
+  const [erroModal, setErrorModal] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleIsValidForm = () => {
     const errors: IRecoverPasswordValidation = {
@@ -45,8 +44,10 @@ const ViewModel = () => {
       }
 
       setIsModalOpen(true);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response.data.message || "Error al enviar el correo de recuperación");
     }
   };
 
@@ -65,8 +66,11 @@ const ViewModel = () => {
     handleEmail,
     handleSubmit,
     toggleModal,
+    setErrorModal,
     isModalOpen,
     emailError,
+    erroModal,
+    errorMessage,
   };
 };
 

@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import container from "@/config/inversifyContainer";
@@ -73,6 +73,9 @@ const ViewModel = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
+  const [errorModal, setErrorModal] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   useEffect(() => {
     if (session?.user.token) {
       Cookies.set("authToken", session.user.token, { expires: 1 });
@@ -129,15 +132,22 @@ const ViewModel = () => {
       }
 
       router.push("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      setErrorModal(true);
+      setErrorMessage(
+        error.response?.data.message || "Error al realizar el registro"
+      );
     }
   };
 
   return {
     handleSubmit,
     setField,
+    setErrorModal,
     gymDataError,
+    errorMessage,
+    errorModal,
   };
 };
 

@@ -8,13 +8,21 @@ import {
   FormLink,
   FormSelect,
   FormTextarea,
+  InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
 import { subscriptionsPlans } from "@/assets/constants";
 import ViewModel from "./ViewModel";
 
 const RegisterForm = () => {
-  const { handleSubmit, setField, gymDataError } = ViewModel();
+  const {
+    handleSubmit,
+    setField,
+    setErrorModal,
+    gymDataError,
+    errorModal,
+    errorMessage,
+  } = ViewModel();
 
   return (
     <>
@@ -140,6 +148,12 @@ const RegisterForm = () => {
           customLinkClass="mt-3"
         />
       </form>
+
+      <InfoModal
+        isOpen={errorModal}
+        onOpenChange={setErrorModal}
+        message={errorMessage}
+      />
     </>
   );
 };

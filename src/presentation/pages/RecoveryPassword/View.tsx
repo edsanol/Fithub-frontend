@@ -5,16 +5,24 @@ import {
   CustomModal,
   FormInput,
   FormLink,
+  InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
-import React from "react";
 import ViewModel from "./ViewModel";
 import { Button } from "@nextui-org/react";
 import CheckIcon from "@/assets/svg/CheckIcon";
 
 const RecoveryPassword = () => {
-  const { emailError, isModalOpen, handleEmail, handleSubmit, toggleModal } =
-    ViewModel();
+  const {
+    emailError,
+    isModalOpen,
+    erroModal,
+    errorMessage,
+    setErrorModal,
+    handleEmail,
+    handleSubmit,
+    toggleModal,
+  } = ViewModel();
 
   return (
     <div className="w-full h-full bg-[#000]">
@@ -85,6 +93,12 @@ const RecoveryPassword = () => {
             </Button>
           </>
         }
+      />
+
+      <InfoModal
+        isOpen={erroModal}
+        onOpenChange={setErrorModal}
+        message={errorMessage}
       />
     </div>
   );
