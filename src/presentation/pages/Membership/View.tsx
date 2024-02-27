@@ -13,7 +13,7 @@ import {
 } from "@/presentation/components";
 import WarningIcon from "@/assets/svg/WarningIcon";
 import { Button } from "@nextui-org/react";
-import { customRenderCell } from "./RenderCell";
+import { customRenderCell } from "./components/table-render-cell/RenderCell";
 
 const Membership = () => {
   const {
