@@ -1,7 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import Logout from "@/assets/svg/logout.svg";
@@ -23,6 +23,7 @@ interface SidebarProps {
 
 const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const pathname = usePathname();
+  const router = useRouter();
 
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
@@ -69,6 +70,7 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const logout = () => {
     Cookies.remove("authToken");
     Cookies.remove("refreshToken");
+    router.push("/login");
     signOut();
   };
 

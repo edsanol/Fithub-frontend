@@ -5,14 +5,18 @@ import Cookies from "js-cookie";
 import Image from "next/image";
 import Logout from "@/assets/svg/logout.svg";
 import MenuIcon from "@/assets/svg/MenuIcon";
+import { useRouter } from "next/navigation";
 
 const Topbar = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
+  const router = useRouter();
+
   const logout = () => {
     Cookies.remove("authToken");
     Cookies.remove("refreshToken");
+    router.push("/login");
     signOut();
   };
 

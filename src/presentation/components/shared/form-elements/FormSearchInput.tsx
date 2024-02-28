@@ -82,6 +82,12 @@ const FormSearchInput = ({
             ))}
           </ul>
         )}
+
+        {showSuggestions && suggestions.length === 0 && (
+          <ul className="absolute z-10 w-[90%] bg-[#18181B] shadow-lg rounded-lg max-h-60 overflow-auto md:w-[95%]">
+            <li className="p-2 cursor-pointer">No se encontraron resultados</li>
+          </ul>
+        )}
       </div>
     </>
   );
