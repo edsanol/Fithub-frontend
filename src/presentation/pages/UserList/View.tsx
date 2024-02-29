@@ -8,6 +8,7 @@ import {
   FormInput,
   FormRadioButton,
   FormSelect,
+  InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
 import { Button } from "@nextui-org/react";
@@ -24,6 +25,9 @@ const UserList = () => {
     isModalOpen,
     membership,
     AthleteColumns,
+    errorModal,
+    errorMessage,
+    setErrorModal,
     deleteAthleteUser,
     handleOpenModal,
     handleRedirect,
@@ -218,6 +222,12 @@ const UserList = () => {
             </Button>
           </>
         }
+      />
+
+      <InfoModal
+        isOpen={errorModal}
+        onOpenChange={setErrorModal}
+        message={errorMessage}
       />
     </>
   );

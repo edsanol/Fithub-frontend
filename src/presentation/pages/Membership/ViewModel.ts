@@ -267,7 +267,7 @@ const ViewModel = () => {
     } catch (error: any) {
       console.log(error);
       setError(true);
-      setErrorMessage(error.response.data.message);
+      setErrorMessage(error.response.data.message || "No puedes eliminar una membresía que tenga usuarios asociados activos");
     }
   };
 

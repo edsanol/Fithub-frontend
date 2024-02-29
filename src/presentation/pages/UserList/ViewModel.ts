@@ -95,6 +95,8 @@ const ViewModel = () => {
   const router = useRouter();
 
   const [idGym, setIdGym] = useState<number>(0);
+  const [errorModal, setErrorModal] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
@@ -130,8 +132,10 @@ const ViewModel = () => {
       });
 
       dispatch({ type: "SET_ATHLETES_LIST", athletesList: response });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
@@ -170,8 +174,10 @@ const ViewModel = () => {
       await handleSubmit({ numPage: 1 });
 
       dispatch({ type: "CLOSE_MODAL" });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
@@ -189,8 +195,10 @@ const ViewModel = () => {
       }
 
       dispatch({ type: "SET_ATHLETE_USER", athleteUser: response });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
@@ -211,8 +219,10 @@ const ViewModel = () => {
 
       dispatch({ type: "CLOSE_MODAL" });
 
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
@@ -230,8 +240,10 @@ const ViewModel = () => {
       }
 
       dispatch({ type: "SET_MEMBERSHIP", membership: response });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response.data.message);
     }
   };
 
@@ -270,6 +282,9 @@ const ViewModel = () => {
     isModalOpen,
     membership,
     AthleteColumns,
+    errorModal,
+    errorMessage,
+    setErrorModal,
     deleteAthleteUser,
     handleOpenModal,
     handleRedirect,

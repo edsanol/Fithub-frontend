@@ -127,9 +127,7 @@ const ViewModel = () => {
       return;
     }
 
-    await getAthleteMeasurementProgressList({
-      numPage: 1,
-    });
+    await getAthleteMeasurementProgressList({ numPage: 1 });
     setIsModalOpen({ createModal: false, progressModal: false });
   };
 
