@@ -13,7 +13,7 @@ import {
 import { Button } from "@nextui-org/react";
 import React from "react";
 import ViewModel from "./ViewModel";
-import { customRenderCell } from "./render-cell/RenderCell";
+import { customRenderCell } from "./components/table-render-cell/RenderCell";
 import { genres } from "@/assets/constants";
 import { formatMembershipElements } from "@/presentation/helpers";
 
@@ -27,7 +27,7 @@ const UserList = () => {
     deleteAthleteUser,
     handleOpenModal,
     handleRedirect,
-    handleSetIdMembership,
+    setField,
     handleSetNumPage,
     handleSetTextFilter,
     toggleModal,
@@ -163,7 +163,7 @@ const UserList = () => {
                 size="lg"
                 popoverProps={{ color: "foreground" }}
                 items={formatMembershipElements(membership)}
-                onChange={(value) => handleSetIdMembership(value)}
+                onChange={(value) => setField("membershipId", value)}
               />
               <div className="mt-5">
                 <PrimaryButton
