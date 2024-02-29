@@ -1,6 +1,7 @@
 import {
   cardCodeRegex,
   emailRegex,
+  measurementRegex,
   nameRegex,
   nitRegex,
   notEmptyRegex,
@@ -80,10 +81,7 @@ export const isValidNumber = (number: string): boolean => {
   return false;
 };
 
-export const isValidChangePassword = (
-  oldPassword: string,
-  newPassword: string
-): boolean => {
+export const isValidChangePassword = (oldPassword: string, newPassword: string): boolean => {
   if (oldPassword === newPassword) {
     return false;
   }
@@ -91,13 +89,18 @@ export const isValidChangePassword = (
   return true;
 };
 
-export const isValidNewPassword = (
-  newPassword: string,
-  confirmPassword: string
-): boolean => {
+export const isValidNewPassword = (newPassword: string, confirmPassword: string): boolean => {
   if (newPassword === confirmPassword) {
     return true;
   }
 
   return false;
 };
+
+export const isValidMeasurement = (value: number): boolean => {
+  if (measurementRegex.test(value.toString())) {
+    return true;
+  }
+
+  return false;
+}

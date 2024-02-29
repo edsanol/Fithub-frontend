@@ -23,6 +23,7 @@ interface FormInputProps {
   placeholder?: string;
   isReadOnly?: boolean;
   value?: any;
+  step?: string;
   onChange?: (event: string) => void;
 }
 
@@ -40,6 +41,7 @@ const FormInput = ({
   placeholder,
   isReadOnly,
   value,
+  step,
   onChange,
 }: FormInputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,6 +65,7 @@ const FormInput = ({
       labelPlacement={labelPlacement || "inside"}
       placeholder={placeholder || ""}
       value={value}
+      step={step || ""}
       onChange={handleChange}
     />
   );

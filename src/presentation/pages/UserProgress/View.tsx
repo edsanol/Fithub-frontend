@@ -8,10 +8,11 @@ import {
   DashboardHeader,
   FormInput,
   FormSearchInput,
+  InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
 import ViewModel from "./ViewModel";
-import { customRenderCell } from "./components/render-cell/RenderCell";
+import { customRenderCell } from "./components/table-render-cell/RenderCell";
 import { MeasurementProgressByLastMonth } from "@/domain/models/MeasurementProgressByLastMonth";
 import { mapperMuscleIcon } from "@/presentation/helpers";
 
@@ -26,20 +27,15 @@ const UserProgress = () => {
     MeasurementProgressColumns,
     measurementProgressByLastMonth,
     graphicValues,
+    errorModal,
+    errorMessage,
+    measurementsProgressError,
+    setErrorModal,
     handleChange,
     handleSelectSuggestion,
     toggleModal,
     handleOpenModal,
-    handleSetGlueteus,
-    handleSetBiceps,
-    handleSetChest,
-    handleSetWaist,
-    handleSetThigh,
-    handleSetCalf,
-    handleSetShoulders,
-    handleSetForearm,
-    handleSetHeight,
-    handleSetWeight,
+    setField,
     handleSubmit,
     handleSetNumPage,
   } = ViewModel();
@@ -118,95 +114,136 @@ const UserProgress = () => {
         size="2xl"
         content={
           <>
+            <p className='text-sm text-center text-default-400'>Solo se aceptan números de hasta 3 decimales</p>
             <form className="mt-3" onSubmit={handleSubmit}>
               <div className="flex flex-col md:flex-row md:gap-2">
                 <FormInput
                   isRequired
+                  isInvalid={measurementsProgressError?.weightError}
+                  color={measurementsProgressError?.weightError ? "danger" : "default"}
+                  errorMessage={measurementsProgressError?.weightError ? "Por favor ingresa un peso valido" : ""}
                   type="number"
+                  step="0.001"
                   label="Peso (kg)"
                   size="lg"
                   customInputClass="mb-5"
-                  onChange={(value) => handleSetWeight(Number(value))}
+                  onChange={(value) => setField("weight", Number(value))}
                 />
                 <FormInput
                   isRequired
+                  isInvalid={measurementsProgressError?.heightError}
+                  color={measurementsProgressError?.heightError ? "danger" : "default"}
+                  errorMessage={measurementsProgressError?.heightError ? "Por favor ingresa una altura valida" : ""}
                   type="number"
+                  step="0.001"
                   label="Altura (cm)"
                   size="lg"
                   customInputClass="mb-5"
-                  onChange={(value) => handleSetHeight(Number(value))}
+                  onChange={(value) => setField("height", Number(value))}
                 />
               </div>
               <div className="flex flex-col md:flex-row md:gap-2">
                 <FormInput
                   isRequired
+                  isInvalid={measurementsProgressError?.gluteusError}
+                  color={measurementsProgressError?.gluteusError ? "danger" : "default"}
+                  errorMessage={measurementsProgressError?.gluteusError ? "Por favor ingresa una medida válida" : ""}
                   type="number"
+                  step="0.001"
                   label="Gluteos (cm)"
                   size="lg"
                   customInputClass="mb-5"
-                  onChange={(value) => handleSetGlueteus(Number(value))}
+                  onChange={(value) => setField("gluteus", Number(value))}
                 />
                 <FormInput
                   isRequired
+                  isInvalid={measurementsProgressError?.bicepsError}
+                  color={measurementsProgressError?.bicepsError ? "danger" : "default"}
+                  errorMessage={measurementsProgressError?.bicepsError ? "Por favor ingresa una medida válida" : ""}
                   type="number"
+                  step="0.001"
                   label="Biceps (cm)"
                   size="lg"
                   customInputClass="mb-5"
-                  onChange={(value) => handleSetBiceps(Number(value))}
+                  onChange={(value) => setField("biceps", Number(value))}
                 />
               </div>
               <div className="flex flex-col md:flex-row md:gap-2">
                 <FormInput
                   isRequired
+                  isInvalid={measurementsProgressError?.chestError}
+                  color={measurementsProgressError?.chestError ? "danger" : "default"}
+                  errorMessage={measurementsProgressError?.chestError ? "Por favor ingresa una medida válida" : ""}
                   type="number"
+                  step="0.001"
                   label="Pecho (cm)"
                   size="lg"
                   customInputClass="mb-5"
-                  onChange={(value) => handleSetChest(Number(value))}
+                  onChange={(value) => setField("chest", Number(value))}
                 />
                 <FormInput
                   isRequired
+                  isInvalid={measurementsProgressError?.waistError}
+                  color={measurementsProgressError?.waistError ? "danger" : "default"}
+                  errorMessage={measurementsProgressError?.waistError ? "Por favor ingresa una medida válida" : ""}
                   type="number"
+                  step="0.001"
                   label="Cintura (cm)"
                   size="lg"
                   customInputClass="mb-5"
-                  onChange={(value) => handleSetWaist(Number(value))}
+                  onChange={(value) => setField("waist", Number(value))}
                 />
               </div>
               <div className="flex flex-col md:flex-row md:gap-2">
                 <FormInput
                   isRequired
+                  isInvalid={measurementsProgressError?.shouldersError}
+                  color={measurementsProgressError?.shouldersError ? "danger" : "default"}
+                  errorMessage={measurementsProgressError?.shouldersError ? "Por favor ingresa una medida válida" : ""}
                   type="number"
+                  step="0.001"
                   label="Espalda (cm)"
                   size="lg"
                   customInputClass="mb-5"
-                  onChange={(value) => handleSetShoulders(Number(value))}
+                  onChange={(value) => setField("shoulders", Number(value))}
                 />
                 <FormInput
                   isRequired
+                  isInvalid={measurementsProgressError?.calfError}
+                  color={measurementsProgressError?.calfError ? "danger" : "default"}
+                  errorMessage={measurementsProgressError?.calfError ? "Por favor ingresa una medida válida" : ""}
                   type="number"
+                  step="0.001"
                   label="Pantorrilla (cm)"
                   size="lg"
                   customInputClass="mb-5"
-                  onChange={(value) => handleSetCalf(Number(value))}
+                  onChange={(value) => setField("calf", Number(value))}
                 />
               </div>
               <div className="flex flex-col md:flex-row md:gap-2">
                 <FormInput
                   isRequired
+                  isInvalid={measurementsProgressError?.forearmError}
+                  color={measurementsProgressError?.forearmError ? "danger" : "default"}
+                  errorMessage={measurementsProgressError?.forearmError ? "Por favor ingresa una medida válida" : ""}
                   type="number"
+                  step="0.001"
                   label="Antebrazo (cm)"
                   size="lg"
                   customInputClass="mb-5"
-                  onChange={(value) => handleSetForearm(Number(value))}
+                  onChange={(value) => setField("forearm", Number(value))}
                 />
                 <FormInput
                   isRequired
+                  isInvalid={measurementsProgressError?.thighError}
+                  color={measurementsProgressError?.thighError ? "danger" : "default"}
+                  errorMessage={measurementsProgressError?.thighError ? "Por favor ingresa una medida válida" : ""}
                   type="number"
+                  step="0.001"
                   label="Muslo (cm)"
                   size="lg"
                   customInputClass="mb-5"
-                  onChange={(value) => handleSetThigh(Number(value))}
+                  onChange={(value) => setField("thigh", Number(value))}
                 />
               </div>
 
@@ -229,6 +266,12 @@ const UserProgress = () => {
             <CustomAreaGraph initialData={graphicValues} />
           </>
         }
+      />
+
+      <InfoModal
+        isOpen={errorModal}
+        onOpenChange={setErrorModal}
+        message={errorMessage}
       />
     </>
   );
