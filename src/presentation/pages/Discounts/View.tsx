@@ -93,7 +93,6 @@ const Discounts = () => {
                 type="number"
                 label="Porcentaje de descuento"
                 size="lg"
-                classNames={{ base: "dark" }}
                 onChange={(value) => handleSetDiscountPercentage(value)}
                 value={
                   discount?.discountPercentage !== 0
@@ -108,7 +107,6 @@ const Discounts = () => {
                   label="Membresías"
                   placeholder="Selecciona una membresía"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   popoverProps={{ color: "foreground" }}
                   items={formatMembershipElements(membershipList.items)}
                   customInputClass="mt-3"
@@ -132,7 +130,6 @@ const Discounts = () => {
                   placeholder="Fecha de inicio"
                   labelPlacement="outside"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mt-5"
                   onChange={(value) => handleSetStartDate(value)}
                   value={discount?.startDate.slice(0, 10)}
@@ -152,7 +149,6 @@ const Discounts = () => {
                   placeholder="Fecha de cierre"
                   labelPlacement="outside"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mt-5"
                   onChange={(value) => handleSetEndDate(value)}
                   value={discount?.endDate.slice(0, 10)}
@@ -172,7 +168,6 @@ const Discounts = () => {
                   label="Descripción"
                   placeholder="Escribe una descripción de la promoción"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   onChange={(value) => handleSetComments(value)}
                   value={discount?.comments}
                 />

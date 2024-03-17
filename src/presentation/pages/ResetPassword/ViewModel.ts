@@ -7,7 +7,7 @@ import {
   isValidNewPassword,
   isValidPassword,
 } from "@/presentation/helpers";
-import { IResetPasswordValidation } from "@/presentation/interfaces/IAuth";
+import { IResetPasswordValidation } from "@/presentation/interfaces";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 

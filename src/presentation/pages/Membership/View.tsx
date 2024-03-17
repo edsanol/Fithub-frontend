@@ -10,28 +10,28 @@ import {
   FormTextarea,
   DashboardHeader,
   FormSwitch,
+  InfoModal,
 } from "@/presentation/components";
 import WarningIcon from "@/assets/svg/WarningIcon";
 import { Button } from "@nextui-org/react";
-import { customRenderCell } from "./RenderCell";
+import { customRenderCell } from "./components/table-render-cell/RenderCell";
 
 const Membership = () => {
   const {
     handleSubmit,
-    handleSetMembershipName,
     deleteMembership,
-    handleSetCost,
-    handleSetDurationInDays,
-    handleSetDescription,
-    handleMembershipStatus,
     handleOpenModal,
     toggleModal,
+    setField,
+    setError,
     membership,
     MembershipColumns,
     membershipList,
     membershipError,
     isModalOpen,
     modalMode,
+    error,
+    errorMessage,
   } = ViewModel();
 
   return (
@@ -92,9 +92,8 @@ const Membership = () => {
                 type="text"
                 label="Nombre de la membresía"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mb-5"
-                onChange={(value) => handleSetMembershipName(value)}
+                onChange={(value) => setField("membershipName", value)}
                 value={membership?.membershipName}
               />
               <FormInput
@@ -110,9 +109,8 @@ const Membership = () => {
                 type="number"
                 label="Precio"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mb-5"
-                onChange={(value) => handleSetCost(value)}
+                onChange={(value) => setField("cost", value)}
                 value={membership?.cost !== 0 ? membership?.cost : null}
               />
               <FormInput
@@ -130,8 +128,7 @@ const Membership = () => {
                 type="number"
                 label="Duración (días)"
                 size="lg"
-                classNames={{ base: "dark" }}
-                onChange={(value) => handleSetDurationInDays(value)}
+                onChange={(value) => setField("durationInDays", value)}
                 value={
                   membership?.durationInDays !== 0
                     ? membership?.durationInDays
@@ -154,8 +151,7 @@ const Membership = () => {
                   label="Descripción"
                   placeholder="Escribe una descripción de la membresía"
                   size="lg"
-                  classNames={{ base: "dark" }}
-                  onChange={(value) => handleSetDescription(value)}
+                  onChange={(value) => setField("description", value)}
                   value={membership?.description}
                 />
               </div>
@@ -164,7 +160,7 @@ const Membership = () => {
                   <FormSwitch
                     label="Estado de la membresía"
                     defaultSelected={membership?.status}
-                    onChange={(value) => handleMembershipStatus(value)}
+                    onChange={(value) => setField("status", value)}
                   />
                 </div>
               )}
@@ -266,6 +262,12 @@ const Membership = () => {
             </Button>
           </>
         }
+      />
+
+      <InfoModal
+        isOpen={error}
+        onOpenChange={setError}
+        message={errorMessage}
       />
     </>
   );

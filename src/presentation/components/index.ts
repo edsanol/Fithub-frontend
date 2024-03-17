@@ -1,32 +1,32 @@
-import PrimaryButton from "./PrimaryButton";
-import SecondaryButton from "./SecondaryButton";
-import Bottombar from "./Bottombar";
-import Topbar from "./Topbar";
-import LeftSidebar from "./LeftSidebar";
-import FormInput from "./FormInput";
-import FormInputPassword from "./FormInputPassword";
-import FormSelect from "./FormSelect";
-import FormTextarea from "./FormTextarea";
-import AuthHeader from "./AuthHeader";
-import FormLink from "./FormLink";
-import FormRadioButton from "./FormRadioButton";
-import CustomModal from "./CustomModal";
-import CustomTable from "./CustomTable";
-import DashboardHeader from "./DashboardHeader";
-import FormSwitch from "./FormSwitch";
-import FormCheckbox from "./FormCheckbox";
-import SidebarLinkGroup from "./SidebarLinkGroup";
-import CustomAssistanceGraph from "./CustomAssistanceGraph";
-import CustomDashboardGraph from "./CustomDashboardGraph";
-import CustomDashboardDoubleGraph from "./CustomDashboardDoubleGraph";
-import CustomDashboardData from "./CustomDashboardData";
-import FormSearchInput from "./FormSearchInput";
-import CustomProgressCard from "./CustomProgressCard";
+import PrimaryButton from "./shared/buttons/PrimaryButton";
+import SecondaryButton from "./shared/buttons/SecondaryButton";
+import Topbar from "./ui/top-bar/Topbar";
+import LeftSidebar from "./ui/left-sidebar/LeftSidebar";
+import FormInput from "./shared/form-elements/FormInput";
+import FormInputPassword from "./shared/form-elements/FormInputPassword";
+import FormSelect from "./shared/form-elements/FormSelect";
+import FormTextarea from "./shared/form-elements/FormTextarea";
+import AuthHeader from "./shared/headers/AuthHeader";
+import FormLink from "./shared/form-elements/FormLink";
+import FormRadioButton from "./shared/form-elements/FormRadioButton";
+import CustomModal from "./shared/modals/CustomModal";
+import CustomTable from "./shared/tables/CustomTable";
+import DashboardHeader from "./shared/headers/DashboardHeader";
+import FormSwitch from "./shared/form-elements/FormSwitch";
+import FormCheckbox from "./shared/form-elements/FormCheckbox";
+import SidebarLinkGroup from "./ui/left-sidebar/components/SidebarLinkGroup";
+import CustomAreaGraph from "./shared/charts/CustomAreaGraph";
+import CustomPieGraph from "./shared/charts/CustomPieGraph";
+import CustomScaleGraph from "./shared/charts/CustomScaleGraph";
+import FormSearchInput from "./shared/form-elements/FormSearchInput";
+import CustomProgressCard from "./shared/cards/CustomProgressCard";
+import SidebarLayout from "./layout/SidebarLayout";
+import TopbarLayout from "./layout/TopbarLayout";
+import InfoModal from "./shared/modals/InfoModal";
 
 export {
   PrimaryButton,
   SecondaryButton,
-  Bottombar,
   Topbar,
   LeftSidebar,
   FormInput,
@@ -42,10 +42,12 @@ export {
   FormSwitch,
   FormCheckbox,
   SidebarLinkGroup,
-  CustomAssistanceGraph,
-  CustomDashboardGraph,
-  CustomDashboardDoubleGraph,
-  CustomDashboardData,
+  CustomAreaGraph,
+  CustomPieGraph,
+  CustomScaleGraph,
   FormSearchInput,
   CustomProgressCard,
+  SidebarLayout,
+  TopbarLayout,
+  InfoModal,
 };

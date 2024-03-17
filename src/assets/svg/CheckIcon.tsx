@@ -1,5 +1,3 @@
-import React from "react";
-
 const CheckIcon = () => {
   return (
     <svg
@@ -16,7 +14,7 @@ const CheckIcon = () => {
       <path
         d="M57 0.125C25.6395 0.125 0.125 25.6395 0.125 57C0.125 88.3605 25.6395 113.875 57 113.875C88.3605 113.875 113.875 88.3605 113.875 57C113.875 25.6395 88.3605 0.125 57 0.125ZM46.6094 85.5414L24.5703 61.0496L31.0754 55.1953L46.3879 72.2086L82.7031 28.9617L89.4133 34.5781L46.6094 85.5414Z"
         fill="black"
-        fill-opacity="0.2"
+        fillOpacity="0.2"
       />
       <defs>
         <linearGradient
@@ -27,8 +25,8 @@ const CheckIcon = () => {
           y2="113.875"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#3669FC" />
-          <stop offset="1" stop-color="#2A49FF" />
+          <stop stopColor="#3669FC" />
+          <stop offset="1" stopColor="#2A49FF" />
         </linearGradient>
       </defs>
     </svg>

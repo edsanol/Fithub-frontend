@@ -8,12 +8,13 @@ import {
   FormInput,
   FormRadioButton,
   FormSelect,
+  InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
 import { Button } from "@nextui-org/react";
 import React from "react";
 import ViewModel from "./ViewModel";
-import { customRenderCell } from "./render-cell/RenderCell";
+import { customRenderCell } from "./components/table-render-cell/RenderCell";
 import { genres } from "@/assets/constants";
 import { formatMembershipElements } from "@/presentation/helpers";
 
@@ -24,10 +25,13 @@ const UserList = () => {
     isModalOpen,
     membership,
     AthleteColumns,
+    errorModal,
+    errorMessage,
+    setErrorModal,
     deleteAthleteUser,
     handleOpenModal,
     handleRedirect,
-    handleSetIdMembership,
+    setField,
     handleSetNumPage,
     handleSetTextFilter,
     toggleModal,
@@ -68,7 +72,6 @@ const UserList = () => {
                   type="text"
                   label="Nombres"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   value={athleteUser?.athleteName}
                 />
                 <FormInput
@@ -77,7 +80,6 @@ const UserList = () => {
                   type="text"
                   label="Apellidos"
                   size="lg"
-                  classNames={{ base: "dark" }}
                   customInputClass="mt-7 md:mt-0"
                   value={athleteUser?.athleteLastName}
                 />
@@ -88,7 +90,6 @@ const UserList = () => {
                 type="text"
                 label="Número de teléfono"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-7"
                 value={athleteUser?.phoneNumber}
               />
@@ -98,7 +99,6 @@ const UserList = () => {
                 type="email"
                 label="Correo electrónico"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-7"
                 value={athleteUser?.email}
               />
@@ -108,7 +108,6 @@ const UserList = () => {
                 type="text"
                 label="Membresía"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-7"
                 value={
                   athleteUser?.membershipName
@@ -124,7 +123,6 @@ const UserList = () => {
                 placeholder="Fecha de nacimiento"
                 labelPlacement="outside"
                 size="lg"
-                classNames={{ base: "dark" }}
                 customInputClass="mt-5"
                 value={athleteUser?.birthDate.slice(0, 10)}
               />
@@ -167,10 +165,9 @@ const UserList = () => {
                 label="Membresías"
                 placeholder="Selecciona un plan"
                 size="lg"
-                classNames={{ base: "dark" }}
                 popoverProps={{ color: "foreground" }}
                 items={formatMembershipElements(membership)}
-                onChange={(value) => handleSetIdMembership(value)}
+                onChange={(value) => setField("membershipId", value)}
               />
               <div className="mt-5">
                 <PrimaryButton
@@ -225,6 +222,12 @@ const UserList = () => {
             </Button>
           </>
         }
+      />
+
+      <InfoModal
+        isOpen={errorModal}
+        onOpenChange={setErrorModal}
+        message={errorMessage}
       />
     </>
   );

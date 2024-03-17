@@ -6,7 +6,7 @@ import { GetDiscountsListUseCase } from "@/domain/useCases/Discounts/getDiscount
 import { RegisterDiscountUseCase } from "@/domain/useCases/Discounts/registerDiscounts";
 import { GetMembershipListUseCase } from "@/domain/useCases/Membership/getMembershipListUseCase";
 import { isNotEmpty, isValidNumber } from "@/presentation/helpers";
-import { IDiscountValidation } from "@/presentation/interfaces/IDiscounts";
+import { IDiscountValidation } from "@/presentation/interfaces";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { DiscountsColumns } from "@/assets/constants";
