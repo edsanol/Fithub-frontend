@@ -98,7 +98,7 @@ const UserProgress = () => {
             <CustomTable
               onSetNumPage={handleSetNumPage}
               customRenderCell={(record, columnKey) =>
-                customRenderCell(record, columnKey)
+                customRenderCell(record, columnKey as string)
               }
               records={measurementProgressList}
               columns={MeasurementProgressColumns}
@@ -114,14 +114,24 @@ const UserProgress = () => {
         size="2xl"
         content={
           <>
-            <p className='text-sm text-center text-default-400'>Solo se aceptan números de hasta 3 decimales</p>
+            <p className="text-sm text-center text-default-400">
+              Solo se aceptan números de hasta 3 decimales
+            </p>
             <form className="mt-3" onSubmit={handleSubmit}>
               <div className="flex flex-col md:flex-row md:gap-2">
                 <FormInput
                   isRequired
                   isInvalid={measurementsProgressError?.weightError}
-                  color={measurementsProgressError?.weightError ? "danger" : "default"}
-                  errorMessage={measurementsProgressError?.weightError ? "Por favor ingresa un peso valido" : ""}
+                  color={
+                    measurementsProgressError?.weightError
+                      ? "danger"
+                      : "default"
+                  }
+                  errorMessage={
+                    measurementsProgressError?.weightError
+                      ? "Por favor ingresa un peso valido"
+                      : ""
+                  }
                   type="number"
                   step="0.001"
                   label="Peso (kg)"
@@ -132,8 +142,16 @@ const UserProgress = () => {
                 <FormInput
                   isRequired
                   isInvalid={measurementsProgressError?.heightError}
-                  color={measurementsProgressError?.heightError ? "danger" : "default"}
-                  errorMessage={measurementsProgressError?.heightError ? "Por favor ingresa una altura valida" : ""}
+                  color={
+                    measurementsProgressError?.heightError
+                      ? "danger"
+                      : "default"
+                  }
+                  errorMessage={
+                    measurementsProgressError?.heightError
+                      ? "Por favor ingresa una altura valida"
+                      : ""
+                  }
                   type="number"
                   step="0.001"
                   label="Altura (cm)"
@@ -146,8 +164,16 @@ const UserProgress = () => {
                 <FormInput
                   isRequired
                   isInvalid={measurementsProgressError?.gluteusError}
-                  color={measurementsProgressError?.gluteusError ? "danger" : "default"}
-                  errorMessage={measurementsProgressError?.gluteusError ? "Por favor ingresa una medida válida" : ""}
+                  color={
+                    measurementsProgressError?.gluteusError
+                      ? "danger"
+                      : "default"
+                  }
+                  errorMessage={
+                    measurementsProgressError?.gluteusError
+                      ? "Por favor ingresa una medida válida"
+                      : ""
+                  }
                   type="number"
                   step="0.001"
                   label="Gluteos (cm)"
@@ -158,8 +184,16 @@ const UserProgress = () => {
                 <FormInput
                   isRequired
                   isInvalid={measurementsProgressError?.bicepsError}
-                  color={measurementsProgressError?.bicepsError ? "danger" : "default"}
-                  errorMessage={measurementsProgressError?.bicepsError ? "Por favor ingresa una medida válida" : ""}
+                  color={
+                    measurementsProgressError?.bicepsError
+                      ? "danger"
+                      : "default"
+                  }
+                  errorMessage={
+                    measurementsProgressError?.bicepsError
+                      ? "Por favor ingresa una medida válida"
+                      : ""
+                  }
                   type="number"
                   step="0.001"
                   label="Biceps (cm)"
@@ -172,8 +206,14 @@ const UserProgress = () => {
                 <FormInput
                   isRequired
                   isInvalid={measurementsProgressError?.chestError}
-                  color={measurementsProgressError?.chestError ? "danger" : "default"}
-                  errorMessage={measurementsProgressError?.chestError ? "Por favor ingresa una medida válida" : ""}
+                  color={
+                    measurementsProgressError?.chestError ? "danger" : "default"
+                  }
+                  errorMessage={
+                    measurementsProgressError?.chestError
+                      ? "Por favor ingresa una medida válida"
+                      : ""
+                  }
                   type="number"
                   step="0.001"
                   label="Pecho (cm)"
@@ -184,8 +224,14 @@ const UserProgress = () => {
                 <FormInput
                   isRequired
                   isInvalid={measurementsProgressError?.waistError}
-                  color={measurementsProgressError?.waistError ? "danger" : "default"}
-                  errorMessage={measurementsProgressError?.waistError ? "Por favor ingresa una medida válida" : ""}
+                  color={
+                    measurementsProgressError?.waistError ? "danger" : "default"
+                  }
+                  errorMessage={
+                    measurementsProgressError?.waistError
+                      ? "Por favor ingresa una medida válida"
+                      : ""
+                  }
                   type="number"
                   step="0.001"
                   label="Cintura (cm)"
@@ -198,8 +244,16 @@ const UserProgress = () => {
                 <FormInput
                   isRequired
                   isInvalid={measurementsProgressError?.shouldersError}
-                  color={measurementsProgressError?.shouldersError ? "danger" : "default"}
-                  errorMessage={measurementsProgressError?.shouldersError ? "Por favor ingresa una medida válida" : ""}
+                  color={
+                    measurementsProgressError?.shouldersError
+                      ? "danger"
+                      : "default"
+                  }
+                  errorMessage={
+                    measurementsProgressError?.shouldersError
+                      ? "Por favor ingresa una medida válida"
+                      : ""
+                  }
                   type="number"
                   step="0.001"
                   label="Espalda (cm)"
@@ -210,8 +264,14 @@ const UserProgress = () => {
                 <FormInput
                   isRequired
                   isInvalid={measurementsProgressError?.calfError}
-                  color={measurementsProgressError?.calfError ? "danger" : "default"}
-                  errorMessage={measurementsProgressError?.calfError ? "Por favor ingresa una medida válida" : ""}
+                  color={
+                    measurementsProgressError?.calfError ? "danger" : "default"
+                  }
+                  errorMessage={
+                    measurementsProgressError?.calfError
+                      ? "Por favor ingresa una medida válida"
+                      : ""
+                  }
                   type="number"
                   step="0.001"
                   label="Pantorrilla (cm)"
@@ -224,8 +284,16 @@ const UserProgress = () => {
                 <FormInput
                   isRequired
                   isInvalid={measurementsProgressError?.forearmError}
-                  color={measurementsProgressError?.forearmError ? "danger" : "default"}
-                  errorMessage={measurementsProgressError?.forearmError ? "Por favor ingresa una medida válida" : ""}
+                  color={
+                    measurementsProgressError?.forearmError
+                      ? "danger"
+                      : "default"
+                  }
+                  errorMessage={
+                    measurementsProgressError?.forearmError
+                      ? "Por favor ingresa una medida válida"
+                      : ""
+                  }
                   type="number"
                   step="0.001"
                   label="Antebrazo (cm)"
@@ -236,8 +304,14 @@ const UserProgress = () => {
                 <FormInput
                   isRequired
                   isInvalid={measurementsProgressError?.thighError}
-                  color={measurementsProgressError?.thighError ? "danger" : "default"}
-                  errorMessage={measurementsProgressError?.thighError ? "Por favor ingresa una medida válida" : ""}
+                  color={
+                    measurementsProgressError?.thighError ? "danger" : "default"
+                  }
+                  errorMessage={
+                    measurementsProgressError?.thighError
+                      ? "Por favor ingresa una medida válida"
+                      : ""
+                  }
                   type="number"
                   step="0.001"
                   label="Muslo (cm)"

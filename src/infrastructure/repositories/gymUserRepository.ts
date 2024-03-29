@@ -26,14 +26,14 @@ export class GymUserRepositoryImpl implements GymUserRepository {
     return response;
   }
 
-  async editGymUser(id: number, gymUser: GymUser): Promise<boolean> {
-    const response = await this.service.editGymUser(id, gymUser);
+  async editGymUser(gymUser: GymUser): Promise<boolean> {
+    const response = await this.service.editGymUser(gymUser);
 
     return response;
   }
 
-  async getGymUserById(id: number): Promise<GymUser> {
-    const response = await this.service.getGymUserById(id);
+  async getGymUserById(): Promise<GymUser> {
+    const response = await this.service.getGymUserById();
 
     return response;
   }

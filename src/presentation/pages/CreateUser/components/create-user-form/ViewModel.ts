@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   isNotEmpty,
-  isValidCardCode,
   isValidEmail,
   isValidGenre,
   isValidName,
@@ -17,7 +16,6 @@ import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/regist
 import { TYPES } from "@/config/types";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useReducer, useState } from "react";
 import container from "@/config/inversifyContainer";
 import { useEffect } from "react";
@@ -26,7 +24,6 @@ interface State {
   athleteData: AthleteUser;
   athleteDataError: IAthleteValidation;
   membership: MembershipByGymId[];
-  isCheck: boolean;
 }
 
 type Value = string | number;
@@ -35,8 +32,7 @@ type Action =
   | { type: "SET_FIELD"; field: keyof AthleteUser; value: Value }
   | { type: "SET_ATHLETE_DATA"; athleteData: AthleteUser }
   | { type: "SET_ERROR"; errors: IAthleteValidation }
-  | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] }
-  | { type: "SET_CHECK"; isCheck: boolean };
+  | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] };
 
 const initialState: State = {
   athleteData: {
@@ -62,10 +58,8 @@ const initialState: State = {
     phoneNumberError: false,
     genreError: false,
     birthDateError: false,
-    cardAccessCodeError: false,
   },
   membership: [],
-  isCheck: false,
 };
 
 function reducer(state: State, action: Action): State {
@@ -90,28 +84,19 @@ function reducer(state: State, action: Action): State {
         ...state,
         membership: action.membership,
       };
-    case "SET_CHECK":
-      return {
-        ...state,
-        isCheck: action.isCheck,
-      };
     default:
       return state;
   }
 }
 
 const ViewModel = () => {
-  const [{ athleteData, athleteDataError, membership, isCheck }, dispatch] =
-    useReducer(reducer, initialState);
+  const [{ athleteData, athleteDataError, membership }, dispatch] = useReducer(reducer, initialState);
   const pathname = usePathname();
   const router = useRouter();
-  const { data: session } = useSession();
 
   const athleteId = pathname.match(/\/create-user\/(.*)/);
   const athleteIdValue = athleteId ? athleteId[1] : null;
 
-  const [idGym, setIdGym] = useState<number>(0);
-  const [gymName, setGymName] = useState<string>("");
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -123,7 +108,6 @@ const ViewModel = () => {
       phoneNumberError: !isValidPhone(athleteData.phoneNumber),
       genreError: !isValidGenre(athleteData.genre),
       birthDateError: !isNotEmpty(athleteData.birthDate),
-      cardAccessCodeError: !isValidCardCode(athleteData.cardAccessCode),
     };
 
     dispatch({ type: "SET_ERROR", errors });
@@ -131,17 +115,8 @@ const ViewModel = () => {
   };
 
   useEffect(() => {
-    if (session && session.user.gymId !== idGym) {
-      setIdGym(session.user.gymId);
-      setGymName(session.user.gymName);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    if (idGym !== 0) {
-      getMembershipByGymId();
-    }
-  }, [idGym]);
+    getMembershipByGymId();
+  }, []);
 
   useEffect(() => {
     if (athleteIdValue) {
@@ -158,39 +133,18 @@ const ViewModel = () => {
         return;
       }
 
-      if (idGym === 0 || gymName === "") {
-        console.log("error");
-        return;
-      }
-
-      const { cost, endDate, membershipName, startDate, ...data } = athleteData;
+      const { cost, endDate, membershipName, startDate, token, refreshToken, idGym, athleteId, stateAthlete, ...data } = athleteData;
 
       let response;
 
       if (athleteIdValue) {
-        const editAthleteUserUseCase = container.get<EditAthleteUserUseCase>(
-          TYPES.EditAthleteUserUseCase
-        );
+        const editAthleteUserUseCase = container.get<EditAthleteUserUseCase>(TYPES.EditAthleteUserUseCase);
 
-        response = await editAthleteUserUseCase.execute(
-          Number(athleteIdValue),
-          {
-            ...data,
-            idGym,
-            gymName,
-          }
-        );
+        response = await editAthleteUserUseCase.execute(Number(athleteIdValue), { ...data, cardAccessCode: ""});
       } else {
-        const registerAthleteUserUseCase =
-          container.get<RegisterAthleteUserUseCase>(
-            TYPES.RegisterAthleteUserUseCase
-          );
+        const registerAthleteUserUseCase = container.get<RegisterAthleteUserUseCase>(TYPES.RegisterAthleteUserUseCase);
 
-        response = await registerAthleteUserUseCase.execute({
-          ...data,
-          idGym,
-          gymName,
-        });
+        response = await registerAthleteUserUseCase.execute({ ...data });
       }
 
       if (!response) {
@@ -198,7 +152,7 @@ const ViewModel = () => {
         return;
       }
 
-      router.push("/dashboard");
+      router.push("/user-list");
     } catch (error: any) {
       console.log(error);
       setErrorModal(true);
@@ -235,7 +189,7 @@ const ViewModel = () => {
         TYPES.GetMembershipByGymIdUseCase
       );
 
-      const response = await GetMembershipByGymId.execute(idGym);
+      const response = await GetMembershipByGymId.execute();
 
       if (!response) {
         console.log("error");
@@ -254,21 +208,15 @@ const ViewModel = () => {
     dispatch({ type: "SET_FIELD", field, value });
   };
 
-  const setCheck = (isCheck: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({ type: "SET_CHECK", isCheck: isCheck.target.checked });
-  };
-
   return {
     handleSubmit,
     getAthleteUserById,
     setField,
-    setCheck,
     setErrorModal,
     athleteIdValue,
     athleteData,
     athleteDataError,
     membership,
-    isCheck,
     errorModal,
     errorMessage,
   };

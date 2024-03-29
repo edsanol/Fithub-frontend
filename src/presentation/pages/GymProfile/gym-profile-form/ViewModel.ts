@@ -102,7 +102,7 @@ const ViewModel = () => {
         TYPES.GetGymUserByIdUseCase
       );
 
-      const response = await getGymUserByIdUseCase.execute(id);
+      const response = await getGymUserByIdUseCase.execute();
 
       if (!response) {
         console.log("error");
@@ -149,7 +149,7 @@ const ViewModel = () => {
         TYPES.EditGymUserUseCase
       );
 
-      const response = await editGymUserUseCase.execute(idGym, gymUserData);
+      const response = await editGymUserUseCase.execute(gymUserData);
 
       if (!response) {
         console.log("error");

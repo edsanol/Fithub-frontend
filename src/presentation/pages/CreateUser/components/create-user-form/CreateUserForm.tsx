@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  FormCheckbox,
   FormInput,
   FormRadioButton,
   FormSelect,
@@ -9,7 +8,6 @@ import {
   PrimaryButton,
 } from "@/presentation/components";
 import React from "react";
-import AccessCodeInput from "../access-code-input/AccessCodeInput";
 import ViewModel from "./ViewModel";
 import { formatMembershipElements } from "@/presentation/helpers";
 import { genres } from "@/assets/constants";
@@ -18,13 +16,11 @@ const CreateUserForm = () => {
   const {
     handleSubmit,
     setField,
-    setCheck,
     setErrorModal,
     athleteIdValue,
     athleteData,
     athleteDataError,
     membership,
-    isCheck,
     errorModal,
     errorMessage,
   } = ViewModel();
@@ -99,13 +95,6 @@ const CreateUserForm = () => {
         />
         {!athleteIdValue && (
           <>
-            <AccessCodeInput
-              athleteData={athleteData}
-              athleteDataError={athleteDataError}
-              handleSetCardAccessCode={(value) =>
-                setField("cardAccessCode", value)
-              }
-            />
             <FormSelect
               isRequired
               label="Membresías"
@@ -118,23 +107,6 @@ const CreateUserForm = () => {
               value={athleteData?.membershipId}
             />
           </>
-        )}
-        {athleteIdValue && (
-          <FormCheckbox
-            label="¿Desea editar el código de acceso del deportista?"
-            selected={isCheck}
-            customClassNames="mt-2"
-            onValueChange={(value) => setCheck(value)}
-          />
-        )}
-        {isCheck && (
-          <AccessCodeInput
-            athleteData={athleteData}
-            athleteDataError={athleteDataError}
-            handleSetCardAccessCode={(value) =>
-              setField("cardAccessCode", value)
-            }
-          />
         )}
         <FormInput
           isRequired
