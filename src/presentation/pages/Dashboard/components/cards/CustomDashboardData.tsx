@@ -10,10 +10,6 @@ interface CustomDashboardDataProps {
 }
 
 const CustomDashboardData = ({ data, loading }: CustomDashboardDataProps) => {
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   return (
     <Skeleton
       isLoaded={!loading}

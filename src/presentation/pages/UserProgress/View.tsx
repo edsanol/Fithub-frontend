@@ -314,7 +314,7 @@ const UserProgress = () => {
                   }
                   type="number"
                   step="0.001"
-                  label="Muslo (cm)"
+                  label="Pierna (cm)"
                   size="lg"
                   customInputClass="mb-5"
                   onChange={(value) => setField("thigh", Number(value))}

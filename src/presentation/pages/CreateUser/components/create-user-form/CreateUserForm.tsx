@@ -79,6 +79,7 @@ const CreateUserForm = () => {
         />
         <FormInput
           isRequired
+          isReadOnly={athleteIdValue ? true : false}
           isInvalid={athleteDataError?.emailError}
           color={athleteDataError?.emailError ? "danger" : "default"}
           errorMessage={
