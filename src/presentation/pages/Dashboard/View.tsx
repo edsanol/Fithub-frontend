@@ -9,43 +9,92 @@ import {
   CustomPieGraph,
   CustomScaleGraph,
 } from "@/presentation/components";
+import { Skeleton } from "@nextui-org/react";
+import { useEffect } from "react";
 
 const Dashboard = () => {
   const {
+    isLoading,
     dashboardData,
     getDailyAssistanceGraphic,
     getMembershipGraphic,
     getIncomeGraphic,
   } = ViewModel();
 
+  useEffect(() => {
+    console.log(getDailyAssistanceGraphic);
+  }, [getDailyAssistanceGraphic]);
+
   return (
     <div>
       <div className="flex flex-wrap gap-4 justify-between">
-        <CustomDashboardData data={dashboardData} />
-        <CustomDashboardDoubleGraph dashboardData={dashboardData} />
-        <CustomDashboardGraph dashboardData={dashboardData} />
+        <CustomDashboardData data={dashboardData} loading={isLoading} />
+        <CustomDashboardDoubleGraph
+          dashboardData={dashboardData}
+          loading={isLoading}
+        />
+        <CustomDashboardGraph
+          dashboardData={dashboardData}
+          loading={isLoading}
+        />
       </div>
       <div className="flex flex-wrap gap-2 justify-center mt-5 lg:justify-between">
-        <div className="w-[95%] h-[24rem] p-5 bg-[#18181B] rounded-[2rem] lg:w-[49%]">
-          <div className="w-[90%] h-[94%]">
-            <p className="text-xl font-bold text-white">Asistencia Diaria</p>
-            <CustomAreaGraph initialData={getDailyAssistanceGraphic} />
+        <Skeleton
+          isLoaded={!isLoading}
+          className="w-[95%] h-[24rem] lg:w-[49%] rounded-[2rem]"
+          classNames={{ base: "dark" }}
+        >
+          <div className="h-[24rem] p-5 bg-[#18181B]">
+            <div className="w-[90%] h-[94%]">
+              <p className="text-xl font-bold text-white">Asistencia Diaria</p>
+              {getDailyAssistanceGraphic.length > 0 ? (
+                <CustomAreaGraph initialData={getDailyAssistanceGraphic} />
+              ) : (
+                <p className="text-lg font-bold text-white">
+                  No se encontraron registros
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="w-[95%] h-[24rem] p-5 bg-[#18181B] rounded-[2rem] lg:w-[49%]">
-          <p className="text-xl font-bold text-white">
-            Distribución de membresias
-          </p>
-          <CustomPieGraph initialData={getMembershipGraphic} />
-        </div>
+        </Skeleton>
+        <Skeleton
+          isLoaded={!isLoading}
+          className="w-[95%] h-[24rem] lg:w-[49%] rounded-[2rem]"
+          classNames={{ base: "dark" }}
+        >
+          <div className="h-[24rem] p-5 bg-[#18181B]">
+            <p className="text-xl font-bold text-white">
+              Distribución de membresias
+            </p>
+            {getMembershipGraphic.length > 0 ? (
+              <CustomPieGraph initialData={getMembershipGraphic} />
+            ) : (
+              <p className="text-lg font-bold text-white">
+                No se encontraron registros
+              </p>
+            )}
+          </div>
+        </Skeleton>
       </div>
       <div className="flex flex-wrap gap-2 justify-center lg:justify-between">
-        <div className="bg-[#18181B] w-[92%] h-[26rem] flex justify-center items-center mt-5 sm:w-[94%] lg:w-[100%] rounded-[2rem]">
-          <div className="w-[90%] h-[94%]">
-            <p className="text-xl font-bold text-white">Ingresos Mensuales</p>
-            <CustomScaleGraph initialData={getIncomeGraphic} />
+        <Skeleton
+          className="w-[92%] h-[26rem] sm:w-[94%] lg:w-[100%] rounded-[2rem] mt-5"
+          isLoaded={!isLoading}
+          classNames={{ base: "dark" }}
+        >
+          <div className="bg-[#18181B] h-[26rem] flex justify-center items-center">
+            <div className="w-[90%] h-[94%]">
+              <p className="text-xl font-bold text-white">Ingresos Mensuales</p>
+              {getIncomeGraphic.length > 0 ? (
+                <CustomScaleGraph initialData={getIncomeGraphic} />
+              ) : (
+                <p className="text-lg font-bold text-white">
+                  No se encontraron registros
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        </Skeleton>
       </div>
     </div>
   );
