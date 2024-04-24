@@ -11,5 +11,5 @@ export interface MembershipService {
   getMembershipById(id: number): Promise<Membership>;
   editMembership(id: number, membership: Membership): Promise<boolean>;
   deleteMembership(id: number): Promise<boolean>;
-  getMembershipByGymId(gymId: number): Promise<MembershipByGymId[]>;
+  getMembershipByGymId(): Promise<MembershipByGymId[]>;
 }

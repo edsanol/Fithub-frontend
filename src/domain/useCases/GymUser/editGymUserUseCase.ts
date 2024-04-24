@@ -10,7 +10,7 @@ export class EditGymUserUseCase {
     private gymUserRepository: GymUserRepository
   ) {}
 
-  async execute(id: number, gymUser: GymUser): Promise<boolean> {
-    return await this.gymUserRepository.editGymUser(id, gymUser);
+  async execute(gymUser: GymUser): Promise<boolean> {
+    return await this.gymUserRepository.editGymUser(gymUser);
   }
 }

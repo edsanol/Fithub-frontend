@@ -5,6 +5,9 @@ import Waist from "@/assets/svg/Waist";
 import Biceps from "@/assets/svg/Biceps";
 import Chest from "@/assets/svg/Chest";
 import Height from "@/assets/svg/Height";
+import Thigh from "@/assets/svg/Thigh";
+import Calf from "@/assets/svg/Calf";
+import Shoulders from "@/assets/svg/Shoulders";
 
 export const mapperMuscleNames = (muscle: string) => {
   switch (muscle) {
@@ -44,11 +47,11 @@ export const mapperMuscleIcon = (muscle: string) => {
     case "Waist":
       return Waist;
     case "Thigh":
-      return Gluteus;
+      return Thigh;
     case "Calf":
-      return Gluteus;
+      return Calf;
     case "Shoulders":
-      return Gluteus;
+      return Shoulders;
     case "Forearm":
       return Forearm;
     case "Height":

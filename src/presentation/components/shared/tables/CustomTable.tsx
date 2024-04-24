@@ -11,6 +11,7 @@ import {
   TableCell,
   Pagination,
   Input,
+  Skeleton,
 } from "@nextui-org/react";
 import SearchIcon from "@/assets/svg/SearchIcon";
 import { useSession } from "next-auth/react";
@@ -70,7 +71,36 @@ const CustomTable = ({
   );
 
   if (status === "loading" || loading) {
-    return <p>Loading...</p>;
+    return (
+      <>
+        <Skeleton
+          classNames={{ base: "dark" }}
+          className="w-full h-12 mb-3 p-2 sm:max-w-[44%] rounded-lg"
+        ></Skeleton>
+
+        <div className="w-full h-64 bg-[#18181B] p-6 rounded-lg flex flex-col">
+          <Skeleton
+            className="w-full h-12 rounded-lg"
+            classNames={{ base: "dark" }}
+          ></Skeleton>
+
+          <Skeleton
+            className="w-full h-8 rounded-lg mt-5"
+            classNames={{ base: "dark" }}
+          ></Skeleton>
+
+          <Skeleton
+            className="w-full h-8 rounded-lg mt-5"
+            classNames={{ base: "dark" }}
+          ></Skeleton>
+
+          <Skeleton
+            className="w-full h-8 rounded-lg mt-5"
+            classNames={{ base: "dark" }}
+          ></Skeleton>
+        </div>
+      </>
+    );
   }
 
   return (

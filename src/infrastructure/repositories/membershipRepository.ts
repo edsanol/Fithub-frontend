@@ -47,8 +47,8 @@ export class MembershipRepositoryImpl implements MembershipRepository {
     return response;
   }
 
-  async getMembershipByGymId(gymId: number): Promise<MembershipByGymId[]> {
-    const response = await this.service.getMembershipByGymId(gymId);
+  async getMembershipByGymId(): Promise<MembershipByGymId[]> {
+    const response = await this.service.getMembershipByGymId();
 
     return response;
   }

@@ -62,10 +62,10 @@ export class MembershipServiceImpl implements MembershipService {
     return response.data;
   }
 
-  async getMembershipByGymId(gymId: number): Promise<MembershipByGymId[]> {
+  async getMembershipByGymId(): Promise<MembershipByGymId[]> {
     const response = await this.http.get<
       TickerResponseApi<MembershipByGymId[]>
-    >(`/Membership/Select/${gymId}`);
+    >("/Membership/Select");
 
     return response.data;
   }

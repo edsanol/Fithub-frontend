@@ -33,10 +33,14 @@ type Value = string | number;
 type Action =
   | { type: "SET_ATHLETES_LIST"; athletesList: PaginateResponseList }
   | { type: "SET_ATHLETE_USER"; athleteUser: AthleteUser }
-  | { type: "SET_UPDATE_MEMBERSHIP_FIELD"; field: keyof UpdateMembershipToAthlete; value: Value }
+  | {
+      type: "SET_UPDATE_MEMBERSHIP_FIELD";
+      field: keyof UpdateMembershipToAthlete;
+      value: Value;
+    }
   | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] }
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
-  | { type: "CLOSE_MODAL"; };
+  | { type: "CLOSE_MODAL" };
 
 const initialState: State = {
   athletesList: {
@@ -77,20 +81,51 @@ function reducer(state: State, action: Action): State {
     case "SET_ATHLETE_USER":
       return { ...state, athleteUser: action.athleteUser };
     case "SET_UPDATE_MEMBERSHIP_FIELD":
-      return { ...state, updateMembershipToAthlete: { ...state.updateMembershipToAthlete, [action.field]: action.value }};
+      return {
+        ...state,
+        updateMembershipToAthlete: {
+          ...state.updateMembershipToAthlete,
+          [action.field]: action.value,
+        },
+      };
     case "SET_MEMBERSHIP":
       return { ...state, membership: action.membership };
     case "TOGGLE_MODAL":
-      return { ...state, isModalOpen: { ...state.isModalOpen, [action.modalName]: action.value ?? !state.isModalOpen[action.modalName as keyof State["isModalOpen"]] }};
+      return {
+        ...state,
+        isModalOpen: {
+          ...state.isModalOpen,
+          [action.modalName]:
+            action.value ??
+            !state.isModalOpen[action.modalName as keyof State["isModalOpen"]],
+        },
+      };
     case "CLOSE_MODAL":
-      return { ...state, isModalOpen: { ...state.isModalOpen, detailsModal: false, deleteModal: false, editMembershipModal: false }};
+      return {
+        ...state,
+        isModalOpen: {
+          ...state.isModalOpen,
+          detailsModal: false,
+          deleteModal: false,
+          editMembershipModal: false,
+        },
+      };
     default:
       return state;
   }
 }
 
 const ViewModel = () => {
-  const [{ athletesList, athleteUser, updateMembershipToAthlete, membership, isModalOpen }, dispatch] = useReducer(reducer, initialState);
+  const [
+    {
+      athletesList,
+      athleteUser,
+      updateMembershipToAthlete,
+      membership,
+      isModalOpen,
+    },
+    dispatch,
+  ] = useReducer(reducer, initialState);
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -218,7 +253,6 @@ const ViewModel = () => {
       await handleSubmit({ numPage: 1 });
 
       dispatch({ type: "CLOSE_MODAL" });
-
     } catch (error: any) {
       console.log(error);
       setErrorModal(true);
@@ -232,7 +266,7 @@ const ViewModel = () => {
         TYPES.GetMembershipByGymIdUseCase
       );
 
-      const response = await GetMembershipByGymId.execute(idGym);
+      const response = await GetMembershipByGymId.execute();
 
       if (!response) {
         console.log("error");
@@ -267,12 +301,19 @@ const ViewModel = () => {
     dispatch({ type: "TOGGLE_MODAL", modalName, value });
   };
 
-  const handleOpenModal = async (athleteId: number, modalName: "detailsModal" | "deleteModal" | "editMembershipModal") => {
+  const handleOpenModal = async (
+    athleteId: number,
+    modalName: "detailsModal" | "deleteModal" | "editMembershipModal"
+  ) => {
     await getAthleteUserById(athleteId);
     toggleModal(modalName);
 
     if (modalName === "editMembershipModal") {
-      dispatch({ type: "SET_UPDATE_MEMBERSHIP_FIELD", field: "athleteId", value: athleteId });
+      dispatch({
+        type: "SET_UPDATE_MEMBERSHIP_FIELD",
+        field: "athleteId",
+        value: athleteId,
+      });
     }
   };
 

@@ -5,5 +5,4 @@ export interface IAthleteValidation {
   phoneNumberError: boolean;
   genreError: boolean;
   birthDateError: boolean;
-  cardAccessCodeError: boolean;
 }

@@ -10,7 +10,7 @@ export class GetMembershipByGymIdUseCase {
     private membershipRepository: MembershipRepository
   ) {}
 
-  async execute(gymId: number): Promise<MembershipByGymId[]> {
-    return await this.membershipRepository.getMembershipByGymId(gymId);
+  async execute(): Promise<MembershipByGymId[]> {
+    return await this.membershipRepository.getMembershipByGymId();
   }
 }

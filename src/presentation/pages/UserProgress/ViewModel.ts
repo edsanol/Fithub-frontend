@@ -53,7 +53,6 @@ const initialState: State = {
     birthDate: "",
     genre: "",
     idGym: 0,
-    gymName: "",
     registerDate: "",
     status: true,
     membershipName: "",
@@ -212,8 +211,10 @@ const ViewModel = () => {
         return;
       }
   
-      await getAthleteMeasurementProgressList({ numPage: 1 });
-      await getMeasurementProgressByLastMonth();
+      setTimeout(async () => {
+        await getAthleteMeasurementProgressList({ numPage: 1 });
+        await getMeasurementProgressByLastMonth();
+      }, 1000);
       dispatch({ type: "CLOSE_MODAL" });
     } catch (error: any) {
       console.log(error);
@@ -313,7 +314,7 @@ const ViewModel = () => {
         userSelected.athleteId!,
         muscle,
         "2024-01-01",
-        "2024-02-29"
+        "2024-12-31"
       );
 
       if (!response) {

@@ -10,7 +10,7 @@ export class GetGymUserByIdUseCase {
     private gymUserRepository: GymUserRepository
   ) {}
 
-  async execute(id: number): Promise<GymUser> {
-    return await this.gymUserRepository.getGymUserById(id);
+  async execute(): Promise<GymUser> {
+    return await this.gymUserRepository.getGymUserById();
   }
 }
