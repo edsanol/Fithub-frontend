@@ -1,5 +1,5 @@
 import Hero from "./Hero";
 import Navbar from "./Navbar";
-import ButtonLogin from "./ButtonLogin";
+import ButtonLogin from "./RedirectButton";
 
 export { Navbar, Hero, ButtonLogin };
