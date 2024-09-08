@@ -32,16 +32,25 @@ interface State {
   };
 }
 
-type Action = 
+type Action =
   | { type: "SET_FIELD"; field: keyof MeasurementsProgress; value: number }
-  | { type: 'SET_MEASUREMENTS_PROGRESS_ERROR'; measurementsProgressError: IMeasurementProgressValidation }
-  | { type: "SET_MEASUREMENTS_PROGRESS_LIST"; measurementProgressList: PaginateResponseList }
-  | { type: 'SET_USER_SELECTED', userSelected: AthleteUser }
-  | { type: 'SET_MEASUREMENTS_BY_LAST_MONTH'; measurementProgressByLastMonth: MeasurementProgressByLastMonth[] }
-  | { type: 'SET_SUGGESTIONS'; suggestions: AthleteUser[] }
-  | { type: 'SET_GRAPHIC_VALUES'; graphicValues: BarGraphicValues[] }
+  | {
+      type: "SET_MEASUREMENTS_PROGRESS_ERROR";
+      measurementsProgressError: IMeasurementProgressValidation;
+    }
+  | {
+      type: "SET_MEASUREMENTS_PROGRESS_LIST";
+      measurementProgressList: PaginateResponseList;
+    }
+  | { type: "SET_USER_SELECTED"; userSelected: AthleteUser }
+  | {
+      type: "SET_MEASUREMENTS_BY_LAST_MONTH";
+      measurementProgressByLastMonth: MeasurementProgressByLastMonth[];
+    }
+  | { type: "SET_SUGGESTIONS"; suggestions: AthleteUser[] }
+  | { type: "SET_GRAPHIC_VALUES"; graphicValues: BarGraphicValues[] }
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
-  | { type: "CLOSE_MODAL"; };
+  | { type: "CLOSE_MODAL" };
 
 const initialState: State = {
   userSelected: {
@@ -99,29 +108,71 @@ const initialState: State = {
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'SET_FIELD':
-      return { ...state, measurementsProgress: { ...state.measurementsProgress, [action.field]: action.value } };
-    case 'SET_MEASUREMENTS_PROGRESS_ERROR':
-      return { ...state, measurementsProgressError: action.measurementsProgressError };
-    case 'SET_MEASUREMENTS_PROGRESS_LIST':
-      return { ...state, measurementProgressList: action.measurementProgressList };
-    case 'SET_USER_SELECTED':
+    case "SET_FIELD":
+      return {
+        ...state,
+        measurementsProgress: {
+          ...state.measurementsProgress,
+          [action.field]: action.value,
+        },
+      };
+    case "SET_MEASUREMENTS_PROGRESS_ERROR":
+      return {
+        ...state,
+        measurementsProgressError: action.measurementsProgressError,
+      };
+    case "SET_MEASUREMENTS_PROGRESS_LIST":
+      return {
+        ...state,
+        measurementProgressList: action.measurementProgressList,
+      };
+    case "SET_USER_SELECTED":
       return { ...state, userSelected: action.userSelected };
-    case 'SET_MEASUREMENTS_BY_LAST_MONTH':
-      return { ...state, measurementProgressByLastMonth: action.measurementProgressByLastMonth };
-    case 'SET_SUGGESTIONS':
+    case "SET_MEASUREMENTS_BY_LAST_MONTH":
+      return {
+        ...state,
+        measurementProgressByLastMonth: action.measurementProgressByLastMonth,
+      };
+    case "SET_SUGGESTIONS":
       return { ...state, suggestions: action.suggestions };
-    case 'SET_GRAPHIC_VALUES':
+    case "SET_GRAPHIC_VALUES":
       return { ...state, graphicValues: action.graphicValues };
     case "TOGGLE_MODAL":
-      return { ...state, isModalOpen: { ...state.isModalOpen, [action.modalName]: action.value ?? !state.isModalOpen[action.modalName as keyof State["isModalOpen"]] }};
+      return {
+        ...state,
+        isModalOpen: {
+          ...state.isModalOpen,
+          [action.modalName]:
+            action.value ??
+            !state.isModalOpen[action.modalName as keyof State["isModalOpen"]],
+        },
+      };
     case "CLOSE_MODAL":
-      return { ...state, isModalOpen: { ...state.isModalOpen, createModal: false, progressModal: false }};
+      return {
+        ...state,
+        isModalOpen: {
+          ...state.isModalOpen,
+          createModal: false,
+          progressModal: false,
+        },
+      };
   }
 }
 
 const ViewModel = () => {
-  const [{ measurementsProgress, measurementsProgressError, measurementProgressList, userSelected, measurementProgressByLastMonth, suggestions, graphicValues, isModalOpen }, dispatch] = useReducer(reducer, initialState);
+  const [
+    {
+      measurementsProgress,
+      measurementsProgressError,
+      measurementProgressList,
+      userSelected,
+      measurementProgressByLastMonth,
+      suggestions,
+      graphicValues,
+      isModalOpen,
+    },
+    dispatch,
+  ] = useReducer(reducer, initialState);
 
   const [search, setSearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -132,7 +183,11 @@ const ViewModel = () => {
 
   useEffect(() => {
     if (userSelected && userSelected.athleteId !== 0) {
-      dispatch({ type: "SET_FIELD", field: "idAthlete", value: userSelected.athleteId! });
+      dispatch({
+        type: "SET_FIELD",
+        field: "idAthlete",
+        value: userSelected.athleteId!,
+      });
 
       getAthleteMeasurementProgressList({ numPage: 1 });
       getMeasurementProgressByLastMonth();
@@ -147,7 +202,7 @@ const ViewModel = () => {
 
     const fetchSuggestions = async () => {
       if (debouncedSearch.trim() === "") {
-        dispatch({ type: 'SET_SUGGESTIONS', suggestions: [] });
+        dispatch({ type: "SET_SUGGESTIONS", suggestions: [] });
         setShowSuggestions(false);
       } else {
         await getAthleteUserByFilter({ textFilter: debouncedSearch });
@@ -165,7 +220,7 @@ const ViewModel = () => {
 
   const handleSelectSuggestion = useCallback((userSelected: AthleteUser) => {
     setSearch(userSelected.athleteName + " " + userSelected.athleteLastName);
-    dispatch({ type: 'SET_USER_SELECTED', userSelected });
+    dispatch({ type: "SET_USER_SELECTED", userSelected });
     setShowSuggestions(false);
     setForceHideSuggestions(true);
   }, []);
@@ -184,7 +239,10 @@ const ViewModel = () => {
       weightError: !isValidMeasurement(measurementsProgress.weight),
     };
 
-    dispatch({ type: "SET_MEASUREMENTS_PROGRESS_ERROR", measurementsProgressError: errors });
+    dispatch({
+      type: "SET_MEASUREMENTS_PROGRESS_ERROR",
+      measurementsProgressError: errors,
+    });
     return errors;
   };
 
@@ -201,16 +259,19 @@ const ViewModel = () => {
       if (measurementsProgress.idAthlete === 0) {
         return;
       }
-  
-      const createMeasurementProgress = container.get<CreateMeasurementProgressUseCase>(TYPES.CreateMeasurementProgressUseCase);
-  
+
+      const createMeasurementProgress =
+        container.get<CreateMeasurementProgressUseCase>(
+          TYPES.CreateMeasurementProgressUseCase
+        );
+
       const response = createMeasurementProgress.execute(measurementsProgress);
-  
+
       if (!response) {
         console.log("error");
         return;
       }
-  
+
       setTimeout(async () => {
         await getAthleteMeasurementProgressList({ numPage: 1 });
         await getMeasurementProgressByLastMonth();
@@ -242,7 +303,7 @@ const ViewModel = () => {
         return;
       }
 
-      dispatch({ type: 'SET_SUGGESTIONS', suggestions: response.items });
+      dispatch({ type: "SET_SUGGESTIONS", suggestions: response.items });
     } catch (error: any) {
       console.log(error);
       setErrorModal(true);
@@ -271,7 +332,10 @@ const ViewModel = () => {
         return;
       }
 
-      dispatch({ type: "SET_MEASUREMENTS_PROGRESS_LIST", measurementProgressList: response });
+      dispatch({
+        type: "SET_MEASUREMENTS_PROGRESS_LIST",
+        measurementProgressList: response,
+      });
     } catch (error: any) {
       console.log(error);
       setErrorModal(true);
@@ -295,7 +359,10 @@ const ViewModel = () => {
         return;
       }
 
-      dispatch({ type: "SET_MEASUREMENTS_BY_LAST_MONTH", measurementProgressByLastMonth: response });
+      dispatch({
+        type: "SET_MEASUREMENTS_BY_LAST_MONTH",
+        measurementProgressByLastMonth: response,
+      });
     } catch (error: any) {
       console.log(error);
       setErrorModal(true);
@@ -316,6 +383,11 @@ const ViewModel = () => {
         "2024-01-01",
         "2024-12-31"
       );
+
+      // sort by time asc
+      response.sort((a, b) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
 
       if (!response) {
         console.log("error");
@@ -338,7 +410,10 @@ const ViewModel = () => {
     dispatch({ type: "TOGGLE_MODAL", modalName, value });
   };
 
-  const handleOpenModal = async (modalName: "createModal" | "progressModal", muscle?: string) => {
+  const handleOpenModal = async (
+    modalName: "createModal" | "progressModal",
+    muscle?: string
+  ) => {
     toggleModal(modalName);
 
     if (modalName === "progressModal" && muscle) {
