@@ -1,62 +1,56 @@
-import ArrowDownIcon from "@/assets/svg/ArrowDownIcon";
-import GearIcon from "@/assets/svg/GearIcon";
-import Link from "next/link";
+"use client";
+
 import Image from "next/image";
-import { Button } from "@nextui-org/button";
 import pcBackground from "@/assets/images/pc-background-next.png";
+import RedirectButton from "./RedirectButton";
+import { useRouter } from "next/navigation";
 
 const Hero = () => {
+  const router = useRouter();
+
   return (
     <>
-      <main className="flex justify-center h-[calc(100vh-84px)] w-full">
-        <div className="flex flex-col justify-center items-center gap-y-10 w-[45%]">
-          <div className="h-[12%] w-full"></div>
+      <section className="w-full py-12 md:py-24 md:px-24 lg:py-32 xl:py-48">
+        <div className="container px-4 md:px-6">
+          <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+            <div className="flex flex-col justify-center space-y-4">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                  Optimice la gestión de su gimnasio con FitHub
+                </h1>
+                <p className="max-w-[600px] text-gray-200 md:text-xl">
+                  Administre sin esfuerzo las membresías, realice un seguimiento
+                  del progreso, maneje las finanzas y optimice la programación
+                  del personal. Todo en una poderosa plataforma.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                <RedirectButton
+                  color="primary"
+                  variant="solid"
+                  onClick={() => router.push("/register")}
+                  label="Regístrate"
+                  customClass="text-white"
+                />
 
-          <div className="flex justify-around gap-y-10 bg-transparent w-[360px] h-[60px] border-solid border-2 rounded-full cursor-pointer">
-            <div className="flex items-center">
-              <GearIcon />
+                <RedirectButton
+                  color="secondary"
+                  variant="ghost"
+                  onClick={() => console.log("ver demo")}
+                  label="Ver demo"
+                  customClass="text-[#9c34c2] hover:text-white"
+                />
+              </div>
             </div>
-            <div className="flex flex-col justify-center">
-              <p className="text-white text-base font-bold">
-                Te ayudaremos a crecer
-              </p>
-              <p className="text-white text-base font-bold opacity-50">
-                Mira nuestros beneficios
-              </p>
-            </div>
-            <div className="flex items-center">
-              <ArrowDownIcon />
-            </div>
-          </div>
 
-          <div>
-            <h2 className="text-white text-5xl font-bold">
-              Transforma tu gimnasio
-            </h2>
-            <h1 className="text-white text-6xl font-extrabold">
-              FitHub Connect
-            </h1>
-            <p className="text-white opacity-50 text-[28px] font-bold my-8">
-              Maximiza tu eficiencia y éxito en la gestión fitness.
-            </p>
-            <div className="my-8">
-              <Button size="lg" radius="sm" color="primary">
-                <Link href="/">
-                  <p className="text-white text-lg font-bold">Comencemos</p>
-                </Link>
-              </Button>
-            </div>
+            <Image
+              alt="FitHub Dashboard"
+              className="shadow-lg mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
+              src={pcBackground}
+            />
           </div>
         </div>
-
-        <div className="flex items-center justify-center w-[45%] relative">
-          <Image
-            src={pcBackground}
-            alt="fithub program"
-            style={{ maxWidth: "100%", height: "auto" }}
-          />
-        </div>
-      </main>
+      </section>
     </>
   );
 };
