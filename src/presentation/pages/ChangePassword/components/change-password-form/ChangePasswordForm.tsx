@@ -20,7 +20,7 @@ const ChangePasswordForm = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form data-testid="change-password-id" onSubmit={handleSubmit}>
         <FormInput
           isRequired
           isInvalid={changePasswordDataError?.emailError}
