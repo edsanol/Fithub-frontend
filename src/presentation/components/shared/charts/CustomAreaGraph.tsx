@@ -58,7 +58,7 @@ const CustomAreaGraph = ({ initialData }: CustomAreaGraphProps) => {
 
       chart.remove();
     };
-  }, [data, colors]);
+  }, [data]);
 
   return <div ref={chartContainerRef} />;
 };

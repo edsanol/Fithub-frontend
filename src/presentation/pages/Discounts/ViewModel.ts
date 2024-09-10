@@ -61,6 +61,7 @@ const ViewModel = () => {
     if (session && session.user.gymId !== idGym) {
       setIdGym(session.user.gymId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   useEffect(() => {
@@ -68,6 +69,7 @@ const ViewModel = () => {
       getPaginateMembershipList();
       getPaginateDiscountList();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idGym]);
 
   const handleIsValidForm = () => {
