@@ -63,6 +63,7 @@ const ViewModel = () => {
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [error, setError] = useState("");
 
   const [{ changePasswordData, changePasswordDataError }, dispatch] =
     useReducer(reducer, initialState);
@@ -98,20 +99,17 @@ const ViewModel = () => {
         return;
       }
 
-      console.log("entre");  // Añade esto
-
       const changePasswordUseCase = container.get<ChangePasswordUseCase>(
         TYPES.ChangePasswordUseCase
       );
       const response = await changePasswordUseCase.execute(changePasswordData);
-      console.log(response);  // Añade esto
 
       if (!response) {
         console.log("error");
+        setError("Error");
         return;
       }
 
-      console.log("Success");  // Añade esto
       router.push("/dashboard");
     } catch (error: any) {
       console.log(error);
@@ -124,6 +122,7 @@ const ViewModel = () => {
     changePasswordDataError,
     modalMessage,
     modalVisible,
+    error,
     handleSubmit,
     setField,
     setModalVisible,

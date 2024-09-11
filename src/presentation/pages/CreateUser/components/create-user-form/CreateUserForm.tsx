@@ -27,7 +27,7 @@ const CreateUserForm = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form data-testid="create-user-id" onSubmit={handleSubmit}>
         <div className="block md:flex md:gap-3">
           <FormInput
             isRequired

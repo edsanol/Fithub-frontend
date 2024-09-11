@@ -12,24 +12,40 @@ import { GetIncomeGraphicUseCase } from "@/domain/useCases/Dashboard/getIncomeGr
 
 const ViewModel = () => {
   const [dashboardData, setDashboardData] = useState<DashboardDataValues>();
-  const [getDailyAssistanceGraphic, setGetDailyAssistanceGraphic] = useState<BarGraphicValues[]>([]);
-  const [getMembershipGraphic, setGetMembershipGraphic] = useState<PieGraphicValues[]>([]);
-  const [getIncomeGraphic, setGetIncomeGraphic] = useState<BarGraphicValues[]>([]);
+  const [getDailyAssistanceGraphic, setGetDailyAssistanceGraphic] = useState<
+    BarGraphicValues[]
+  >([]);
+  const [getMembershipGraphic, setGetMembershipGraphic] = useState<
+    PieGraphicValues[]
+  >([]);
+  const [getIncomeGraphic, setGetIncomeGraphic] = useState<BarGraphicValues[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const getDashboardDataUseCase = container.get<GetDashboardDataUseCase>(TYPES.GetDashboardDataUseCase);
-        const getDailyAssistanceGraphicUseCase = container.get<GetDailyAssistanceGraphicUseCase>(TYPES.GetDailyAssistanceGraphicUseCase);
-        const getMembershipGraphicUseCase = container.get<GetMembershipGraphicUseCase>(TYPES.GetMembershipGraphicUseCase);
-        const getIncomeGraphicUseCase = container.get<GetIncomeGraphicUseCase>(TYPES.GetIncomeGraphicUseCase);
+        const getDashboardDataUseCase = container.get<GetDashboardDataUseCase>(
+          TYPES.GetDashboardDataUseCase
+        );
+        const getDailyAssistanceGraphicUseCase =
+          container.get<GetDailyAssistanceGraphicUseCase>(
+            TYPES.GetDailyAssistanceGraphicUseCase
+          );
+        const getMembershipGraphicUseCase =
+          container.get<GetMembershipGraphicUseCase>(
+            TYPES.GetMembershipGraphicUseCase
+          );
+        const getIncomeGraphicUseCase = container.get<GetIncomeGraphicUseCase>(
+          TYPES.GetIncomeGraphicUseCase
+        );
 
         const responses = await Promise.all([
           getDashboardDataUseCase.execute(),
           getDailyAssistanceGraphicUseCase.execute("2024-01-01", "2024-02-08"),
           getMembershipGraphicUseCase.execute(),
-          getIncomeGraphicUseCase.execute("2024-01-01", "2024-02-08")
+          getIncomeGraphicUseCase.execute("2024-01-01", "2024-02-08"),
         ]);
 
         setDashboardData(responses[0]);
