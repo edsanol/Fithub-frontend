@@ -2,7 +2,6 @@ import Image from "next/image";
 import User from "@/assets/svg/user.svg";
 import { DashboardDataValues } from "@/domain/models/DashboardDataValues";
 import { Skeleton } from "@nextui-org/react";
-import { useEffect } from "react";
 
 interface CustomDashboardDataProps {
   data: DashboardDataValues | undefined;
@@ -12,6 +11,7 @@ interface CustomDashboardDataProps {
 const CustomDashboardData = ({ data, loading }: CustomDashboardDataProps) => {
   return (
     <Skeleton
+      data-testid="custom-dashboard-data"
       isLoaded={!loading}
       className="w-[90%] h-36 mx-auto rounded-xl sm:w-[45%] lg:w-[30%]"
       classNames={{ base: "dark" }}

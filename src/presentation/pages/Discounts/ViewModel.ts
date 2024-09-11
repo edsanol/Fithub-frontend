@@ -146,6 +146,11 @@ const ViewModel = () => {
 
   const getPaginateMembershipList = async () => {
     try {
+      if (typeof idGym !== "number" || idGym === 0) {
+        console.log("Gym ID is not set");
+        return;
+      }
+
       const getMembershipListUseCase = container.get<GetMembershipListUseCase>(
         TYPES.GetMembershipListUseCase
       );
@@ -168,20 +173,25 @@ const ViewModel = () => {
 
   const getPaginateDiscountList = async () => {
     try {
-      const getDiscontsListUseCase = container.get<GetDiscountsListUseCase>(
+      if (typeof idGym !== 'number' || idGym === 0) {
+        console.log("Gym ID is not set");
+        return;
+      }
+  
+      const getDiscountsListUseCase = container.get<GetDiscountsListUseCase>(
         TYPES.GetDiscountsListUseCase
       );
-
-      const response = await getDiscontsListUseCase.execute({
+  
+      const response = await getDiscountsListUseCase.execute({
         textFilter: idGym.toString(),
         numRecordsPage: 7,
       });
-
+  
       if (!response) {
         console.log("error");
         return;
       }
-
+  
       setDiscountsList(response);
     } catch (error) {
       console.log(error);

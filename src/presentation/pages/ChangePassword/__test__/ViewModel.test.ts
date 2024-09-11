@@ -1,8 +1,6 @@
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import ViewModel from "../components/change-password-form/ViewModel";
 import container from "@/config/inversifyContainer";
-import { ChangePasswordUseCase } from "@/domain/useCases/GymUser/changePasswordUseCase";
-import { TYPES } from "@/config/types";
 import { useRouter } from "next/navigation";
 import {
   isValidChangePassword,
@@ -30,7 +28,6 @@ describe("ChangePassword ViewModel", () => {
   const pushMock = jest.fn();
   const setModalVisibleMock = jest.fn();
   const setModalMessageMock = jest.fn();
-  const useReducerDispatchMock = jest.fn();
   let changePasswordUseCaseMock: any;
 
   beforeEach(() => {
@@ -131,7 +128,7 @@ describe("ChangePassword ViewModel", () => {
     expect(result.current.error).toBe("Error");
   });
 
-  it("should call changePasswordUseCase on valid handleSubmit but but the request fails", async () => {
+  it("should call changePasswordUseCase on valid handleSubmit but the request fails", async () => {
     const { result } = renderHook(() => ViewModel());
     changePasswordUseCaseMock.execute.mockRejectedValue({
       response: { data: { message: "Error" } },

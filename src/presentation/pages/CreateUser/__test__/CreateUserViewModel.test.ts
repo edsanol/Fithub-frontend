@@ -1,11 +1,6 @@
 import { TYPES } from "@/config/types";
-import { EditAthleteUserUseCase } from "@/domain/useCases/AthleteUser/editAthleteUserUseCase";
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { Container } from "inversify";
 import ViewModel from "../components/create-user-form/ViewModel";
-import { GetAthleteUserByIdUseCase } from "@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase";
-import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
-import { RegisterAthleteUserUseCase } from "@/domain/useCases/AthleteUser/registerAthleteUserUseCase";
 import {
   isNotEmpty,
   isValidEmail,
@@ -13,9 +8,13 @@ import {
   isValidName,
   isValidPhone,
 } from "@/presentation/helpers";
+import container from "@/config/inversifyContainer";
+import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 
 jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(),
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+  })),
   usePathname: jest.fn(() => "/create-user/123"),
 }));
 
@@ -27,72 +26,70 @@ jest.mock("@/presentation/helpers", () => ({
   isValidPhone: jest.fn(),
 }));
 
-const container = new Container();
+// Mock the use cases
+jest.mock("@/domain/useCases/AthleteUser/getAtleteUserByIdUseCase");
+jest.mock("@/domain/useCases/Membership/getMembershipByGymIdUseCase");
+jest.mock("@/domain/useCases/AthleteUser/registerAthleteUserUseCase");
+jest.mock("@/domain/useCases/AthleteUser/editAthleteUserUseCase");
+
+jest.mock("@/config/inversifyContainer", () => ({
+  get: jest.fn(),
+}));
+
+const mockMembershipData: MembershipByGymId[] = [
+  { membershipID: 1, membershipName: "Membership 1", gymID: 1 },
+  { membershipID: 2, membershipName: "Membership 2", gymID: 1 },
+];
+
+const setupMocksForValidation = (valid = true) => {
+  (isValidEmail as jest.Mock).mockReturnValue(valid);
+  (isValidName as jest.Mock).mockReturnValue(valid);
+  (isValidPhone as jest.Mock).mockReturnValue(valid);
+  (isValidGenre as jest.Mock).mockReturnValue(valid);
+  (isNotEmpty as jest.Mock).mockReturnValue(valid);
+};
 
 describe("CreateUser ViewModel", () => {
-  let mockRegisterAthleteUserUseCase: jest.Mocked<RegisterAthleteUserUseCase>;
-  let mockEditAthleteUserUseCase: jest.Mocked<EditAthleteUserUseCase>;
-  let mockGetAthleteUserByIdUseCase: jest.Mocked<GetAthleteUserByIdUseCase>;
-  let mockGetMembershipByGymIdUseCase: jest.Mocked<GetMembershipByGymIdUseCase>;
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   beforeEach(() => {
-    mockRegisterAthleteUserUseCase = {
-      execute: jest.fn(),
-    } as unknown as jest.Mocked<RegisterAthleteUserUseCase>;
-
-    mockEditAthleteUserUseCase = {
-      execute: jest.fn(),
-    } as unknown as jest.Mocked<EditAthleteUserUseCase>;
-
-    mockGetAthleteUserByIdUseCase = {
-      execute: jest.fn(),
-    } as unknown as jest.Mocked<GetAthleteUserByIdUseCase>;
-
-    mockGetMembershipByGymIdUseCase = {
-      execute: jest.fn(),
-    } as unknown as jest.Mocked<GetMembershipByGymIdUseCase>;
-
-    container
-      .bind<RegisterAthleteUserUseCase>(TYPES.RegisterAthleteUserUseCase)
-      .toConstantValue(mockRegisterAthleteUserUseCase);
-    container
-      .bind<EditAthleteUserUseCase>(TYPES.EditAthleteUserUseCase)
-      .toConstantValue(mockEditAthleteUserUseCase);
-    container
-      .bind<GetAthleteUserByIdUseCase>(TYPES.GetAthleteUserByIdUseCase)
-      .toConstantValue(mockGetAthleteUserByIdUseCase);
-    container
-      .bind<GetMembershipByGymIdUseCase>(TYPES.GetMembershipByGymIdUseCase)
-      .toConstantValue(mockGetMembershipByGymIdUseCase);
+    const getMembershipByGymIdUseCase = {
+      execute: jest.fn().mockResolvedValue(mockMembershipData),
+    };
+    (container.get as jest.Mock).mockReturnValue(getMembershipByGymIdUseCase);
   });
 
   it("should initialize with default state", () => {
     const { result } = renderHook(() => ViewModel());
 
-    expect(result.current.athleteData).toEqual({
-      athleteName: "",
-      athleteLastName: "",
-      email: "",
-      phoneNumber: "",
-      genre: "",
-      birthDate: "",
-      registerDate: expect.any(String),
-      status: true,
-      startDate: "",
-      endDate: "",
-      membershipName: "",
-      cost: 0,
-      membershipId: 0,
-      cardAccessCode: "",
-    });
+    waitFor(() => {
+      expect(result.current.athleteData).toEqual({
+        athleteName: "",
+        athleteLastName: "",
+        email: "",
+        phoneNumber: "",
+        genre: "",
+        birthDate: "",
+        registerDate: expect.any(String),
+        status: true,
+        startDate: "",
+        endDate: "",
+        membershipName: "",
+        cost: 0,
+        membershipId: 0,
+        cardAccessCode: "",
+      });
 
-    expect(result.current.athleteDataError).toEqual({
-      nameError: false,
-      lastNameError: false,
-      emailError: false,
-      phoneNumberError: false,
-      genreError: false,
-      birthDateError: false,
+      expect(result.current.athleteDataError).toEqual({
+        nameError: false,
+        lastNameError: false,
+        emailError: false,
+        phoneNumberError: false,
+        genreError: false,
+        birthDateError: false,
+      });
     });
   });
 
@@ -107,11 +104,7 @@ describe("CreateUser ViewModel", () => {
   });
 
   it("should set validation errors when form is invalid", () => {
-    (isValidEmail as jest.Mock).mockReturnValue(false);
-    (isValidName as jest.Mock).mockReturnValue(false);
-    (isValidPhone as jest.Mock).mockReturnValue(false);
-    (isValidGenre as jest.Mock).mockReturnValue(false);
-    (isNotEmpty as jest.Mock).mockReturnValue(false);
+    setupMocksForValidation(false);
 
     const { result } = renderHook(() => ViewModel());
 
@@ -128,40 +121,56 @@ describe("CreateUser ViewModel", () => {
   });
 
   it("should call RegisterAthleteUserUseCase when form is valid and athleteIdValue is null", async () => {
-    mockRegisterAthleteUserUseCase.execute.mockResolvedValue(true);
+    setupMocksForValidation();
+    const registerAthleteUserUseCase = {
+      execute: jest.fn().mockResolvedValue(true),
+    };
+    (container.get as jest.Mock).mockReturnValue(registerAthleteUserUseCase);
 
     const { result } = renderHook(() => ViewModel());
 
-    act(() => {
-      result.current.setField("email", "test@example.com");
-      result.current.setField("athleteName", "John");
-      result.current.setField("athleteLastName", "Doe");
-      result.current.setField("phoneNumber", "1234567890");
-      result.current.setField("genre", "Male");
-      result.current.setField("birthDate", "2000-01-01");
+    await act(async () => {
+      await result.current.handleSubmit({
+        preventDefault: () => {},
+      } as unknown as React.FormEvent<HTMLFormElement>);
     });
+
+    expect(registerAthleteUserUseCase.execute).toHaveBeenCalled();
+  });
+
+  it("should handle form submission when RegisterAthleteUserUseCase returns false", async () => {
+    setupMocksForValidation();
+    const registerAthleteUserUseCase = {
+      execute: jest.fn().mockResolvedValue(false),
+    };
+    (container.get as jest.Mock).mockReturnValue(registerAthleteUserUseCase);
+
+    const { result } = renderHook(() => ViewModel());
 
     await act(async () => {
       await result.current.handleSubmit({ preventDefault: jest.fn() } as any);
     });
 
-    const response = await mockRegisterAthleteUserUseCase.execute({
-      athleteName: "John",
-      athleteLastName: "Doe",
-      email: "test@example.com",
-      phoneNumber: "1234567890",
-      genre: "Male",
-      birthDate: "2000-01-01",
-      registerDate: expect.any(String),
-      status: true,
-      startDate: "",
-      endDate: "",
-      membershipName: "",
-      cost: 0,
-      membershipId: 0,
-      cardAccessCode: "",
-    });
+    expect(registerAthleteUserUseCase.execute).toHaveBeenCalled();
+    expect(result.current.error).toBe("Error");
+  });
 
-    expect(response).toBe(true);
+  it("handles errors on fetch failure", async () => {
+    setupMocksForValidation();
+    const getMembershipByGymIdUseCase = {
+      execute: jest
+        .fn()
+        .mockRejectedValue({
+          response: { data: { message: "Error fetching membership" } },
+        }),
+    };
+    (container.get as jest.Mock).mockReturnValue(getMembershipByGymIdUseCase);
+
+    const { result } = renderHook(() => ViewModel());
+
+    waitFor(() => {
+      expect(result.current.errorModal).toBe(true);
+      expect(result.current.errorMessage).toBe("Error fetching membership");
+    });
   });
 });

@@ -99,6 +99,7 @@ const ViewModel = () => {
 
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleIsValidForm = () => {
     const errors: IAthleteValidation = {
@@ -171,6 +172,7 @@ const ViewModel = () => {
       const response = await getAthleteUserById.execute(id);
 
       if (!response) {
+        setError("Error")
         console.log("error");
         return;
       }
@@ -219,6 +221,7 @@ const ViewModel = () => {
     membership,
     errorModal,
     errorMessage,
+    error,
   };
 };
 
