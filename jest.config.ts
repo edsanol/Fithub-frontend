@@ -39,7 +39,6 @@ const config: Config = {
     "!src/infrastructure/api/model/**", // Excluye la carpeta src/infrastructure/api/model
     "!src/domain/**", // Excluye la carpeta src/domain
     "!src/presentation/helpers/**", // Excluye la carpeta src/presentation/helpers
-    "!src/presentation/pages/CreateUser/components/create-user-form/ViewModel.ts",
   ],
 
   // The directory where Jest should output its coverage files
