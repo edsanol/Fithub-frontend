@@ -18,6 +18,7 @@ const ViewModel = () => {
   const { data: session } = useSession();
 
   const [idGym, setIdGym] = useState<number>(0);
+  const [error, setError] = useState<string>("");
 
   const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
     "create"
@@ -127,6 +128,7 @@ const ViewModel = () => {
       }
 
       if (!response) {
+        setError("Error registering discount");
         console.log("error");
         return;
       }
@@ -161,6 +163,7 @@ const ViewModel = () => {
       });
 
       if (!response) {
+        setError("Error fetching membership");
         console.log("error");
         return;
       }
@@ -173,25 +176,26 @@ const ViewModel = () => {
 
   const getPaginateDiscountList = async () => {
     try {
-      if (typeof idGym !== 'number' || idGym === 0) {
+      if (typeof idGym !== "number" || idGym === 0) {
         console.log("Gym ID is not set");
         return;
       }
-  
+
       const getDiscountsListUseCase = container.get<GetDiscountsListUseCase>(
         TYPES.GetDiscountsListUseCase
       );
-  
+
       const response = await getDiscountsListUseCase.execute({
         textFilter: idGym.toString(),
         numRecordsPage: 7,
       });
-  
+
       if (!response) {
+        setError("Error fetching discounts");
         console.log("error");
         return;
       }
-  
+
       setDiscountsList(response);
     } catch (error) {
       console.log(error);
@@ -316,6 +320,7 @@ const ViewModel = () => {
     isModalOpen,
     modalMode,
     membershipList,
+    error,
   };
 };
 
