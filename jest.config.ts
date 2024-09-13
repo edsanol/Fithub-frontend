@@ -42,6 +42,7 @@ const config: Config = {
     "!src/presentation/components/**", // Excluye la carpeta src/presentation/components
     "!src/presentation/interfaces/**", // Excluye la carpeta src/presentation/interfaces
     "!src/app/**", // Excluye la carpeta src/app
+    "!src/middleware.ts",
   ],
 
   // The directory where Jest should output its coverage files
