@@ -15,6 +15,7 @@ const ViewModel = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const [error, setError] = useState<string>("");
 
   const [resetPasswordData, setResetPasswordData] = useState<ResetPassword>({
     token: token || "",
@@ -67,6 +68,7 @@ const ViewModel = () => {
 
       router.push("/login");
     } catch (error) {
+      setError("Ha ocurrido un error");
       console.log(error);
     }
   };
