@@ -43,9 +43,9 @@ const ViewModel = () => {
 
         const responses = await Promise.all([
           getDashboardDataUseCase.execute(),
-          getDailyAssistanceGraphicUseCase.execute("2024-01-01", "2024-02-08"),
+          getDailyAssistanceGraphicUseCase.execute("2024-01-01", "2024-12-31"),
           getMembershipGraphicUseCase.execute(),
-          getIncomeGraphicUseCase.execute("2024-01-01", "2024-02-08"),
+          getIncomeGraphicUseCase.execute("2024-01-01", "2024-12-31")
         ]);
 
         setDashboardData(responses[0]);

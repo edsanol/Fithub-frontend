@@ -118,7 +118,7 @@ const RegisterForm = () => {
           customInputClass="mt-5"
           onChange={(value) => setField("password", value)}
         />
-        <div className="mt-5">
+        <div className="hidden mt-5">
           <FormSelect
             isRequired
             label="Membresías"

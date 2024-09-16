@@ -34,7 +34,7 @@ const initialState: State = {
     address: "",
     phoneNumber: "",
     registerDate: new Date().toISOString(),
-    subscriptionPlan: "Premium",
+    subscriptionPlan: "Basic",
     comments: "",
     nit: "",
   },

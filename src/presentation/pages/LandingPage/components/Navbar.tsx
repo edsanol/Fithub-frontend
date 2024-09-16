@@ -17,7 +17,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="w-full bg-black fixed top-0 left-0 right-0 z-10">
-        <div className="justify-between px-4 mx-auto lg:max-w-7xl md:items-center md:flex md:px-8">
+        <div className="justify-between px-4 mx-auto lg:max-w-7xl md:items-center md:flex">
           <div className="flex items-center justify-between py-3 md:py-5 md:block">
             <Link className="flex items-center justify-center" href="#">
               <Dumbbell className="h-6 w-6 text-[#006fed]" />

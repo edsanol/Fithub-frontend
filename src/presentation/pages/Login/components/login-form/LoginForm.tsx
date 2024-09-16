@@ -39,7 +39,7 @@ const LoginForm = () => {
         <FormLink
           href="/recovery-password"
           text="¿Has olvidado tu contraseña?"
-          customLinkClass="mt-8 text-sm lg:text-base"
+          customLinkClass="hidden mt-8 text-sm lg:text-base"
         />
       </div>
       <FormInputPassword
@@ -54,6 +54,7 @@ const LoginForm = () => {
         label="Contraseña"
         size="lg"
         onChange={(value) => handleSetPassword(value)}
+        customInputClass="mt-10"
       />
       <PrimaryButton
         text="Iniciar sesión"
