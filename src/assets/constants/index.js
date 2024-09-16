@@ -7,6 +7,7 @@ import {
 
 import { subscriptionsPlans } from "./subscriptions-plans/SubscriptionsPlans";
 import { genres } from "./genres/Genres";
+import { menuItems } from "./menu-items/MenuItems";
 
 export {
   AthleteColumns,
@@ -15,4 +16,5 @@ export {
   MeasurementProgressColumns,
   subscriptionsPlans,
   genres,
+  menuItems,
 };

@@ -1,10 +1,24 @@
-import { Hero, Navbar } from "./components";
+import {
+  CallToAction,
+  Features,
+  Footer,
+  Hero,
+  HowItWorks,
+  Navbar,
+} from "./components";
 
 const LandingPage = () => {
   return (
-    <div className="w-full h-screen bg-gradient-to-tr from-[#0F1117] from-40% to-[#130C36] px-5">
+    <div className="w-full h-screen">
       <Navbar />
-      <Hero />
+      <main className="flex-1 mt-10 md:mt-0 bg-gradient-to-tr from-[#0F1117] from-40% to-[#130C36]">
+        <Hero />
+        <Features />
+        <HowItWorks />
+        <CallToAction />
+      </main>
+
+      <Footer />
     </div>
   );
 };
