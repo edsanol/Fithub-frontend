@@ -1,208 +1,403 @@
 import "reflect-metadata";
-import { signOut } from "next-auth/react";
-import axios from "axios";
-import { AxiosHttpClient, HttpClient } from "../http";
-import { Container } from "inversify";
-import { TYPES } from "@/config/types";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-
-jest.mock("js-cookie", () => ({
-  get: jest.fn(),
-  set: jest.fn(),
-  remove: jest.fn(),
-}));
-
-jest.mock("jwt-decode", () =>
-  jest.fn((token) => ({ exp: Date.now() / 1000 + 600 }))
-);
+import { signOut } from "next-auth/react";
+import { AxiosHttpClient } from "../http";
+import { decipherData } from "@/config/secureData";
 
 jest.mock("axios");
+jest.mock("js-cookie");
+jest.mock("jwt-decode");
+jest.mock("next-auth/react");
 
 jest.mock("@/config/secureData", () => ({
-  decipherData: jest.fn(), // Asegurarse de que decipherData sea una función mockeada
+  decipherData: jest.fn(),
 }));
 
-jest.mock("next-auth/react", () => ({
-  signOut: jest.fn(), // Mock de signOut
-}));
-
-jest.mock("js-cookie", () => ({
-  remove: jest.fn(), // Mock de Cookies.remove
-}));
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockedCookies = Cookies as jest.Mocked<typeof Cookies>;
+const mockedJwtDecode = jwtDecode as jest.MockedFunction<typeof jwtDecode>;
+const mockedSignOut = signOut as jest.MockedFunction<typeof signOut>;
+const mockedDecipherData = decipherData as jest.MockedFunction<
+  typeof decipherData
+>;
 
 describe("AxiosHttpClient", () => {
-  let httpClient: AxiosHttpClient;
-  let axiosInstanceMock: any;
+  let axiosHttpClient: AxiosHttpClient;
+  let axiosInstance: AxiosInstance;
+
+  const baseUrl = "https://example.com";
 
   beforeEach(() => {
-    const container = new Container();
-    container
-      .bind<string>(TYPES.BaseUrl)
-      .toConstantValue("https://mockapi.com/api");
-    container.bind<AxiosHttpClient>(TYPES.HttpClient).to(AxiosHttpClient);
+    jest.clearAllMocks();
 
-    axiosInstanceMock = {
+    // Mock de axios.create para devolver una instancia de Axios
+    axiosInstance = {
       interceptors: {
         request: {
-          use: jest.fn((callback) => callback), // Mock para registrar el callback
+          use: jest.fn(),
         },
       },
-      get: jest.fn(),
       post: jest.fn(),
       put: jest.fn(),
+      get: jest.fn(),
       delete: jest.fn(),
-    };
+    } as unknown as AxiosInstance;
 
-    (axios.create as jest.Mock).mockReturnValue(axiosInstanceMock);
+    mockedAxios.create.mockReturnValue(axiosInstance);
 
-    httpClient = container.get<AxiosHttpClient>(TYPES.HttpClient);
-
-    jest.clearAllMocks();
+    // Creación de la instancia de AxiosHttpClient
+    axiosHttpClient = new AxiosHttpClient(baseUrl);
   });
 
-  it("debería hacer una solicitud GET correctamente", async () => {
-    const mockData = { id: 1, name: "Test" };
+  it("debe crear una instancia de axios con el baseURL correcto", () => {
+    expect(mockedAxios.create).toHaveBeenCalledWith({
+      baseURL: baseUrl,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  });
 
-    axiosInstanceMock.get.mockResolvedValue({
-      data: mockData,
+  it("debe configurar el interceptor de solicitud", () => {
+    expect(axiosInstance.interceptors.request.use).toHaveBeenCalled();
+  });
+
+  it("debe agregar el header Authorization si el authToken está presente y no está cerca de expirar", async () => {
+    // Ajuste aquí
+    (
+      mockedCookies.get as unknown as jest.MockedFunction<
+        (name: string) => string | undefined
+      >
+    ).mockImplementation((key: string) => {
+      if (key === "authToken") return "validAuthToken";
+      return undefined;
+    });
+
+    jest
+      .spyOn(axiosHttpClient as any, "checkTokenExpiration")
+      .mockResolvedValue(3 * 60 * 1000);
+
+    const config: AxiosRequestConfig = { headers: {} };
+
+    await (axiosHttpClient as any).handleTokenRefresh(config);
+
+    expect(config.headers!.Authorization).toBe("Bearer validAuthToken");
+  });
+
+  it("debe refrescar el token si el authToken está cerca de expirar", async () => {
+    // Configurar el mock de Cookies.get
+    (
+      mockedCookies.get as unknown as jest.MockedFunction<
+        (name: string) => string | undefined
+      >
+    ).mockImplementation((key: string) => {
+      if (key === "authToken") return "expiringAuthToken";
+      if (key === "refreshToken") return "encryptedRefreshToken";
+      return undefined;
+    });
+
+    // Mock de checkTokenExpiration para devolver 1 minuto
+    jest
+      .spyOn(axiosHttpClient as any, "checkTokenExpiration")
+      .mockResolvedValue(1 * 60 * 1000);
+
+    // Mock de decipherData para devolver 'refreshToken'
+    mockedDecipherData.mockReturnValue("refreshToken");
+
+    // Mock de refreshToken para devolver la nueva respuesta de token
+    const refreshTokenResponse = {
       status: 200,
-    });
-
-    const result = await httpClient.get("/test");
-
-    expect(result).toEqual(mockData);
-    expect(axiosInstanceMock.get).toHaveBeenCalledWith("/test");
-  });
-
-  it("debería hacer una solicitud POST correctamente", async () => {
-    const mockData = { id: 1, name: "Test" };
-
-    axiosInstanceMock.post.mockResolvedValue({
-      data: mockData,
-      status: 200,
-    });
-
-    const result = await httpClient.post("/test", { data: "data" });
-
-    expect(result).toEqual(mockData);
-    expect(axiosInstanceMock.post).toHaveBeenCalledWith("/test", {
-      data: "data",
-    });
-  });
-
-  it("debería hacer una solicitud PUT correctamente", async () => {
-    const mockData = { id: 1, name: "Test" };
-
-    axiosInstanceMock.put.mockResolvedValue({
-      data: mockData,
-      status: 200,
-    });
-
-    const result = await httpClient.put("/test", { data: "data" });
-
-    expect(result).toEqual(mockData);
-    expect(axiosInstanceMock.put).toHaveBeenCalledWith("/test", {
-      data: "data",
-    });
-  });
-
-  it("debería hacer una solicitud DELETE correctamente", async () => {
-    const mockData = { id: 1, name: "Test" };
-
-    axiosInstanceMock.delete.mockResolvedValue({
-      data: mockData,
-      status: 200,
-    });
-
-    const result = await httpClient.delete("/test");
-
-    expect(result).toEqual(mockData);
-    expect(axiosInstanceMock.delete).toHaveBeenCalledWith("/test");
-  });
-
-  it("debería lanzar un error si la respuesta no tiene un status 2xx", async () => {
-    axiosInstanceMock.get.mockResolvedValue({
-      data: {},
-      status: 400,
-      statusText: "Bad Request",
-    });
-
-    await expect(httpClient.get("/test")).rejects.toThrow("Bad Request");
-  });
-
-  it("debería refrescar el token correctamente", async () => {
-    const Cookies = require("js-cookie");
-    const mockRefreshToken = "mockRefreshToken";
-    const mockNewToken = "mockNewToken";
-    const mockResponse = {
       data: {
         data: {
-          token: mockNewToken,
+          token: "newAuthToken",
         },
       },
+    } as AxiosResponse;
+
+    jest
+      .spyOn(axiosHttpClient as any, "refreshToken")
+      .mockResolvedValue(refreshTokenResponse);
+
+    const config: AxiosRequestConfig = { headers: {} };
+
+    await (axiosHttpClient as any).handleTokenRefresh(config);
+
+    expect(mockedCookies.set).toHaveBeenCalledWith(
+      "authToken",
+      "newAuthToken",
+      { expires: 1 }
+    );
+    expect(config.headers!.Authorization).toBe("Bearer newAuthToken");
+  });
+
+  it("debe manejar errores de autenticación si el refresh token es inválido", async () => {
+    (
+      mockedCookies.get as unknown as jest.MockedFunction<
+        (name: string) => string | undefined
+      >
+    ).mockImplementation((key: string) => {
+      if (key === "authToken") return "expiringAuthToken";
+      if (key === "refreshToken") return "encryptedRefreshToken";
+      return undefined;
+    });
+
+    jest
+      .spyOn(axiosHttpClient as any, "checkTokenExpiration")
+      .mockResolvedValue(1 * 60 * 1000);
+
+    jest.mock("@/config/secureData", () => ({
+      decipherData: jest.fn().mockReturnValue("refreshToken"),
+    }));
+
+    jest
+      .spyOn(axiosHttpClient as any, "refreshToken")
+      .mockRejectedValue(new Error("Invalid token"));
+
+    const handleAuthErrorSpy = jest.spyOn(
+      axiosHttpClient as any,
+      "handleAuthenticationError"
+    );
+
+    const config: AxiosRequestConfig = { headers: {} };
+
+    await (axiosHttpClient as any).handleTokenRefresh(config);
+
+    expect(handleAuthErrorSpy).toHaveBeenCalled();
+    expect(mockedCookies.remove).toHaveBeenCalledWith("authToken");
+    expect(mockedCookies.remove).toHaveBeenCalledWith("refreshToken");
+    expect(mockedSignOut).toHaveBeenCalled();
+  });
+
+  it("debe enviar una solicitud POST al endpoint de refreshToken", async () => {
+    const refreshToken = "refreshToken";
+
+    const response = {
       status: 200,
-    };
+      data: {
+        data: {
+          token: "newAuthToken",
+        },
+      },
+    } as AxiosResponse;
 
-    Cookies.get = jest.fn().mockReturnValue(mockRefreshToken);
-    axios.post = jest.fn().mockResolvedValue(mockResponse);
+    mockedAxios.post.mockResolvedValue(response);
 
-    const result = await (httpClient as any).refreshToken(mockRefreshToken);
+    const result = await (axiosHttpClient as any).refreshToken(refreshToken);
 
-    expect(result).toEqual(mockResponse);
-    expect(axios.post).toHaveBeenCalledWith(
+    expect(mockedAxios.post).toHaveBeenCalledWith(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Gym/refreshToken`,
       null,
       {
         headers: {
-          RefreshToken: mockRefreshToken,
+          RefreshToken: refreshToken,
         },
       }
     );
+
+    expect(result).toBe(response);
   });
 
-  it("debería lanzar un error si el token de refresco falla", async () => {
-    const Cookies = require("js-cookie");
-    const mockRefreshToken = "mockRefreshToken";
+  it("debe devolver la diferencia de tiempo entre la expiración del token y el tiempo actual", async () => {
+    const token = "authToken";
 
-    Cookies.get = jest.fn().mockReturnValue(mockRefreshToken);
-    axios.post = jest.fn().mockRejectedValue(new Error("Refresh token failed"));
+    const decodedToken = {
+      exp: Math.floor(Date.now() / 1000) + 300, // expira en 5 minutos
+    };
 
-    await expect(
-      (httpClient as any).refreshToken(mockRefreshToken)
-    ).rejects.toThrow("Refresh token failed");
+    mockedJwtDecode.mockReturnValue(decodedToken);
+
+    const timeDifference = await (axiosHttpClient as any).checkTokenExpiration(
+      token
+    );
+
+    expect(mockedJwtDecode).toHaveBeenCalledWith(token);
+    expect(timeDifference).toBeGreaterThan(4 * 60 * 1000);
+    expect(timeDifference).toBeLessThan(5 * 60 * 1000 + 1000);
   });
 
-  it("should set Authorization header with existing token if token is not expired", async () => {
-    const Cookies = require("js-cookie");
-    const mockAuthToken = "mockAuthToken";
+  it("debe eliminar los tokens y cerrar sesión", () => {
+    (axiosHttpClient as any).handleAuthenticationError();
 
-    Cookies.get = jest.fn().mockReturnValue(mockAuthToken);
-    (httpClient as any).checkTokenExpiration = jest
-      .fn()
-      .mockResolvedValue(3 * 60 * 1000);
-
-    const config = { headers: {} as any };
-    await (httpClient as any).handleTokenRefresh(config);
-
-    expect(config.headers.Authorization).toBe(`Bearer ${mockAuthToken}`);
+    expect(mockedCookies.remove).toHaveBeenCalledWith("authToken");
+    expect(mockedCookies.remove).toHaveBeenCalledWith("refreshToken");
+    expect(mockedSignOut).toHaveBeenCalled();
   });
 
-  it("should set Authorization header to Bearer if no authToken is present", async () => {
-    const Cookies = require("js-cookie");
-    Cookies.get = jest.fn().mockReturnValue(null);
+  it("debe devolver los datos si la respuesta tiene estado 2xx", () => {
+    const response = {
+      status: 200,
+      data: { success: true },
+      statusText: "OK",
+    } as AxiosResponse;
 
-    const config = { headers: {} as any };
-    await (httpClient as any).handleTokenRefresh(config);
+    const result = (axiosHttpClient as any).handleResponse(response);
 
-    expect(config.headers.Authorization).toBe("Bearer");
+    expect(result).toEqual({ success: true });
   });
 
-  it("debería llamar a Cookies.remove y signOut en handleAuthenticationError", () => {
-    const Cookies = require("js-cookie");
-    (httpClient as any).handleAuthenticationError();
-    expect(Cookies.remove).toHaveBeenCalledWith("authToken");
-    expect(Cookies.remove).toHaveBeenCalledWith("refreshToken");
+  it("debe lanzar un error si la respuesta no tiene estado 2xx", () => {
+    const response = {
+      status: 400,
+      data: { success: false },
+      statusText: "Bad Request",
+    } as AxiosResponse;
 
-    expect(signOut).toHaveBeenCalled();
+    expect(() => (axiosHttpClient as any).handleResponse(response)).toThrow(
+      "Bad Request"
+    );
+  });
+
+  describe("refreshToken", () => {
+    it("debe enviar una solicitud POST al endpoint de refreshToken", async () => {
+      const refreshToken = "refreshToken";
+
+      const response = {
+        status: 200,
+        data: {
+          data: {
+            token: "newAuthToken",
+          },
+        },
+      } as AxiosResponse;
+
+      mockedAxios.post.mockResolvedValue(response);
+
+      const result = await (axiosHttpClient as any).refreshToken(refreshToken);
+
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Gym/refreshToken`,
+        null,
+        {
+          headers: {
+            RefreshToken: refreshToken,
+          },
+        }
+      );
+
+      expect(result).toBe(response);
+    });
+  });
+
+  describe("checkTokenExpiration", () => {
+    it("debe devolver la diferencia de tiempo entre la expiración del token y el tiempo actual", async () => {
+      const token = "authToken";
+
+      const decodedToken = {
+        exp: Math.floor(Date.now() / 1000) + 300, // expira en 5 minutos
+      };
+
+      mockedJwtDecode.mockReturnValue(decodedToken);
+
+      const timeDifference = await (
+        axiosHttpClient as any
+      ).checkTokenExpiration(token);
+
+      expect(mockedJwtDecode).toHaveBeenCalledWith(token);
+      expect(timeDifference).toBeGreaterThan(4 * 60 * 1000);
+      expect(timeDifference).toBeLessThan(5 * 60 * 1000 + 1000);
+    });
+  });
+
+  describe("handleAuthenticationError", () => {
+    it("debe eliminar los tokens y cerrar sesión", () => {
+      (axiosHttpClient as any).handleAuthenticationError();
+
+      expect(mockedCookies.remove).toHaveBeenCalledWith("authToken");
+      expect(mockedCookies.remove).toHaveBeenCalledWith("refreshToken");
+      expect(mockedSignOut).toHaveBeenCalled();
+    });
+  });
+
+  describe("handleResponse", () => {
+    it("debe devolver los datos si la respuesta tiene estado 2xx", () => {
+      const response = {
+        status: 200,
+        data: { success: true },
+        statusText: "OK",
+      } as AxiosResponse;
+
+      const result = (axiosHttpClient as any).handleResponse(response);
+
+      expect(result).toEqual({ success: true });
+    });
+
+    it("debe lanzar un error si la respuesta no tiene estado 2xx", () => {
+      const response = {
+        status: 400,
+        data: { success: false },
+        statusText: "Bad Request",
+      } as AxiosResponse;
+
+      expect(() => (axiosHttpClient as any).handleResponse(response)).toThrow(
+        "Bad Request"
+      );
+    });
+  });
+
+  describe("Métodos HTTP", () => {
+    const url = "/test";
+    const data = { key: "value" };
+    const responseData = { result: "success" };
+    const response = {
+      status: 200,
+      data: responseData,
+      statusText: "OK",
+    } as AxiosResponse;
+
+    beforeEach(() => {
+      jest
+        .spyOn(axiosHttpClient as any, "handleResponse")
+        .mockReturnValue(responseData);
+    });
+
+    it("post debe enviar una solicitud POST y manejar la respuesta", async () => {
+      (axiosInstance.post as jest.Mock).mockResolvedValue(response);
+
+      const result = await axiosHttpClient.post(url, data);
+
+      expect(axiosInstance.post).toHaveBeenCalledWith(url, data);
+      expect((axiosHttpClient as any).handleResponse).toHaveBeenCalledWith(
+        response
+      );
+      expect(result).toEqual(responseData);
+    });
+
+    it("put debe enviar una solicitud PUT y manejar la respuesta", async () => {
+      (axiosInstance.put as jest.Mock).mockResolvedValue(response);
+
+      const result = await axiosHttpClient.put(url, data);
+
+      expect(axiosInstance.put).toHaveBeenCalledWith(url, data);
+      expect((axiosHttpClient as any).handleResponse).toHaveBeenCalledWith(
+        response
+      );
+      expect(result).toEqual(responseData);
+    });
+
+    it("get debe enviar una solicitud GET y manejar la respuesta", async () => {
+      (axiosInstance.get as jest.Mock).mockResolvedValue(response);
+
+      const result = await axiosHttpClient.get(url);
+
+      expect(axiosInstance.get).toHaveBeenCalledWith(url);
+      expect((axiosHttpClient as any).handleResponse).toHaveBeenCalledWith(
+        response
+      );
+      expect(result).toEqual(responseData);
+    });
+
+    it("delete debe enviar una solicitud DELETE y manejar la respuesta", async () => {
+      (axiosInstance.delete as jest.Mock).mockResolvedValue(response);
+
+      const result = await axiosHttpClient.delete(url);
+
+      expect(axiosInstance.delete).toHaveBeenCalledWith(url);
+      expect((axiosHttpClient as any).handleResponse).toHaveBeenCalledWith(
+        response
+      );
+      expect(result).toEqual(responseData);
+    });
   });
 });
