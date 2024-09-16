@@ -9,7 +9,7 @@ const CallToAction = () => {
   return (
     <section
       id="contact"
-      className="w-full py-12 md:py-24 lg:py-32 bg-[#006fed]"
+      className="w-full py-12 md:py-24 lg:py-32 bg-[#006fed] md:flex md:justify-center"
     >
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center space-y-4 text-center">
