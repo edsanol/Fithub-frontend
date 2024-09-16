@@ -12,7 +12,10 @@ const Features = () => {
         </h2>
         <div className="grid gap-6 lg:grid-cols-4">
           <div className="flex flex-col items-center space-y-4 text-center">
-            <Users className="h-12 w-12 text-[#006fed]" />
+            <Users
+              data-testid="users-icon"
+              className="h-12 w-12 text-[#006fed]"
+            />
             <h3 className="text-xl font-bold">Seguimiento de membresías</h3>
             <p className="text-gray-400">
               Administre y rastree fácilmente la información de los miembros,
@@ -20,7 +23,10 @@ const Features = () => {
             </p>
           </div>
           <div className="flex flex-col items-center space-y-4 text-center">
-            <Dumbbell className="h-12 w-12 text-[#006fed]" />
+            <Dumbbell
+              data-testid="dumbbell-icon"
+              className="h-12 w-12 text-[#006fed]"
+            />
             <h3 className="text-xl font-bold">Monitoreo del entrenamiento</h3>
             <p className="text-gray-400">
               Realice un seguimiento del progreso de los atletas, establezca
@@ -28,7 +34,10 @@ const Features = () => {
             </p>
           </div>
           <div className="flex flex-col items-center space-y-4 text-center">
-            <LineChart className="h-12 w-12 text-[#006fed]" />
+            <LineChart
+              data-testid="linechart-icon"
+              className="h-12 w-12 text-[#006fed]"
+            />
             <h3 className="text-xl font-bold">Informes financieros</h3>
             <p className="text-gray-400">
               Genere informes financieros completos y conocimientos para su
@@ -36,7 +45,10 @@ const Features = () => {
             </p>
           </div>
           <div className="flex flex-col items-center space-y-4 text-center">
-            <Calendar className="h-12 w-12 text-[#006fed]" />
+            <Calendar
+              data-testid="calendar-icon"
+              className="h-12 w-12 text-[#006fed]"
+            />
             <h3 className="text-xl font-bold">Programación de personal</h3>
             <p className="text-gray-400">
               Administre eficientemente los horarios, turnos y asignaciones del
