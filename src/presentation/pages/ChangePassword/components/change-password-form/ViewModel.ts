@@ -63,6 +63,7 @@ const ViewModel = () => {
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [error, setError] = useState("");
 
   const [{ changePasswordData, changePasswordDataError }, dispatch] =
     useReducer(reducer, initialState);
@@ -105,6 +106,7 @@ const ViewModel = () => {
 
       if (!response) {
         console.log("error");
+        setError("Error");
         return;
       }
 
@@ -120,6 +122,7 @@ const ViewModel = () => {
     changePasswordDataError,
     modalMessage,
     modalVisible,
+    error,
     handleSubmit,
     setField,
     setModalVisible,

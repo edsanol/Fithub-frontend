@@ -124,6 +124,7 @@ const ViewModel = () => {
 
   const [idGym, setIdGym] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
+  const [errorRequest, setErrorRequest] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
@@ -160,6 +161,7 @@ const ViewModel = () => {
       }
 
       if (idGym === 0) {
+        setErrorRequest("Error");
         console.log("error");
         return;
       }
@@ -191,6 +193,7 @@ const ViewModel = () => {
       }
 
       if (!response) {
+        setErrorRequest("Error");
         console.log("error");
         return;
       }
@@ -217,6 +220,7 @@ const ViewModel = () => {
       });
 
       if (!response) {
+        setErrorRequest("Error");
         console.log("error");
         return;
       }
@@ -321,6 +325,7 @@ const ViewModel = () => {
     modalMode,
     error,
     errorMessage,
+    errorRequest
   };
 };
 

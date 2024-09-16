@@ -18,6 +18,7 @@ const ViewModel = () => {
   const { data: session } = useSession();
 
   const [idGym, setIdGym] = useState<number>(0);
+  const [error, setError] = useState<string>("");
 
   const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
     "create"
@@ -61,6 +62,7 @@ const ViewModel = () => {
     if (session && session.user.gymId !== idGym) {
       setIdGym(session.user.gymId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   useEffect(() => {
@@ -68,6 +70,7 @@ const ViewModel = () => {
       getPaginateMembershipList();
       getPaginateDiscountList();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idGym]);
 
   const handleIsValidForm = () => {
@@ -125,6 +128,7 @@ const ViewModel = () => {
       }
 
       if (!response) {
+        setError("Error registering discount");
         console.log("error");
         return;
       }
@@ -144,6 +148,11 @@ const ViewModel = () => {
 
   const getPaginateMembershipList = async () => {
     try {
+      if (typeof idGym !== "number" || idGym === 0) {
+        console.log("Gym ID is not set");
+        return;
+      }
+
       const getMembershipListUseCase = container.get<GetMembershipListUseCase>(
         TYPES.GetMembershipListUseCase
       );
@@ -154,6 +163,7 @@ const ViewModel = () => {
       });
 
       if (!response) {
+        setError("Error fetching membership");
         console.log("error");
         return;
       }
@@ -166,16 +176,22 @@ const ViewModel = () => {
 
   const getPaginateDiscountList = async () => {
     try {
-      const getDiscontsListUseCase = container.get<GetDiscountsListUseCase>(
+      if (typeof idGym !== "number" || idGym === 0) {
+        console.log("Gym ID is not set");
+        return;
+      }
+
+      const getDiscountsListUseCase = container.get<GetDiscountsListUseCase>(
         TYPES.GetDiscountsListUseCase
       );
 
-      const response = await getDiscontsListUseCase.execute({
+      const response = await getDiscountsListUseCase.execute({
         textFilter: idGym.toString(),
         numRecordsPage: 7,
       });
 
       if (!response) {
+        setError("Error fetching discounts");
         console.log("error");
         return;
       }
@@ -304,6 +320,7 @@ const ViewModel = () => {
     isModalOpen,
     modalMode,
     membershipList,
+    error,
   };
 };
 

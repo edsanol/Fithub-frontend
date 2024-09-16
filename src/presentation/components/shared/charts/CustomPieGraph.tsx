@@ -9,6 +9,29 @@ interface CustomPieGraphProps {
   initialData: PieGraphicValues[];
 }
 
+const colorsList = [
+  {
+    id: 0,
+    color: "#5855F6",
+  },
+  {
+    id: 1,
+    color: "#27272A",
+  },
+  {
+    id: 2,
+    color: "#8946CE",
+  },
+  {
+    id: 3,
+    color: "#00BFA5",
+  },
+  {
+    id: 4,
+    color: "#C38890",
+  },
+];
+
 const CustomPieGraph = ({ initialData }: CustomPieGraphProps) => {
   const isMobile = useMobileCheck();
   const [pieData, setPieData] = useState<any[]>([]);
@@ -26,29 +49,6 @@ const CustomPieGraph = ({ initialData }: CustomPieGraphProps) => {
       setPieData(data);
     }
   }, [initialData]);
-
-  const colorsList = [
-    {
-      id: 0,
-      color: "#5855F6",
-    },
-    {
-      id: 1,
-      color: "#27272A",
-    },
-    {
-      id: 2,
-      color: "#8946CE",
-    },
-    {
-      id: 3,
-      color: "#00BFA5",
-    },
-    {
-      id: 4,
-      color: "#C38890",
-    },
-  ];
 
   return (
     <>

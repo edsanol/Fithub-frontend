@@ -10,7 +10,6 @@ import {
   CustomScaleGraph,
 } from "@/presentation/components";
 import { Skeleton } from "@nextui-org/react";
-import { useEffect } from "react";
 
 const Dashboard = () => {
   const {
