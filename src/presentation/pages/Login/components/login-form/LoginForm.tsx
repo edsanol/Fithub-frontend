@@ -9,7 +9,7 @@ import {
   PrimaryButton,
 } from "../../../../components";
 
-export const LoginForm = () => {
+const LoginForm = () => {
   const {
     handleSubmit,
     handleSetEmail,
@@ -64,3 +64,5 @@ export const LoginForm = () => {
     </form>
   );
 };
+
+export default LoginForm;

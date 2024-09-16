@@ -75,6 +75,7 @@ const ViewModel = () => {
 
   const [errorModal, setErrorModal] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     if (session?.user.token) {
@@ -117,6 +118,7 @@ const ViewModel = () => {
       const response = await registerGymUserUseCase.execute(gymData);
 
       if (!response) {
+        setError("Error al realizar el registro");
         console.log("error");
         return;
       }
@@ -148,6 +150,7 @@ const ViewModel = () => {
     gymDataError,
     errorMessage,
     errorModal,
+    error
   };
 };
 

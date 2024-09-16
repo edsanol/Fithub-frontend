@@ -64,7 +64,7 @@ const CustomScaleGraph = ({ initialData }: CustomScaleGraphProps) => {
 
       chart.remove();
     };
-  }, [data, colors]);
+  }, [data]);
 
   return <div ref={chartContainerRef} />;
 };

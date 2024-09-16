@@ -83,6 +83,7 @@ const ViewModel = () => {
   const [idGym, setIdGym] = useState<number>(0);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
@@ -105,6 +106,7 @@ const ViewModel = () => {
       const response = await getGymUserByIdUseCase.execute();
 
       if (!response) {
+        setError("Error");
         console.log("error");
         return;
       }
@@ -141,6 +143,7 @@ const ViewModel = () => {
       }
 
       if (idGym === 0) {
+        setError("Error");
         console.log("error");
         return;
       }
@@ -152,6 +155,7 @@ const ViewModel = () => {
       const response = await editGymUserUseCase.execute(gymUserData);
 
       if (!response) {
+        setError("Error");
         console.log("error");
         return;
       }
@@ -182,6 +186,7 @@ const ViewModel = () => {
     gymUserDataError,
     errorModal,
     errorMessage,
+    error,
   };
 };
 

@@ -12,6 +12,7 @@ const ViewModel = () => {
   const [emailError, setEmailError] = useState<boolean>(false);
   const [erroModal, setErrorModal] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const handleIsValidForm = () => {
     const errors: IRecoverPasswordValidation = {
@@ -40,6 +41,7 @@ const ViewModel = () => {
       const response = await recoverPasswordUseCase.execute(resetPasswordData);
 
       if (!response) {
+        setError("error");
         console.log("error");
       }
 
@@ -71,6 +73,7 @@ const ViewModel = () => {
     emailError,
     erroModal,
     errorMessage,
+    error
   };
 };
 

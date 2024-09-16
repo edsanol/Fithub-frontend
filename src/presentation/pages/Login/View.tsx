@@ -1,5 +1,5 @@
 import { AuthHeader, FormLink } from "@/presentation/components";
-import { LoginForm } from "./components/login-form/LoginForm";
+import LoginForm from "./components/login-form/LoginForm";
 
 const Login = () => {
   return (

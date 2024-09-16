@@ -38,7 +38,11 @@ const GymProfileForm = () => {
         </Button>
       </div>
 
-      <form className="mt-5" onSubmit={handleSubmit}>
+      <form
+        data-testid="gym-profile-form-id"
+        className="mt-5"
+        onSubmit={handleSubmit}
+      >
         <div className="block md:flex md:gap-3">
           <FormInput
             isRequired
