@@ -127,4 +127,13 @@ export class AthleteUserServiceImpl implements AthleteUserService {
 
     return response.data;
   }
+
+  async unsubscribeAthleteUser(email: { email: string }): Promise<boolean> {
+    const response = await this.http.delete<
+      TickerResponseApi<boolean>,
+      { email: string }
+    >("/Athlete/DestroyAthleteFromDB", email);
+
+    return response.data;
+  }
 }

@@ -29,4 +29,5 @@ export interface AthleteUserRepository {
     startDate: string,
     endDate: string
   ): Promise<BarGraphicValues[]>;
+  unsubscribeAthleteUser(email: { email: string }): Promise<boolean>;
 }
