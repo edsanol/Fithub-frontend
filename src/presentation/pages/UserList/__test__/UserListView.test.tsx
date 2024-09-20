@@ -3,7 +3,12 @@ import ViewModel from "../ViewModel";
 import UserList from "../View";
 import { CustomTable } from "@/presentation/components";
 
-jest.mock("@/assets/svg/WarningIcon", () => () => <div>WarningIcon</div>);
+jest.mock("@/assets/svg/WarningIcon", () => {
+  const MockWarningIcon = () => <div>WarningIcon</div>;
+  MockWarningIcon.displayName = "WarningIcon";
+  return MockWarningIcon;
+});
+
 jest.mock("@/presentation/components", () => ({
   CustomModal: jest.fn(({ isOpen, content, footerContent }) =>
     isOpen ? (

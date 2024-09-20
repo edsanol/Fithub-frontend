@@ -5,7 +5,9 @@ import CustomDashboardData from "../components/cards/CustomDashboardData";
 
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: (props: any) => <img {...props} />,
+  default: ({ src, alt, ...props }: any) => (
+    <img src={src} alt={alt} {...props} />
+  ),
 }));
 
 jest.mock("@/assets/svg/user.svg", () => "/mocked-user.svg");

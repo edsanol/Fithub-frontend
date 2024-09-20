@@ -45,9 +45,14 @@ jest.mock("@/presentation/components", () => ({
   CustomAreaGraph: jest.fn(() => <div data-testid="CustomAreaGraph" />),
 }));
 
-jest.mock("@/presentation/helpers", () => ({
-  mapperMuscleIcon: jest.fn(() => () => <div data-testid="MuscleIcon" />),
-}));
+jest.mock("@/presentation/helpers", () => {
+  const MockMuscleIcon = jest.fn(() => <div data-testid="MuscleIcon" />);
+  (MockMuscleIcon as React.FC).displayName = "MuscleIcon";
+
+  return {
+    mapperMuscleIcon: jest.fn(() => MockMuscleIcon),
+  };
+});
 
 jest.mock("../ViewModel", () => jest.fn());
 
