@@ -391,9 +391,9 @@ describe("AxiosHttpClient", () => {
     it("delete debe enviar una solicitud DELETE y manejar la respuesta", async () => {
       (axiosInstance.delete as jest.Mock).mockResolvedValue(response);
 
-      const result = await axiosHttpClient.delete(url);
+      const result = await axiosHttpClient.delete(url, data);
 
-      expect(axiosInstance.delete).toHaveBeenCalledWith(url);
+      expect(axiosInstance.delete).toHaveBeenCalledWith(url, { data });
       expect((axiosHttpClient as any).handleResponse).toHaveBeenCalledWith(
         response
       );

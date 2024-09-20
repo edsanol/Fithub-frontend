@@ -101,4 +101,10 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
 
     return response;
   }
+
+  async unsubscribeAthleteUser(email: { email: string }): Promise<boolean> {
+    const response = await this.service.unsubscribeAthleteUser(email);
+
+    return response;
+  }
 }

@@ -54,6 +54,7 @@ import { CreateMeasurementProgressUseCase } from "@/domain/useCases/AthleteUser/
 import { GetMeasurementProgressListUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressListUseCase";
 import { GetMeasurementProgressByLastMonthUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressByLastMonthUseCase";
 import { GetMeasurementsGraphicUseCase } from "@/domain/useCases/AthleteUser/getMeasurementsGraphicUseCase";
+import { UnsubscribeAthleteUserUseCase } from "@/domain/useCases/AthleteUser/unsubscribeAthleteUserUseCase";
 
 const container = new Container();
 
@@ -145,6 +146,9 @@ container
 container
   .bind<GetMeasurementsGraphicUseCase>(TYPES.GetMeasurementsGraphicUseCase)
   .to(GetMeasurementsGraphicUseCase);
+container
+  .bind<UnsubscribeAthleteUserUseCase>(TYPES.UnsubscribeAthleteUserUseCase)
+  .to(UnsubscribeAthleteUserUseCase);
 
 // MembershipRepository
 container

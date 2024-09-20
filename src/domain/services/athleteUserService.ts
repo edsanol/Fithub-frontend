@@ -29,4 +29,5 @@ export interface AthleteUserService {
     startDate: string,
     endDate: string
   ): Promise<BarGraphicValues[]>;
+  unsubscribeAthleteUser(email: { email: string }): Promise<boolean>;
 }
