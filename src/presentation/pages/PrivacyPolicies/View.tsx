@@ -22,10 +22,11 @@ const PrivacyPolicies = () => {
                   <p>
                     En FitHub Connect, nos dedicamos a proteger la privacidad y
                     seguridad de los datos personales de nuestros usuarios. Esta
-                    Política de Tratamiento de Datos ("Política") establece cómo
-                    recopilamos, utilizamos, compartimos y protegemos la
-                    información personal dentro de nuestra aplicación. El uso de
-                    FitHub Connect implica el consentimiento a esta Política.
+                    Política de Tratamiento de Datos (&quot;Política&quot;)
+                    establece cómo recopilamos, utilizamos, compartimos y
+                    protegemos la información personal dentro de nuestra
+                    aplicación. El uso de FitHub Connect implica el
+                    consentimiento a esta Política.
                   </p>
                 </section>
 

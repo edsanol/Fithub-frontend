@@ -2,15 +2,17 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import Discounts from "../View";
 import { SessionProvider } from "next-auth/react";
 
-jest.mock("@/presentation/components", () => ({
-  CustomModal: ({ isOpen, content, footerContent }: any) =>
+jest.mock("@/presentation/components", () => {
+  const MockCustomModal = ({ isOpen, content, footerContent }: any) =>
     isOpen ? (
       <div data-testid="custom-modal">
         {content}
         {footerContent}
       </div>
-    ) : null,
-  CustomTable: ({
+    ) : null;
+  MockCustomModal.displayName = "CustomModal";
+
+  const MockCustomTable = ({
     records = { items: [], totalRecords: 0 },
     columns = [],
   }: any) => (
@@ -23,17 +25,23 @@ jest.mock("@/presentation/components", () => ({
         </tr>
       ))}
     </table>
-  ),
-  DashboardHeader: ({ title, description }: any) => (
+  );
+  MockCustomTable.displayName = "CustomTable";
+
+  const MockDashboardHeader = ({ title, description }: any) => (
     <header>
       <h1>{title}</h1>
       <p>{description}</p>
     </header>
-  ),
-  PrimaryButton: ({ text, onClick }: any) => (
+  );
+  MockDashboardHeader.displayName = "DashboardHeader";
+
+  const MockPrimaryButton = ({ text, onClick }: any) => (
     <button onClick={onClick}>{text}</button>
-  ),
-  FormInput: ({
+  );
+  MockPrimaryButton.displayName = "PrimaryButton";
+
+  const MockFormInput = ({
     label,
     value = "",
     onChange,
@@ -50,8 +58,10 @@ jest.mock("@/presentation/components", () => ({
       />
       {isInvalid && <span id="error-message">{errorMessage}</span>}
     </div>
-  ),
-  FormSelect: ({ label, value, onChange }: any) => (
+  );
+  MockFormInput.displayName = "FormInput";
+
+  const MockFormSelect = ({ label, value, onChange }: any) => (
     <div>
       <label>{label}</label>
       <select value={value} onChange={(e) => onChange(e.target.value)}>
@@ -59,8 +69,16 @@ jest.mock("@/presentation/components", () => ({
         <option value="1">Membership 1</option>
       </select>
     </div>
-  ),
-  FormTextarea: ({ label, value, onChange, isInvalid, errorMessage }: any) => (
+  );
+  MockFormSelect.displayName = "FormSelect";
+
+  const MockFormTextarea = ({
+    label,
+    value,
+    onChange,
+    isInvalid,
+    errorMessage,
+  }: any) => (
     <div>
       <label>{label}</label>
       <textarea
@@ -69,12 +87,25 @@ jest.mock("@/presentation/components", () => ({
       />
       {isInvalid && <span>{errorMessage}</span>}
     </div>
-  ),
-}));
+  );
+  MockFormTextarea.displayName = "FormTextarea";
 
-jest.mock("@/assets/svg/WarningIcon", () => () => (
-  <span data-testid="warning-icon"></span>
-));
+  return {
+    CustomModal: MockCustomModal,
+    CustomTable: MockCustomTable,
+    DashboardHeader: MockDashboardHeader,
+    PrimaryButton: MockPrimaryButton,
+    FormInput: MockFormInput,
+    FormSelect: MockFormSelect,
+    FormTextarea: MockFormTextarea,
+  };
+});
+
+jest.mock("@/assets/svg/WarningIcon", () => {
+  const MockWarningIcon = () => <span data-testid="warning-icon"></span>;
+  MockWarningIcon.displayName = "WarningIcon";
+  return MockWarningIcon;
+});
 
 describe("Discounts Component", () => {
   const mockSession = {

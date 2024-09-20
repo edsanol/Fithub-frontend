@@ -4,15 +4,26 @@ import Dashboard from "../View";
 
 jest.mock("../ViewModel");
 
-jest.mock("../components/cards/CustomDashboardGraph", () => () => (
-  <div>CustomDashboardGraph</div>
-));
-jest.mock("../components/cards/CustomDashboardData", () => () => (
-  <div>CustomDashboardData</div>
-));
-jest.mock("../components/cards/CustomDashboardDoubleGraph", () => () => (
-  <div>CustomDashboardDoubleGraph</div>
-));
+jest.mock("../components/cards/CustomDashboardGraph", () => {
+  const MockCustomDashboardGraph = () => <div>CustomDashboardGraph</div>;
+  MockCustomDashboardGraph.displayName = "CustomDashboardGraph";
+  return MockCustomDashboardGraph;
+});
+
+jest.mock("../components/cards/CustomDashboardData", () => {
+  const MockCustomDashboardData = () => <div>CustomDashboardData</div>;
+  MockCustomDashboardData.displayName = "CustomDashboardData";
+  return MockCustomDashboardData;
+});
+
+jest.mock("../components/cards/CustomDashboardDoubleGraph", () => {
+  const MockCustomDashboardDoubleGraph = () => (
+    <div>CustomDashboardDoubleGraph</div>
+  );
+  MockCustomDashboardDoubleGraph.displayName = "CustomDashboardDoubleGraph";
+  return MockCustomDashboardDoubleGraph;
+});
+
 jest.mock("@/presentation/components", () => ({
   CustomAreaGraph: () => <div>CustomAreaGraph</div>,
   CustomPieGraph: () => <div>CustomPieGraph</div>,

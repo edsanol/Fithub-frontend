@@ -2,15 +2,29 @@ import { Discounts } from "@/domain/entities/Discounts";
 import { customRenderCell } from "../RenderCell";
 import { fireEvent, render, screen } from "@testing-library/react";
 
-jest.mock("@/assets/svg/EyeIcon", () => (props: any) => (
-  <span data-testid="eye-icon" onClick={props.clickHandler}></span>
-));
-jest.mock("@/assets/svg/EditIcon", () => (props: any) => (
-  <span data-testid="edit-icon" onClick={props.clickHandler}></span>
-));
-jest.mock("@/assets/svg/DeleteIcon", () => (props: any) => (
-  <span data-testid="delete-icon" onClick={props.clickHandler}></span>
-));
+jest.mock("@/assets/svg/EyeIcon", () => {
+  const MockEyeIcon = (props: any) => (
+    <span data-testid="eye-icon" onClick={props.clickHandler}></span>
+  );
+  MockEyeIcon.displayName = "EyeIcon";
+  return MockEyeIcon;
+});
+
+jest.mock("@/assets/svg/EditIcon", () => {
+  const MockEditIcon = (props: any) => (
+    <span data-testid="edit-icon" onClick={props.clickHandler}></span>
+  );
+  MockEditIcon.displayName = "EditIcon";
+  return MockEditIcon;
+});
+
+jest.mock("@/assets/svg/DeleteIcon", () => {
+  const MockDeleteIcon = (props: any) => (
+    <span data-testid="delete-icon" onClick={props.clickHandler}></span>
+  );
+  MockDeleteIcon.displayName = "DeleteIcon";
+  return MockDeleteIcon;
+});
 
 describe("customRenderCell", () => {
   const mockDiscount: Discounts = {
