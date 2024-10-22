@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
+  --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
@@ -30,7 +30,6 @@ body {
   width: 2px;
 }
 
-/* Estiliza el thumb del scrollbar */
 ::-webkit-scrollbar-thumb {
   background-color: transparent;
   border-radius: 8px;
