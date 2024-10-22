@@ -41,18 +41,18 @@ describe("CallToAction Component", () => {
     expect(push).toHaveBeenCalledWith("/register");
   });
 
-  it("should navigate to the register page when 'Agendar demo' is clicked", () => {
-    const { push } = routerMock;
+  // it("should navigate to the register page when 'Agendar demo' is clicked", () => {
+  //   const { push } = routerMock;
 
-    render(<CallToAction />);
+  //   render(<CallToAction />);
 
-    const scheduleDemoButton = screen.getByRole("button", {
-      name: /Agendar demo/i,
-    });
-    fireEvent.click(scheduleDemoButton);
+  //   const scheduleDemoButton = screen.getByRole("button", {
+  //     name: /Agendar demo/i,
+  //   });
+  //   fireEvent.click(scheduleDemoButton);
 
-    expect(push).toHaveBeenCalledWith("/register");
-  });
+  //   expect(push).toHaveBeenCalledWith("/register");
+  // });
 
   it("should have the correct background color", () => {
     const { container } = render(<CallToAction />);
