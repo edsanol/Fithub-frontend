@@ -28,6 +28,10 @@ jest.mock("@/presentation/components", () => ({
   CustomAreaGraph: () => <div>CustomAreaGraph</div>,
   CustomPieGraph: () => <div>CustomPieGraph</div>,
   CustomScaleGraph: () => <div>CustomScaleGraph</div>,
+  FormDatePicker: () => <div>FormDatePicker</div>,
+  FormInput: () => <div>FormInput</div>,
+  PrimaryButton: () => <div>PrimaryButton</div>,
+  SecondaryButton: () => <div>SecondaryButton</div>,
 }));
 
 describe("Dashboard Component", () => {
@@ -42,6 +46,8 @@ describe("Dashboard Component", () => {
       getDailyAssistanceGraphic: [],
       getMembershipGraphic: [],
       getIncomeGraphic: [],
+      athleteBirthDate: [], // Definir como array vacío
+      athleteAssistance: [],
     });
 
     render(<Dashboard />);
@@ -58,6 +64,8 @@ describe("Dashboard Component", () => {
       getDailyAssistanceGraphic: [{ id: 1, value: 100 }],
       getMembershipGraphic: [{ id: 1, value: 50 }],
       getIncomeGraphic: [{ id: 1, value: 1000 }],
+      athleteBirthDate: [], // Definir como array vacío
+      athleteAssistance: [],
     });
 
     render(<Dashboard />);

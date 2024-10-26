@@ -19,12 +19,22 @@ import { GetAthleteBirthDateUseCase } from "@/domain/useCases/Dashboard/getAthle
 const ViewModel = () => {
   const dateGMT5 = useDateGMT5();
   const [dashboardData, setDashboardData] = useState<DashboardDataValues>();
-  const [getDailyAssistanceGraphic, setGetDailyAssistanceGraphic] = useState<BarGraphicValues[]>([]);
-  const [getMembershipGraphic, setGetMembershipGraphic] = useState<PieGraphicValues[]>([]);
-  const [getIncomeGraphic, setGetIncomeGraphic] = useState<BarGraphicValues[]>([]);
+  const [getDailyAssistanceGraphic, setGetDailyAssistanceGraphic] = useState<
+    BarGraphicValues[]
+  >([]);
+  const [getMembershipGraphic, setGetMembershipGraphic] = useState<
+    PieGraphicValues[]
+  >([]);
+  const [getIncomeGraphic, setGetIncomeGraphic] = useState<BarGraphicValues[]>(
+    []
+  );
   const [selectedDate, setSelectedDate] = useState<string>(dateGMT5);
-  const [athleteAssistance, setAthleteAssistance] = useState<AthleteAssistance[]>([]);
-  const [athleteBirthDate, setAthleteBirthDate] = useState<AthleteBirthDate[]>([]);
+  const [athleteAssistance, setAthleteAssistance] = useState<
+    AthleteAssistance[]
+  >([]);
+  const [athleteBirthDate, setAthleteBirthDate] = useState<AthleteBirthDate[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -36,11 +46,24 @@ const ViewModel = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const getDashboardDataUseCase = container.get<GetDashboardDataUseCase>(TYPES.GetDashboardDataUseCase);
-        const getDailyAssistanceGraphicUseCase = container.get<GetDailyAssistanceGraphicUseCase>(TYPES.GetDailyAssistanceGraphicUseCase);
-        const getMembershipGraphicUseCase = container.get<GetMembershipGraphicUseCase>(TYPES.GetMembershipGraphicUseCase);
-        const getIncomeGraphicUseCase = container.get<GetIncomeGraphicUseCase>(TYPES.GetIncomeGraphicUseCase);
-        const getAthleteBirthDateUseCase = container.get<GetAthleteBirthDateUseCase>(TYPES.GetAthleteBirthDateUseCase);
+        const getDashboardDataUseCase = container.get<GetDashboardDataUseCase>(
+          TYPES.GetDashboardDataUseCase
+        );
+        const getDailyAssistanceGraphicUseCase =
+          container.get<GetDailyAssistanceGraphicUseCase>(
+            TYPES.GetDailyAssistanceGraphicUseCase
+          );
+        const getMembershipGraphicUseCase =
+          container.get<GetMembershipGraphicUseCase>(
+            TYPES.GetMembershipGraphicUseCase
+          );
+        const getIncomeGraphicUseCase = container.get<GetIncomeGraphicUseCase>(
+          TYPES.GetIncomeGraphicUseCase
+        );
+        const getAthleteBirthDateUseCase =
+          container.get<GetAthleteBirthDateUseCase>(
+            TYPES.GetAthleteBirthDateUseCase
+          );
 
         const responses = await Promise.all([
           getDashboardDataUseCase.execute(),
@@ -72,7 +95,10 @@ const ViewModel = () => {
 
   const getAthleteAssistance = async (params: Partial<PaginateData>) => {
     try {
-      const getAthleteAssistanceUseCase = container.get<GetAthleteAssistanceUseCase>(TYPES.GetAthleteAssistanceUseCase);
+      const getAthleteAssistanceUseCase =
+        container.get<GetAthleteAssistanceUseCase>(
+          TYPES.GetAthleteAssistanceUseCase
+        );
 
       const response = await getAthleteAssistanceUseCase.execute({
         numRecordsPage: 7,

@@ -125,7 +125,7 @@ const Dashboard = () => {
           </div>
 
           <div className="mt-4 lg:mt-0 gap-2 flex flex-col w-full lg:w-[25%] lg:pl-4">
-            <h3 className="text-xl font-semibold">Cumpleaños</h3>
+            <h3 className="text-xl font-semibold">Sección de interes</h3>
             <div className="h-[25rem] flex flex-col justify-center gap-4 flex-wrap md:flex-nowrap md:flex-col bg-[#18181B] rounded-[2rem] overflow-auto">
               <Skeleton
                 isLoaded={!isLoading}
@@ -133,8 +133,8 @@ const Dashboard = () => {
                 classNames={{ base: "dark" }}
               >
                 <div className="h-full p-5 overflow-y-auto">
-                  <p className="text-sm font-bold text-white">
-                    Deportistas que cumplen años en este mes
+                  <p className="text-lg font-bold text-white text-center p-2">
+                    ⭐ Cumpleañeros
                   </p>
                   <div className="flex flex-col gap-4 mt-1">
                     {athleteBirthDate.length > 0 ? (
@@ -142,7 +142,7 @@ const Dashboard = () => {
                         {athleteBirthDate.map((item, index) => (
                           <div
                             key={index}
-                            className="grid grid-cols-2 grid-rows-2 gap-y-1 bg-gray-800 p-3 rounded-lg"
+                            className="grid grid-cols-2 grid-rows-2 gap-y-1 bg-[#252525] p-2 rounded-lg"
                           >
                             <div>
                               <p className="text-sm text-white font-bold">
@@ -171,15 +171,18 @@ const Dashboard = () => {
               </Skeleton>
             </div>
 
-            <h3 className="text-xl font-semibold">Asistentes</h3>
-            <div className="h-[37rem] flex flex-col justify-center gap-4 flex-wrap md:flex-nowrap md:flex-col bg-[#18181B] rounded-[2rem] overflow-auto">
+            {/* <h3 className="text-xl font-semibold">Asistentes</h3> */}
+            <div className="h-[37rem] mt-4 flex flex-col justify-center gap-4 flex-wrap md:flex-nowrap md:flex-col bg-[#18181B] rounded-[2rem] overflow-auto">
               <Skeleton
                 isLoaded={!isLoading}
                 className="w-full h-[37rem] rounded-[2rem]"
                 classNames={{ base: "dark" }}
               >
                 <div className="h-full p-5 overflow-y-auto">
-                  <p className="text-sm font-bold text-white">
+                  <p className="text-lg font-bold text-white text-center p-2">
+                    ✅ Asistencia diaria
+                  </p>
+                  <p className="text-sm font-bold text-white p-2">
                     Filtro por Fecha
                   </p>
 
@@ -190,7 +193,7 @@ const Dashboard = () => {
                     value={selectedDate}
                   />
 
-                  <p className="text-sm font-bold text-white mt-1">
+                  <p className="text-sm font-bold text-white p-2">
                     Filtro por Nombre
                   </p>
 
@@ -202,12 +205,10 @@ const Dashboard = () => {
                   />
 
                   <div className="flex justify-between mt-3">
-                    <p className="text-sm font-bold text-white mt-2">
-                      Asistentes
-                    </p>
+                    <p className="text-sm font-bold text-white mt-2 p-1"></p>
 
                     <p
-                      className="text-sm font-bold text-gray-800 mt-2 hover:text-[#5855F6] cursor-pointer"
+                      className="text-sm font-bold text-gray-500 mt-2 hover:text-[#5855F6] cursor-pointer"
                       onClick={handleRefresh}
                     >
                       Refrescar
@@ -220,7 +221,7 @@ const Dashboard = () => {
                         {athleteAssistance.map((item, index) => (
                           <div
                             key={index}
-                            className="grid grid-cols-2 grid-rows-2 gap-y-1 bg-gray-800 p-3 rounded-lg"
+                            className="grid grid-cols-2 grid-rows-2 gap-y-1 bg-[#252525] p-2 rounded-lg"
                           >
                             <div>
                               <p className="text-sm text-white font-bold">

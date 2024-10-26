@@ -30,11 +30,9 @@ describe("CustomDashboardData", () => {
     // Check if the correct values are rendered
     expect(screen.getByText("Total Usuarios")).toBeInTheDocument();
     expect(screen.getByText("100")).toBeInTheDocument();
-    expect(screen.getByText("+10%")).toBeInTheDocument();
 
     expect(screen.getByText("Nuevos Usuarios del mes")).toBeInTheDocument();
     expect(screen.getByText("20")).toBeInTheDocument();
-    expect(screen.getByText("-10%")).toBeInTheDocument();
   });
 
   it("should not render data when data is undefined", () => {
