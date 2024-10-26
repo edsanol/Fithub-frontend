@@ -1,6 +1,10 @@
 import { TYPES } from "@/config/types";
+import { AthleteAssistance } from "@/domain/models/AthleteAssistance";
+import { AthleteBirthDate } from "@/domain/models/AthleteBirthDate";
 import { BarGraphicValues } from "@/domain/models/BarGraphicValues";
 import { DashboardDataValues } from "@/domain/models/DashboardDataValues";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { PieGraphicValues } from "@/domain/models/PieGraphicValues";
 import { DashboardDataRepository } from "@/domain/repositories/dashboardDataRepository";
 import type { DashboardDataService } from "@/domain/services/dashboardDataService";
@@ -22,22 +26,13 @@ export class DashboardDataRepositoryImpl implements DashboardDataRepository {
     return response;
   }
 
-  async getDailyAssistanceGraphic(
-    startDate: string | Date,
-    endDate: string | Date
-  ): Promise<BarGraphicValues[]> {
-    const response = await this.service.getDailyAssistanceGraphic(
-      startDate,
-      endDate
-    );
+  async getDailyAssistanceGraphic(startDate: string | Date, endDate: string | Date): Promise<BarGraphicValues[]> {
+    const response = await this.service.getDailyAssistanceGraphic(startDate, endDate);
 
     return response;
   }
 
-  async getIncomeGraphic(
-    startDate: string | Date,
-    endDate: string | Date
-  ): Promise<BarGraphicValues[]> {
+  async getIncomeGraphic(startDate: string | Date, endDate: string | Date): Promise<BarGraphicValues[]> {
     const response = await this.service.getIncomeGraphic(startDate, endDate);
 
     return response;
@@ -45,6 +40,18 @@ export class DashboardDataRepositoryImpl implements DashboardDataRepository {
 
   async getMembershipGraphic(): Promise<PieGraphicValues[]> {
     const response = await this.service.getMembershipGraphic();
+
+    return response;
+  }
+
+  async getAthleteAssistance(data: PaginateData): Promise<PaginateResponseList<AthleteAssistance>> {
+    const response = await this.service.getAthleteAssistance(data);
+
+    return response;
+  }
+
+  async getAthleteBirthDate(): Promise<AthleteBirthDate[]> {
+    const response = await this.service.getAthleteBirthDate();
 
     return response;
   }

@@ -58,10 +58,10 @@ const CustomDashboardGraph = ({
   return (
     <Skeleton
       isLoaded={!loading}
-      className="w-[90%] h-36 mx-auto sm:w-[45%] lg:w-[31%] rounded-xl"
+      className="w-[90%] h-36 mx-auto sm:w-[40%] lg:w-[31%] rounded-[2rem]"
       classNames={{ base: "dark" }}
     >
-      <div className="bg-[#5855F6] h-36 flex justify-around">
+      <div className="bg-[#5855F6] h-36 flex justify-around rounded-[2rem]">
         <div className="w-[54%] flex flex-col justify-center pl-4">
           <p className="text-sm font-bold text-white mb-4">Asistencia Diaria</p>
           <p className="text-2xl font-bold text-white">

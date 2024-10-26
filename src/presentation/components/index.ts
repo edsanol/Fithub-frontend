@@ -19,6 +19,7 @@ import CustomAreaGraph from "./shared/charts/CustomAreaGraph";
 import CustomPieGraph from "./shared/charts/CustomPieGraph";
 import CustomScaleGraph from "./shared/charts/CustomScaleGraph";
 import FormSearchInput from "./shared/form-elements/FormSearchInput";
+import FormDatePicker from "./shared/form-elements/FormDatePicker";
 import CustomProgressCard from "./shared/cards/CustomProgressCard";
 import SidebarLayout from "./layout/SidebarLayout";
 import TopbarLayout from "./layout/TopbarLayout";
@@ -36,6 +37,7 @@ export {
   AuthHeader,
   FormLink,
   FormRadioButton,
+  FormDatePicker,
   CustomModal,
   CustomTable,
   DashboardHeader,

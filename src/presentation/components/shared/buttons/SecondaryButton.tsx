@@ -1,10 +1,13 @@
 "use client";
 
+import { Button } from "@nextui-org/react";
+
 interface SecondaryButtonProps {
   customButtonClass?: string;
   customTextClass?: string;
   btnType?: "button" | "submit" | "reset";
   text: string;
+  isDisabled?: boolean;
   onClick?: () => void;
 }
 
@@ -13,20 +16,21 @@ const SecondaryButton = ({
   customTextClass,
   btnType,
   text,
+  isDisabled,
   onClick,
 }: SecondaryButtonProps) => {
   return (
-    <button
+    <Button
       type={btnType || "button"}
-      className={`flex w-32 h-9 rounded-lg border-2 border-white items-center justify-center ${
-        customButtonClass ? customButtonClass : ""
-      }`}
+      className={`${customButtonClass ? customButtonClass : ""}`}
       onClick={onClick}
+      color="secondary"
+      isDisabled={isDisabled}
     >
       <p className={`text-lg font-bold text-white ${customTextClass}`}>
         {text}
       </p>
-    </button>
+    </Button>
   );
 };
 export default SecondaryButton;

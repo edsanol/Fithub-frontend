@@ -29,7 +29,7 @@ const Topbar = (props: {
             e.stopPropagation();
             props.setSidebarOpen(!props.sidebarOpen);
           }}
-          className="z-99999 block p-1.5 shadow-sm dark:border-strokedark dark:bg-boxdark lg:hidden"
+          className="z-99999 block p-1.5 shadow-sm dark:border-strokedark dark:bg-boxdark custom:hidden"
         >
           <MenuIcon />
         </button>

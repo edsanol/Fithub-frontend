@@ -13,17 +13,16 @@ const CustomDashboardData = ({ data, loading }: CustomDashboardDataProps) => {
     <Skeleton
       data-testid="custom-dashboard-data"
       isLoaded={!loading}
-      className="w-[90%] h-36 mx-auto rounded-xl sm:w-[45%] lg:w-[30%]"
+      className="w-[90%] h-36 mx-auto rounded-[2rem] sm:w-[40%] lg:w-[30%]"
       classNames={{ base: "dark" }}
     >
-      <div className="bg-[#8946CE] h-36 flex flex-col justify-evenly">
+      <div className="bg-[#8946CE] h-36 flex flex-col justify-evenly rounded-[2rem]">
         <div className="flex h-9 w-[92%] items-center pl-2">
           <Image src={User} alt={"Home"} width={20} height={20} />
           <p className="text-sm font-bold text-white w-[96%] pl-1">
             Total Usuarios
           </p>
           <p className="text-2xl font-bold text-white">{data?.totalAthletes}</p>
-          <p className="pl-1 text-xs text-green-500">+10%</p>
         </div>
         <div className="flex h-9 w-[92%] items-center pl-2">
           <Image src={User} alt={"Home"} width={20} height={20} />
@@ -33,7 +32,6 @@ const CustomDashboardData = ({ data, loading }: CustomDashboardDataProps) => {
           <p className="text-2xl font-bold text-white">
             {data?.newAthletesByMonth}
           </p>
-          <p className="pl-1 text-xs text-red-500">-10%</p>
         </div>
       </div>
     </Skeleton>
