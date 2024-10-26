@@ -78,7 +78,7 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     <>
       <aside
         ref={sidebar}
-        className={`absolute left-0 top-0 z-50 p-3 flex h-screen w-72 flex-col overflow-y-hidden bg-[#121417] duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+        className={`absolute left-0 top-0 z-50 p-3 flex h-screen flex-col overflow-y-hidden bg-[#121417] duration-300 ease-linear dark:bg-boxdark custom:static custom:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -87,7 +87,7 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           onClick={() => setSidebarOpen(!sidebarOpen)}
           aria-controls="sidebar"
           aria-expanded={sidebarOpen}
-          className="flex justify-end lg:hidden"
+          className="flex justify-end custom:hidden"
         >
           <ArrowLeftIcon />
         </button>

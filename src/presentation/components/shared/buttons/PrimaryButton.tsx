@@ -7,6 +7,7 @@ interface PrimaryButtonProps {
   customTextClass?: string;
   btnType?: "button" | "submit" | "reset";
   text: string;
+  isDisabled?: boolean;
   onClick?: () => void;
 }
 
@@ -15,6 +16,7 @@ const PrimaryButton = ({
   customTextClass,
   btnType,
   text,
+  isDisabled,
   onClick,
 }: PrimaryButtonProps) => {
   return (
@@ -22,6 +24,7 @@ const PrimaryButton = ({
       type={btnType || "button"}
       className={`flex w-32 h-9 rounded-lg bg-[#3669FC] items-center justify-center ${customButtonClass}`}
       onClick={onClick}
+      isDisabled={isDisabled}
     >
       <p className={`text-lg font-bold text-white ${customTextClass}`}>
         {text}

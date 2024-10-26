@@ -55,6 +55,8 @@ import { GetMeasurementProgressListUseCase } from "@/domain/useCases/AthleteUser
 import { GetMeasurementProgressByLastMonthUseCase } from "@/domain/useCases/AthleteUser/getMeasurementProgressByLastMonthUseCase";
 import { GetMeasurementsGraphicUseCase } from "@/domain/useCases/AthleteUser/getMeasurementsGraphicUseCase";
 import { UnsubscribeAthleteUserUseCase } from "@/domain/useCases/AthleteUser/unsubscribeAthleteUserUseCase";
+import { GetAthleteAssistanceUseCase } from "@/domain/useCases/Dashboard/getAthleteAssistanceUseCase";
+import { GetAthleteBirthDateUseCase } from "@/domain/useCases/Dashboard/getAthleteBirthDateUseCase";
 
 const container = new Container();
 
@@ -232,5 +234,11 @@ container
 container
   .bind<GetMembershipGraphicUseCase>(TYPES.GetMembershipGraphicUseCase)
   .to(GetMembershipGraphicUseCase);
+container
+  .bind<GetAthleteAssistanceUseCase>(TYPES.GetAthleteAssistanceUseCase)
+  .to(GetAthleteAssistanceUseCase);
+container
+  .bind<GetAthleteBirthDateUseCase>(TYPES.GetAthleteBirthDateUseCase)
+  .to(GetAthleteBirthDateUseCase);
 
 export default container;

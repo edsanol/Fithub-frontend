@@ -84,6 +84,8 @@ const TYPES = {
   ),
   GetIncomeGraphicUseCase: Symbol.for("GetIncomeGraphicUseCase"),
   GetMembershipGraphicUseCase: Symbol.for("GetMembershipGraphicUseCase"),
+  GetAthleteAssistanceUseCase: Symbol.for("GetAthleteAssistanceUseCase"),
+  GetAthleteBirthDateUseCase: Symbol.for("GetAthleteBirthDateUseCase"),
 };
 
 export { TYPES };

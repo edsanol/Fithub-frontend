@@ -38,10 +38,10 @@ const CustomDashboardDoubleGraph = ({
   return (
     <Skeleton
       isLoaded={!loading}
-      className="w-[90%] h-36 mx-auto sm:w-[45%] lg:w-[31%] rounded-xl"
+      className="w-[90%] h-36 mx-auto sm:w-[45%] lg:w-[31%] rounded-[2rem]"
       classNames={{ base: "dark" }}
     >
-      <div className="bg-[#18181B] h-36 flex justify-around">
+      <div className="bg-[#18181B] h-36 flex justify-around rounded-[2rem]">
         <div className="w-[60%] flex flex-col justify-evenly pl-4">
           <div className="flex h-9 w-[90%] items-center">
             <p className="text-sm font-bold text-[#8F8E96] w-[82%]">

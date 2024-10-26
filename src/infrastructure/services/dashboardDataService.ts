@@ -6,6 +6,10 @@ import { inject, injectable } from "inversify";
 import type { HttpClient } from "../api/http";
 import { TYPES } from "@/config/types";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
+import { AthleteAssistance } from "@/domain/models/AthleteAssistance";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { AthleteBirthDate } from "@/domain/models/AthleteBirthDate";
 
 @injectable()
 export class DashboardDataServiceImpl implements DashboardDataService {
@@ -16,17 +20,12 @@ export class DashboardDataServiceImpl implements DashboardDataService {
   }
 
   async getDashboardData(): Promise<DashboardDataValues> {
-    const response = await this.http.get<
-      TickerResponseApi<DashboardDataValues>
-    >("/Dashboard/GetDashboard");
+    const response = await this.http.get<TickerResponseApi<DashboardDataValues>>("/Dashboard/GetDashboard");
 
     return response.data;
   }
 
-  async getDailyAssistanceGraphic(
-    startDate: string | Date,
-    endDate: string | Date
-  ): Promise<BarGraphicValues[]> {
+  async getDailyAssistanceGraphic(startDate: string | Date, endDate: string | Date): Promise<BarGraphicValues[]> {
     const response = await this.http.get<TickerResponseApi<BarGraphicValues[]>>(
       `/Dashboard/GetDailyAssistanceGraphic?startDate=${startDate}&endDate=${endDate}`
     );
@@ -34,10 +33,7 @@ export class DashboardDataServiceImpl implements DashboardDataService {
     return response.data;
   }
 
-  async getIncomeGraphic(
-    startDate: string | Date,
-    endDate: string | Date
-  ): Promise<BarGraphicValues[]> {
+  async getIncomeGraphic(startDate: string | Date, endDate: string | Date): Promise<BarGraphicValues[]> {
     const response = await this.http.get<TickerResponseApi<BarGraphicValues[]>>(
       `/Dashboard/GetIncomeGraphic?startDate=${startDate}&endDate=${endDate}`
     );
@@ -46,9 +42,19 @@ export class DashboardDataServiceImpl implements DashboardDataService {
   }
 
   async getMembershipGraphic(): Promise<PieGraphicValues[]> {
-    const response = await this.http.get<TickerResponseApi<PieGraphicValues[]>>(
-      "/Dashboard/GetMembershipGraphic"
-    );
+    const response = await this.http.get<TickerResponseApi<PieGraphicValues[]>>("/Dashboard/GetMembershipGraphic");
+
+    return response.data;
+  }
+
+  async getAthleteAssistance(data: PaginateData): Promise<PaginateResponseList<AthleteAssistance>> {
+    const response = await this.http.post<TickerResponseApi<PaginateResponseList<AthleteAssistance>>,PaginateData>("/Dashboard/GetAthleteAssitance", data);
+
+    return response.data;
+  }
+
+  async getAthleteBirthDate(): Promise<AthleteBirthDate[]> {
+    const response = await this.http.get<TickerResponseApi<AthleteBirthDate[]>>("/Dashboard/GetAthleteBirthDate");
 
     return response.data;
   }
