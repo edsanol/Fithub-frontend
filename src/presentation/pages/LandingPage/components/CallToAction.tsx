@@ -29,13 +29,13 @@ const CallToAction = () => {
               onClick={() => router.push("/register")}
             />
 
-            <RedirectButton
+            {/* <RedirectButton
               color="default"
               variant="solid"
               label="Agendar demo"
               customClass="text-black"
               onClick={() => router.push("/register")}
-            />
+            /> */}
           </div>
         </div>
       </div>

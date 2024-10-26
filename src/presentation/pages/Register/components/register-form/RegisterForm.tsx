@@ -120,7 +120,6 @@ const RegisterForm = () => {
         />
         <div className="hidden mt-5">
           <FormSelect
-            isRequired
             label="Membresías"
             placeholder="Selecciona un plan"
             size="lg"

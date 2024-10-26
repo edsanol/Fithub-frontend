@@ -18,7 +18,7 @@ const Hero = () => {
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                   Optimice la gestión de su gimnasio con FitHub
                 </h1>
-                <p className="max-w-[600px] text-gray-200 md:text-xl">
+                <p className="max-w-[600px] text-gray-500 md:text-xl">
                   Administre sin esfuerzo las membresías, realice un seguimiento
                   del progreso, maneje las finanzas y optimice la programación
                   del personal. Todo en una poderosa plataforma.
@@ -33,13 +33,13 @@ const Hero = () => {
                   customClass="text-white"
                 />
 
-                <RedirectButton
+                {/* <RedirectButton
                   color="secondary"
                   variant="ghost"
                   onClick={() => console.log("ver demo")}
                   label="Ver demo"
                   customClass="text-[#9c34c2] hover:text-white"
-                />
+                /> */}
               </div>
             </div>
 

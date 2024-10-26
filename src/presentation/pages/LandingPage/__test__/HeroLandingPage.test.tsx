@@ -46,17 +46,17 @@ describe("Hero Component", () => {
     expect(push).toHaveBeenCalledWith("/register");
   });
 
-  it("should log 'ver demo' when the 'Ver demo' button is clicked", () => {
-    const consoleSpy = jest.spyOn(console, "log");
+  // it("should log 'ver demo' when the 'Ver demo' button is clicked", () => {
+  //   const consoleSpy = jest.spyOn(console, "log");
 
-    render(<Hero />);
+  //   render(<Hero />);
 
-    const demoButton = screen.getByRole("button", { name: /Ver demo/i });
+  //   const demoButton = screen.getByRole("button", { name: /Ver demo/i });
 
-    fireEvent.click(demoButton);
+  //   fireEvent.click(demoButton);
 
-    expect(consoleSpy).toHaveBeenCalledWith("ver demo");
+  //   expect(consoleSpy).toHaveBeenCalledWith("ver demo");
 
-    consoleSpy.mockRestore();
-  });
+  //   consoleSpy.mockRestore();
+  // });
 });

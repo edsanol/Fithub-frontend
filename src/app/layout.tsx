@@ -19,7 +19,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={mulish.className}>
         <Providers>
-          <div className="relative flex flex-col h-screen">{children}</div>
+          <div className="relative flex flex-col h-screen bg-black">
+            {children}
+          </div>
         </Providers>
       </body>
     </html>

@@ -1,7 +1,19 @@
 import { render, screen } from "@testing-library/react";
 import Footer from "../components/Footer";
+import { useRouter } from "next/navigation";
+
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+}));
 
 describe("Footer Component", () => {
+  let routerMock: { push: jest.Mock };
+
+  beforeEach(() => {
+    routerMock = { push: jest.fn() };
+    (useRouter as jest.Mock).mockReturnValue(routerMock);
+  });
+
   it("should render the copyright text", () => {
     render(<Footer />);
 
@@ -10,25 +22,19 @@ describe("Footer Component", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render the links for 'Términos y condiciones' and 'Privacidad'", () => {
+  it("should render the link for 'Politica de tratamiento de datos'", () => {
     render(<Footer />);
 
-    const termsLink = screen.getByText("Terminos y condiciones");
+    const termsLink = screen.getByText("Politica de tratamiento de datos");
     expect(termsLink).toBeInTheDocument();
-    expect(termsLink).toHaveAttribute("href", "#");
-
-    const privacyLink = screen.getByText("Privacidad");
-    expect(privacyLink).toBeInTheDocument();
-    expect(privacyLink).toHaveAttribute("href", "#");
+    expect(termsLink).toHaveAttribute("href", "/privacy-policies");
   });
 
   it("should have hover effect on the links", () => {
     render(<Footer />);
 
-    const termsLink = screen.getByText("Terminos y condiciones");
-    const privacyLink = screen.getByText("Privacidad");
+    const termsLink = screen.getByText("Politica de tratamiento de datos");
 
     expect(termsLink).toHaveClass("hover:text-[#006fed]");
-    expect(privacyLink).toHaveClass("hover:text-[#006fed]");
   });
 });
