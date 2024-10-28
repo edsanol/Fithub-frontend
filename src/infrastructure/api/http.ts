@@ -45,9 +45,9 @@ export class AxiosHttpClient implements HttpClient {
             console.log("response", response);
 
             if (response) {
-              Cookies.set("authToken", response.data.token, { expires: 1 });
-              Cookies.set("refreshToken", response.data.refreshToken, { expires: 1 });
-              config.headers.Authorization = `Bearer ${response.data.token}`;
+              Cookies.set("authToken", response.data.data.token, { expires: 1 });
+              Cookies.set("refreshToken", response.data.data.refreshToken, { expires: 1 });
+              config.headers.Authorization = `Bearer ${response.data.data.token}`;
             }
           }
         } catch (error) {
