@@ -32,6 +32,7 @@ const Dashboard = () => {
     handleFilterByName,
     handleNextPage,
     handlePreviousPage,
+    getFullName,
   } = ViewModel();
 
   return (
@@ -146,7 +147,7 @@ const Dashboard = () => {
                           >
                             <div>
                               <p className="text-sm text-white font-bold">
-                                {item.athleteName} {item.athleteLastName}
+                              { getFullName(item.athleteName, item.athleteLastName) }
                               </p>
                             </div>
                             <p className="text-sm text-white text-right">
@@ -172,10 +173,10 @@ const Dashboard = () => {
             </div>
 
             {/* <h3 className="text-xl font-semibold">Asistentes</h3> */}
-            <div className="h-[37rem] mt-4 flex flex-col justify-center gap-4 flex-wrap md:flex-nowrap md:flex-col bg-[#18181B] rounded-[2rem] overflow-auto">
+            <div className="h-[38rem] mt-4 flex flex-col justify-center gap-4 flex-wrap md:flex-nowrap md:flex-col bg-[#18181B] rounded-[2rem] overflow-auto">
               <Skeleton
                 isLoaded={!isLoading}
-                className="w-full h-[37rem] rounded-[2rem]"
+                className="w-full h-[38rem] rounded-[2rem]"
                 classNames={{ base: "dark" }}
               >
                 <div className="h-full p-5 overflow-y-auto">
@@ -225,7 +226,7 @@ const Dashboard = () => {
                           >
                             <div>
                               <p className="text-sm text-white font-bold">
-                                {item.athleteName} {item.athleteLastName}
+                                { getFullName(item.athleteName, item.athleteLastName) }
                               </p>
                             </div>
                             <p className="text-sm text-white text-right">

@@ -37,8 +37,7 @@ const ViewModel = () => {
   useEffect(() => {
     if (session?.user.token) {
       Cookies.set("authToken", session.user.token, { expires: 1 });
-      const tokenEncrypted = cipherData(session?.user.refreshToken);
-      Cookies.set("refreshToken", tokenEncrypted, { expires: 1 });
+      Cookies.set("refreshToken", session?.user.refreshToken, { expires: 1 });
     }
   }, [session]);
 

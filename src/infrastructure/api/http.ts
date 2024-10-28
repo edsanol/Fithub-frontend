@@ -33,22 +33,25 @@ export class AxiosHttpClient implements HttpClient {
 
   private async handleTokenRefresh(config: AxiosRequestConfig) {
     const authToken = Cookies.get("authToken");
+
     if (authToken && config.headers) {
       const timeDifference = await this.checkTokenExpiration(authToken);
       if (timeDifference < 2 * 60 * 1000) {
-        const refreshTokenEncrypted = Cookies.get("refreshToken");
-        const refreshToken = decipherData(refreshTokenEncrypted as string);
+        const refreshToken = Cookies.get("refreshToken");
         try {
           if (refreshToken) {
             const response = await this.refreshToken(refreshToken);
-            if (response.status === 200) {
-              Cookies.set("authToken", response.data.data.token, {
-                expires: 1,
-              });
-              config.headers.Authorization = `Bearer ${response.data.data.token}`;
+
+            console.log("response", response);
+
+            if (response) {
+              Cookies.set("authToken", response.data.token, { expires: 1 });
+              Cookies.set("refreshToken", response.data.refreshToken, { expires: 1 });
+              config.headers.Authorization = `Bearer ${response.data.token}`;
             }
           }
         } catch (error) {
+          console.log("error", error);
           this.handleAuthenticationError();
         }
       } else {
@@ -80,14 +83,18 @@ export class AxiosHttpClient implements HttpClient {
     const currentDate = new Date();
     const expirationDate = new Date((decodedToken.exp as number) * 1000);
 
+    console.log('expirationDate', expirationDate);
+
     const timeDifference = expirationDate.getTime() - currentDate.getTime();
     return timeDifference;
   }
 
   private handleAuthenticationError() {
-    Cookies.remove("authToken");
-    Cookies.remove("refreshToken");
-    signOut();
+    // Cookies.remove("authToken");
+    // Cookies.remove("refreshToken");
+    // signOut();
+
+    console.log("Error");
   }
 
   private handleResponse<T>(response: AxiosResponse<T>): T {

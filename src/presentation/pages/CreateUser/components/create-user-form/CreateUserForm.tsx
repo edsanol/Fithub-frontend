@@ -104,7 +104,7 @@ const CreateUserForm = () => {
               popoverProps={{ color: "foreground" }}
               items={formatMembershipElements(membership)}
               onChange={(value) => setField("membershipId", Number(value))}
-              customInputClass="mt-5"
+              customInputClass="mt-5 mb-5"
               value={athleteData?.membershipId}
             />
           </>
