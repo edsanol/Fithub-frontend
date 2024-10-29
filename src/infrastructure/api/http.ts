@@ -1,4 +1,3 @@
-import { decipherData } from "@/config/secureData";
 import { TYPES } from "@/config/types";
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { injectable, inject } from "inversify";
@@ -42,8 +41,6 @@ export class AxiosHttpClient implements HttpClient {
           if (refreshToken) {
             const response = await this.refreshToken(refreshToken);
 
-            console.log("response", response);
-
             if (response) {
               Cookies.set("authToken", response.data.data.token, { expires: 1 });
               Cookies.set("refreshToken", response.data.data.refreshToken, { expires: 1 });
@@ -51,7 +48,6 @@ export class AxiosHttpClient implements HttpClient {
             }
           }
         } catch (error) {
-          console.log("error", error);
           this.handleAuthenticationError();
         }
       } else {
@@ -83,18 +79,14 @@ export class AxiosHttpClient implements HttpClient {
     const currentDate = new Date();
     const expirationDate = new Date((decodedToken.exp as number) * 1000);
 
-    console.log('expirationDate', expirationDate);
-
     const timeDifference = expirationDate.getTime() - currentDate.getTime();
     return timeDifference;
   }
 
   private handleAuthenticationError() {
-    // Cookies.remove("authToken");
-    // Cookies.remove("refreshToken");
-    // signOut();
-
-    console.log("Error");
+    Cookies.remove("authToken");
+    Cookies.remove("refreshToken");
+    signOut();
   }
 
   private handleResponse<T>(response: AxiosResponse<T>): T {
