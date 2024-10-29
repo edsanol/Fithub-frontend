@@ -142,6 +142,12 @@ const ViewModel = () => {
     }
   };
 
+  const getFullName = (name: string, lastName: string) => {
+    let fullName = `${name} ${lastName}`;
+    fullName = fullName.length > 20 ? `${fullName.slice(0, 20)}...` : fullName;
+    return fullName;
+  };
+
   return {
     isLoading,
     dashboardData,
@@ -158,6 +164,7 @@ const ViewModel = () => {
     handleFilterByName,
     handlePreviousPage,
     handleNextPage,
+    getFullName,
   };
 };
 
