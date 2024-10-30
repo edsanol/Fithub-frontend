@@ -1,4 +1,3 @@
-import { TYPES } from "@/config/types";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import ViewModel from "../components/create-user-form/ViewModel";
 import {
@@ -7,6 +6,7 @@ import {
   isValidGenre,
   isValidName,
   isValidPhone,
+  isValidDate,
 } from "@/presentation/helpers";
 import container from "@/config/inversifyContainer";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
@@ -24,6 +24,7 @@ jest.mock("@/presentation/helpers", () => ({
   isValidGenre: jest.fn(),
   isValidName: jest.fn(),
   isValidPhone: jest.fn(),
+  isValidDate: jest.fn(),
 }));
 
 // Mock the use cases
@@ -47,6 +48,7 @@ const setupMocksForValidation = (valid = true) => {
   (isValidPhone as jest.Mock).mockReturnValue(valid);
   (isValidGenre as jest.Mock).mockReturnValue(valid);
   (isNotEmpty as jest.Mock).mockReturnValue(valid);
+  (isValidDate as jest.Mock).mockReturnValue(valid);
 };
 
 describe("CreateUser ViewModel", () => {
@@ -80,6 +82,7 @@ describe("CreateUser ViewModel", () => {
         cost: 0,
         membershipId: 0,
         cardAccessCode: "",
+        startMembershipDate: "",
       });
 
       expect(result.current.athleteDataError).toEqual({
@@ -89,6 +92,7 @@ describe("CreateUser ViewModel", () => {
         phoneNumberError: false,
         genreError: false,
         birthDateError: false,
+        startMembershipDateError: false,
       });
     });
   });
@@ -118,6 +122,7 @@ describe("CreateUser ViewModel", () => {
     expect(result.current.athleteDataError.phoneNumberError).toBe(true);
     expect(result.current.athleteDataError.genreError).toBe(true);
     expect(result.current.athleteDataError.birthDateError).toBe(true);
+    expect(result.current.athleteDataError.startMembershipDateError).toBe(true);
   });
 
   it("should call RegisterAthleteUserUseCase when form is valid and athleteIdValue is null", async () => {

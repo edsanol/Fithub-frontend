@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   isNotEmpty,
+  isValidDate,
   isValidEmail,
   isValidGenre,
   isValidName,
@@ -19,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { useReducer, useState } from "react";
 import container from "@/config/inversifyContainer";
 import { useEffect } from "react";
+import { useDateGMT5 } from "@/hooks/useDateGMT5";
 
 interface State {
   athleteData: AthleteUser;
@@ -50,6 +52,7 @@ const initialState: State = {
     cost: 0,
     membershipId: 0,
     cardAccessCode: "",
+    startMembershipDate: "",
   },
   athleteDataError: {
     nameError: false,
@@ -58,6 +61,7 @@ const initialState: State = {
     phoneNumberError: false,
     genreError: false,
     birthDateError: false,
+    startMembershipDateError: false,
   },
   membership: [],
 };
@@ -93,6 +97,7 @@ const ViewModel = () => {
   const [{ athleteData, athleteDataError, membership }, dispatch] = useReducer(reducer, initialState);
   const pathname = usePathname();
   const router = useRouter();
+  const dateGMT5 = useDateGMT5();
 
   const athleteId = pathname.match(/\/create-user\/(.*)/);
   const athleteIdValue = athleteId ? athleteId[1] : null;
@@ -109,6 +114,7 @@ const ViewModel = () => {
       phoneNumberError: !isValidPhone(athleteData.phoneNumber),
       genreError: !isValidGenre(athleteData.genre),
       birthDateError: !isNotEmpty(athleteData.birthDate),
+      startMembershipDateError: !isValidDate(athleteData.startMembershipDate!),
     };
 
     dispatch({ type: "SET_ERROR", errors });
@@ -117,6 +123,10 @@ const ViewModel = () => {
 
   useEffect(() => {
     getMembershipByGymId();
+  }, []);
+
+  useEffect(() => {
+    setDateByDefault();
   }, []);
 
   useEffect(() => {
@@ -208,6 +218,14 @@ const ViewModel = () => {
 
   const setField = (field: keyof AthleteUser, value: Value) => {
     dispatch({ type: "SET_FIELD", field, value });
+  };
+
+  const setDateByDefault = () => {
+    dispatch({
+      type: "SET_FIELD",
+      field: "startMembershipDate",
+      value: dateGMT5,
+    });
   };
 
   return {

@@ -77,6 +77,7 @@ export class AthleteUserServiceImpl implements AthleteUserService {
     >("/Athlete/UpdateMembershipToAthlete", {
       athleteId: data.athleteId,
       membershipId: data.membershipId,
+      startMembershipDate: data.startMembershipDate,
     });
 
     return response.data;

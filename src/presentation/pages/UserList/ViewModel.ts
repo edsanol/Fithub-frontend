@@ -15,6 +15,8 @@ import { DeleteAthleteUserUseCase } from "@/domain/useCases/AthleteUser/deleteAt
 import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 import { useRouter } from "next/navigation";
 import { AthleteColumns } from "@/assets/constants";
+import { useDateGMT5 } from "@/hooks/useDateGMT5";
+import { isValidDate } from "@/presentation/helpers";
 
 interface State {
   athletesList: PaginateResponseList;
@@ -65,6 +67,7 @@ const initialState: State = {
   updateMembershipToAthlete: {
     athleteId: 0,
     membershipId: 0,
+    startMembershipDate: "",
   },
   membership: [],
   isModalOpen: {
@@ -127,11 +130,16 @@ const ViewModel = () => {
     dispatch,
   ] = useReducer(reducer, initialState);
   const { data: session } = useSession();
+  const dateGMT5 = useDateGMT5();
   const router = useRouter();
 
   const [idGym, setIdGym] = useState<number>(0);
   const [errorModal, setErrorModal] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  useEffect(() => {
+    setDateByDefault();
+  }, []);
 
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
@@ -193,6 +201,14 @@ const ViewModel = () => {
   const updateMembership = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
+      const dateError = isValidDate(updateMembershipToAthlete.startMembershipDate!);
+
+      if (!dateError) {
+        setErrorModal(true);
+        setErrorMessage("La fecha de inicio de membresía no es válida");
+        return;
+      }
+
       const updateMembership = container.get<UpdateMembershipToAthleteUseCase>(
         TYPES.UpdateMembershipToAthleteUseCase
       );
@@ -317,6 +333,14 @@ const ViewModel = () => {
     }
   };
 
+  const setDateByDefault = () => {
+    dispatch({
+      type: "SET_UPDATE_MEMBERSHIP_FIELD",
+      field: "startMembershipDate",
+      value: dateGMT5,
+    });
+  };
+
   return {
     athletesList,
     athleteUser,
@@ -325,6 +349,7 @@ const ViewModel = () => {
     AthleteColumns,
     errorModal,
     errorMessage,
+    updateMembershipToAthlete,
     setErrorModal,
     deleteAthleteUser,
     handleOpenModal,

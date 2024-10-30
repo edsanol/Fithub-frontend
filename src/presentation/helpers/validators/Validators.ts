@@ -9,6 +9,7 @@ import {
   passwordRegex,
   phoneRegex,
 } from "@/presentation/interfaces/regex";
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 
 export const isValidEmail = (email: string): boolean => {
   if (emailRegex.test(email)) {
@@ -81,7 +82,10 @@ export const isValidNumber = (number: string): boolean => {
   return false;
 };
 
-export const isValidChangePassword = (oldPassword: string, newPassword: string): boolean => {
+export const isValidChangePassword = (
+  oldPassword: string,
+  newPassword: string
+): boolean => {
   if (oldPassword === newPassword) {
     return false;
   }
@@ -89,7 +93,10 @@ export const isValidChangePassword = (oldPassword: string, newPassword: string):
   return true;
 };
 
-export const isValidNewPassword = (newPassword: string, confirmPassword: string): boolean => {
+export const isValidNewPassword = (
+  newPassword: string,
+  confirmPassword: string
+): boolean => {
   if (newPassword === confirmPassword) {
     return true;
   }
@@ -103,4 +110,28 @@ export const isValidMeasurement = (value: number): boolean => {
   }
 
   return false;
-}
+};
+
+export const isValidDate = (value: string): boolean => {
+  if (!notEmptyRegex.test(value)) {
+    return false;
+  }
+
+  const inputDate = parseDate(value);
+  const currentDate = today(getLocalTimeZone());
+
+  const lastMonthDate = currentDate.subtract({ months: 1 });
+
+  if (
+    inputDate.year < lastMonthDate.year ||
+    (inputDate.year === lastMonthDate.year &&
+      inputDate.month < lastMonthDate.month) ||
+    (inputDate.year === lastMonthDate.year &&
+      inputDate.month === lastMonthDate.month &&
+      inputDate.day < lastMonthDate.day)
+  ) {
+    return false;
+  }
+
+  return true;
+};

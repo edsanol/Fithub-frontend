@@ -27,6 +27,7 @@ const UserList = () => {
     AthleteColumns,
     errorModal,
     errorMessage,
+    updateMembershipToAthlete,
     setErrorModal,
     deleteAthleteUser,
     handleOpenModal,
@@ -121,7 +122,6 @@ const UserList = () => {
                 type="date"
                 label="Fecha de nacimiento"
                 placeholder="Fecha de nacimiento"
-                labelPlacement="outside"
                 size="lg"
                 customInputClass="mt-5"
                 value={athleteUser?.birthDate.slice(0, 10)}
@@ -168,6 +168,16 @@ const UserList = () => {
                 popoverProps={{ color: "foreground" }}
                 items={formatMembershipElements(membership)}
                 onChange={(value) => setField("membershipId", value)}
+              />
+              <FormInput
+                isRequired
+                type="date"
+                label="Inicio de membresía (dd/mm/aaaa)"
+                placeholder="Fecha de inicio de membresía"
+                size="lg"
+                customInputClass="mt-5"
+                onChange={(value) => setField("startMembershipDate", value)}
+                value={updateMembershipToAthlete?.startMembershipDate}
               />
               <div className="mt-5">
                 <PrimaryButton
