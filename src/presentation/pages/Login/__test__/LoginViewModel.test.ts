@@ -2,7 +2,6 @@ import { act, renderHook } from "@testing-library/react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import ViewModel from "../components/login-form/ViewModel";
-import { cipherData } from "@/config/secureData";
 import Cookies from "js-cookie";
 
 jest.mock("next/navigation", () => ({
@@ -16,10 +15,6 @@ jest.mock("next-auth/react", () => ({
 
 jest.mock("js-cookie", () => ({
   set: jest.fn(),
-}));
-
-jest.mock("@/config/secureData", () => ({
-  cipherData: jest.fn(),
 }));
 
 describe("ViewModel", () => {
@@ -111,7 +106,6 @@ describe("ViewModel", () => {
     };
 
     (useSession as jest.Mock).mockReturnValueOnce({ data: mockSession });
-    (cipherData as jest.Mock).mockReturnValueOnce("encryptedRefreshToken");
 
     renderHook(() => ViewModel());
 
@@ -120,7 +114,7 @@ describe("ViewModel", () => {
     });
     expect(Cookies.set).toHaveBeenCalledWith(
       "refreshToken",
-      "encryptedRefreshToken",
+      "mockRefreshToken",
       { expires: 1 }
     );
   });

@@ -96,17 +96,36 @@ const CreateUserForm = () => {
         />
         {!athleteIdValue && (
           <>
-            <FormSelect
-              isRequired
-              label="Membresías"
-              placeholder="Selecciona un plan"
-              size="lg"
-              popoverProps={{ color: "foreground" }}
-              items={formatMembershipElements(membership)}
-              onChange={(value) => setField("membershipId", Number(value))}
-              customInputClass="mt-5 mb-5"
-              value={athleteData?.membershipId}
-            />
+            <div className="md:flex gap-1">
+              <FormSelect
+                isRequired
+                label="Membresías"
+                placeholder="Selecciona un plan"
+                size="lg"
+                popoverProps={{ color: "foreground" }}
+                items={formatMembershipElements(membership)}
+                onChange={(value) => setField("membershipId", Number(value))}
+                customInputClass="mt-5"
+                value={athleteData?.membershipId}
+              />
+              <FormInput
+                isRequired
+                isInvalid={athleteDataError?.startMembershipDateError}
+                color={athleteDataError?.startMembershipDateError ? "danger" : "default"}
+                errorMessage={
+                  athleteDataError?.startMembershipDateError
+                    ? "Por favor ingresa una fecha válida"
+                    : ""
+                }
+                type="date"
+                label="Inicio de membresía (dd/mm/aaaa)"
+                placeholder="Fecha de inicio de membresía"
+                size="lg"
+                customInputClass="mt-5"
+                onChange={(value) => setField("startMembershipDate", value)}
+                value={athleteData?.startMembershipDate}
+              />
+            </div>
           </>
         )}
         <FormInput
@@ -121,7 +140,6 @@ const CreateUserForm = () => {
           type="date"
           label="Fecha de nacimiento"
           placeholder="Fecha de nacimiento"
-          labelPlacement="outside"
           size="lg"
           customInputClass="mt-5"
           onChange={(value) => setField("birthDate", value)}

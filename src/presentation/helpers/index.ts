@@ -11,6 +11,7 @@ import {
   isValidChangePassword,
   isValidNewPassword,
   isValidMeasurement,
+  isValidDate,
 } from "./validators/Validators";
 
 import {
@@ -33,6 +34,7 @@ export {
   isValidChangePassword,
   isValidNewPassword,
   isValidMeasurement,
+  isValidDate,
   cleanAndFormatCurrency,
   formatMembershipElements,
   mapperMuscleNames,
