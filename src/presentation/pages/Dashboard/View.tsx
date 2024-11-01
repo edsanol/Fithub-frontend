@@ -147,7 +147,10 @@ const Dashboard = () => {
                           >
                             <div>
                               <p className="text-sm text-white font-bold">
-                              { getFullName(item.athleteName, item.athleteLastName) }
+                                {getFullName(
+                                  item.athleteName,
+                                  item.athleteLastName
+                                )}
                               </p>
                             </div>
                             <p className="text-sm text-white text-right">
@@ -187,11 +190,12 @@ const Dashboard = () => {
                     Filtro por Fecha
                   </p>
 
-                  <FormDatePicker
+                  <FormInput
+                    type="date"
                     label="Seleccionar fecha"
-                    customInputClass="mt-1"
-                    onChange={handleDateChange}
+                    size="lg"
                     value={selectedDate}
+                    onChange={handleDateChange}
                   />
 
                   <p className="text-sm font-bold text-white p-2">
@@ -226,7 +230,10 @@ const Dashboard = () => {
                           >
                             <div>
                               <p className="text-sm text-white font-bold">
-                                { getFullName(item.athleteName, item.athleteLastName) }
+                                {getFullName(
+                                  item.athleteName,
+                                  item.athleteLastName
+                                )}
                               </p>
                             </div>
                             <p className="text-sm text-white text-right">
