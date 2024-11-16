@@ -1,16 +1,23 @@
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { Category } from "@/domain/entities/Category";
+import { Product } from "@/domain/entities/Product";
 import { GetCategoriesUseCase } from "@/domain/useCases/Category/getCategoriesUseCase";
 import { RegisterCategoryUseCase } from "@/domain/useCases/Category/registerCategoryUseCase";
+import { RegisterProductUseCase } from "@/domain/useCases/Product/registerProductUseCase";
 import { isValidName } from "@/presentation/helpers";
-import { ICategoryValidation } from "@/presentation/interfaces/Category/ICategory";
+import {
+  ICategoryValidation,
+  IProductValidation,
+} from "@/presentation/interfaces";
 import { useEffect, useReducer } from "react";
 
 interface State {
   category: Category;
   categoryList: Category[];
   categoryError: ICategoryValidation;
+  product: Product;
+  productError: IProductValidation;
   isModalOpen: {
     createModal: boolean;
     detailsModal: boolean;
@@ -29,6 +36,8 @@ type Action =
   | { type: "SET_CATEGORY"; category: Category }
   | { type: "SET_CATEGORY_LIST"; categoryList: Category[] }
   | { type: "SET_CATEGORY_ERROR"; categoryError: ICategoryValidation }
+  | { type: "SET_PRODUCT"; product: Product }
+  | { type: "SET_PRODUCT_ERROR"; productError: IProductValidation }
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
   | { type: "SET_MODAL_MODE"; modalMode: "create" | "edit" | "view" };
 
@@ -40,6 +49,27 @@ const initialState: State = {
   categoryList: [],
   categoryError: {
     categoryNameError: false,
+  },
+  product: {
+    name: "",
+    description: "",
+    idCategory: 0,
+    basePrice: 0,
+    idGym: 0,
+    sku: "",
+    price: 0,
+    stockQuantity: 0,
+    productId: 0,
+    categoryId: 0,
+    categoryName: "",
+  },
+  productError: {
+    nameError: false,
+    descriptionError: false,
+    basePriceError: false,
+    skuError: false,
+    priceError: false,
+    stockQuantityError: false,
   },
   isModalOpen: {
     createModal: false,
@@ -77,6 +107,16 @@ function reducer(state: State, action: Action): State {
         ...state,
         categoryError: action.categoryError,
       };
+    case "SET_PRODUCT":
+      return {
+        ...state,
+        product: action.product,
+      };
+    case "SET_PRODUCT_ERROR":
+      return {
+        ...state,
+        productError: action.productError,
+      };
     case "TOGGLE_MODAL":
       return {
         ...state,
@@ -99,7 +139,15 @@ function reducer(state: State, action: Action): State {
 
 const ViewModel = () => {
   const [
-    { isModalOpen, modalMode, category, categoryError, categoryList },
+    {
+      isModalOpen,
+      modalMode,
+      category,
+      categoryError,
+      categoryList,
+      product,
+      productError,
+    },
     dispatch,
   ] = useReducer(reducer, initialState);
 
@@ -113,6 +161,20 @@ const ViewModel = () => {
     };
 
     dispatch({ type: "SET_CATEGORY_ERROR", categoryError: errors });
+    return errors;
+  };
+
+  const handleIsValidForm = () => {
+    const errors: IProductValidation = {
+      nameError: !isValidName(product.name),
+      descriptionError: !isValidName(product.description),
+      basePriceError: product.basePrice <= 0,
+      priceError: product.price <= 0,
+      stockQuantityError: product.stockQuantity <= 0,
+      skuError: !isValidName(product.sku),
+    };
+
+    dispatch({ type: "SET_PRODUCT_ERROR", productError: errors });
     return errors;
   };
 
@@ -140,6 +202,40 @@ const ViewModel = () => {
       toggleModal("categoryModal", false);
 
       await getCategoriesList();
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const errors = handleIsValidForm();
+
+      if (Object.values(errors).some(Boolean)) {
+        return;
+      }
+
+      const registerProductUseCase = container.get<RegisterProductUseCase>(
+        TYPES.RegisterCategoryUseCase
+      );
+
+      const response = await registerProductUseCase.execute({
+        name: product.name,
+        description: product.description,
+        idCategory: product.idCategory,
+        basePrice: product.basePrice,
+        idGym: product.idGym,
+        sku: product.sku,
+        price: product.price,
+        stockQuantity: product.stockQuantity,
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      toggleModal("createModal", false);
     } catch (error: any) {
       console.log(error);
     }

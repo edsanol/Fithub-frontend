@@ -1,9 +1,16 @@
 import { IAthleteValidation } from "./Athlete/IAthlete";
-import { IGymDataValidation, IChangePasswordValidation, IRecoverPasswordValidation, IResetPasswordValidation } from "./Auth/IAuth";
+import {
+  IGymDataValidation,
+  IChangePasswordValidation,
+  IRecoverPasswordValidation,
+  IResetPasswordValidation,
+} from "./Auth/IAuth";
 import { IColumns } from "./CustomTable/ICustomTable";
 import { IDiscountValidation } from "./Discounts/IDiscounts";
 import { IMembershipValidation } from "./Membership/IMembership";
 import { IMeasurementProgressValidation } from "./UserProgress/IUserProgress";
+import { IProductValidation } from "./Product/IProduct";
+import { ICategoryValidation } from "./Category/ICategory";
 
 export type {
   IAthleteValidation,
@@ -15,4 +22,6 @@ export type {
   IDiscountValidation,
   IMembershipValidation,
   IMeasurementProgressValidation,
+  ICategoryValidation,
+  IProductValidation,
 };

@@ -96,6 +96,15 @@ const TYPES = {
   // CategoryUseCases
   RegisterCategoryUseCase: Symbol.for("RegisterCategoryUseCase"),
   GetCategoriesUseCase: Symbol.for("GetCategoriesUseCase"),
+
+  // ProductRepository
+  ProductRepository: Symbol.for("ProductRepository"),
+
+  // ProductService
+  ProductService: Symbol.for("ProductService"),
+
+  // ProductUseCases
+  RegisterProductUseCase: Symbol.for("RegisterProductUseCase"),
 };
 
 export { TYPES };

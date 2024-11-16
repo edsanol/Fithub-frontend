@@ -63,6 +63,11 @@ import { CategoryRepositoryImpl } from "@/infrastructure/repositories/categoryRe
 import { CategoryServiceImpl } from "@/infrastructure/services/categoryService";
 import { RegisterCategoryUseCase } from "@/domain/useCases/Category/registerCategoryUseCase";
 import { GetCategoriesUseCase } from "@/domain/useCases/Category/getCategoriesUseCase";
+import { ProductRepository } from "@/domain/repositories/productRepository";
+import { ProductRepositoryImpl } from "@/infrastructure/repositories/productRepository";
+import { ProductService } from "@/domain/services/productService";
+import { ProductServiceImpl } from "@/infrastructure/services/productService";
+import { RegisterProductUseCase } from "@/domain/useCases/Product/registerProductUseCase";
 
 const container = new Container();
 
@@ -262,5 +267,18 @@ container
 container
   .bind<GetCategoriesUseCase>(TYPES.GetCategoriesUseCase)
   .to(GetCategoriesUseCase);
+
+// ProductRepository
+container
+  .bind<ProductRepository>(TYPES.ProductRepository)
+  .to(ProductRepositoryImpl);
+
+// ProductService
+container.bind<ProductService>(TYPES.ProductService).to(ProductServiceImpl);
+
+// ProductUseCases
+container
+  .bind<RegisterProductUseCase>(TYPES.RegisterProductUseCase)
+  .to(RegisterProductUseCase);
 
 export default container;
