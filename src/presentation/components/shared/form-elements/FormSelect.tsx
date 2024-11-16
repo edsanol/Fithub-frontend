@@ -2,6 +2,13 @@
 
 import { Select, SelectItem } from "@nextui-org/react";
 
+interface DefaultData {
+  key: string;
+  label: string;
+  value: string;
+  icon: JSX.Element;
+}
+
 interface FormSelectProps {
   isRequired?: boolean;
   isDisabled?: boolean;
@@ -13,6 +20,9 @@ interface FormSelectProps {
   customInputClass?: string;
   items: any;
   value?: any;
+  requiredDefaultItem?: boolean;
+  defaultData?: DefaultData;
+  defaultItemAction?: () => void;
   onChange?: (event: string) => void;
 }
 
@@ -27,8 +37,15 @@ const FormSelect = ({
   customInputClass,
   items,
   value,
+  requiredDefaultItem,
+  defaultData,
+  defaultItemAction,
   onChange,
 }: FormSelectProps) => {
+  const handleDefaultItemAction = () => {
+    defaultItemAction && defaultItemAction();
+  };
+
   return (
     <>
       {items && (
@@ -54,6 +71,21 @@ const FormSelect = ({
               {item.label}
             </SelectItem>
           ))}
+
+          {requiredDefaultItem && (
+            <SelectItem
+              key={defaultData?.key || ""}
+              value={defaultData?.value || ""}
+              classNames={{ base: "dark" }}
+              className="h-10 sticky bg-gray-600 bottom-2 font-bold text-white"
+              onClick={handleDefaultItemAction}
+            >
+              <div className="flex gap-2 items-center">
+                {defaultData?.icon}
+                {defaultData?.label}
+              </div>
+            </SelectItem>
+          )}
         </Select>
       )}
     </>

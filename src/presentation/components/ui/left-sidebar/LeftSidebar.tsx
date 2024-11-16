@@ -15,6 +15,7 @@ import ProfileIcon from "@/assets/svg/ProfileIcon";
 import ArrowDownIcon from "@/assets/svg/ArrowDownIcon";
 import ArrowLeftIcon from "@/assets/svg/ArrowLeftIcon";
 import Image from "next/image";
+import InventoryIcon from "@/assets/svg/InventoryIcon";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -161,6 +162,54 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 label="Progreso deportistas"
                                 url="/user-progress"
                                 route="/user-progress"
+                              />
+                            </li>
+                          </ul>
+                        </div>
+                      </>
+                    );
+                  }}
+                </SidebarLinkGroup>
+
+                <SidebarLinkGroup
+                  activeCondition={
+                    pathname === "/inventory" || pathname.includes("inventory")
+                  }
+                >
+                  {(handleClick, open) => {
+                    return (
+                      <>
+                        <SidebarItems
+                          url="#"
+                          icon={<InventoryIcon />}
+                          route="inventory"
+                          label="Inventario"
+                          handleClick={() => {
+                            sidebarExpanded
+                              ? handleClick()
+                              : setSidebarExpanded(true);
+                          }}
+                          secondaryIcon={<ArrowDownIcon open={open} />}
+                        />
+
+                        <div
+                          className={`transition-opacity opacity-0 duration-700 ease-in-out overflow-hidden ${
+                            open ? "opacity-100 max-h-96" : "max-h-0"
+                          }`}
+                        >
+                          <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                            <li>
+                              <SidebarLinkGroupItems
+                                label="Listado de productos"
+                                url="/inventory"
+                                route="/inventory"
+                              />
+                            </li>
+                            <li>
+                              <SidebarLinkGroupItems
+                                label="Listado de ordenes"
+                                url="/orders"
+                                route="/orders"
                               />
                             </li>
                           </ul>

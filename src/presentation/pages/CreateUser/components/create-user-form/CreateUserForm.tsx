@@ -96,7 +96,7 @@ const CreateUserForm = () => {
         />
         {!athleteIdValue && (
           <>
-            <div className="md:flex gap-1">
+            <div className="md:flex gap-3">
               <FormSelect
                 isRequired
                 label="Membresías"
@@ -111,7 +111,11 @@ const CreateUserForm = () => {
               <FormInput
                 isRequired
                 isInvalid={athleteDataError?.startMembershipDateError}
-                color={athleteDataError?.startMembershipDateError ? "danger" : "default"}
+                color={
+                  athleteDataError?.startMembershipDateError
+                    ? "danger"
+                    : "default"
+                }
                 errorMessage={
                   athleteDataError?.startMembershipDateError
                     ? "Por favor ingresa una fecha válida"
