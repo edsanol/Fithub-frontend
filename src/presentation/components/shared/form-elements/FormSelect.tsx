@@ -61,6 +61,21 @@ const FormSelect = ({
           className={customInputClass || ""}
           defaultSelectedKeys={value ? [value.toString()] : ""}
         >
+          {requiredDefaultItem && (
+            <SelectItem
+              key={defaultData?.key || ""}
+              value={defaultData?.value || ""}
+              classNames={{ base: "dark" }}
+              className="h-10 sticky bg-[#272729] bottom-2 font-bold text-white"
+              onClick={handleDefaultItemAction}
+            >
+              <div className="flex gap-2 items-center">
+                {defaultData?.icon}
+                {defaultData?.label}
+              </div>
+            </SelectItem>
+          )}
+
           {items.map((item: any) => (
             <SelectItem
               key={item.value}
@@ -71,21 +86,6 @@ const FormSelect = ({
               {item.label}
             </SelectItem>
           ))}
-
-          {requiredDefaultItem && (
-            <SelectItem
-              key={defaultData?.key || ""}
-              value={defaultData?.value || ""}
-              classNames={{ base: "dark" }}
-              className="h-10 sticky bg-gray-600 bottom-2 font-bold text-white"
-              onClick={handleDefaultItemAction}
-            >
-              <div className="flex gap-2 items-center">
-                {defaultData?.icon}
-                {defaultData?.label}
-              </div>
-            </SelectItem>
-          )}
         </Select>
       )}
     </>

@@ -10,22 +10,7 @@ import {
 } from "@/presentation/components";
 import ViewModel from "./ViewModel";
 import PlusIcon from "@/assets/svg/PlusIcon";
-
-const animals = [
-  { key: "cat", label: "Cat" },
-  { key: "dog", label: "Dog" },
-  { key: "elephant", label: "Elephant" },
-  { key: "lion", label: "Lion" },
-  { key: "tiger", label: "Tiger" },
-  { key: "giraffe", label: "Giraffe" },
-  { key: "dolphin", label: "Dolphin" },
-  { key: "penguin", label: "Penguin" },
-  { key: "zebra", label: "Zebra" },
-  { key: "shark", label: "Shark" },
-  { key: "whale", label: "Whale" },
-  { key: "otter", label: "Otter" },
-  { key: "crocodile", label: "Crocodile" },
-];
+import { formatCategoryElements } from "@/presentation/helpers";
 
 const defaultCategory = {
   key: "default",
@@ -35,7 +20,15 @@ const defaultCategory = {
 };
 
 const Inventory = () => {
-  const { toggleModal, isModalOpen, handleOpenModal } = ViewModel();
+  const {
+    isModalOpen,
+    categoryError,
+    categoryList,
+    setField,
+    toggleModal,
+    handleOpenModal,
+    handleRegisterCategory,
+  } = ViewModel();
 
   return (
     <>
@@ -77,7 +70,7 @@ const Inventory = () => {
               <div className="flex gap-2 mb-5">
                 <FormSelect
                   requiredDefaultItem
-                  items={animals}
+                  items={formatCategoryElements(categoryList)}
                   label="Categoría"
                   customInputClass="max-w-xs"
                   popoverProps={{ color: "foreground" }}
@@ -138,13 +131,21 @@ const Inventory = () => {
             <form className="mt-3">
               <FormInput
                 isRequired
+                isInvalid={categoryError?.categoryNameError}
+                color={categoryError?.categoryNameError ? "danger" : "default"}
+                errorMessage={categoryError?.categoryNameError ? "Por favor ingresa un nombre válido" : ""}
                 type="text"
                 label="Nombre de la categoría"
                 size="lg"
+                onChange={(value) => setField("categoryName", value)}
               />
 
               <div className="mt-5">
-                <PrimaryButton text="Crear" customButtonClass="w-full p-8" />
+                <PrimaryButton
+                  text="Crear"
+                  customButtonClass="w-full p-8"
+                  onClick={handleRegisterCategory}
+                />
               </div>
             </form>
           </>

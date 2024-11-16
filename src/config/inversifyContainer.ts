@@ -57,6 +57,12 @@ import { GetMeasurementsGraphicUseCase } from "@/domain/useCases/AthleteUser/get
 import { UnsubscribeAthleteUserUseCase } from "@/domain/useCases/AthleteUser/unsubscribeAthleteUserUseCase";
 import { GetAthleteAssistanceUseCase } from "@/domain/useCases/Dashboard/getAthleteAssistanceUseCase";
 import { GetAthleteBirthDateUseCase } from "@/domain/useCases/Dashboard/getAthleteBirthDateUseCase";
+import { CategoryRepository } from "@/domain/repositories/categoryRepository";
+import { CategoryService } from "@/domain/services/categoryService";
+import { CategoryRepositoryImpl } from "@/infrastructure/repositories/categoryRepository";
+import { CategoryServiceImpl } from "@/infrastructure/services/categoryService";
+import { RegisterCategoryUseCase } from "@/domain/useCases/Category/registerCategoryUseCase";
+import { GetCategoriesUseCase } from "@/domain/useCases/Category/getCategoriesUseCase";
 
 const container = new Container();
 
@@ -240,5 +246,21 @@ container
 container
   .bind<GetAthleteBirthDateUseCase>(TYPES.GetAthleteBirthDateUseCase)
   .to(GetAthleteBirthDateUseCase);
+
+// CategoryRepository
+container
+  .bind<CategoryRepository>(TYPES.CategoryRepository)
+  .to(CategoryRepositoryImpl);
+
+// CategoryService
+container.bind<CategoryService>(TYPES.CategoryService).to(CategoryServiceImpl);
+
+// CategoryUseCases
+container
+  .bind<RegisterCategoryUseCase>(TYPES.RegisterCategoryUseCase)
+  .to(RegisterCategoryUseCase);
+container
+  .bind<GetCategoriesUseCase>(TYPES.GetCategoriesUseCase)
+  .to(GetCategoriesUseCase);
 
 export default container;

@@ -17,6 +17,7 @@ import {
 import {
   cleanAndFormatCurrency,
   formatMembershipElements,
+  formatCategoryElements,
 } from "./formats/Formats";
 
 import { mapperMuscleNames, mapperMuscleIcon } from "./mappers/Mappers";
@@ -37,6 +38,7 @@ export {
   isValidDate,
   cleanAndFormatCurrency,
   formatMembershipElements,
+  formatCategoryElements,
   mapperMuscleNames,
   mapperMuscleIcon,
 };

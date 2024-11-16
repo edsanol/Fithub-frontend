@@ -1,3 +1,4 @@
+import { Category } from "@/domain/entities/Category";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 
 export const cleanAndFormatCurrency = (
@@ -22,5 +23,12 @@ export const formatMembershipElements = (memberships: MembershipByGymId[]) => {
   return memberships.map((membership) => ({
     value: membership.membershipID,
     label: membership.membershipName,
+  }));
+};
+
+export const formatCategoryElements = (categories: Category[]) => {
+  return categories.map((category) => ({
+    value: category.categoryId,
+    label: category.categoryName,
   }));
 };

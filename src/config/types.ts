@@ -86,6 +86,16 @@ const TYPES = {
   GetMembershipGraphicUseCase: Symbol.for("GetMembershipGraphicUseCase"),
   GetAthleteAssistanceUseCase: Symbol.for("GetAthleteAssistanceUseCase"),
   GetAthleteBirthDateUseCase: Symbol.for("GetAthleteBirthDateUseCase"),
+
+  // CategoryRepository
+  CategoryRepository: Symbol.for("CategoryRepository"),
+
+  // CategoryService
+  CategoryService: Symbol.for("CategoryService"),
+
+  // CategoryUseCases
+  RegisterCategoryUseCase: Symbol.for("RegisterCategoryUseCase"),
+  GetCategoriesUseCase: Symbol.for("GetCategoriesUseCase"),
 };
 
 export { TYPES };
