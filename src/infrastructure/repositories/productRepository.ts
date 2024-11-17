@@ -1,5 +1,7 @@
 import { TYPES } from "@/config/types";
 import { Product } from "@/domain/entities/Product";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { ProductRepository } from "@/domain/repositories/productRepository";
 import type { ProductService } from "@/domain/services/productService";
 import { inject, injectable } from "inversify";
@@ -14,6 +16,12 @@ export class ProductRepositoryImpl implements ProductRepository {
 
   async registerProduct(product: Product): Promise<boolean> {
     const response = await this.service.registerProduct(product);
+
+    return response;
+  }
+
+  async getProductList(data: PaginateData): Promise<PaginateResponseList<Product>> {
+    const response = await this.service.getProductList(data);
 
     return response;
   }

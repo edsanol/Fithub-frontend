@@ -68,6 +68,7 @@ import { ProductRepositoryImpl } from "@/infrastructure/repositories/productRepo
 import { ProductService } from "@/domain/services/productService";
 import { ProductServiceImpl } from "@/infrastructure/services/productService";
 import { RegisterProductUseCase } from "@/domain/useCases/Product/registerProductUseCase";
+import { GetProductListUseCase } from "@/domain/useCases/Product/getProductListUseCase";
 
 const container = new Container();
 
@@ -280,5 +281,8 @@ container.bind<ProductService>(TYPES.ProductService).to(ProductServiceImpl);
 container
   .bind<RegisterProductUseCase>(TYPES.RegisterProductUseCase)
   .to(RegisterProductUseCase);
+container
+  .bind<GetProductListUseCase>(TYPES.GetProductListUseCase)
+  .to(GetProductListUseCase);
 
 export default container;
