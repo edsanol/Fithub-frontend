@@ -29,13 +29,14 @@ interface State {
   modalMode: "create" | "edit" | "view";
 }
 
-type Value = string | boolean;
+type Value = string | boolean | number;
 
 type Action =
-  | { type: "SET_FIELD"; field: keyof Category; value: Value }
+  | { type: "SET_FIELD_CATEGORY"; field: keyof Category; value: Value }
   | { type: "SET_CATEGORY"; category: Category }
   | { type: "SET_CATEGORY_LIST"; categoryList: Category[] }
   | { type: "SET_CATEGORY_ERROR"; categoryError: ICategoryValidation }
+  | { type: "SET_FIELD"; field: keyof Product; value: Value }
   | { type: "SET_PRODUCT"; product: Product }
   | { type: "SET_PRODUCT_ERROR"; productError: IProductValidation }
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
@@ -84,7 +85,7 @@ const initialState: State = {
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case "SET_FIELD":
+    case "SET_FIELD_CATEGORY":
       return {
         ...state,
         category: {
@@ -106,6 +107,14 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         categoryError: action.categoryError,
+      };
+    case "SET_FIELD":
+      return {
+        ...state,
+        category: {
+          ...state.category,
+          [action.field]: action.value,
+        },
       };
     case "SET_PRODUCT":
       return {
@@ -201,7 +210,28 @@ const ViewModel = () => {
 
       toggleModal("categoryModal", false);
 
-      await getCategoriesList();
+      const updatedCategoryList = await getCategoriesList();
+
+      if (!updatedCategoryList) {
+        console.log("error al obtener la lista de categorías");
+        return;
+      }
+
+      const recentlyAddedCategory = updatedCategoryList.find((categoryItem) =>
+        categoryItem.categoryName.toLowerCase().trim() ===
+        category.categoryName.toLowerCase().trim()
+      );
+
+      console.log("recentlyAddedCategory", recentlyAddedCategory);
+
+      if (recentlyAddedCategory) {
+        dispatch({
+          type: "SET_PRODUCT",
+          product: { ...product, idCategory: recentlyAddedCategory.categoryId! },
+        });
+
+        setField("idCategory", recentlyAddedCategory.categoryId!);
+      }
     } catch (error: any) {
       console.log(error);
     }
@@ -255,6 +285,8 @@ const ViewModel = () => {
       }
 
       dispatch({ type: "SET_CATEGORY_LIST", categoryList: response });
+
+      return response;
     } catch (error: any) {
       console.log(error);
     }
@@ -286,7 +318,11 @@ const ViewModel = () => {
     toggleModal(modalName);
   };
 
-  const setField = (field: keyof Category, value: Value) => {
+  const setFieldCategory = (field: keyof Category, value: Value) => {
+    dispatch({ type: "SET_FIELD_CATEGORY", field, value });
+  };
+
+  const setField = (field: keyof Product, value: Value) => {
     dispatch({ type: "SET_FIELD", field, value });
   };
 
@@ -294,7 +330,10 @@ const ViewModel = () => {
     isModalOpen,
     categoryList,
     categoryError,
+    product,
+    handleSubmit,
     setField,
+    setFieldCategory,
     handleRegisterCategory,
     handleOpenModal,
     toggleModal,

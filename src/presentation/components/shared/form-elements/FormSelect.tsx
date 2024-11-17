@@ -3,9 +3,7 @@
 import { Select, SelectItem } from "@nextui-org/react";
 
 interface DefaultData {
-  key: string;
   label: string;
-  value: string;
   icon: JSX.Element;
 }
 
@@ -16,7 +14,6 @@ interface FormSelectProps {
   placeholder?: string;
   size?: "lg" | "md" | "sm";
   description?: string;
-  popoverProps?: any;
   customInputClass?: string;
   items: any;
   value?: any;
@@ -33,7 +30,6 @@ const FormSelect = ({
   placeholder,
   size,
   description,
-  popoverProps,
   customInputClass,
   items,
   value,
@@ -56,15 +52,15 @@ const FormSelect = ({
           placeholder={placeholder || ""}
           size={size || "lg"}
           classNames={{ base: "dark" }}
-          popoverProps={popoverProps || ""}
+          popoverProps={{ color: "foreground" }}
           description={description || ""}
           className={customInputClass || ""}
           defaultSelectedKeys={value ? [value.toString()] : ""}
         >
           {requiredDefaultItem && (
             <SelectItem
-              key={defaultData?.key || ""}
-              value={defaultData?.value || ""}
+              key="default"
+              value="default"
               classNames={{ base: "dark" }}
               className="h-10 sticky bg-[#272729] bottom-2 font-bold text-white"
               onClick={handleDefaultItemAction}

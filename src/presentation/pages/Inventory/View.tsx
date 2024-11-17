@@ -13,9 +13,7 @@ import PlusIcon from "@/assets/svg/PlusIcon";
 import { formatCategoryElements } from "@/presentation/helpers";
 
 const defaultCategory = {
-  key: "default",
   label: "Crear categoría",
-  value: "nuevo valor",
   icon: <PlusIcon />,
 };
 
@@ -24,7 +22,10 @@ const Inventory = () => {
     isModalOpen,
     categoryError,
     categoryList,
+    product,
+    handleSubmit,
     setField,
+    setFieldCategory,
     toggleModal,
     handleOpenModal,
     handleRegisterCategory,
@@ -59,7 +60,7 @@ const Inventory = () => {
         size="2xl"
         content={
           <>
-            <form className="mt-3">
+            <form className="mt-3" onSubmit={handleSubmit}>
               <FormInput
                 isRequired
                 type="text"
@@ -69,13 +70,15 @@ const Inventory = () => {
               />
               <div className="flex gap-2 mb-5">
                 <FormSelect
+                  isRequired
                   requiredDefaultItem
                   items={formatCategoryElements(categoryList)}
                   label="Categoría"
                   customInputClass="max-w-xs"
-                  popoverProps={{ color: "foreground" }}
                   defaultData={defaultCategory}
                   defaultItemAction={() => handleOpenModal("categoryModal")}
+                  onChange={(value) => setField("idCategory", value)}
+                  value={product.idCategory}
                 />
 
                 <FormInput isRequired type="number" label="Stock" size="lg" />
@@ -137,7 +140,7 @@ const Inventory = () => {
                 type="text"
                 label="Nombre de la categoría"
                 size="lg"
-                onChange={(value) => setField("categoryName", value)}
+                onChange={(value) => setFieldCategory("categoryName", value)}
               />
 
               <div className="mt-5">
