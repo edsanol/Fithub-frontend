@@ -5,4 +5,5 @@ export interface IProductValidation {
   skuError: boolean;
   priceError: boolean;
   stockQuantityError: boolean;
+  idCategoryError: boolean;
 }

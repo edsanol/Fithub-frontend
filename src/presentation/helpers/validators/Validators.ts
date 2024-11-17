@@ -135,3 +135,8 @@ export const isValidDate = (value: string): boolean => {
 
   return true;
 };
+
+export const isValidSku = (sku: string): boolean => {
+  const skuRegex = /^[A-Z0-9]{8}$/;
+  return skuRegex.test(sku);
+};

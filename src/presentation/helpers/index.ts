@@ -12,6 +12,7 @@ import {
   isValidNewPassword,
   isValidMeasurement,
   isValidDate,
+  isValidSku,
 } from "./validators/Validators";
 
 import {
@@ -36,6 +37,7 @@ export {
   isValidNewPassword,
   isValidMeasurement,
   isValidDate,
+  isValidSku,
   cleanAndFormatCurrency,
   formatMembershipElements,
   formatCategoryElements,

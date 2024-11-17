@@ -3,6 +3,7 @@
 import {
   CustomModal,
   DashboardHeader,
+  FormCheckbox,
   FormInput,
   FormSelect,
   FormTextarea,
@@ -23,6 +24,10 @@ const Inventory = () => {
     categoryError,
     categoryList,
     product,
+    productError,
+    selectedCheckbox,
+    handleSkuChange,
+    handleCheckboxChange,
     handleSubmit,
     setField,
     setFieldCategory,
@@ -63,15 +68,30 @@ const Inventory = () => {
             <form className="mt-3" onSubmit={handleSubmit}>
               <FormInput
                 isRequired
+                isInvalid={productError?.nameError}
+                color={productError?.nameError ? "danger" : "default"}
+                errorMessage={
+                  productError?.nameError
+                    ? "Por favor ingresa un nombre válido"
+                    : ""
+                }
                 type="text"
                 label="Nombre del producto"
                 size="lg"
                 customInputClass="mb-5"
+                onChange={(value) => setField("name", value)}
               />
-              <div className="flex gap-2 mb-5">
+              <div className="block md:flex gap-2 mb-5">
                 <FormSelect
                   isRequired
                   requiredDefaultItem
+                  isInvalid={productError?.idCategoryError}
+                  color={productError?.idCategoryError ? "danger" : "default"}
+                  errorMessage={
+                    productError?.idCategoryError
+                      ? "Por favor selecciona una categoría válida"
+                      : ""
+                  }
                   items={formatCategoryElements(categoryList)}
                   label="Categoría"
                   customInputClass="max-w-xs"
@@ -81,36 +101,92 @@ const Inventory = () => {
                   value={product.idCategory}
                 />
 
-                <FormInput isRequired type="number" label="Stock" size="lg" />
-              </div>
-              <div className="flex gap-2 mb-5">
                 <FormInput
                   isRequired
+                  isInvalid={productError?.stockQuantityError}
+                  color={
+                    productError?.stockQuantityError ? "danger" : "default"
+                  }
+                  errorMessage={
+                    productError?.stockQuantityError
+                      ? "Por favor ingresa un stock válido"
+                      : ""
+                  }
+                  type="number"
+                  label="Stock"
+                  size="lg"
+                  customInputClass="mt-5 md:mt-0"
+                  onChange={(value) => setField("stockQuantity", value)}
+                />
+              </div>
+              <div className="block md:flex gap-2 mb-5">
+                <FormInput
+                  isRequired
+                  isInvalid={productError?.basePriceError}
+                  color={productError?.basePriceError ? "danger" : "default"}
+                  errorMessage={
+                    productError?.basePriceError
+                      ? "Por favor ingresa un precio de compra válido"
+                      : ""
+                  }
                   type="number"
                   label="Precio de compra"
                   size="lg"
+                  onChange={(value) => setField("basePrice", value)}
                 />
                 <FormInput
                   isRequired
+                  isInvalid={productError?.priceError}
+                  color={productError?.priceError ? "danger" : "default"}
+                  errorMessage={
+                    productError?.priceError
+                      ? "Por favor ingresa un precio de venta válido"
+                      : ""
+                  }
                   type="number"
                   label="Precio de venta"
                   size="lg"
+                  customInputClass="mt-5 md:mt-0"
+                  onChange={(value) => setField("price", value)}
                 />
               </div>
-              <div className="flex gap-2">
-                <FormInput
-                  isRequired
-                  type="text"
-                  label="SKU (Identificador único)"
-                  size="lg"
-                />
-              </div>
+              <FormInput
+                isRequired
+                isInvalid={productError?.skuError}
+                color={productError?.skuError ? "danger" : "default"}
+                errorMessage={
+                  productError?.skuError
+                    ? "El SKU debe tener al menos 8 caracteres alfánúmericos y en mayúsculas, no debe contener espacios"
+                    : ""
+                }
+                isReadOnly={selectedCheckbox}
+                type="text"
+                label="SKU (Identificador único)"
+                size="lg"
+                customInputClass="mb-2"
+                onChange={(value) => handleSkuChange(value)}
+                value={product.sku}
+              />
+
+              <FormCheckbox
+                label="Autogenerar SKU"
+                selected={selectedCheckbox}
+                onValueChange={handleCheckboxChange}
+              />
               <div className="mt-3">
                 <FormTextarea
                   isRequired
+                  isInvalid={productError?.descriptionError}
+                  color={productError?.descriptionError ? "danger" : "default"}
+                  errorMessage={
+                    productError?.descriptionError
+                      ? "Por favor ingresa una descripción válida"
+                      : ""
+                  }
                   label="Descripción"
                   placeholder="Escribe una descripción de la membresía"
                   size="lg"
+                  onChange={(value) => setField("description", value)}
                 />
               </div>
               <div className="mt-5">
@@ -136,7 +212,11 @@ const Inventory = () => {
                 isRequired
                 isInvalid={categoryError?.categoryNameError}
                 color={categoryError?.categoryNameError ? "danger" : "default"}
-                errorMessage={categoryError?.categoryNameError ? "Por favor ingresa un nombre válido" : ""}
+                errorMessage={
+                  categoryError?.categoryNameError
+                    ? "Por favor ingresa un nombre válido"
+                    : ""
+                }
                 type="text"
                 label="Nombre de la categoría"
                 size="lg"

@@ -5,12 +5,14 @@ import { Product } from "@/domain/entities/Product";
 import { GetCategoriesUseCase } from "@/domain/useCases/Category/getCategoriesUseCase";
 import { RegisterCategoryUseCase } from "@/domain/useCases/Category/registerCategoryUseCase";
 import { RegisterProductUseCase } from "@/domain/useCases/Product/registerProductUseCase";
-import { isValidName } from "@/presentation/helpers";
+import { useSkuGenerate } from "@/hooks/useSkuGenerate";
+import { isNotEmpty, isValidName, isValidSku } from "@/presentation/helpers";
 import {
   ICategoryValidation,
   IProductValidation,
 } from "@/presentation/interfaces";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface State {
   category: Category;
@@ -71,6 +73,7 @@ const initialState: State = {
     skuError: false,
     priceError: false,
     stockQuantityError: false,
+    idCategoryError: false,
   },
   isModalOpen: {
     createModal: false,
@@ -111,8 +114,8 @@ function reducer(state: State, action: Action): State {
     case "SET_FIELD":
       return {
         ...state,
-        category: {
-          ...state.category,
+        product: {
+          ...state.product,
           [action.field]: action.value,
         },
       };
@@ -160,9 +163,34 @@ const ViewModel = () => {
     dispatch,
   ] = useReducer(reducer, initialState);
 
+  const { data: session } = useSession();
+  const generatedSku = useSkuGenerate();
+
+  const [idGym, setIdGym] = useState<number>(0);
+  const [selectedCheckbox, setSelectedCheckbox] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (session && session.user.gymId !== idGym) {
+      setIdGym(session.user.gymId);
+    }
+  }, [session]);
+
   useEffect(() => {
     getCategoriesList();
   }, []);
+
+  useEffect(() => {
+    if (selectedCheckbox) {
+      handleGenerateSku();
+    } else {
+      dispatch({
+        type: "SET_PRODUCT",
+        product: { ...product, sku: "" },
+      });
+
+      setField("sku", "");
+    }
+  }, [selectedCheckbox]);
 
   const handleIsValidCategoryForm = () => {
     const errors: ICategoryValidation = {
@@ -175,12 +203,13 @@ const ViewModel = () => {
 
   const handleIsValidForm = () => {
     const errors: IProductValidation = {
-      nameError: !isValidName(product.name),
-      descriptionError: !isValidName(product.description),
+      nameError: !isNotEmpty(product.name),
+      descriptionError: !isNotEmpty(product.description),
       basePriceError: product.basePrice <= 0,
       priceError: product.price <= 0,
       stockQuantityError: product.stockQuantity <= 0,
-      skuError: !isValidName(product.sku),
+      skuError: !isValidSku(product.sku),
+      idCategoryError: String(product.idCategory) === "default",
     };
 
     dispatch({ type: "SET_PRODUCT_ERROR", productError: errors });
@@ -217,17 +246,19 @@ const ViewModel = () => {
         return;
       }
 
-      const recentlyAddedCategory = updatedCategoryList.find((categoryItem) =>
-        categoryItem.categoryName.toLowerCase().trim() ===
-        category.categoryName.toLowerCase().trim()
+      const recentlyAddedCategory = updatedCategoryList.find(
+        (categoryItem) =>
+          categoryItem.categoryName.toLowerCase().trim() ===
+          category.categoryName.toLowerCase().trim()
       );
-
-      console.log("recentlyAddedCategory", recentlyAddedCategory);
 
       if (recentlyAddedCategory) {
         dispatch({
           type: "SET_PRODUCT",
-          product: { ...product, idCategory: recentlyAddedCategory.categoryId! },
+          product: {
+            ...product,
+            idCategory: recentlyAddedCategory.categoryId!,
+          },
         });
 
         setField("idCategory", recentlyAddedCategory.categoryId!);
@@ -237,7 +268,8 @@ const ViewModel = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     try {
       const errors = handleIsValidForm();
 
@@ -245,19 +277,24 @@ const ViewModel = () => {
         return;
       }
 
+      if (idGym === 0) {
+        console.log("error");
+        return;
+      }
+
       const registerProductUseCase = container.get<RegisterProductUseCase>(
-        TYPES.RegisterCategoryUseCase
+        TYPES.RegisterProductUseCase
       );
 
       const response = await registerProductUseCase.execute({
         name: product.name,
         description: product.description,
-        idCategory: product.idCategory,
-        basePrice: product.basePrice,
-        idGym: product.idGym,
+        idCategory: Number(product.idCategory),
+        basePrice: Number(product.basePrice),
+        idGym: idGym,
         sku: product.sku,
-        price: product.price,
-        stockQuantity: product.stockQuantity,
+        price: Number(product.price),
+        stockQuantity: Number(product.stockQuantity),
       });
 
       if (!response) {
@@ -292,6 +329,30 @@ const ViewModel = () => {
     }
   };
 
+  const handleGenerateSku = () => {
+    dispatch({
+      type: "SET_PRODUCT",
+      product: { ...product, sku: generatedSku },
+    });
+
+    setField("sku", generatedSku);
+  };
+
+  const handleSkuChange = (value: string) => {
+    if (!selectedCheckbox) {
+      const uppercasedValue = value.toUpperCase();
+      setField("sku", uppercasedValue);
+      dispatch({
+        type: "SET_PRODUCT",
+        product: { ...product, sku: uppercasedValue },
+      });
+    }
+  };
+
+  const handleCheckboxChange = () => {
+    setSelectedCheckbox(!selectedCheckbox);
+  };
+
   const toggleModal = (modalName: string, value?: boolean) => {
     dispatch({ type: "TOGGLE_MODAL", modalName, value });
   };
@@ -306,6 +367,8 @@ const ViewModel = () => {
         setModalMode("edit");
         break;
       case "createModal":
+        dispatch({ type: "SET_PRODUCT", product: initialState.product });
+        setSelectedCheckbox(false);
         setModalMode("create");
         break;
       case "detailsModal":
@@ -331,6 +394,10 @@ const ViewModel = () => {
     categoryList,
     categoryError,
     product,
+    productError,
+    selectedCheckbox,
+    handleSkuChange,
+    handleCheckboxChange,
     handleSubmit,
     setField,
     setFieldCategory,
