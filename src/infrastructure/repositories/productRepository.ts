@@ -34,4 +34,10 @@ export class ProductRepositoryImpl implements ProductRepository {
 
     return response;
   }
+
+  async deleteProduct(id: string): Promise<boolean> {
+    const response = await this.service.deleteProduct(id);
+
+    return response;
+  }
 }

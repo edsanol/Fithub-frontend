@@ -7,4 +7,5 @@ export interface ProductRepository {
   registerProduct(product: Product): Promise<boolean>;
   getProductList(data: PaginateData): Promise<PaginateResponseList<Product>>;
   stockProductMovements(data: StockMovements): Promise<boolean>;
+  deleteProduct(id: string): Promise<boolean>;
 }

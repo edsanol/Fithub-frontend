@@ -106,7 +106,10 @@ const TYPES = {
   // ProductUseCases
   RegisterProductUseCase: Symbol.for("RegisterProductUseCase"),
   GetProductListUseCase: Symbol.for("GetProductListUseCase"),
-  RegisterEntryAndExitProductUseCase: Symbol.for("RegisterEntryAndExitProductUseCase"),
+  RegisterEntryAndExitProductUseCase: Symbol.for(
+    "RegisterEntryAndExitProductUseCase"
+  ),
+  DeleteProductUseCase: Symbol.for("DeleteProductUseCase"),
 };
 
 export { TYPES };

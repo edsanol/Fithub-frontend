@@ -70,6 +70,7 @@ import { ProductServiceImpl } from "@/infrastructure/services/productService";
 import { RegisterProductUseCase } from "@/domain/useCases/Product/registerProductUseCase";
 import { GetProductListUseCase } from "@/domain/useCases/Product/getProductListUseCase";
 import { RegisterEntryAndExitProductUseCase } from "@/domain/useCases/Product/registerEntryAndExitProduct";
+import { DeleteProductUseCase } from "@/domain/useCases/Product/deleteProductUseCase";
 
 const container = new Container();
 
@@ -290,5 +291,8 @@ container
     TYPES.RegisterEntryAndExitProductUseCase
   )
   .to(RegisterEntryAndExitProductUseCase);
+container
+  .bind<DeleteProductUseCase>(TYPES.DeleteProductUseCase)
+  .to(DeleteProductUseCase);
 
 export default container;

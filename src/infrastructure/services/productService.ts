@@ -44,4 +44,13 @@ export class ProductServiceImpl implements ProductService {
 
     return response.data;
   }
+
+  async deleteProduct(id: string): Promise<boolean> {
+    const response = await this.http.put<TickerResponseApi<boolean>, null>(
+      `/InventoryProducts/DeleteProduct/${id}`,
+      null
+    );
+
+    return response.data;
+  }
 }

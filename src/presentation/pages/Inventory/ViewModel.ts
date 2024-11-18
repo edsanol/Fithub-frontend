@@ -20,6 +20,7 @@ import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { ProductColumns } from "@/assets/constants";
 import { StockMovements } from "@/domain/models/StockMovements";
 import { RegisterEntryAndExitProductUseCase } from "@/domain/useCases/Product/registerEntryAndExitProduct";
+import { DeleteProductUseCase } from "@/domain/useCases/Product/deleteProductUseCase";
 
 interface State {
   category: Category;
@@ -230,6 +231,7 @@ const ViewModel = () => {
 
   const [idGym, setIdGym] = useState<number>(0);
   const [selectedCheckbox, setSelectedCheckbox] = useState<boolean>(false);
+  const [productId, setProductId] = useState<string>("");
 
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
@@ -458,6 +460,27 @@ const ViewModel = () => {
     }
   };
 
+  const deleteProduct = async (productId: string) => {
+    try {
+      const deleteProductUseCase = container.get<DeleteProductUseCase>(
+        TYPES.DeleteProductUseCase
+      );
+
+      const response = await deleteProductUseCase.execute(productId);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      await getProductList({ numPage: 1 });
+
+      toggleModal("deleteModal", false);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
   const handleGenerateSku = () => {
     dispatch({
       type: "SET_PRODUCT",
@@ -504,6 +527,7 @@ const ViewModel = () => {
         setModalMode("view");
         break;
       case "deleteModal":
+        setProductId(String(productId));
         break;
       case "stockMovementModal":
         dispatch({
@@ -537,6 +561,7 @@ const ViewModel = () => {
   };
 
   return {
+    productId,
     isModalOpen,
     categoryList,
     categoryError,
@@ -559,6 +584,7 @@ const ViewModel = () => {
     toggleModal,
     handleSetNumPage,
     handleSetTextFilter,
+    deleteProduct,
   };
 };
 

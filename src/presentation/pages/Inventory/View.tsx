@@ -14,6 +14,8 @@ import ViewModel from "./ViewModel";
 import PlusIcon from "@/assets/svg/PlusIcon";
 import { formatCategoryElements } from "@/presentation/helpers";
 import { customRenderCell } from "./components/table-render-cell/RenderCell";
+import { Button } from "@nextui-org/react";
+import WarningIcon from "@/assets/svg/WarningIcon";
 
 const defaultCategory = {
   label: "Crear categoría",
@@ -27,6 +29,7 @@ const stockMovementOptions = [
 
 const Inventory = () => {
   const {
+    productId,
     isModalOpen,
     categoryError,
     categoryList,
@@ -49,6 +52,7 @@ const Inventory = () => {
     handleRegisterCategory,
     handleSetNumPage,
     handleSetTextFilter,
+    deleteProduct,
   } = ViewModel();
 
   return (
@@ -323,6 +327,48 @@ const Inventory = () => {
                 />
               </div>
             </form>
+          </>
+        }
+      />
+
+      <CustomModal
+        isOpen={isModalOpen.deleteModal}
+        onOpenChange={() => toggleModal("deleteModal")}
+        size="2xl"
+        content={
+          <>
+            <div className="mt-3 flex flex-col justify-center">
+              <div className="mx-auto">
+                <WarningIcon />
+              </div>
+              <p className="text-lg text-center mt-5">
+                ¿Estás seguro de que deseas eliminar este producto?
+              </p>
+              <p className="text-sm text-center text-default-400">
+                Esta acción no tiene vuelta atras.
+              </p>
+            </div>
+          </>
+        }
+        footerContent={
+          <>
+            <Button
+              color="primary"
+              variant="ghost"
+              onPress={() => toggleModal("deleteModal")}
+            >
+              Cerrar
+            </Button>
+            <Button
+              color="danger"
+              onPress={() => {
+                if (productId) {
+                  deleteProduct(productId);
+                }
+              }}
+            >
+              Si, eliminar
+            </Button>
           </>
         }
       />
