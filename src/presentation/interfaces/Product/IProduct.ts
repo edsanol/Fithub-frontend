@@ -7,3 +7,8 @@ export interface IProductValidation {
   stockQuantityError: boolean;
   idCategoryError: boolean;
 }
+
+export interface IStockMovementValidation {
+  typeError: boolean;
+  quantityError: boolean;
+}

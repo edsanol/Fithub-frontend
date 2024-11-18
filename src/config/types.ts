@@ -106,6 +106,7 @@ const TYPES = {
   // ProductUseCases
   RegisterProductUseCase: Symbol.for("RegisterProductUseCase"),
   GetProductListUseCase: Symbol.for("GetProductListUseCase"),
+  RegisterEntryAndExitProductUseCase: Symbol.for("RegisterEntryAndExitProductUseCase"),
 };
 
 export { TYPES };

@@ -9,7 +9,10 @@ import { IColumns } from "./CustomTable/ICustomTable";
 import { IDiscountValidation } from "./Discounts/IDiscounts";
 import { IMembershipValidation } from "./Membership/IMembership";
 import { IMeasurementProgressValidation } from "./UserProgress/IUserProgress";
-import { IProductValidation } from "./Product/IProduct";
+import {
+  IProductValidation,
+  IStockMovementValidation,
+} from "./Product/IProduct";
 import { ICategoryValidation } from "./Category/ICategory";
 
 export type {
@@ -24,4 +27,5 @@ export type {
   IMeasurementProgressValidation,
   ICategoryValidation,
   IProductValidation,
+  IStockMovementValidation,
 };

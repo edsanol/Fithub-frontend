@@ -10,6 +10,7 @@ import { isNotEmpty, isValidName, isValidSku } from "@/presentation/helpers";
 import {
   ICategoryValidation,
   IProductValidation,
+  IStockMovementValidation,
 } from "@/presentation/interfaces";
 import { useEffect, useReducer, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -17,6 +18,8 @@ import { PaginateData } from "@/domain/models/PaginateData";
 import { GetProductListUseCase } from "@/domain/useCases/Product/getProductListUseCase";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { ProductColumns } from "@/assets/constants";
+import { StockMovements } from "@/domain/models/StockMovements";
+import { RegisterEntryAndExitProductUseCase } from "@/domain/useCases/Product/registerEntryAndExitProduct";
 
 interface State {
   category: Category;
@@ -25,6 +28,8 @@ interface State {
   product: Product;
   productList: PaginateResponseList;
   productError: IProductValidation;
+  stockMovement: StockMovements;
+  stockMovementError: IStockMovementValidation;
   isModalOpen: {
     createModal: boolean;
     detailsModal: boolean;
@@ -48,6 +53,16 @@ type Action =
   | { type: "SET_PRODUCT"; product: Product }
   | { type: "SET_PRODUCT_LIST"; productList: PaginateResponseList }
   | { type: "SET_PRODUCT_ERROR"; productError: IProductValidation }
+  | { type: "SET_STOCK_MOVEMENT"; stockMovement: StockMovements }
+  | {
+      type: "SET_FIELD_STOCK_MOVEMENT";
+      field: keyof StockMovements;
+      value: Value;
+    }
+  | {
+      type: "SET_STOCK_MOVEMENT_ERROR";
+      stockMovement: IStockMovementValidation;
+    }
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
   | { type: "SET_MODAL_MODE"; modalMode: "create" | "edit" | "view" };
 
@@ -85,6 +100,15 @@ const initialState: State = {
     priceError: false,
     stockQuantityError: false,
     idCategoryError: false,
+  },
+  stockMovement: {
+    productId: 0,
+    quantity: 0,
+    type: "",
+  },
+  stockMovementError: {
+    quantityError: false,
+    typeError: false,
   },
   isModalOpen: {
     createModal: false,
@@ -146,6 +170,24 @@ function reducer(state: State, action: Action): State {
         ...state,
         productError: action.productError,
       };
+    case "SET_STOCK_MOVEMENT":
+      return {
+        ...state,
+        stockMovement: action.stockMovement,
+      };
+    case "SET_FIELD_STOCK_MOVEMENT":
+      return {
+        ...state,
+        stockMovement: {
+          ...state.stockMovement,
+          [action.field]: action.value,
+        },
+      };
+    case "SET_STOCK_MOVEMENT_ERROR":
+      return {
+        ...state,
+        stockMovementError: action.stockMovement,
+      };
     case "TOGGLE_MODAL":
       return {
         ...state,
@@ -177,6 +219,8 @@ const ViewModel = () => {
       product,
       productList,
       productError,
+      stockMovement,
+      stockMovementError,
     },
     dispatch,
   ] = useReducer(reducer, initialState);
@@ -231,6 +275,17 @@ const ViewModel = () => {
     };
 
     dispatch({ type: "SET_PRODUCT_ERROR", productError: errors });
+    return errors;
+  };
+
+  const handleIsValidStockMovementForm = () => {
+    const errors: IStockMovementValidation = {
+      quantityError: stockMovement.quantity <= 0,
+      typeError:
+        stockMovement.type !== "entry" && stockMovement.type !== "exit",
+    };
+
+    dispatch({ type: "SET_STOCK_MOVEMENT_ERROR", stockMovement: errors });
     return errors;
   };
 
@@ -371,6 +426,38 @@ const ViewModel = () => {
     }
   };
 
+  const handleStockMovements = async () => {
+    try {
+      const errors = handleIsValidStockMovementForm();
+
+      if (Object.values(errors).some(Boolean)) {
+        return;
+      }
+
+      const registerStockMovementUseCase =
+        container.get<RegisterEntryAndExitProductUseCase>(
+          TYPES.RegisterEntryAndExitProductUseCase
+        );
+
+      const response = await registerStockMovementUseCase.execute({
+        productId: stockMovement.productId,
+        quantity: stockMovement.quantity,
+        type: stockMovement.type,
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      await getProductList({ numPage: 1 });
+
+      toggleModal("stockMovementModal", false);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
   const handleGenerateSku = () => {
     dispatch({
       type: "SET_PRODUCT",
@@ -403,8 +490,7 @@ const ViewModel = () => {
     dispatch({ type: "SET_MODAL_MODE", modalMode });
   };
 
-  const handleOpenModal = async (modalName: string, productId?: any) => {
-    console.log(productId);
+  const handleOpenModal = async (modalName: string, productId?: number) => {
     switch (modalName) {
       case "editModal":
         setModalMode("edit");
@@ -419,6 +505,12 @@ const ViewModel = () => {
         break;
       case "deleteModal":
         break;
+      case "stockMovementModal":
+        dispatch({
+          type: "SET_STOCK_MOVEMENT",
+          stockMovement: { type: "", quantity: 0, productId: productId! },
+        });
+        break;
     }
 
     toggleModal(modalName);
@@ -426,6 +518,10 @@ const ViewModel = () => {
 
   const setFieldCategory = (field: keyof Category, value: Value) => {
     dispatch({ type: "SET_FIELD_CATEGORY", field, value });
+  };
+
+  const setFieldStockMovement = (field: keyof StockMovements, value: Value) => {
+    dispatch({ type: "SET_FIELD_STOCK_MOVEMENT", field, value });
   };
 
   const setField = (field: keyof Product, value: Value) => {
@@ -449,11 +545,15 @@ const ViewModel = () => {
     productError,
     ProductColumns,
     selectedCheckbox,
+    stockMovement,
+    stockMovementError,
+    handleStockMovements,
     handleSkuChange,
     handleCheckboxChange,
     handleSubmit,
     setField,
     setFieldCategory,
+    setFieldStockMovement,
     handleRegisterCategory,
     handleOpenModal,
     toggleModal,

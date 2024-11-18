@@ -69,6 +69,7 @@ import { ProductService } from "@/domain/services/productService";
 import { ProductServiceImpl } from "@/infrastructure/services/productService";
 import { RegisterProductUseCase } from "@/domain/useCases/Product/registerProductUseCase";
 import { GetProductListUseCase } from "@/domain/useCases/Product/getProductListUseCase";
+import { RegisterEntryAndExitProductUseCase } from "@/domain/useCases/Product/registerEntryAndExitProduct";
 
 const container = new Container();
 
@@ -284,5 +285,10 @@ container
 container
   .bind<GetProductListUseCase>(TYPES.GetProductListUseCase)
   .to(GetProductListUseCase);
+container
+  .bind<RegisterEntryAndExitProductUseCase>(
+    TYPES.RegisterEntryAndExitProductUseCase
+  )
+  .to(RegisterEntryAndExitProductUseCase);
 
 export default container;

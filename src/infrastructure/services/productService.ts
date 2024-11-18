@@ -6,6 +6,7 @@ import { ProductService } from "@/domain/services/productService";
 import { Product } from "@/domain/entities/Product";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { StockMovements } from "@/domain/models/StockMovements";
 
 @injectable()
 export class ProductServiceImpl implements ProductService {
@@ -31,6 +32,15 @@ export class ProductServiceImpl implements ProductService {
       TickerResponseApi<PaginateResponseList<Product>>,
       PaginateData
     >("/InventoryProducts/GetAllProducts", data);
+
+    return response.data;
+  }
+
+  async stockProductMovements(data: StockMovements): Promise<boolean> {
+    const response = await this.http.post<
+      TickerResponseApi<boolean>,
+      StockMovements
+    >("/InventoryProducts/RegisterEntryAndExitProduct", data);
 
     return response.data;
   }

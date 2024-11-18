@@ -35,11 +35,15 @@ const Inventory = () => {
     productError,
     ProductColumns,
     selectedCheckbox,
+    stockMovement,
+    stockMovementError,
+    handleStockMovements,
     handleSkuChange,
     handleCheckboxChange,
     handleSubmit,
     setField,
     setFieldCategory,
+    setFieldStockMovement,
     toggleModal,
     handleOpenModal,
     handleRegisterCategory,
@@ -262,33 +266,60 @@ const Inventory = () => {
             <form className="mt-3">
               <FormSelect
                 isRequired
+                isInvalid={stockMovementError?.typeError}
+                color={stockMovementError?.typeError ? "danger" : "default"}
+                errorMessage={
+                  stockMovementError?.typeError
+                    ? "Por favor selecciona un tipo de movimiento"
+                    : ""
+                }
                 items={stockMovementOptions}
                 label="Selecciona una opción"
+                onChange={(value) => setFieldStockMovement("type", value)}
+                value={stockMovement.type}
               />
 
-              <p className="text-sm text-default-400 mt-3 mb-10">
-                Una salida reduce la cantidad de un producto disponible en el
-                inventario.
-              </p>
+              {stockMovement.type === "exit" && (
+                <p className="text-sm text-default-400 mt-3 mb-10">
+                  Una salida reduce la cantidad de un producto disponible en el
+                  inventario.
+                </p>
+              )}
 
-              {/* <p className="text-sm text-default-400 mt-3 mb-10">
-                Una entrada aumenta la cantidad de un producto disponible en el inventario.
-              </p> */}
+              {stockMovement.type === "entry" && (
+                <p className="text-sm text-default-400 mt-3 mb-10">
+                  Una entrada aumenta la cantidad de un producto disponible en
+                  el inventario.
+                </p>
+              )}
 
-              <FormInput
-                isRequired
-                labelPlacement="outside"
-                placeholder="Cantidad"
-                type="number"
-                label="Ingresa la cantidad"
-                size="lg"
-                customInputClass="mt-5 mb-5"
-              />
+              {stockMovement.type && (
+                <FormInput
+                  isRequired
+                  isInvalid={stockMovementError?.quantityError}
+                  color={
+                    stockMovementError?.quantityError ? "danger" : "default"
+                  }
+                  errorMessage={
+                    stockMovementError?.quantityError
+                      ? "Por favor ingresa una cantidad válida"
+                      : ""
+                  }
+                  labelPlacement="outside"
+                  placeholder="Cantidad"
+                  type="number"
+                  label="Ingresa la cantidad"
+                  size="lg"
+                  customInputClass="mt-5 mb-5"
+                  onChange={(value) => setFieldStockMovement("quantity", value)}
+                />
+              )}
 
               <div className="mt-5">
                 <PrimaryButton
                   text="Confirmar Movimiento"
                   customButtonClass="w-full p-8"
+                  onClick={handleStockMovements}
                 />
               </div>
             </form>
