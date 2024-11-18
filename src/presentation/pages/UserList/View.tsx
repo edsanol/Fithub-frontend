@@ -165,7 +165,6 @@ const UserList = () => {
                 label="Membresías"
                 placeholder="Selecciona un plan"
                 size="lg"
-                popoverProps={{ color: "foreground" }}
                 items={formatMembershipElements(membership)}
                 onChange={(value) => setField("membershipId", value)}
               />

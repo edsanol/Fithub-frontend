@@ -36,3 +36,12 @@ export const MeasurementProgressColumns = [
   { name: "ESPALDA", uid: "shoulders" },
   { name: "ANTEBRAZO", uid: "forearm" },
 ];
+
+export const ProductColumns = [
+  { name: "NOMBRE", uid: "name" },
+  { name: "PRECIO DE COMPRA", uid: "basePrice" },
+  { name: "PRECIO DE VENTA", uid: "price" },
+  { name: "STOCK", uid: "stockQuantity" },
+  { name: "ESTADO", uid: "status" },
+  { name: "ACCIONES", uid: "actions" },
+];

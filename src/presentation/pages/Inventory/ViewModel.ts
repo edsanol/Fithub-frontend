@@ -13,12 +13,17 @@ import {
 } from "@/presentation/interfaces";
 import { useEffect, useReducer, useState } from "react";
 import { useSession } from "next-auth/react";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { GetProductListUseCase } from "@/domain/useCases/Product/getProductListUseCase";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { ProductColumns } from "@/assets/constants";
 
 interface State {
   category: Category;
   categoryList: Category[];
   categoryError: ICategoryValidation;
   product: Product;
+  productList: PaginateResponseList;
   productError: IProductValidation;
   isModalOpen: {
     createModal: boolean;
@@ -27,6 +32,7 @@ interface State {
     editModal: boolean;
     infoModal: boolean;
     categoryModal: boolean;
+    stockMovementModal: boolean;
   };
   modalMode: "create" | "edit" | "view";
 }
@@ -40,6 +46,7 @@ type Action =
   | { type: "SET_CATEGORY_ERROR"; categoryError: ICategoryValidation }
   | { type: "SET_FIELD"; field: keyof Product; value: Value }
   | { type: "SET_PRODUCT"; product: Product }
+  | { type: "SET_PRODUCT_LIST"; productList: PaginateResponseList }
   | { type: "SET_PRODUCT_ERROR"; productError: IProductValidation }
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
   | { type: "SET_MODAL_MODE"; modalMode: "create" | "edit" | "view" };
@@ -66,6 +73,10 @@ const initialState: State = {
     categoryId: 0,
     categoryName: "",
   },
+  productList: {
+    totalRecords: 0,
+    items: [],
+  },
   productError: {
     nameError: false,
     descriptionError: false,
@@ -82,6 +93,7 @@ const initialState: State = {
     editModal: false,
     infoModal: false,
     categoryModal: false,
+    stockMovementModal: false,
   },
   modalMode: "create",
 };
@@ -124,6 +136,11 @@ function reducer(state: State, action: Action): State {
         ...state,
         product: action.product,
       };
+    case "SET_PRODUCT_LIST":
+      return {
+        ...state,
+        productList: action.productList,
+      };
     case "SET_PRODUCT_ERROR":
       return {
         ...state,
@@ -158,6 +175,7 @@ const ViewModel = () => {
       categoryError,
       categoryList,
       product,
+      productList,
       productError,
     },
     dispatch,
@@ -302,6 +320,8 @@ const ViewModel = () => {
         return;
       }
 
+      await getProductList({ numPage: 1 });
+
       toggleModal("createModal", false);
     } catch (error: any) {
       console.log(error);
@@ -324,6 +344,28 @@ const ViewModel = () => {
       dispatch({ type: "SET_CATEGORY_LIST", categoryList: response });
 
       return response;
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
+  const getProductList = async (params: Partial<PaginateData>) => {
+    try {
+      const getProductListUseCase = container.get<GetProductListUseCase>(
+        TYPES.GetProductListUseCase
+      );
+
+      const response = await getProductListUseCase.execute({
+        numRecordsPage: 7,
+        ...params,
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      dispatch({ type: "SET_PRODUCT_LIST", productList: response });
     } catch (error: any) {
       console.log(error);
     }
@@ -361,7 +403,8 @@ const ViewModel = () => {
     dispatch({ type: "SET_MODAL_MODE", modalMode });
   };
 
-  const handleOpenModal = async (modalName: string) => {
+  const handleOpenModal = async (modalName: string, productId?: any) => {
+    console.log(productId);
     switch (modalName) {
       case "editModal":
         setModalMode("edit");
@@ -389,12 +432,22 @@ const ViewModel = () => {
     dispatch({ type: "SET_FIELD", field, value });
   };
 
+  const handleSetNumPage = async (numPage: number) => {
+    await getProductList({ numPage });
+  };
+
+  const handleSetTextFilter = async (textFilter: string) => {
+    await getProductList({ textFilter, numFilter: 1 });
+  };
+
   return {
     isModalOpen,
     categoryList,
     categoryError,
     product,
+    productList,
     productError,
+    ProductColumns,
     selectedCheckbox,
     handleSkuChange,
     handleCheckboxChange,
@@ -404,6 +457,8 @@ const ViewModel = () => {
     handleRegisterCategory,
     handleOpenModal,
     toggleModal,
+    handleSetNumPage,
+    handleSetTextFilter,
   };
 };
 

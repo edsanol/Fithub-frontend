@@ -2,6 +2,7 @@
 
 import {
   CustomModal,
+  CustomTable,
   DashboardHeader,
   FormCheckbox,
   FormInput,
@@ -12,11 +13,17 @@ import {
 import ViewModel from "./ViewModel";
 import PlusIcon from "@/assets/svg/PlusIcon";
 import { formatCategoryElements } from "@/presentation/helpers";
+import { customRenderCell } from "./components/table-render-cell/RenderCell";
 
 const defaultCategory = {
   label: "Crear categoría",
   icon: <PlusIcon />,
 };
+
+const stockMovementOptions = [
+  { label: "Entrada", value: "entry" },
+  { label: "Salida", value: "exit" },
+];
 
 const Inventory = () => {
   const {
@@ -24,7 +31,9 @@ const Inventory = () => {
     categoryError,
     categoryList,
     product,
+    productList,
     productError,
+    ProductColumns,
     selectedCheckbox,
     handleSkuChange,
     handleCheckboxChange,
@@ -34,6 +43,8 @@ const Inventory = () => {
     toggleModal,
     handleOpenModal,
     handleRegisterCategory,
+    handleSetNumPage,
+    handleSetTextFilter,
   } = ViewModel();
 
   return (
@@ -50,15 +61,18 @@ const Inventory = () => {
           onClick={() => handleOpenModal("createModal")}
         />
       </div>
-      {/* <CustomTable
+
+      <CustomTable
+        onSetNumPage={handleSetNumPage}
+        onSetTextFilter={handleSetTextFilter}
         customRenderCell={(user, columnKey) =>
           customRenderCell(user, columnKey, { handleOpenModal })
         }
-        records={membershipList}
-        columns={MembershipColumns}
-        uniqueKeyField="membershipID"
-        customClassName="mt-8"
-      /> */}
+        records={productList}
+        columns={ProductColumns}
+        uniqueKeyField="productId"
+      />
+
       <CustomModal
         isOpen={isModalOpen.createModal}
         onOpenChange={() => toggleModal("createModal")}
@@ -228,6 +242,53 @@ const Inventory = () => {
                   text="Crear"
                   customButtonClass="w-full p-8"
                   onClick={handleRegisterCategory}
+                />
+              </div>
+            </form>
+          </>
+        }
+      />
+
+      <CustomModal
+        isOpen={isModalOpen.stockMovementModal}
+        onOpenChange={() => toggleModal("stockMovementModal")}
+        size="xl"
+        content={
+          <>
+            <DashboardHeader
+              title="Movimientos de stock"
+              description="Administra los movimientos de inventario seleccionando el tipo de acción y la cantidad correspondiente."
+            />
+            <form className="mt-3">
+              <FormSelect
+                isRequired
+                items={stockMovementOptions}
+                label="Selecciona una opción"
+              />
+
+              <p className="text-sm text-default-400 mt-3 mb-10">
+                Una salida reduce la cantidad de un producto disponible en el
+                inventario.
+              </p>
+
+              {/* <p className="text-sm text-default-400 mt-3 mb-10">
+                Una entrada aumenta la cantidad de un producto disponible en el inventario.
+              </p> */}
+
+              <FormInput
+                isRequired
+                labelPlacement="outside"
+                placeholder="Cantidad"
+                type="number"
+                label="Ingresa la cantidad"
+                size="lg"
+                customInputClass="mt-5 mb-5"
+              />
+
+              <div className="mt-5">
+                <PrimaryButton
+                  text="Confirmar Movimiento"
+                  customButtonClass="w-full p-8"
                 />
               </div>
             </form>

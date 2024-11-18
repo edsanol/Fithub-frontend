@@ -3,6 +3,7 @@ import {
   MembershipColumns,
   DiscountsColumns,
   MeasurementProgressColumns,
+  ProductColumns,
 } from "./columns/Columns";
 
 import { subscriptionsPlans } from "./subscriptions-plans/SubscriptionsPlans";
@@ -14,6 +15,7 @@ export {
   MembershipColumns,
   DiscountsColumns,
   MeasurementProgressColumns,
+  ProductColumns,
   subscriptionsPlans,
   genres,
   menuItems,
