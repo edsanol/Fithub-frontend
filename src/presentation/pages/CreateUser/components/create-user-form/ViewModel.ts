@@ -114,7 +114,7 @@ const ViewModel = () => {
       phoneNumberError: !isValidPhone(athleteData.phoneNumber),
       genreError: !isValidGenre(athleteData.genre),
       birthDateError: !isNotEmpty(athleteData.birthDate),
-      startMembershipDateError: !isValidDate(athleteData.startMembershipDate!),
+      startMembershipDateError: !isValidDate(athleteData.startMembershipDate ? athleteData.startMembershipDate : athleteData.startDate!),
     };
 
     dispatch({ type: "SET_ERROR", errors });
