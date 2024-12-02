@@ -66,6 +66,7 @@ const initialState: State = {
     status: true,
     membershipName: "",
     cardAccessCode: "",
+    documentID: "",
   },
   measurementsProgress: {
     measurementsProgressID: 0,
