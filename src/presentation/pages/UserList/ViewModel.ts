@@ -63,6 +63,7 @@ const initialState: State = {
     status: true,
     membershipName: "",
     cardAccessCode: "",
+    documentID: "",
   },
   updateMembershipToAthlete: {
     athleteId: 0,

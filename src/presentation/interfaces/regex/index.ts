@@ -15,3 +15,5 @@ export const numberRegex = /^(?!0+$)\d+$/;
 export const cardCodeRegex = /^[a-zA-Z0-9]+$/;
 
 export const measurementRegex = /^(?!0+$)(?!0[0-9]+)([1-9][0-9]*(\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$/;
+
+export const documentIDRegex = /^\d+$/;
