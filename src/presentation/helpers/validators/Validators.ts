@@ -1,5 +1,6 @@
 import {
   cardCodeRegex,
+  documentIDRegex,
   emailRegex,
   measurementRegex,
   nameRegex,
@@ -135,3 +136,11 @@ export const isValidDate = (value: string): boolean => {
 
   return true;
 };
+
+export const isValidDocumentID = (documentID: string): boolean => {
+  if (documentIDRegex.test(documentID)) {
+    return true;
+  }
+
+  return false;
+}

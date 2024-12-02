@@ -9,6 +9,7 @@ type constructorParams = {
   cardAccessCode?: string | null;
   registerDate: string;
   status: boolean;
+  documentID: string;
   idGym?: number;
   gymName?: string;
   stateAthlete?: string;
@@ -35,6 +36,7 @@ export class AthleteUser {
   public gymName?: string;
   public registerDate: string;
   public status: boolean;
+  public documentID: string;
   public stateAthlete?: string;
   public token?: string | null;
   public refreshToken?: string | null;
@@ -58,6 +60,7 @@ export class AthleteUser {
     gymName,
     registerDate,
     status,
+    documentID,
     stateAthlete,
     token,
     refreshToken,
@@ -80,6 +83,7 @@ export class AthleteUser {
     this.gymName = gymName;
     this.registerDate = registerDate;
     this.status = status;
+    this.documentID = documentID;
     this.stateAthlete = stateAthlete;
     this.token = token;
     this.refreshToken = refreshToken;

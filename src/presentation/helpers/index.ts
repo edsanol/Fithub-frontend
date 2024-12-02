@@ -12,6 +12,7 @@ import {
   isValidNewPassword,
   isValidMeasurement,
   isValidDate,
+  isValidDocumentID,
 } from "./validators/Validators";
 
 import {
@@ -39,4 +40,5 @@ export {
   formatMembershipElements,
   mapperMuscleNames,
   mapperMuscleIcon,
+  isValidDocumentID,
 };

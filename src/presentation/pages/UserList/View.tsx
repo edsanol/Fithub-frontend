@@ -85,15 +85,30 @@ const UserList = () => {
                   value={athleteUser?.athleteLastName}
                 />
               </div>
-              <FormInput
-                isRequired
-                isReadOnly
-                type="text"
-                label="Número de teléfono"
-                size="lg"
-                customInputClass="mt-7"
-                value={athleteUser?.phoneNumber}
-              />
+              <div className="block md:flex md:gap-3">
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="text"
+                  label="Número de documento"
+                  size="lg"
+                  customInputClass="mt-7"
+                  value={
+                    athleteUser?.documentID
+                      ? athleteUser?.documentID
+                      : "Sin documento"
+                  }
+                />
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="text"
+                  label="Número de teléfono"
+                  size="lg"
+                  customInputClass="mt-7"
+                  value={athleteUser?.phoneNumber}
+                />
+              </div>
               <FormInput
                 isRequired
                 isReadOnly

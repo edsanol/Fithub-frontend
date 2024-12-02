@@ -2,6 +2,7 @@
 import {
   isNotEmpty,
   isValidDate,
+  isValidDocumentID,
   isValidEmail,
   isValidGenre,
   isValidName,
@@ -46,6 +47,7 @@ const initialState: State = {
     birthDate: "",
     registerDate: new Date().toISOString(),
     status: true,
+    documentID: "",
     startDate: "",
     endDate: "",
     membershipName: "",
@@ -62,6 +64,7 @@ const initialState: State = {
     genreError: false,
     birthDateError: false,
     startMembershipDateError: false,
+    documentIDError: false,
   },
   membership: [],
 };
@@ -114,7 +117,8 @@ const ViewModel = () => {
       phoneNumberError: !isValidPhone(athleteData.phoneNumber),
       genreError: !isValidGenre(athleteData.genre),
       birthDateError: !isNotEmpty(athleteData.birthDate),
-      startMembershipDateError: !isValidDate(athleteData.startMembershipDate!),
+      startMembershipDateError: !isValidDate(athleteData.startMembershipDate ? athleteData.startMembershipDate : athleteData.startDate!),
+      documentIDError: !isValidDocumentID(athleteData.documentID),
     };
 
     dispatch({ type: "SET_ERROR", errors });

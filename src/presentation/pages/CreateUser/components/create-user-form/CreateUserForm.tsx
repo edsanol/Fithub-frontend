@@ -61,22 +61,40 @@ const CreateUserForm = () => {
             value={athleteData?.athleteLastName}
           />
         </div>
-        <FormInput
-          isRequired
-          isInvalid={athleteDataError?.phoneNumberError}
-          color={athleteDataError?.phoneNumberError ? "danger" : "default"}
-          errorMessage={
-            athleteDataError?.phoneNumberError
-              ? "Por favor ingresa un número de teléfono válido"
-              : ""
-          }
-          type="text"
-          label="Número de teléfono"
-          size="lg"
-          customInputClass="mt-7"
-          onChange={(value) => setField("phoneNumber", value)}
-          value={athleteData?.phoneNumber}
-        />
+        <div className="block md:flex md:gap-3">
+          <FormInput
+            isRequired
+            isInvalid={athleteDataError?.documentIDError}
+            color={athleteDataError?.documentIDError ? "danger" : "default"}
+            errorMessage={
+              athleteDataError?.documentIDError
+                ? "Por favor ingresa un número de teléfono válido"
+                : ""
+            }
+            type="text"
+            label="Número de documento"
+            size="lg"
+            customInputClass="mt-7"
+            onChange={(value) => setField("documentID", value)}
+            value={athleteData?.documentID}
+          />
+          <FormInput
+            isRequired
+            isInvalid={athleteDataError?.phoneNumberError}
+            color={athleteDataError?.phoneNumberError ? "danger" : "default"}
+            errorMessage={
+              athleteDataError?.phoneNumberError
+                ? "Por favor ingresa un número de teléfono válido"
+                : ""
+            }
+            type="text"
+            label="Número de teléfono"
+            size="lg"
+            customInputClass="mt-7"
+            onChange={(value) => setField("phoneNumber", value)}
+            value={athleteData?.phoneNumber}
+          />
+        </div>
         <FormInput
           isRequired
           isReadOnly={athleteIdValue ? true : false}
@@ -111,7 +129,11 @@ const CreateUserForm = () => {
               <FormInput
                 isRequired
                 isInvalid={athleteDataError?.startMembershipDateError}
-                color={athleteDataError?.startMembershipDateError ? "danger" : "default"}
+                color={
+                  athleteDataError?.startMembershipDateError
+                    ? "danger"
+                    : "default"
+                }
                 errorMessage={
                   athleteDataError?.startMembershipDateError
                     ? "Por favor ingresa una fecha válida"

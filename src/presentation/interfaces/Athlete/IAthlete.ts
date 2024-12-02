@@ -6,4 +6,5 @@ export interface IAthleteValidation {
   genreError: boolean;
   birthDateError: boolean;
   startMembershipDateError: boolean;
+  documentIDError: boolean;
 }
