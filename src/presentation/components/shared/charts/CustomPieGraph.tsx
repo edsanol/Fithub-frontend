@@ -39,10 +39,11 @@ const CustomPieGraph = ({ initialData }: CustomPieGraphProps) => {
   useEffect(() => {
     if (initialData) {
       const data = initialData.map((item, index) => {
+        const color = colorsList[index]?.color || "#000000";
         return {
           id: index,
           value: item.value,
-          color: colorsList[index].color,
+          color,
           label: item.label,
         };
       });
