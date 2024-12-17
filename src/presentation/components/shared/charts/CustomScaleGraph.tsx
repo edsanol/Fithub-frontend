@@ -1,6 +1,6 @@
 "use client";
 
-import { createChart, ColorType } from "lightweight-charts";
+import { createChart, ColorType, UTCTimestamp } from "lightweight-charts";
 import { MutableRefObject, useEffect, useRef } from "react";
 
 const colors = {
@@ -16,7 +16,12 @@ interface CustomScaleGraphProps {
 }
 
 const CustomScaleGraph = ({ initialData }: CustomScaleGraphProps) => {
-  const data = initialData;
+  const data = [...initialData]
+    .map((item) => ({
+      time: (new Date(item.time).getTime() / 1000) as UTCTimestamp,
+      value: item.value,
+    }))
+    .sort((a, b) => a.time - b.time);
 
   const chartContainerRef: MutableRefObject<any> = useRef();
 
