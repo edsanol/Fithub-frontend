@@ -1,5 +1,6 @@
 import { GymUser } from "../entities/GymUser";
 import { UserLogin } from "../entities/UserLogin";
+import { AccessTypes } from "../models/AccessTypes";
 import { ResetPassword } from "../models/ResetPassword";
 
 export interface GymUserRepository {
@@ -10,4 +11,5 @@ export interface GymUserRepository {
   changePassword(data: ResetPassword): Promise<boolean>;
   recoverPassword(data: ResetPassword): Promise<boolean>;
   resetPassword(data: ResetPassword): Promise<boolean>;
+  getAccessTypes(): Promise<AccessTypes[]>;
 }

@@ -24,6 +24,7 @@ import CustomProgressCard from "./shared/cards/CustomProgressCard";
 import SidebarLayout from "./layout/SidebarLayout";
 import TopbarLayout from "./layout/TopbarLayout";
 import InfoModal from "./shared/modals/InfoModal";
+import FormMultiSelect from "./shared/form-elements/FormMultiSelect";
 
 export {
   PrimaryButton,
@@ -52,4 +53,5 @@ export {
   SidebarLayout,
   TopbarLayout,
   InfoModal,
+  FormMultiSelect,
 };

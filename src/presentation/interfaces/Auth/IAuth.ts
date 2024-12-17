@@ -5,6 +5,7 @@ export interface IGymDataValidation {
   addressError: boolean;
   phoneNumberError: boolean;
   nitError: boolean;
+  accessTypeIdsError: boolean;
 }
 
 export interface IChangePasswordValidation {

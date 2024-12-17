@@ -8,6 +8,7 @@ type constructorParams = {
   subscriptionPlan: string;
   comments: string;
   nit: string;
+  accessTypeIds?: number[];
   token?: string;
   refreshToken?: string;
   stateGym?: string;
@@ -25,6 +26,7 @@ export class GymUser {
   public subscriptionPlan: string;
   public comments: string;
   public nit: string;
+  public accessTypeIds?: number[];
   public token?: string;
   public refreshToken?: string;
   public stateGym?: string;
@@ -41,6 +43,7 @@ export class GymUser {
     subscriptionPlan,
     comments,
     nit,
+    accessTypeIds,
     token,
     refreshToken,
     stateGym,
@@ -56,6 +59,7 @@ export class GymUser {
     this.subscriptionPlan = subscriptionPlan;
     this.comments = comments;
     this.nit = nit;
+    this.accessTypeIds = accessTypeIds;
     this.token = token;
     this.refreshToken = refreshToken;
     this.stateGym = stateGym;

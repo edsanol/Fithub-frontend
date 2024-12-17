@@ -1,6 +1,7 @@
 import { TYPES } from "@/config/types";
 import { GymUser } from "@/domain/entities/GymUser";
 import { UserLogin } from "@/domain/entities/UserLogin";
+import { AccessTypes } from "@/domain/models/AccessTypes";
 import { ResetPassword } from "@/domain/models/ResetPassword";
 import { GymUserRepository } from "@/domain/repositories/gymUserRepository";
 import type { GymUserService } from "@/domain/services/gymUserService";
@@ -52,6 +53,12 @@ export class GymUserRepositoryImpl implements GymUserRepository {
 
   async resetPassword(data: ResetPassword): Promise<boolean> {
     const response = await this.service.resetPassword(data);
+
+    return response;
+  }
+
+  async getAccessTypes(): Promise<AccessTypes[]> {
+    const response = await this.service.getAccessTypes();
 
     return response;
   }

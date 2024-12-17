@@ -57,6 +57,7 @@ import { GetMeasurementsGraphicUseCase } from "@/domain/useCases/AthleteUser/get
 import { UnsubscribeAthleteUserUseCase } from "@/domain/useCases/AthleteUser/unsubscribeAthleteUserUseCase";
 import { GetAthleteAssistanceUseCase } from "@/domain/useCases/Dashboard/getAthleteAssistanceUseCase";
 import { GetAthleteBirthDateUseCase } from "@/domain/useCases/Dashboard/getAthleteBirthDateUseCase";
+import { GetAccessTypesUseCase } from "@/domain/useCases/GymUser/getAccessTypesUseCase";
 
 const container = new Container();
 
@@ -98,6 +99,9 @@ container
 container
   .bind<ResetPasswordUseCase>(TYPES.ResetPasswordUseCase)
   .to(ResetPasswordUseCase);
+container
+  .bind<GetAccessTypesUseCase>(TYPES.GetAccessTypesUseCase)
+  .to(GetAccessTypesUseCase);
 
 // AthleteUserService
 container

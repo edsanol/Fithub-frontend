@@ -1,3 +1,4 @@
+import { AccessTypes } from "@/domain/models/AccessTypes";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 
 export const cleanAndFormatCurrency = (
@@ -22,5 +23,12 @@ export const formatMembershipElements = (memberships: MembershipByGymId[]) => {
   return memberships.map((membership) => ({
     value: membership.membershipID,
     label: membership.membershipName,
+  }));
+};
+
+export const formatAccessTypes = (accessTypes: AccessTypes[]) => {
+  return accessTypes.map((accessType) => ({
+    value: accessType.accessTypeID,
+    label: accessType.accessTypeName,
   }));
 };

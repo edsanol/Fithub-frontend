@@ -6,6 +6,7 @@ import { TYPES } from "@/config/types";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
 import { UserLogin } from "@/domain/entities/UserLogin";
 import { ResetPassword } from "@/domain/models/ResetPassword";
+import { AccessTypes } from "@/domain/models/AccessTypes";
 
 @injectable()
 export class GymUserServiceImpl implements GymUserService {
@@ -76,6 +77,14 @@ export class GymUserServiceImpl implements GymUserService {
       TickerResponseApi<boolean>,
       ResetPassword
     >("/Gym/ResetPassword", data);
+
+    return response.data;
+  }
+
+  async getAccessTypes(): Promise<AccessTypes[]> {
+    const response = await this.http.get<TickerResponseApi<AccessTypes[]>>(
+      "/Gym/AccessTypes"
+    );
 
     return response.data;
   }

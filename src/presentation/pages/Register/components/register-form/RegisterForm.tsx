@@ -6,6 +6,7 @@ import {
   FormInput,
   FormInputPassword,
   FormLink,
+  FormMultiSelect,
   FormSelect,
   FormTextarea,
   InfoModal,
@@ -13,15 +14,18 @@ import {
 } from "@/presentation/components";
 import { subscriptionsPlans } from "@/assets/constants";
 import ViewModel from "./ViewModel";
+import { formatAccessTypes } from "@/presentation/helpers";
 
 const RegisterForm = () => {
   const {
     handleSubmit,
     setField,
     setErrorModal,
+    gymData,
     gymDataError,
     errorModal,
     errorMessage,
+    accessTypes,
   } = ViewModel();
 
   return (
@@ -117,6 +121,23 @@ const RegisterForm = () => {
           size="lg"
           customInputClass="mt-5"
           onChange={(value) => setField("password", value)}
+        />
+        <FormMultiSelect
+          isRequired
+          isInvalid={gymDataError?.accessTypeIdsError}
+          color={gymDataError?.accessTypeIdsError ? "danger" : "default"}
+          errorMessage={
+            gymDataError?.accessTypeIdsError
+              ? "Por favor selecciona al menos un tipo de acceso"
+              : ""
+          }
+          label="Tipos de acceso"
+          placeholder="Selecciona los tipos de acceso, puedes seleccionar mas de uno"
+          size="lg"
+          items={formatAccessTypes(accessTypes)}
+          customInputClass="mt-5"
+          value={new Set(gymData.accessTypeIds)}
+          onChange={(values) => setField("accessTypeIds", values)}
         />
         <div className="hidden mt-5">
           <FormSelect
