@@ -50,12 +50,12 @@ const FormMultiSelect = ({
       selectionMode="multiple"
       selectedKeys={value}
       onSelectionChange={(keys) => {
-        const selectedValues = Array.from(keys as Set<number>);
+        const selectedValues = Array.from(keys as Set<string>).map(Number);
         onChange && onChange(selectedValues);
       }}
     >
       {items.map((item) => (
-        <SelectItem key={item.value} value={Number(item.value)} classNames={{ base: "dark" }}>
+        <SelectItem key={item.value.toString()} value={item.value.toString()} classNames={{ base: "dark" }}>
           {item.label}
         </SelectItem>
       ))}

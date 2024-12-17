@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import container from "@/config/inversifyContainer";
@@ -99,6 +99,10 @@ const ViewModel = () => {
     getAccessTypes();
   }, []);
 
+  const accessTypeIdsSet = useMemo(() => {
+    return new Set(gymData.accessTypeIds!.map((id) => id.toString()));
+  }, [gymData.accessTypeIds]);
+
   const setField = (field: keyof GymUser, value: string | number | number[]) => {
     dispatch({ type: "SET_FIELD", field, value });
   };
@@ -187,6 +191,7 @@ const ViewModel = () => {
     errorModal,
     error,
     accessTypes,
+    accessTypeIdsSet,
   };
 };
 

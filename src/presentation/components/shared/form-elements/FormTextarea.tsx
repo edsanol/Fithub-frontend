@@ -1,7 +1,6 @@
 "use client";
 
 import { Textarea } from "@nextui-org/react";
-
 interface FormTextareaProps {
   isRequired?: boolean;
   isInvalid?: boolean;
@@ -41,7 +40,7 @@ const FormTextarea = ({
       isInvalid={isInvalid || false}
       color={color}
       errorMessage={errorMessage || ""}
-      defaultValue={value || ""}
+      value={value}
       label={label}
       labelPlacement="outside"
       placeholder={placeholder || ""}

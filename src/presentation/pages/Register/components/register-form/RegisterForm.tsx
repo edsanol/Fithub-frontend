@@ -26,6 +26,7 @@ const RegisterForm = () => {
     errorModal,
     errorMessage,
     accessTypes,
+    accessTypeIdsSet,
   } = ViewModel();
 
   return (
@@ -136,7 +137,7 @@ const RegisterForm = () => {
           size="lg"
           items={formatAccessTypes(accessTypes)}
           customInputClass="mt-5"
-          value={new Set(gymData.accessTypeIds)}
+          value={accessTypeIdsSet}
           onChange={(values) => setField("accessTypeIds", values)}
         />
         <div className="hidden mt-5">
