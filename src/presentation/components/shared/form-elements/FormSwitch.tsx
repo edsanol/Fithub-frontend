@@ -9,8 +9,8 @@ interface FormSwitchProps {
 }
 
 const FormSwitch = ({ label, defaultSelected, onChange }: FormSwitchProps) => {
-  const handleChange = (event: React.FormEvent<HTMLLabelElement>) => {
-    const target = event.target as HTMLInputElement;
+  const handleChange = (event: any) => {
+    const target = event.target;
     onChange && onChange(target.checked);
   };
 
