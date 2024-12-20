@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useMemo, useReducer, useState } from "react";
+import CryptoJS from "crypto-js";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { GymUser } from "@/domain/entities/GymUser";
 import { IGymDataValidation } from "@/presentation/interfaces";
@@ -25,7 +26,7 @@ interface State {
 }
 
 type Action =
-  | { type: "SET_FIELD"; field: keyof GymUser; value: string | number | number[] }
+  | { type: "SET_FIELD"; field: keyof GymUser; value: string | number | number[]; }
   | { type: "SET_GYM_USER_DATA"; gymUserData: GymUser }
   | { type: "SET_ERROR"; errors: IGymDataValidation }
   | { type: "SET_ACCESS_TYPES"; accessTypes: AccessTypes[] };
@@ -68,7 +69,7 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         gymUserData: {
-          ...action.gymUserData,
+          ...action.gymUserData, 
           accessTypeIds: action.gymUserData.accessTypes!.map((type) => type.accessTypeID),
         },
       };
@@ -88,15 +89,70 @@ function reducer(state: State, action: Action): State {
 }
 
 const ViewModel = () => {
-  const [{ gymUserData, gymUserDataError, accessTypes }, dispatch] = useReducer(reducer, initialState);
   const { data: session } = useSession();
+  const [{ gymUserData, gymUserDataError, accessTypes }, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
-
   const [isClicked, setIsClicked] = useState(false);
   const [idGym, setIdGym] = useState<number>(0);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [error, setError] = useState("");
+  const [toogleModal, setToogleModal] = useState(false);
+  const [encryptedId, setEncryptedId] = useState("");
+  const qrRef = useRef<HTMLDivElement | null>(null);
+
+  const encryptedIdGym = () => {
+    const secret = process.env.NEXT_PUBLIC_ENCRYPTED_KEY_SECRET;
+
+    if (!secret) {
+      throw new Error("Secret key is not defined");
+    }
+
+    setEncryptedId(CryptoJS.AES.encrypt(idGym.toString(), secret).toString());
+  }
+
+  const handleDownloadQR = () => {
+    if (qrRef.current) {
+      const canvas = qrRef.current.querySelector("canvas");
+      if (canvas) {
+        const image = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = image;
+        link.download = "qrcode.png";
+        link.click();
+      }
+    }
+  };
+
+  const handleShareQR = async () => {
+    if (navigator.share) {
+      const canvas = qrRef.current?.querySelector("canvas");
+      if (canvas) {
+        const blob = await new Promise<Blob | null>((resolve) => {
+          canvas.toBlob((blob) => resolve(blob), "image/png");
+        });
+
+        if (blob) {
+          const file = new File([blob], "qrcode.png", { type: "image/png" });
+          try {
+            await navigator.share({
+              title: "Código QR",
+              text: "¡Escanea este código QR para visitar nuestro sitio web!",
+              files: [file],
+            });
+          } catch (err) {
+            console.error("Error al compartir:", err);
+          }
+        }
+      }
+    } else {
+      alert("La API de compartir no está soportada en este navegador.");
+    }
+  };
+
+  useEffect(() => {
+    encryptedIdGym();
+  }, []);
 
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
@@ -105,20 +161,22 @@ const ViewModel = () => {
   }, [session]);
 
   useEffect(() => {
-    if (idGym !== 0) {
-      loadGymUserData(idGym);
-    }
-  }, [idGym]);
+    loadGymUserData();
+  }, []);
 
   useEffect(() => {
     getAccessTypes();
   }, []);
 
+  const navigateTo = (path: string) => {
+    router.push(path);
+  };
+
   const formattedAccessTypes = useMemo(() => {
     return new Set(gymUserData.accessTypeIds?.map((id) => id.toString()));
   }, [gymUserData.accessTypeIds]);
 
-  const loadGymUserData = async (id: number) => {
+  const loadGymUserData = async () => {
     try {
       const getGymUserByIdUseCase = container.get<GetGymUserByIdUseCase>(
         TYPES.GetGymUserByIdUseCase
@@ -229,6 +287,14 @@ const ViewModel = () => {
     handleClick,
     setErrorModal,
     setFieldAccessTypes,
+    setToogleModal,
+    handleDownloadQR,
+    handleShareQR,
+    navigateTo,
+    encryptedId,
+    idGym,
+    qrRef,
+    toogleModal,
     isClicked,
     gymUserData,
     gymUserDataError,
