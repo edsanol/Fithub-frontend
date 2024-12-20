@@ -1,3 +1,5 @@
+import { AccessTypes } from "../models/AccessTypes";
+
 type constructorParams = {
   gymName: string;
   email: string;
@@ -8,6 +10,8 @@ type constructorParams = {
   subscriptionPlan: string;
   comments: string;
   nit: string;
+  accessTypeIds?: number[];
+  accessTypes?: AccessTypes[];
   token?: string;
   refreshToken?: string;
   stateGym?: string;
@@ -25,6 +29,8 @@ export class GymUser {
   public subscriptionPlan: string;
   public comments: string;
   public nit: string;
+  public accessTypeIds?: number[];
+  public accessTypes?: AccessTypes[];
   public token?: string;
   public refreshToken?: string;
   public stateGym?: string;
@@ -41,6 +47,8 @@ export class GymUser {
     subscriptionPlan,
     comments,
     nit,
+    accessTypeIds,
+    accessTypes,
     token,
     refreshToken,
     stateGym,
@@ -56,6 +64,8 @@ export class GymUser {
     this.subscriptionPlan = subscriptionPlan;
     this.comments = comments;
     this.nit = nit;
+    this.accessTypeIds = accessTypeIds;
+    this.accessTypes = accessTypes;
     this.token = token;
     this.refreshToken = refreshToken;
     this.stateGym = stateGym;

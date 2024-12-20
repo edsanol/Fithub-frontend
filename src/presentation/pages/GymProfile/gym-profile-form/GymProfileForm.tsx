@@ -4,12 +4,14 @@ import EditIcon from "@/assets/svg/EditIcon";
 import {
   FormInput,
   FormLink,
+  FormMultiSelect,
   FormTextarea,
   InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
 import { Button } from "@nextui-org/react";
 import ViewModel from "./ViewModel";
+import { formatAccessTypes } from "@/presentation/helpers";
 
 const GymProfileForm = () => {
   const {
@@ -17,11 +19,14 @@ const GymProfileForm = () => {
     setField,
     handleClick,
     setErrorModal,
+    setFieldAccessTypes,
     isClicked,
     gymUserData,
     gymUserDataError,
     errorMessage,
     errorModal,
+    accessTypes,
+    formattedAccessTypes,
   } = ViewModel();
 
   return (
@@ -131,7 +136,7 @@ const GymProfileForm = () => {
           value={gymUserData?.email}
           onChange={(value) => setField("email", value)}
         />
-        <div className="mt-5">
+        <div className="hidden mt-5">
           <FormInput
             isRequired
             isReadOnly
@@ -142,6 +147,17 @@ const GymProfileForm = () => {
             value={gymUserData?.subscriptionPlan}
           />
         </div>
+        <FormMultiSelect
+          isRequired
+          isDisabled={!isClicked}
+          label="Tipos de acceso"
+          placeholder="Selecciona los tipos de acceso, puedes seleccionar mas de uno"
+          size="lg"
+          items={formatAccessTypes(accessTypes)}
+          customInputClass="mt-5"
+          value={formattedAccessTypes}
+          onChange={(values) => setFieldAccessTypes(values)}
+        />
         <div className="mt-5">
           <FormTextarea
             isReadOnly={!isClicked}

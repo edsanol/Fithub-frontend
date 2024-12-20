@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import container from "@/config/inversifyContainer";
@@ -13,18 +13,21 @@ import {
   isValidPhone,
 } from "@/presentation/helpers";
 import { IGymDataValidation } from "@/presentation/interfaces";
-import { cipherData } from "@/config/secureData";
 import Cookies from "js-cookie";
 import { GymUser } from "@/domain/entities/GymUser";
+import { GetAccessTypesUseCase } from "@/domain/useCases/GymUser/getAccessTypesUseCase";
+import { AccessTypes } from "@/domain/models/AccessTypes";
 
 interface State {
   gymData: GymUser;
   gymDataError: IGymDataValidation;
+  accessTypes: AccessTypes[];
 }
 
 type Action =
-  | { type: "SET_FIELD"; field: keyof GymUser; value: string }
-  | { type: "SET_ERROR"; errors: IGymDataValidation };
+  | { type: "SET_FIELD"; field: keyof GymUser; value: string | number | number[] }
+  | { type: "SET_ERROR"; errors: IGymDataValidation }
+  | { type: "SET_ACCESS_TYPES"; accessTypes: AccessTypes[] };
 
 const initialState: State = {
   gymData: {
@@ -37,6 +40,7 @@ const initialState: State = {
     subscriptionPlan: "Basic",
     comments: "",
     nit: "",
+    accessTypeIds: [],
   },
   gymDataError: {
     gymNameError: false,
@@ -45,7 +49,9 @@ const initialState: State = {
     addressError: false,
     phoneNumberError: false,
     nitError: false,
+    accessTypeIdsError: false,
   },
+  accessTypes: [],
 };
 
 function reducer(state: State, action: Action): State {
@@ -60,13 +66,18 @@ function reducer(state: State, action: Action): State {
         ...state,
         gymDataError: { ...state.gymDataError, ...action.errors },
       };
+    case "SET_ACCESS_TYPES":
+      return {
+        ...state,
+        accessTypes: action.accessTypes,
+      };
     default:
       return state;
   }
 }
 
 const ViewModel = () => {
-  const [{ gymData, gymDataError }, dispatch] = useReducer(
+  const [{ gymData, gymDataError, accessTypes }, dispatch] = useReducer(
     reducer,
     initialState
   );
@@ -84,7 +95,15 @@ const ViewModel = () => {
     }
   }, [session]);
 
-  const setField = (field: keyof GymUser, value: string) => {
+  useEffect(() => {
+    getAccessTypes();
+  }, []);
+
+  const accessTypeIdsSet = useMemo(() => {
+    return new Set(gymData.accessTypeIds!.map((id) => id.toString()));
+  }, [gymData.accessTypeIds]);
+
+  const setField = (field: keyof GymUser, value: string | number | number[]) => {
     dispatch({ type: "SET_FIELD", field, value });
   };
 
@@ -96,10 +115,30 @@ const ViewModel = () => {
       phoneNumberError: !isValidPhone(gymData.phoneNumber),
       nitError: !isValidNit(gymData.nit),
       addressError: !isNotEmpty(gymData.address),
+      accessTypeIdsError: gymData.accessTypeIds!.length === 0,
     };
 
     dispatch({ type: "SET_ERROR", errors });
     return errors;
+  };
+
+  const getAccessTypes = async () => {
+    try {
+      const getAccessTypesUseCase = container.get<GetAccessTypesUseCase>(
+        TYPES.GetAccessTypesUseCase
+      );
+
+      const response = await getAccessTypesUseCase.execute();
+
+      if (!response) {
+        setError("Error al obtener los tipos de acceso");
+        return;
+      }
+
+      dispatch({ type: "SET_ACCESS_TYPES", accessTypes: response });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -146,10 +185,13 @@ const ViewModel = () => {
     handleSubmit,
     setField,
     setErrorModal,
+    gymData,
     gymDataError,
     errorMessage,
     errorModal,
-    error
+    error,
+    accessTypes,
+    accessTypeIdsSet,
   };
 };
 
