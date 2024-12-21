@@ -146,7 +146,6 @@ const ViewModel = () => {
   };
 
   return {
-    gymIdValue,
     errorMessage,
     errorModal,
     athleteDataError,

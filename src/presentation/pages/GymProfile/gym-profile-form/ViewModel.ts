@@ -25,7 +25,11 @@ interface State {
 }
 
 type Action =
-  | { type: "SET_FIELD"; field: keyof GymUser; value: string | number | number[]; }
+  | {
+      type: "SET_FIELD";
+      field: keyof GymUser;
+      value: string | number | number[];
+    }
   | { type: "SET_GYM_USER_DATA"; gymUserData: GymUser }
   | { type: "SET_ERROR"; errors: IGymDataValidation }
   | { type: "SET_ACCESS_TYPES"; accessTypes: AccessTypes[] };
@@ -68,8 +72,10 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         gymUserData: {
-          ...action.gymUserData, 
-          accessTypeIds: action.gymUserData.accessTypes!.map((type) => type.accessTypeID),
+          ...action.gymUserData,
+          accessTypeIds: action.gymUserData.accessTypes!.map(
+            (type) => type.accessTypeID
+          ),
         },
       };
     case "SET_ERROR":
@@ -97,14 +103,7 @@ const ViewModel = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [error, setError] = useState("");
   const [toogleModal, setToogleModal] = useState(false);
-  const [encryptedId, setEncryptedId] = useState("");
   const qrRef = useRef<HTMLDivElement | null>(null);
-
-  const encryptedIdGym = (idGym: number) => {
-    const encryptedId = btoa(`gym-${idGym}`);
-    
-    setEncryptedId(encryptedId);
-};
 
   const handleDownloadQR = () => {
     if (qrRef.current) {
@@ -132,7 +131,7 @@ const ViewModel = () => {
           try {
             await navigator.share({
               title: "Código QR",
-              text: "¡Escanea este código QR para visitar nuestro sitio web!",
+              text: "¡Escanea este código QR para registrarse en nuestro sitio web!",
               files: [file],
             });
           } catch (err) {
@@ -144,12 +143,6 @@ const ViewModel = () => {
       alert("La API de compartir no está soportada en este navegador.");
     }
   };
-
-  useEffect(() => {
-    if (idGym !== 0) {
-      encryptedIdGym(idGym);
-    }
-  }, [idGym]);
 
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
@@ -164,10 +157,6 @@ const ViewModel = () => {
   useEffect(() => {
     getAccessTypes();
   }, []);
-
-  const navigateTo = (path: string) => {
-    router.push(path);
-  };
 
   const formattedAccessTypes = useMemo(() => {
     return new Set(gymUserData.accessTypeIds?.map((id) => id.toString()));
@@ -270,7 +259,10 @@ const ViewModel = () => {
     setIsClicked(!isClicked);
   };
 
-  const setField = (field: keyof GymUser, value: string | number | number[]) => {
+  const setField = (
+    field: keyof GymUser,
+    value: string | number | number[]
+  ) => {
     dispatch({ type: "SET_FIELD", field, value });
   };
 
@@ -287,8 +279,6 @@ const ViewModel = () => {
     setToogleModal,
     handleDownloadQR,
     handleShareQR,
-    navigateTo,
-    encryptedId,
     idGym,
     qrRef,
     toogleModal,

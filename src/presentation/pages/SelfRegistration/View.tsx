@@ -17,7 +17,6 @@ import { Button } from "@nextui-org/react";
 
 const SelfRegistration = () => {
   const {
-    gymIdValue,
     errorMessage,
     errorModal,
     athleteDataError,
