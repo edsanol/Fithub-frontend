@@ -137,4 +137,13 @@ export class AthleteUserServiceImpl implements AthleteUserService {
 
     return response.data;
   }
+
+  async registerAthleteByQR(athleteUser: AthleteUser): Promise<boolean> {
+    const response = await this.http.post<
+      TickerResponseApi<boolean>,
+      AthleteUser
+    >("/Athlete/RegisterAthleteByQR", athleteUser);
+
+    return response.data;
+  }
 }
