@@ -108,8 +108,8 @@ export class AthleteUserRepositoryImpl implements AthleteUserRepository {
     return response;
   }
 
-  async registerAthleteByQR(athleteUser: AthleteUser): Promise<boolean> {
-    const response = await this.service.registerAthleteByQR(athleteUser);
+  async registerAthleteByQR(gymId: string, athleteUser: AthleteUser): Promise<boolean> {
+    const response = await this.service.registerAthleteByQR(gymId, athleteUser);
 
     return response;
   }

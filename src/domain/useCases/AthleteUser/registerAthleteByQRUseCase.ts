@@ -10,7 +10,7 @@ export class RegisterAthleteByQRUseCase {
     private athleteUserRepository: AthleteUserRepository
   ) {}
 
-  async execute(athleteUser: AthleteUser): Promise<boolean> {
-    return await this.athleteUserRepository.registerAthleteByQR(athleteUser);
+  async execute(gymId: string, athleteUser: AthleteUser): Promise<boolean> {
+    return await this.athleteUserRepository.registerAthleteByQR(gymId, athleteUser);
   }
 }

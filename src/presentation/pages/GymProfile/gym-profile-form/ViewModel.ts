@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import CryptoJS from "crypto-js";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { GymUser } from "@/domain/entities/GymUser";
@@ -101,15 +100,11 @@ const ViewModel = () => {
   const [encryptedId, setEncryptedId] = useState("");
   const qrRef = useRef<HTMLDivElement | null>(null);
 
-  const encryptedIdGym = () => {
-    const secret = process.env.NEXT_PUBLIC_ENCRYPTED_KEY_SECRET;
-
-    if (!secret) {
-      throw new Error("Secret key is not defined");
-    }
-
-    setEncryptedId(CryptoJS.AES.encrypt(idGym.toString(), secret).toString());
-  }
+  const encryptedIdGym = (idGym: number) => {
+    const encryptedId = btoa(`gym-${idGym}`);
+    
+    setEncryptedId(encryptedId);
+};
 
   const handleDownloadQR = () => {
     if (qrRef.current) {
@@ -151,8 +146,10 @@ const ViewModel = () => {
   };
 
   useEffect(() => {
-    encryptedIdGym();
-  }, []);
+    if (idGym !== 0) {
+      encryptedIdGym(idGym);
+    }
+  }, [idGym]);
 
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {

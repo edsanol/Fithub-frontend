@@ -18,5 +18,5 @@ export interface AthleteUserRepository {
   getMeasurementProgressByLastMonth(id: number): Promise<MeasurementProgressByLastMonth[]>;
   getMeasurementsGraphic(athleteID: number, muscle: string, startDate: string, endDate: string): Promise<BarGraphicValues[]>;
   unsubscribeAthleteUser(email: { email: string }): Promise<boolean>;
-  registerAthleteByQR(athleteUser: AthleteUser): Promise<boolean>;
+  registerAthleteByQR(gymId: string, athleteUser: AthleteUser): Promise<boolean>;
 }
