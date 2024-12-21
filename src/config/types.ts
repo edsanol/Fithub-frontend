@@ -30,20 +30,13 @@ const TYPES = {
   GetAthleteUserByIdUseCase: Symbol.for("GetAthleteUserByIdUseCase"),
   EditAthleteUserUseCase: Symbol.for("EditAthleteUserUseCase"),
   DeleteAthleteUserUseCase: Symbol.for("DeleteAthleteUserUseCase"),
-  UpdateMembershipToAthleteUseCase: Symbol.for(
-    "UpdateMembershipToAthleteUseCase"
-  ),
-  CreateMeasurementProgressUseCase: Symbol.for(
-    "CreateMeasurementProgressUseCase"
-  ),
-  GetMeasurementProgressListUseCase: Symbol.for(
-    "GetMeasurementProgressListUseCase"
-  ),
-  GetMeasurementProgressByLastMonthUseCase: Symbol.for(
-    "GetMeasurementProgressByLastMonthUseCase"
-  ),
+  UpdateMembershipToAthleteUseCase: Symbol.for("UpdateMembershipToAthleteUseCase"),
+  CreateMeasurementProgressUseCase: Symbol.for("CreateMeasurementProgressUseCase"),
+  GetMeasurementProgressListUseCase: Symbol.for("GetMeasurementProgressListUseCase"),
+  GetMeasurementProgressByLastMonthUseCase: Symbol.for("GetMeasurementProgressByLastMonthUseCase"),
   GetMeasurementsGraphicUseCase: Symbol.for("GetMeasurementsGraphicUseCase"),
   UnsubscribeAthleteUserUseCase: Symbol.for("UnsubscribeAthleteUserUseCase"),
+  RegisterAthleteByQRUseCase: Symbol.for("RegisterAthleteByQRUseCase"),
 
   // MembershipRepository
   MembershipRepository: Symbol.for("MembershipRepository"),

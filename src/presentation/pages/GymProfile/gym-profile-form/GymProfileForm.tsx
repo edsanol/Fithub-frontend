@@ -2,6 +2,7 @@
 
 import EditIcon from "@/assets/svg/EditIcon";
 import {
+  CustomModal,
   FormInput,
   FormLink,
   FormMultiSelect,
@@ -12,6 +13,8 @@ import {
 import { Button } from "@nextui-org/react";
 import ViewModel from "./ViewModel";
 import { formatAccessTypes } from "@/presentation/helpers";
+import QRIcon from "@/assets/svg/QRIcon";
+import { QRCodeCanvas } from "qrcode.react";
 
 const GymProfileForm = () => {
   const {
@@ -20,6 +23,12 @@ const GymProfileForm = () => {
     handleClick,
     setErrorModal,
     setFieldAccessTypes,
+    setToogleModal,
+    handleDownloadQR,
+    handleShareQR,
+    idGym,
+    qrRef,
+    toogleModal,
     isClicked,
     gymUserData,
     gymUserDataError,
@@ -38,8 +47,18 @@ const GymProfileForm = () => {
           startContent={<EditIcon />}
           size="lg"
           onClick={handleClick}
+          className="mr-3"
         >
           {isClicked ? "Cancelar" : "Editar"}
+        </Button>
+
+        <Button
+          color="secondary"
+          startContent={<QRIcon />}
+          size="lg"
+          onPress={() => setToogleModal(true)}
+        >
+          QR
         </Button>
       </div>
 
@@ -179,6 +198,44 @@ const GymProfileForm = () => {
           customLinkClass="mt-3"
         />
       </form>
+
+      <CustomModal
+        isOpen={toogleModal}
+        onOpenChange={setToogleModal}
+        size="2xl"
+        content={
+          <>
+            <div className="mt-3 flex flex-col justify-center">
+              <div
+                ref={qrRef}
+                className="mx-auto w-[fit-content] h-auto border-2 bg-white border-gray-200 p-5 rounded-lg flex flex-col items-center justify-center"
+              >
+                <QRCodeCanvas
+                  value={`http://localhost:3000/self-registration/${idGym}`}
+                  size={200}
+                  level="H"
+                />
+              </div>
+              <p className="text-lg text-center mt-5">
+                Comparte este código QR para que tus deportistas se registren fácilmente en tu gimnasio.
+              </p>
+              <p className="text-sm text-center text-default-400">
+                Descárgalo o compártelo directamente desde tu dispositivo.
+              </p>
+            </div>
+          </>
+        }
+        footerContent={
+          <>
+            <Button color="primary" variant="ghost" onPress={handleDownloadQR}>
+              Descargar QR
+            </Button>
+            <Button color="secondary" variant="ghost" onPress={handleShareQR}>
+              Compartir QR
+            </Button>
+          </>
+        }
+      />
 
       <InfoModal
         isOpen={errorModal}

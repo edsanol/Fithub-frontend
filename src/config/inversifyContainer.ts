@@ -58,6 +58,7 @@ import { UnsubscribeAthleteUserUseCase } from "@/domain/useCases/AthleteUser/uns
 import { GetAthleteAssistanceUseCase } from "@/domain/useCases/Dashboard/getAthleteAssistanceUseCase";
 import { GetAthleteBirthDateUseCase } from "@/domain/useCases/Dashboard/getAthleteBirthDateUseCase";
 import { GetAccessTypesUseCase } from "@/domain/useCases/GymUser/getAccessTypesUseCase";
+import { RegisterAthleteByQRUseCase } from "@/domain/useCases/AthleteUser/registerAthleteByQRUseCase";
 
 const container = new Container();
 
@@ -130,24 +131,16 @@ container
   .bind<DeleteAthleteUserUseCase>(TYPES.DeleteAthleteUserUseCase)
   .to(DeleteAthleteUserUseCase);
 container
-  .bind<UpdateMembershipToAthleteUseCase>(
-    TYPES.UpdateMembershipToAthleteUseCase
-  )
+  .bind<UpdateMembershipToAthleteUseCase>(TYPES.UpdateMembershipToAthleteUseCase)
   .to(UpdateMembershipToAthleteUseCase);
 container
-  .bind<CreateMeasurementProgressUseCase>(
-    TYPES.CreateMeasurementProgressUseCase
-  )
+  .bind<CreateMeasurementProgressUseCase>(TYPES.CreateMeasurementProgressUseCase)
   .to(CreateMeasurementProgressUseCase);
 container
-  .bind<GetMeasurementProgressListUseCase>(
-    TYPES.GetMeasurementProgressListUseCase
-  )
+  .bind<GetMeasurementProgressListUseCase>(TYPES.GetMeasurementProgressListUseCase)
   .to(GetMeasurementProgressListUseCase);
 container
-  .bind<GetMeasurementProgressByLastMonthUseCase>(
-    TYPES.GetMeasurementProgressByLastMonthUseCase
-  )
+  .bind<GetMeasurementProgressByLastMonthUseCase>(TYPES.GetMeasurementProgressByLastMonthUseCase)
   .to(GetMeasurementProgressByLastMonthUseCase);
 container
   .bind<GetMeasurementsGraphicUseCase>(TYPES.GetMeasurementsGraphicUseCase)
@@ -155,6 +148,9 @@ container
 container
   .bind<UnsubscribeAthleteUserUseCase>(TYPES.UnsubscribeAthleteUserUseCase)
   .to(UnsubscribeAthleteUserUseCase);
+container
+  .bind<RegisterAthleteByQRUseCase>(TYPES.RegisterAthleteByQRUseCase)
+  .to(RegisterAthleteByQRUseCase);
 
 // MembershipRepository
 container
@@ -228,9 +224,7 @@ container
   .bind<GetDashboardDataUseCase>(TYPES.GetDashboardDataUseCase)
   .to(GetDashboardDataUseCase);
 container
-  .bind<GetDailyAssistanceGraphicUseCase>(
-    TYPES.GetDailyAssistanceGraphicUseCase
-  )
+  .bind<GetDailyAssistanceGraphicUseCase>(TYPES.GetDailyAssistanceGraphicUseCase)
   .to(GetDailyAssistanceGraphicUseCase);
 container
   .bind<GetIncomeGraphicUseCase>(TYPES.GetIncomeGraphicUseCase)
