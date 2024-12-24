@@ -62,3 +62,33 @@ tspan {
 text {
   fill: #ffffff !important;
 }
+
+.custom-quill {
+  width: auto;
+  height: 240px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.custom-quill .ql-container {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.custom-quill .ql-toolbar {
+  background-color: #ffffff;
+  border: 1px solid #4a5568;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.custom-quill .ql-editor {
+  height: calc(240px - 42px);
+  background-color: #ffffff;
+  color: #000000;
+  padding: 1.2rem;
+  font-size: 14px;
+  overflow-y: auto;
+}
