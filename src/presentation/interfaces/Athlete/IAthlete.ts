@@ -5,7 +5,7 @@ export interface IAthleteValidation {
   phoneNumberError: boolean;
   genreError: boolean;
   birthDateError: boolean;
-  startMembershipDateError: boolean;
+  startMembershipDateError?: boolean;
   documentIDError: boolean;
 }
 

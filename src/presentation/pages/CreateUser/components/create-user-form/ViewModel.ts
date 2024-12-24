@@ -109,18 +109,23 @@ const ViewModel = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [error, setError] = useState("");
 
-  const handleIsValidForm = () => {
-    const errors: IAthleteValidation = {
-      emailError: !isValidEmail(athleteData.email),
-      nameError: !isValidName(athleteData.athleteName),
-      lastNameError: !isValidName(athleteData.athleteLastName),
-      phoneNumberError: !isValidPhone(athleteData.phoneNumber),
-      genreError: !isValidGenre(athleteData.genre),
-      birthDateError: !isNotEmpty(athleteData.birthDate),
-      startMembershipDateError: !isValidDate(athleteData.startMembershipDate ? athleteData.startMembershipDate : athleteData.startDate!),
-      documentIDError: !isValidDocumentID(athleteData.documentID),
-    };
+  const ValidateAthleteData = (athleteData: AthleteUser, useStartMembershipDate: boolean): IAthleteValidation => ({
+    emailError: !isValidEmail(athleteData.email),
+    nameError: !isValidName(athleteData.athleteName),
+    lastNameError: !isValidName(athleteData.athleteLastName),
+    phoneNumberError: !isValidPhone(athleteData.phoneNumber),
+    genreError: !isValidGenre(athleteData.genre),
+    birthDateError: !isNotEmpty(athleteData.birthDate),
+    documentIDError: !isValidDocumentID(athleteData.documentID),
+    ...(useStartMembershipDate && {
+      startMembershipDateError: !isValidDate(athleteData.startMembershipDate || athleteData.startDate!),
+    }),
+  });
 
+  const handleIsValidForm = () => {
+    const useStartMembershipDate = Boolean(!athleteIdValue);
+    const errors = ValidateAthleteData(athleteData, useStartMembershipDate);
+  
     dispatch({ type: "SET_ERROR", errors });
     return errors;
   };
@@ -172,7 +177,7 @@ const ViewModel = () => {
       console.log(error);
       setErrorModal(true);
       setErrorMessage(
-        error.response.data.message || "Error al registrar el usuario"
+        error.response?.data?.message || "Error al registrar el usuario"
       );
     }
   };
