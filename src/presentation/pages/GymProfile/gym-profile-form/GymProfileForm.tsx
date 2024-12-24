@@ -212,7 +212,7 @@ const GymProfileForm = () => {
                 className="mx-auto w-[fit-content] h-auto border-2 bg-white border-gray-200 p-5 rounded-lg flex flex-col items-center justify-center"
               >
                 <QRCodeCanvas
-                  value={`http://localhost:3000/self-registration/${encryptedId}`}
+                  value={`https://fithubplus.com/self-registration/${encryptedId}`}
                   size={200}
                   level="H"
                 />
