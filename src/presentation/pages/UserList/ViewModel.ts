@@ -120,16 +120,7 @@ function reducer(state: State, action: Action): State {
 }
 
 const ViewModel = () => {
-  const [
-    {
-      athletesList,
-      athleteUser,
-      updateMembershipToAthlete,
-      membership,
-      isModalOpen,
-    },
-    dispatch,
-  ] = useReducer(reducer, initialState);
+  const [{athletesList, athleteUser, updateMembershipToAthlete, membership, isModalOpen}, dispatch] = useReducer(reducer, initialState);
   const { data: session } = useSession();
   const dateGMT5 = useDateGMT5();
   const router = useRouter();
@@ -137,10 +128,6 @@ const ViewModel = () => {
   const [idGym, setIdGym] = useState<number>(0);
   const [errorModal, setErrorModal] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
-
-  useEffect(() => {
-    setDateByDefault();
-  }, []);
 
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
@@ -153,6 +140,12 @@ const ViewModel = () => {
       getMembershipByGymId();
     }
   }, [idGym]);
+
+  useEffect(() => {
+    if (isModalOpen.editMembershipModal && athleteUser.athleteId !== 0) {
+      setDateByDefault(athleteUser);
+    }
+  }, [isModalOpen.editMembershipModal, athleteUser]);
 
   const handleSubmit = async (params: Partial<PaginateData>) => {
     try {
@@ -334,7 +327,17 @@ const ViewModel = () => {
     }
   };
 
-  const setDateByDefault = () => {
+  const setDateByDefault = (athlete: AthleteUser) => {
+    if (athlete?.startDate && athlete?.endDate) {
+      dispatch({
+        type: "SET_UPDATE_MEMBERSHIP_FIELD",
+        field: "startMembershipDate",
+        value: athlete.endDate,
+      });
+
+      return;
+    }
+
     dispatch({
       type: "SET_UPDATE_MEMBERSHIP_FIELD",
       field: "startMembershipDate",

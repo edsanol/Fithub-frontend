@@ -89,19 +89,11 @@ export const customRenderCell = (
               <EditIcon clickHandler={() => handleRedirect(user.athleteId!)} />
             </span>
           </Tooltip>
-          {!user.endDate ||
-          !user.startDate ||
-          user.stateAthlete === "Inactivo" ? (
-            <Tooltip content="Editar membresía" classNames={{ base: "dark" }}>
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <MembershipIcon
-                  clickHandler={() =>
-                    handleOpenModal(user.athleteId!, "editMembershipModal")
-                  }
-                />
-              </span>
-            </Tooltip>
-          ) : null}
+          <Tooltip content="Editar membresía" classNames={{ base: "dark" }}>
+            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              <MembershipIcon clickHandler={() => handleOpenModal(user.athleteId!, "editMembershipModal")} />
+            </span>
+          </Tooltip>
           <Tooltip color="danger" content="Eliminar usuario">
             <span className="text-lg text-danger cursor-pointer active:opacity-50">
               <DeleteIcon
