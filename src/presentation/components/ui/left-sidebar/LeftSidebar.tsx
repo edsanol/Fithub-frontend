@@ -15,6 +15,7 @@ import ProfileIcon from "@/assets/svg/ProfileIcon";
 import ArrowDownIcon from "@/assets/svg/ArrowDownIcon";
 import ArrowLeftIcon from "@/assets/svg/ArrowLeftIcon";
 import Image from "next/image";
+import NotificationsIcon from "@/assets/svg/NotificationsIcon";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -193,6 +194,14 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     route="gym-profile"
                     icon={<ProfileIcon />}
                     label="Perfil"
+                  />
+                </li>
+                <li>
+                  <SidebarItems
+                    url="/notifications"
+                    route="notifications"
+                    icon={<NotificationsIcon />}
+                    label="Notificaciones"
                   />
                 </li>
               </ul>
