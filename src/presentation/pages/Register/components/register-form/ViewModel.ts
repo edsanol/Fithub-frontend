@@ -25,12 +25,17 @@ interface State {
 }
 
 type Action =
-  | { type: "SET_FIELD"; field: keyof GymUser; value: string | number | number[] }
+  | {
+      type: "SET_FIELD";
+      field: keyof GymUser;
+      value: string | number | number[];
+    }
   | { type: "SET_ERROR"; errors: IGymDataValidation }
   | { type: "SET_ACCESS_TYPES"; accessTypes: AccessTypes[] };
 
 const initialState: State = {
   gymData: {
+    encryptedId: "",
     gymName: "",
     email: "",
     password: "",
@@ -103,7 +108,10 @@ const ViewModel = () => {
     return new Set(gymData.accessTypeIds!.map((id) => id.toString()));
   }, [gymData.accessTypeIds]);
 
-  const setField = (field: keyof GymUser, value: string | number | number[]) => {
+  const setField = (
+    field: keyof GymUser,
+    value: string | number | number[]
+  ) => {
     dispatch({ type: "SET_FIELD", field, value });
   };
 

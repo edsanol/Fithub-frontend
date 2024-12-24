@@ -36,6 +36,7 @@ type Action =
 
 const initialState: State = {
   gymUserData: {
+    encryptedId: "",
     gymName: "",
     email: "",
     address: "",
@@ -95,7 +96,10 @@ function reducer(state: State, action: Action): State {
 
 const ViewModel = () => {
   const { data: session } = useSession();
-  const [{ gymUserData, gymUserDataError, accessTypes }, dispatch] = useReducer(reducer, initialState);
+  const [{ gymUserData, gymUserDataError, accessTypes }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
   const router = useRouter();
   const [isClicked, setIsClicked] = useState(false);
   const [idGym, setIdGym] = useState<number>(0);
@@ -103,6 +107,7 @@ const ViewModel = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [error, setError] = useState("");
   const [toogleModal, setToogleModal] = useState(false);
+  const [encryptedId, setEncryptedId] = useState("");
   const qrRef = useRef<HTMLDivElement | null>(null);
 
   const handleDownloadQR = () => {
@@ -147,6 +152,7 @@ const ViewModel = () => {
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
       setIdGym(session.user.gymId);
+      setEncryptedId(session.user.encryptedId);
     }
   }, [session]);
 
@@ -280,6 +286,7 @@ const ViewModel = () => {
     handleDownloadQR,
     handleShareQR,
     idGym,
+    encryptedId,
     qrRef,
     toogleModal,
     isClicked,

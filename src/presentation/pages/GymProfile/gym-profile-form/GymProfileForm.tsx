@@ -27,6 +27,7 @@ const GymProfileForm = () => {
     handleDownloadQR,
     handleShareQR,
     idGym,
+    encryptedId,
     qrRef,
     toogleModal,
     isClicked,
@@ -211,13 +212,14 @@ const GymProfileForm = () => {
                 className="mx-auto w-[fit-content] h-auto border-2 bg-white border-gray-200 p-5 rounded-lg flex flex-col items-center justify-center"
               >
                 <QRCodeCanvas
-                  value={`http://localhost:3000/self-registration/${idGym}`}
+                  value={`http://localhost:3000/self-registration/${encryptedId}`}
                   size={200}
                   level="H"
                 />
               </div>
               <p className="text-lg text-center mt-5">
-                Comparte este código QR para que tus deportistas se registren fácilmente en tu gimnasio.
+                Comparte este código QR para que tus deportistas se registren
+                fácilmente en tu gimnasio.
               </p>
               <p className="text-sm text-center text-default-400">
                 Descárgalo o compártelo directamente desde tu dispositivo.
