@@ -1,6 +1,7 @@
 import { AccessTypes } from "../models/AccessTypes";
 
 type constructorParams = {
+  encryptedId: string;
   gymName: string;
   email: string;
   password?: string;
@@ -20,6 +21,7 @@ type constructorParams = {
 };
 
 export class GymUser {
+  public encryptedId: string;
   public gymName: string;
   public email: string;
   public password?: string;
@@ -38,6 +40,7 @@ export class GymUser {
   public memberNumber?: number;
 
   constructor({
+    encryptedId,
     gymName,
     email,
     password,
@@ -55,6 +58,7 @@ export class GymUser {
     status,
     memberNumber,
   }: constructorParams) {
+    this.encryptedId = encryptedId;
     this.gymName = gymName;
     this.email = email;
     this.password = password;
