@@ -4,6 +4,7 @@ import {
   CustomModal,
   FormInput,
   FormRichTextInput,
+  FormSelect,
   InfoModal,
   SecondaryButton,
 } from "@/presentation/components";
@@ -12,11 +13,11 @@ import SendIcon from "@/assets/svg/SendIcon";
 import { Button, CheckboxGroup } from "@nextui-org/react";
 import CustomFormCheckbox from "./components/CustomFormCheckbox";
 import { Spinner } from "@nextui-org/spinner";
+import { formatMembershipElements } from "@/presentation/helpers";
 
 const Notifications = () => {
   const {
     athletesList,
-    message,
     chats,
     selectedChat,
     selectedUsers,
@@ -26,15 +27,19 @@ const Notifications = () => {
     errorMessage,
     isModalOpen,
     channelName,
+    membership,
+    handleSetTextFilter,
+    richTextMessage,
+    handleSetRichTextMessage,
     setField,
     setError,
     handleChatClick,
-    handleChange,
     getAthletesList,
     handleUserSelection,
     handleCreateChannel,
     toggleModal,
     handleOpenSelectedUsersModal,
+    handleSendMessage,
   } = ViewModel();
 
   return (
@@ -81,7 +86,7 @@ const Notifications = () => {
               {selectedChat ? selectedChat.title : "Selecciona un chat"}
             </h5>
 
-            <button className="absolute right-4 flex items-center justify-center w-10 h-10 rounded-full bg-[#3669FC]">
+            <button className="absolute right-4 flex items-center justify-center w-10 h-10 rounded-full bg-[#3669FC]" onClick={handleSendMessage}>
               <SendIcon />
             </button>
           </section>
@@ -89,7 +94,7 @@ const Notifications = () => {
           <section className="flex-1 flex flex-col justify-end">
             <div className="w-full border-t border-gray-700 p-3 flex items-end gap-3">
               <div className="flex-1">
-                <FormRichTextInput value={message} onChange={handleChange} />
+                <FormRichTextInput value={richTextMessage} onChange={handleSetRichTextMessage} />
               </div>
             </div>
           </section>
@@ -133,40 +138,57 @@ const Notifications = () => {
         onOpenChange={(value) => toggleModal("selectedUsersModal", value)}
         size="xl"
         content={
-          <div
-            className="h-96 overflow-y-auto space-y-4"
-            onScroll={(e) => {
-              const target = e.target as HTMLElement;
-              if (
-                target.scrollTop + target.clientHeight >=
-                  target.scrollHeight - 10 &&
-                !isLoading &&
-                hasMore
-              ) {
-                getAthletesList();
-              }
-            }}
-          >
-            <CheckboxGroup
-              classNames={{ base: "w-full" }}
-              value={selectedUsers}
-              onChange={(value) => handleUserSelection(value)}
+          <>
+            <div className="flex flex-col justify-center items-center md:flex-row gap-3">
+              <FormInput
+                type="text"
+                label="Buscar por nombre"
+                onChange={(value) => handleSetTextFilter(value)}
+                size="sm"
+              />
+              <FormSelect
+                label="Filtrar por membresía"
+                size="sm"
+                popoverProps={{ color: "foreground" }}
+                items={formatMembershipElements(membership)}
+              />
+            </div>
+            <span>Listado de deportistas</span>
+            <div
+              className="h-96 overflow-y-auto space-y-4"
+              onScroll={(e) => {
+                const target = e.target as HTMLElement;
+                if (
+                  target.scrollTop + target.clientHeight >=
+                    target.scrollHeight - 10 &&
+                  !isLoading &&
+                  hasMore
+                ) {
+                  getAthletesList();
+                }
+              }}
             >
-              {athletesList.items.map((athlete, index) => (
-                <CustomFormCheckbox
-                  key={index}
-                  user={athlete}
-                  value={athlete.athleteId.toString()}
-                />
-              ))}
-            </CheckboxGroup>
-            {isLoading && (
-              <span className="text-center">
-                <Spinner />
-              </span>
-            )}
-            {!hasMore && <p className="text-center">No hay más usuarios</p>}
-          </div>
+              <CheckboxGroup
+                classNames={{ base: "w-full" }}
+                value={selectedUsers}
+                onChange={(value) => handleUserSelection(value)}
+              >
+                {athletesList.items.map((athlete, index) => (
+                  <CustomFormCheckbox
+                    key={index}
+                    user={athlete}
+                    value={athlete.athleteId.toString()}
+                  />
+                ))}
+              </CheckboxGroup>
+              {isLoading && (
+                <span className="flex justify-center w-full">
+                  <Spinner />
+                </span>
+              )}
+              {!hasMore && <p className="text-center">No hay más usuarios</p>}
+            </div>
+          </>
         }
         footerContent={
           <>

@@ -5,16 +5,20 @@ import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
 import { useEffect, useReducer, useState } from "react";
-
+import { debounce } from "lodash";
+import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
+import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 interface State {
   athletesList: PaginateResponseList;
   athleteUser: AthleteUser;
   selectedUsers: string[];
   channelName: string;
+  membership: MembershipByGymId[];
   isModalOpen: {
     selectedUsersModal: boolean;
     channelNameModal: boolean;
   };
+  textFilter: string;
 }
 
 type Value = string | number;
@@ -24,7 +28,9 @@ type Action =
   | { type: "SET_ATHLETES_LIST"; athletesList: PaginateResponseList }
   | { type: "SET_ATHLETE_USER"; athleteUser: AthleteUser }
   | { type: "SET_SELECTED_USERS"; selectedUsers: string[] }
-  | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean };
+  | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
+  | { type: "SET_TEXT_FILTER"; value: string }
+  | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] };
 
 const initialState: State = {
   athletesList: {
@@ -48,11 +54,13 @@ const initialState: State = {
     documentID: "",
   },
   selectedUsers: [],
+  membership: [],
   channelName: "",
   isModalOpen: {
     selectedUsersModal: false,
     channelNameModal: false,
   },
+  textFilter: "",
 };
 
 function reducer(state: State, action: Action): State {
@@ -65,16 +73,12 @@ function reducer(state: State, action: Action): State {
       return { ...state, athleteUser: action.athleteUser };
     case "SET_SELECTED_USERS":
       return { ...state, selectedUsers: action.selectedUsers };
+    case "SET_MEMBERSHIP":
+      return { ...state, membership: action.membership };
+    case "SET_TEXT_FILTER":
+      return { ...state, textFilter: action.value };
     case "TOGGLE_MODAL":
-      return {
-        ...state,
-        isModalOpen: {
-          ...state.isModalOpen,
-          [action.modalName]:
-            action.value ??
-            !state.isModalOpen[action.modalName as keyof State["isModalOpen"]],
-        },
-      };
+      return { ...state, isModalOpen: { ...state.isModalOpen, [action.modalName]: action.value ?? !state.isModalOpen[action.modalName as keyof State["isModalOpen"]] }};
     default:
       return state;
   }
@@ -139,9 +143,8 @@ const chats = [
 ];
 
 const ViewModel = () => {
-  const [{ athletesList, selectedUsers, isModalOpen, channelName }, dispatch] =
-    useReducer(reducer, initialState);
-  const [message, setMessage] = useState("");
+  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter }, dispatch] = useReducer(reducer, initialState);
+  const [richTextMessage, setRichTextMessage] = useState("");
   const [selectedChat, setSelectedChat] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -152,38 +155,45 @@ const ViewModel = () => {
     getAthletesList();
   }, []);
 
-  const handleChange = (value: string) => {
-    setMessage(value);
+  useEffect(() => {
+    getMembershipByGymId();
+  }, []);
+
+  const handleSetRichTextMessage = (value: string) => {
+    setRichTextMessage(value);
   };
 
   const handleChatClick = (chat: any) => {
     setSelectedChat(chat);
   };
 
-  const getAthletesList = async (params?: Partial<PaginateData>) => {
+  const getAthletesList = async (params?: Partial<PaginateData>, reset = false) => {
     try {
       setIsLoading(true);
 
-      const numPage = Math.ceil(athletesList.items.length / 7) + 1;
+      const filterByName = params?.textFilter ?? textFilter;
+      const numPage = reset ? 1 : Math.ceil(athletesList.items.length / 7) + 1;
 
-      const getAthleteUserListUseCase =
-        container.get<GetAthleteUserListUseCase>(
-          TYPES.GetAthleteUserListUseCase
-        );
+      const getAthleteUserListUseCase = container.get<GetAthleteUserListUseCase>(TYPES.GetAthleteUserListUseCase);
 
-      const response = await getAthleteUserListUseCase.execute({
+      const requestParams = {
         numRecordsPage: 7,
         numPage,
+        textFilter: filterByName,
+        ...(filterByName ? { numFilter: 1 } : {}),
         ...params,
-      });
+      };
+
+      const response = await getAthleteUserListUseCase.execute(requestParams);
 
       if (!response || response.items.length === 0) {
         setHasMore(false);
-        console.log(athletesList);
         return;
       }
 
-      const updatedItems = [...athletesList.items, ...response.items];
+      const updatedItems = reset
+        ? response.items
+        : [...athletesList.items, ...response.items];
 
       dispatch({
         type: "SET_ATHLETES_LIST",
@@ -192,16 +202,66 @@ const ViewModel = () => {
           items: updatedItems,
         },
       });
+
+      if (reset) {
+        setHasMore(true);
+      }
     } catch (error: any) {
       console.error(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message || "Error al obtener la lista de usuarios"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de usuarios");
     } finally {
       setIsLoading(false);
     }
   };
+
+  const getMembershipByGymId = async () => {
+    try {
+      const GetMembershipByGymId = container.get<GetMembershipByGymIdUseCase>(TYPES.GetMembershipByGymIdUseCase);
+
+      const response = await GetMembershipByGymId.execute();
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      dispatch({ type: "SET_MEMBERSHIP", membership: response });
+    } catch (error: any) {
+      console.log(error);
+      setError(true);
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de membresías");
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (!richTextMessage.trim()) {
+      setError(true);
+      setErrorMessage("Debes ingresar un mensaje");
+      return;
+    }
+
+    if (selectedUsers.length === 0) {
+      setError(true);
+      setErrorMessage("Debes seleccionar al menos un usuario");
+      return;
+    }
+
+    console.log("Mensaje enviado:", {
+      channel: channelName,
+      message: richTextMessage,
+      selectedUsers,
+    });
+
+    setRichTextMessage("");
+    dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
+    dispatch({ type: "SET_FIELD", value: "" });
+  };
+
+  const handleSetTextFilter = debounce(async (textFilter: string) => {
+    dispatch({ type: "SET_TEXT_FILTER", value: textFilter });
+    await getAthletesList({ textFilter }, true);
+  }, 300);
 
   const handleUserSelection = (selected: string[]) => {
     const updatedUsers = selected
@@ -218,8 +278,6 @@ const ViewModel = () => {
       return;
     }
 
-    console.log("users selected", selectedUsers);
-
     const newChannel = {
       title: channelName,
       description: "Aun no hay mensajes",
@@ -231,8 +289,6 @@ const ViewModel = () => {
     setSelectedChat(newChannel);
 
     toggleModal("selectedUsersModal", false);
-    dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
-    dispatch({ type: "SET_FIELD", value: "" });
   };
 
   const toggleModal = (modalName: string, value?: boolean) => {
@@ -256,7 +312,6 @@ const ViewModel = () => {
 
   return {
     athletesList,
-    message,
     chats,
     selectedChat,
     selectedUsers,
@@ -266,15 +321,19 @@ const ViewModel = () => {
     errorMessage,
     isModalOpen,
     channelName,
+    membership,
+    handleSetTextFilter,
+    richTextMessage,
+    handleSetRichTextMessage,
     setField,
     setError,
     handleChatClick,
-    handleChange,
     getAthletesList,
     handleUserSelection,
     handleCreateChannel,
     toggleModal,
     handleOpenSelectedUsersModal,
+    handleSendMessage,
   };
 };
 
