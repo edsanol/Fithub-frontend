@@ -65,7 +65,7 @@ text {
 
 .custom-quill {
   width: auto;
-  height: 240px;
+  height: 180px;
   display: flex;
   flex-direction: column;
   border-radius: 1rem;

@@ -1,99 +1,65 @@
 "use client";
 
-import {
-  DashboardHeader,
-  FormCheckbox,
-  FormInput,
-  FormRichTextInput,
-  FormSelect,
-  PrimaryButton,
-} from "@/presentation/components";
-import {
-  Tabs,
-  Tab,
-  Card,
-  CardBody,
-  CardHeader,
-  CardFooter,
-} from "@nextui-org/react";
-import { genres, status } from "@/assets/constants";
+import { FormRichTextInput, SecondaryButton } from "@/presentation/components";
 import ViewModel from "./ViewModel";
+import SendIcon from "@/assets/svg/SendIcon";
 
 const Notifications = () => {
-  const { message, handleChange } = ViewModel();
+  const { message, chats, handleChange } = ViewModel();
 
   return (
     <>
-      <DashboardHeader
-        title="Notificaciones"
-        description="Aquí podrás comunicarte con tus deportistas por medio de mensajes personalizados, puedes enviar mensajes a todos tus deportistas o a un grupo en específico."
-      />
+      <div className="grid grid-cols-1 md:grid-cols-[30%_70%] gap-5 w-full mx-auto mt-2 p-5 md:p-10 xl:w-11/12">
+        <div className="flex flex-col">
+          <header className="mt-2">
+            <h4 className="font-black text-xl mb-1">Mensajes</h4>
+            <p className="text-sm text-default-400">
+              Comunicate con tus deportistas
+            </p>
+          </header>
 
-      <div className="flex w-full flex-col mt-5">
-        <Tabs aria-label="Options" classNames={{ base: "dark" }}>
-          <Tab key="compose" title="Componer">
-            <Card className="p-3" classNames={{ base: "dark" }}>
-              <CardHeader className="flex gap-3">
-                <div className="flex flex-col">
-                  <h2 className="text-2xl text-white font-bold">
-                    Nuevo Mensaje
-                  </h2>
-                  <p className="text-sm text-default-400">
-                    Crea y envía una nueva notificación a los deportistas.
+          <SecondaryButton
+            text="Nuevo mensaje"
+            customButtonClass="w-full py-6 mt-5"
+          />
+
+          <section className="mt-5 space-y-3 h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800">
+            {chats.map((item, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-3 p-4 rounded-lg hover:bg-[#121417] cursor-pointer"
+              >
+                <div className="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full">
+                  <span className="text-lg">{item.icon}</span>
+                </div>
+                <div className="flex-1">
+                  <h5 className="text-sm font-bold text-white">{item.title}</h5>
+                  <p className="text-xs text-gray-400 truncate">
+                    {item.description}
                   </p>
                 </div>
-              </CardHeader>
-              <CardBody>
+              </div>
+            ))}
+          </section>
+        </div>
+
+        <div className="mt-2 w-full h-full bg-[#121417] rounded-xl flex flex-col">
+          <section className="w-full h-16 border-b border-gray-700 flex items-center justify-center relative rounded-t-xl">
+            <h5 className="font-black text-xl text-white">General</h5>
+
+            <button className="absolute right-4 flex items-center justify-center w-10 h-10 rounded-full bg-[#3669FC]">
+              <SendIcon />
+            </button>
+          </section>
+
+          <section className="flex-1 flex flex-col justify-end">
+            <div className="w-full border-t border-gray-700 p-3 flex items-end gap-3">
+              <div className="flex-1">
                 <FormRichTextInput value={message} onChange={handleChange} />
-
-                <FormCheckbox
-                  label="Seleccionar todos"
-                  selected={false}
-                  customClassNames="mt-2"
-                />
-
-                <div className="flex flex-col gap-3 md:flex-row justify-between mt-5">
-                  <FormInput
-                    type="text"
-                    label="Buscar por nombre"
-                    labelPlacement="outside"
-                    placeholder="Nombre del deportista"
-                    customInputClass="mb-px"
-                  />
-                  <FormSelect
-                    customInputClass="mt-5"
-                    label="Estado"
-                    labelPlacement="outside"
-                    placeholder="Estado del deportista"
-                    popoverProps={{ color: "foreground" }}
-                    items={status}
-                  />
-                  <FormSelect
-                    label="Sexo"
-                    labelPlacement="outside"
-                    placeholder="Sexo del deportista"
-                    popoverProps={{ color: "foreground" }}
-                    items={genres}
-                  />
-                </div>
-
-                <p className="mt-3 text-white">Deportistas seleccionados</p>
-                <div className="w-full h-40 overflow-auto border-2 border-[#4a5568] mt-1 rounded-md"></div>
-              </CardBody>
-              <CardFooter>
-                <PrimaryButton
-                  customButtonClass="w-full md:w-auto p-8"
-                  text="Enviar Notificación"
-                />
-              </CardFooter>
-            </Card>
-          </Tab>
-          <Tab key="records" title="Historial">
-            <Card>
-              <CardBody></CardBody>
-            </Card>
-          </Tab>
-        </Tabs>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
     </>
   );
