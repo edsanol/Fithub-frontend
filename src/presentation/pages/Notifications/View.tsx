@@ -1,11 +1,41 @@
 "use client";
 
-import { FormRichTextInput, SecondaryButton } from "@/presentation/components";
+import {
+  CustomModal,
+  FormInput,
+  FormRichTextInput,
+  InfoModal,
+  SecondaryButton,
+} from "@/presentation/components";
 import ViewModel from "./ViewModel";
 import SendIcon from "@/assets/svg/SendIcon";
+import { Button, CheckboxGroup } from "@nextui-org/react";
+import CustomFormCheckbox from "./components/CustomFormCheckbox";
+import { Spinner } from "@nextui-org/spinner";
 
 const Notifications = () => {
-  const { message, chats, handleChange } = ViewModel();
+  const {
+    athletesList,
+    message,
+    chats,
+    selectedChat,
+    selectedUsers,
+    isLoading,
+    hasMore,
+    error,
+    errorMessage,
+    isModalOpen,
+    channelName,
+    setField,
+    setError,
+    handleChatClick,
+    handleChange,
+    getAthletesList,
+    handleUserSelection,
+    handleCreateChannel,
+    toggleModal,
+    handleOpenSelectedUsersModal,
+  } = ViewModel();
 
   return (
     <>
@@ -21,12 +51,14 @@ const Notifications = () => {
           <SecondaryButton
             text="Nuevo mensaje"
             customButtonClass="w-full py-6 mt-5"
+            onClick={() => toggleModal("channelNameModal", true)}
           />
 
           <section className="mt-5 space-y-3 h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800">
             {chats.map((item, index) => (
               <div
                 key={index}
+                onClick={() => handleChatClick(item)}
                 className="flex items-center gap-3 p-4 rounded-lg hover:bg-[#121417] cursor-pointer"
               >
                 <div className="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full">
@@ -45,7 +77,9 @@ const Notifications = () => {
 
         <div className="mt-2 w-full h-full bg-[#121417] rounded-xl flex flex-col">
           <section className="w-full h-16 border-b border-gray-700 flex items-center justify-center relative rounded-t-xl">
-            <h5 className="font-black text-xl text-white">General</h5>
+            <h5 className="font-black text-xl text-white">
+              {selectedChat ? selectedChat.title : "Selecciona un chat"}
+            </h5>
 
             <button className="absolute right-4 flex items-center justify-center w-10 h-10 rounded-full bg-[#3669FC]">
               <SendIcon />
@@ -61,6 +95,104 @@ const Notifications = () => {
           </section>
         </div>
       </div>
+
+      <CustomModal
+        isOpen={isModalOpen.channelNameModal}
+        onOpenChange={(value) => toggleModal("channelNameModal", value)}
+        size="xl"
+        content={
+          <FormInput
+            type="text"
+            label="Nombre del canal"
+            onChange={(value) => setField(value)}
+            value={channelName}
+          />
+        }
+        footerContent={
+          <>
+            <Button
+              color="danger"
+              variant="ghost"
+              onPress={() => toggleModal("channelNameModal", false)}
+            >
+              Cerrar
+            </Button>
+            <Button
+              color="primary"
+              variant="ghost"
+              onPress={handleOpenSelectedUsersModal}
+            >
+              Continuar
+            </Button>
+          </>
+        }
+      />
+
+      <CustomModal
+        isOpen={isModalOpen.selectedUsersModal}
+        onOpenChange={(value) => toggleModal("selectedUsersModal", value)}
+        size="xl"
+        content={
+          <div
+            className="h-96 overflow-y-auto space-y-4"
+            onScroll={(e) => {
+              const target = e.target as HTMLElement;
+              if (
+                target.scrollTop + target.clientHeight >=
+                  target.scrollHeight - 10 &&
+                !isLoading &&
+                hasMore
+              ) {
+                getAthletesList();
+              }
+            }}
+          >
+            <CheckboxGroup
+              classNames={{ base: "w-full" }}
+              value={selectedUsers}
+              onChange={(value) => handleUserSelection(value)}
+            >
+              {athletesList.items.map((athlete, index) => (
+                <CustomFormCheckbox
+                  key={index}
+                  user={athlete}
+                  value={athlete.athleteId.toString()}
+                />
+              ))}
+            </CheckboxGroup>
+            {isLoading && (
+              <span className="text-center">
+                <Spinner />
+              </span>
+            )}
+            {!hasMore && <p className="text-center">No hay más usuarios</p>}
+          </div>
+        }
+        footerContent={
+          <>
+            <Button
+              color="danger"
+              variant="ghost"
+              onPress={() => toggleModal("selectedUsersModal", false)}
+            >
+              Cerrar
+            </Button>
+            <Button
+              color="primary"
+              variant="ghost"
+              onPress={handleCreateChannel}
+            >
+              Continuar
+            </Button>
+          </>
+        }
+      />
+
+      <InfoModal
+        isOpen={error}
+        onOpenChange={setError}
+        message={errorMessage}
+      />
     </>
   );
 };
