@@ -6,6 +6,7 @@ interface FormSelectProps {
   isRequired?: boolean;
   isDisabled?: boolean;
   label: string;
+  labelPlacement?: "inside" | "outside" | "outside-left";
   placeholder?: string;
   size?: "lg" | "md" | "sm";
   description?: string;
@@ -20,6 +21,7 @@ const FormSelect = ({
   isRequired,
   isDisabled,
   label,
+  labelPlacement,
   placeholder,
   size,
   description,
@@ -36,6 +38,7 @@ const FormSelect = ({
           isRequired={isRequired || false}
           isDisabled={isDisabled || false}
           label={label}
+          labelPlacement={labelPlacement}
           placeholder={placeholder || ""}
           size={size || "lg"}
           classNames={{ base: "dark" }}

@@ -34,19 +34,10 @@ interface State {
 
 type Action =
   | { type: "SET_FIELD"; field: keyof MeasurementsProgress; value: number }
-  | {
-      type: "SET_MEASUREMENTS_PROGRESS_ERROR";
-      measurementsProgressError: IMeasurementProgressValidation;
-    }
-  | {
-      type: "SET_MEASUREMENTS_PROGRESS_LIST";
-      measurementProgressList: PaginateResponseList;
-    }
+  | { type: "SET_MEASUREMENTS_PROGRESS_ERROR"; measurementsProgressError: IMeasurementProgressValidation; }
+  | { type: "SET_MEASUREMENTS_PROGRESS_LIST"; measurementProgressList: PaginateResponseList; }
   | { type: "SET_USER_SELECTED"; userSelected: AthleteUser }
-  | {
-      type: "SET_MEASUREMENTS_BY_LAST_MONTH";
-      measurementProgressByLastMonth: MeasurementProgressByLastMonth[];
-    }
+  | { type: "SET_MEASUREMENTS_BY_LAST_MONTH"; measurementProgressByLastMonth: MeasurementProgressByLastMonth[]; }
   | { type: "SET_SUGGESTIONS"; suggestions: AthleteUser[] }
   | { type: "SET_GRAPHIC_VALUES"; graphicValues: BarGraphicValues[] }
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
@@ -161,19 +152,7 @@ function reducer(state: State, action: Action): State {
 }
 
 const ViewModel = () => {
-  const [
-    {
-      measurementsProgress,
-      measurementsProgressError,
-      measurementProgressList,
-      userSelected,
-      measurementProgressByLastMonth,
-      suggestions,
-      graphicValues,
-      isModalOpen,
-    },
-    dispatch,
-  ] = useReducer(reducer, initialState);
+  const [{measurementsProgress, measurementsProgressError, measurementProgressList, userSelected, measurementProgressByLastMonth, suggestions, graphicValues, isModalOpen }, dispatch] = useReducer(reducer, initialState);
 
   const [search, setSearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);

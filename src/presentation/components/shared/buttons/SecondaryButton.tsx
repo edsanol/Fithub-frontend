@@ -26,10 +26,9 @@ const SecondaryButton = ({
       onClick={onClick}
       color="secondary"
       isDisabled={isDisabled}
+      variant="ghost"
     >
-      <p className={`text-lg font-bold text-white ${customTextClass}`}>
-        {text}
-      </p>
+      <p className={`text-sm font-bold ${customTextClass}`}>{text}</p>
     </Button>
   );
 };
