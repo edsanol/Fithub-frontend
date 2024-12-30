@@ -14,6 +14,11 @@ import { Button, CheckboxGroup } from "@nextui-org/react";
 import CustomFormCheckbox from "./components/CustomFormCheckbox";
 import { Spinner } from "@nextui-org/spinner";
 import { formatMembershipElements } from "@/presentation/helpers";
+import Image from "next/image";
+import emoji from "@/assets/images/emoji-gray2.png";
+import messageIcon from "@/assets/images/message-icon.png";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import { useState } from "react";
 
 const Notifications = () => {
   const {
@@ -42,9 +47,20 @@ const Notifications = () => {
     handleSendMessage,
   } = ViewModel();
 
+  const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
+  const [text, setText] = useState("");
+
+  const onEmojiClick = (event: EmojiClickData) => {
+    setText((prev) => prev + event.emoji);
+  };
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  };
+
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-[30%_70%] gap-5 w-full mx-auto mt-2 p-5 md:p-10 xl:w-11/12">
+      <div className="grid grid-cols-1 md:grid-cols-[30%_70%] gap-5 w-full mx-auto mt-1 p-4 md:p-10 xl:w-11/12">
         <div className="flex flex-col">
           <header className="mt-2">
             <h4 className="font-black text-xl mb-1">Mensajes</h4>
@@ -54,12 +70,12 @@ const Notifications = () => {
           </header>
 
           <SecondaryButton
-            text="Nuevo mensaje"
+            text="Nuevo canal"
             customButtonClass="w-full py-6 mt-5"
             onClick={() => toggleModal("channelNameModal", true)}
           />
 
-          <section className="mt-5 space-y-3 h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800">
+          <section className="mt-3 space-y-2 min-h-[60vh] max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800">
             {chats.map((item, index) => (
               <div
                 key={index}
@@ -80,21 +96,69 @@ const Notifications = () => {
           </section>
         </div>
 
-        <div className="mt-2 w-full h-full bg-[#121417] rounded-xl flex flex-col">
-          <section className="w-full h-16 border-b border-gray-700 flex items-center justify-center relative rounded-t-xl">
+        <div className="mt-1 w-full h-full border-1 border-gray-700 rounded-xl flex flex-col">
+          <section className="w-[96%] h-16 border-b border-gray-700 flex items-center justify-center relative rounded-t-xl self-center">
             <h5 className="font-black text-xl text-white">
               {selectedChat ? selectedChat.title : "Selecciona un chat"}
             </h5>
-
-            <button className="absolute right-4 flex items-center justify-center w-10 h-10 rounded-full bg-[#3669FC]" onClick={handleSendMessage}>
-              <SendIcon />
-            </button>
           </section>
 
-          <section className="flex-1 flex flex-col justify-end">
-            <div className="w-full border-t border-gray-700 p-3 flex items-end gap-3">
-              <div className="flex-1">
-                <FormRichTextInput value={richTextMessage} onChange={handleSetRichTextMessage} />
+          <section className="flex flex-1 flex-col overflow-y-auto p-4 max-h-[62vh]">
+            <div className="flex h-full w-full justify-center items-center">
+              <div className="flex flex-col h-[50%] w-[50%]">
+                <div className="flex flex-col self-center h-[50%] w-[100%] justify-center items-center">
+                  <Image
+                    src={messageIcon}
+                    width={120}
+                    height={120}
+                    alt="Seleccionar emoji"
+                  />
+                </div>
+                <div className="flex flex-col self-center h-[50%] w-[100%] justify-center items-center">
+                  <p className="text-2xl font-bold text-white text-center">
+                    No se encontraron mensajes
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="flex flex-col justify-end">
+            <div className="w-[98%] border-t border-gray-700 p-3 flex items-end gap-3 self-center">
+              <div className="flex-1 flex items-center gap-3">
+                {/* <FormRichTextInput
+                  value={richTextMessage}
+                  onChange={handleSetRichTextMessage}
+                /> */}
+                <input
+                  type="text"
+                  placeholder="Escribe un mensaje..."
+                  className="flex flex-1 border-0 outline-0 bg-gray-700 p-2 rounded-lg"
+                  value={text}
+                  onChange={handleOnChange}
+                />
+                <div className="flex items-center gap-2 relative">
+                  <button onClick={() => setOpenEmojiPicker((prev) => !prev)}>
+                    <Image
+                      src={emoji}
+                      width={28}
+                      height={28}
+                      alt="Seleccionar emoji"
+                    />
+                  </button>
+                  <div className="absolute bottom-12 right-0">
+                    <EmojiPicker
+                      open={openEmojiPicker}
+                      onEmojiClick={(e) => onEmojiClick(e)}
+                    />
+                  </div>
+                </div>
+                <button
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-[#3669FC]"
+                  onClick={handleSendMessage}
+                >
+                  <SendIcon />
+                </button>
               </div>
             </div>
           </section>
