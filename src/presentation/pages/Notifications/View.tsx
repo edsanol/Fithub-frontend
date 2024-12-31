@@ -18,6 +18,7 @@ import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import CustomFormDropdown from "./components/CustomFormDropdown";
 import CustomFormCheckboxGroup from "./components/CustomFormCheckboxGroup";
 import NoMessageFound from "./components/NoMessageFound";
+import PlusIcon from "@/assets/svg/PlusIcon";
 
 const Notifications = () => {
   const {
@@ -47,6 +48,7 @@ const Notifications = () => {
     handleSendMessage,
     handleTextMessage,
     handleEmojiClick,
+    handleTruncateText,
   } = ViewModel();
 
   return (
@@ -78,7 +80,7 @@ const Notifications = () => {
                 </div>
                 <div className="flex-1">
                   <h5 className="text-sm font-bold text-white">
-                    {item.channelName}
+                    {handleTruncateText(item.channelName!, 40)}
                   </h5>
                   {/* <p className="text-xs text-gray-400 truncate">
                     {item}
@@ -91,14 +93,20 @@ const Notifications = () => {
 
         <div className="mt-1 w-full h-full border-1 border-gray-700 rounded-xl flex flex-col">
           <section className="w-[96%] h-16 border-b border-gray-700 px-1 flex items-center justify-between md:justify-center relative rounded-t-xl self-center">
-            <h5 className="font-black text-md text-white">
+            <h5 className="font-black text-md text-white max-w-[200px] md:max-w-[500px]">
               {selectedChat.channelName
-                ? selectedChat.channelName
+                ? handleTruncateText(selectedChat.channelName, 50)
                 : "Selecciona un chat"}
             </h5>
 
             {selectedChat.channelName && (
-              <CustomFormDropdown athletes={selectedChat.channelAthletes!} />
+              <>
+                <CustomFormDropdown athletes={selectedChat.channelAthletes!} />
+
+                <div className="absolute right-14 top-3 p-1 bg-[#3669FC] rounded-full cursor-pointer">
+                  <PlusIcon />
+                </div>
+              </>
             )}
           </section>
 

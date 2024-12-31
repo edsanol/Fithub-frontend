@@ -311,6 +311,10 @@ const ViewModel = () => {
     toggleModal("channelNameModal", false);
   };
 
+  const handleTruncateText = (text: string, length: number) => {
+    return text.length > length ? `${text.slice(0, length)}...` : text;
+  }
+
   return {
     athletesList,
     channelsList,
@@ -338,6 +342,7 @@ const ViewModel = () => {
     handleOpenSelectedUsersModal,
     handleSendMessage,
     handleEmojiClick,
+    handleTruncateText,
   };
 };
 
