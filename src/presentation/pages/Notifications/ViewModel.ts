@@ -9,6 +9,7 @@ import { debounce } from "lodash";
 import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import { EmojiClickData } from "emoji-picker-react";
+import { CreateChannelUseCase } from "@/domain/useCases/Channel/CreateChannelUseCase";
 interface State {
   athletesList: PaginateResponseList;
   athleteUser: AthleteUser;
@@ -219,9 +220,9 @@ const ViewModel = () => {
 
   const getMembershipByGymId = async () => {
     try {
-      const GetMembershipByGymId = container.get<GetMembershipByGymIdUseCase>(TYPES.GetMembershipByGymIdUseCase);
+      const getMembershipByGymId = container.get<GetMembershipByGymIdUseCase>(TYPES.GetMembershipByGymIdUseCase);
 
-      const response = await GetMembershipByGymId.execute();
+      const response = await getMembershipByGymId.execute();
 
       if (!response) {
         console.log("error");
@@ -233,6 +234,37 @@ const ViewModel = () => {
       console.log(error);
       setError(true);
       setErrorMessage(error.response?.data?.message || "Error al obtener la lista de membresías");
+    }
+  };
+
+  const handleCreateChannel = async () => {
+    try {
+      if (selectedUsers.length === 0) {
+        setError(true);
+        setErrorMessage("Debes seleccionar al menos un usuario");
+        return;
+      }
+
+      const createChannel = container.get<CreateChannelUseCase>(TYPES.CreateChannelUseCase);
+
+      const response = await createChannel.execute({
+        name: channelName,
+        userIds: selectedUsers.map((id) => parseInt(id)),
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      console.log("Canal creado:", response);
+      toggleModal("selectedUsersModal", false);
+      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
+      dispatch({ type: "SET_FIELD", value: "" });
+    } catch (error: any) {
+      console.log(error);
+      setError(true);
+      setErrorMessage(error.response?.data?.message || "Error al crear el canal");
     }
   };
 
@@ -275,26 +307,6 @@ const ViewModel = () => {
 
   const handleEmojiClick = (event: EmojiClickData) => {
     setTextMessage((prev) => prev + event.emoji);
-  }
-
-  const handleCreateChannel = () => {
-    if (selectedUsers.length === 0) {
-      setError(true);
-      setErrorMessage("Debes seleccionar al menos un usuario");
-      return;
-    }
-
-    const newChannel = {
-      title: channelName,
-      description: "Aun no hay mensajes",
-      icon: "💬",
-    };
-
-    chats.push(newChannel);
-
-    setSelectedChat(newChannel);
-
-    toggleModal("selectedUsersModal", false);
   };
 
   const toggleModal = (modalName: string, value?: boolean) => {
