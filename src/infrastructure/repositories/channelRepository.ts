@@ -17,4 +17,10 @@ export class ChannelRepositoryImpl implements ChannelRepository {
 
     return response;
   }
+
+  async getChannels(): Promise<Channel[]> {
+    const response = await this.service.getChannels();
+
+    return response;
+  }
 }

@@ -18,4 +18,10 @@ export class ChannelServiceImpl implements ChannelService {
 
     return response.data;
   }
+
+  async getChannels(): Promise<Channel[]> {
+    const response = await this.http.get<TickerResponseApi<Channel[]>>("/Notification/GetChannels");
+
+    return response.data;
+  }
 }

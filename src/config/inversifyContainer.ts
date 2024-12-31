@@ -64,6 +64,7 @@ import { ChannelRepositoryImpl } from "@/infrastructure/repositories/channelRepo
 import { ChannelService } from "@/domain/services/channelService";
 import { ChannelServiceImpl } from "@/infrastructure/services/channelService";
 import { CreateChannelUseCase } from "@/domain/useCases/Channel/CreateChannelUseCase";
+import { GetChannelsUseCase } from "@/domain/useCases/Channel/getChannelsUseCase";
 
 const container = new Container();
 
@@ -258,5 +259,8 @@ container
 container
   .bind<CreateChannelUseCase>(TYPES.CreateChannelUseCase)
   .to(CreateChannelUseCase);
+container
+  .bind<GetChannelsUseCase>(TYPES.GetChannelsUseCase)
+  .to(GetChannelsUseCase);
 
 export default container;

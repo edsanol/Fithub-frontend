@@ -89,6 +89,7 @@ const TYPES = {
 
   // ChannelUseCases
   CreateChannelUseCase: Symbol.for("CreateChannelUseCase"),
+  GetChannelsUseCase: Symbol.for("GetChannelsUseCase"),
 };
 
 export { TYPES };
