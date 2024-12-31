@@ -15,7 +15,7 @@ interface FormInputProps {
     | undefined;
   errorMessage?: string;
   type: string;
-  label: string;
+  label?: string;
   size?: "lg" | "md" | "sm";
   description?: string;
   customInputClass?: string;

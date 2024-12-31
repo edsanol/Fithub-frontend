@@ -3,7 +3,6 @@
 import {
   CustomModal,
   FormInput,
-  FormRichTextInput,
   FormSelect,
   InfoModal,
   SecondaryButton,
@@ -18,7 +17,6 @@ import Image from "next/image";
 import emoji from "@/assets/images/emoji-gray2.png";
 import messageIcon from "@/assets/images/message-icon.png";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { useState } from "react";
 
 const Notifications = () => {
   const {
@@ -34,8 +32,9 @@ const Notifications = () => {
     channelName,
     membership,
     handleSetTextFilter,
-    richTextMessage,
-    handleSetRichTextMessage,
+    openEmojiPicker,
+    textMessage,
+    setOpenEmojiPicker,
     setField,
     setError,
     handleChatClick,
@@ -45,18 +44,9 @@ const Notifications = () => {
     toggleModal,
     handleOpenSelectedUsersModal,
     handleSendMessage,
+    handleTextMessage,
+    handleEmojiClick,
   } = ViewModel();
-
-  const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
-  const [text, setText] = useState("");
-
-  const onEmojiClick = (event: EmojiClickData) => {
-    setText((prev) => prev + event.emoji);
-  };
-
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
-  };
 
   return (
     <>
@@ -103,6 +93,7 @@ const Notifications = () => {
             </h5>
           </section>
 
+          {/* No chats */}
           <section className="flex flex-1 flex-col overflow-y-auto p-4 max-h-[62vh]">
             <div className="flex h-full w-full justify-center items-center">
               <div className="flex flex-col h-[50%] w-[50%]">
@@ -126,16 +117,12 @@ const Notifications = () => {
           <section className="flex flex-col justify-end">
             <div className="w-[98%] border-t border-gray-700 p-3 flex items-end gap-3 self-center">
               <div className="flex-1 flex items-center gap-3">
-                {/* <FormRichTextInput
-                  value={richTextMessage}
-                  onChange={handleSetRichTextMessage}
-                /> */}
-                <input
+                <FormInput
                   type="text"
                   placeholder="Escribe un mensaje..."
-                  className="flex flex-1 border-0 outline-0 bg-gray-700 p-2 rounded-lg"
-                  value={text}
-                  onChange={handleOnChange}
+                  customInputClass="flex flex-1 border-0 outline-0 p-2 rounded-lg"
+                  value={textMessage}
+                  onChange={(value) => handleTextMessage(value)}
                 />
                 <div className="flex items-center gap-2 relative">
                   <button onClick={() => setOpenEmojiPicker((prev) => !prev)}>
@@ -149,7 +136,7 @@ const Notifications = () => {
                   <div className="absolute bottom-12 right-0">
                     <EmojiPicker
                       open={openEmojiPicker}
-                      onEmojiClick={(e) => onEmojiClick(e)}
+                      onEmojiClick={(event: EmojiClickData) => handleEmojiClick(event)}
                     />
                   </div>
                 </div>

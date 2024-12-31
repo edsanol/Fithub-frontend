@@ -8,6 +8,7 @@ import { useEffect, useReducer, useState } from "react";
 import { debounce } from "lodash";
 import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
+import { EmojiClickData } from "emoji-picker-react";
 interface State {
   athletesList: PaginateResponseList;
   athleteUser: AthleteUser;
@@ -144,12 +145,13 @@ const chats = [
 
 const ViewModel = () => {
   const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter }, dispatch] = useReducer(reducer, initialState);
-  const [richTextMessage, setRichTextMessage] = useState("");
+  const [textMessage, setTextMessage] = useState("");
   const [selectedChat, setSelectedChat] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
 
   useEffect(() => {
     getAthletesList();
@@ -159,8 +161,8 @@ const ViewModel = () => {
     getMembershipByGymId();
   }, []);
 
-  const handleSetRichTextMessage = (value: string) => {
-    setRichTextMessage(value);
+  const handleTextMessage = (value: string) => {
+    setTextMessage(value);
   };
 
   const handleChatClick = (chat: any) => {
@@ -235,7 +237,7 @@ const ViewModel = () => {
   };
 
   const handleSendMessage = () => {
-    if (!richTextMessage.trim()) {
+    if (!textMessage.trim()) {
       setError(true);
       setErrorMessage("Debes ingresar un mensaje");
       return;
@@ -249,11 +251,11 @@ const ViewModel = () => {
 
     console.log("Mensaje enviado:", {
       channel: channelName,
-      message: richTextMessage,
+      message: textMessage,
       selectedUsers,
     });
 
-    setRichTextMessage("");
+    setTextMessage("");
     dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
     dispatch({ type: "SET_FIELD", value: "" });
   };
@@ -270,6 +272,10 @@ const ViewModel = () => {
 
     dispatch({ type: "SET_SELECTED_USERS", selectedUsers: updatedUsers });
   };
+
+  const handleEmojiClick = (event: EmojiClickData) => {
+    setTextMessage((prev) => prev + event.emoji);
+  }
 
   const handleCreateChannel = () => {
     if (selectedUsers.length === 0) {
@@ -323,8 +329,10 @@ const ViewModel = () => {
     channelName,
     membership,
     handleSetTextFilter,
-    richTextMessage,
-    handleSetRichTextMessage,
+    textMessage,
+    openEmojiPicker,
+    setOpenEmojiPicker,
+    handleTextMessage,
     setField,
     setError,
     handleChatClick,
@@ -334,6 +342,7 @@ const ViewModel = () => {
     toggleModal,
     handleOpenSelectedUsersModal,
     handleSendMessage,
+    handleEmojiClick,
   };
 };
 
