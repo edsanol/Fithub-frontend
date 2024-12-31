@@ -59,6 +59,11 @@ import { GetAthleteAssistanceUseCase } from "@/domain/useCases/Dashboard/getAthl
 import { GetAthleteBirthDateUseCase } from "@/domain/useCases/Dashboard/getAthleteBirthDateUseCase";
 import { GetAccessTypesUseCase } from "@/domain/useCases/GymUser/getAccessTypesUseCase";
 import { RegisterAthleteByQRUseCase } from "@/domain/useCases/AthleteUser/registerAthleteByQRUseCase";
+import { ChannelRepository } from "@/domain/repositories/channelRepository";
+import { ChannelRepositoryImpl } from "@/infrastructure/repositories/channelRepository";
+import { ChannelService } from "@/domain/services/channelService";
+import { ChannelServiceImpl } from "@/infrastructure/services/channelService";
+import { CreateChannelUseCase } from "@/domain/useCases/Channel/CreateChannelUseCase";
 
 const container = new Container();
 
@@ -238,5 +243,20 @@ container
 container
   .bind<GetAthleteBirthDateUseCase>(TYPES.GetAthleteBirthDateUseCase)
   .to(GetAthleteBirthDateUseCase);
+
+// ChannelRepository
+container
+  .bind<ChannelRepository>(TYPES.ChannelRepository)
+  .to(ChannelRepositoryImpl);
+
+// ChannelService
+container
+  .bind<ChannelService>(TYPES.ChannelService)
+  .to(ChannelServiceImpl);
+
+// ChannelUseCases
+container
+  .bind<CreateChannelUseCase>(TYPES.CreateChannelUseCase)
+  .to(CreateChannelUseCase);
 
 export default container;

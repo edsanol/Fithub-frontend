@@ -80,6 +80,15 @@ const TYPES = {
   GetMembershipGraphicUseCase: Symbol.for("GetMembershipGraphicUseCase"),
   GetAthleteAssistanceUseCase: Symbol.for("GetAthleteAssistanceUseCase"),
   GetAthleteBirthDateUseCase: Symbol.for("GetAthleteBirthDateUseCase"),
+
+  // ChannelRepository
+  ChannelRepository: Symbol.for("ChannelRepository"),
+
+  // ChannelService
+  ChannelService: Symbol.for("ChannelService"),
+
+  // ChannelUseCases
+  CreateChannelUseCase: Symbol.for("CreateChannelUseCase"),
 };
 
 export { TYPES };
