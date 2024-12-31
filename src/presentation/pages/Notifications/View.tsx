@@ -9,15 +9,15 @@ import {
 } from "@/presentation/components";
 import ViewModel from "./ViewModel";
 import SendIcon from "@/assets/svg/SendIcon";
-import { Button, CheckboxGroup } from "@nextui-org/react";
-import CustomFormCheckbox from "./components/CustomFormCheckbox";
+import { Button } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/spinner";
 import { formatMembershipElements } from "@/presentation/helpers";
 import Image from "next/image";
 import emoji from "@/assets/images/emoji-gray2.png";
-import messageIcon from "@/assets/images/message-icon.png";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import CustomFormDropdown from "./components/CustomFormDropdown";
+import CustomFormCheckboxGroup from "./components/CustomFormCheckboxGroup";
+import NoMessageFound from "./components/NoMessageFound";
 
 const Notifications = () => {
   const {
@@ -90,8 +90,8 @@ const Notifications = () => {
         </div>
 
         <div className="mt-1 w-full h-full border-1 border-gray-700 rounded-xl flex flex-col">
-          <section className="w-[96%] h-16 border-b border-gray-700 flex items-center justify-center relative rounded-t-xl self-center">
-            <h5 className="font-black text-xl text-white">
+          <section className="w-[96%] h-16 border-b border-gray-700 px-1 flex items-center justify-between md:justify-center relative rounded-t-xl self-center">
+            <h5 className="font-black text-md text-white">
               {selectedChat.channelName
                 ? selectedChat.channelName
                 : "Selecciona un chat"}
@@ -102,26 +102,7 @@ const Notifications = () => {
             )}
           </section>
 
-          {/* No chats */}
-          <section className="flex flex-1 flex-col overflow-y-auto p-4 max-h-[62vh]">
-            <div className="flex h-full w-full justify-center items-center">
-              <div className="flex flex-col h-[50%] w-[50%]">
-                <div className="flex flex-col self-center h-[50%] w-[100%] justify-center items-center">
-                  <Image
-                    src={messageIcon}
-                    width={120}
-                    height={120}
-                    alt="Seleccionar emoji"
-                  />
-                </div>
-                <div className="flex flex-col self-center h-[50%] w-[100%] justify-center items-center">
-                  <p className="text-2xl font-bold text-white text-center">
-                    No se encontraron mensajes
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
+          <NoMessageFound />
 
           <section className="flex flex-col justify-end">
             <div className="w-[98%] border-t border-gray-700 p-3 flex items-end gap-3 self-center">
@@ -142,7 +123,7 @@ const Notifications = () => {
                       alt="Seleccionar emoji"
                     />
                   </button>
-                  <div className="absolute bottom-12 right-0">
+                  <div className="absolute bottom-12 right-[-90px] md:right-0 z-10">
                     <EmojiPicker
                       open={openEmojiPicker}
                       onEmojiClick={(event: EmojiClickData) =>
@@ -230,19 +211,12 @@ const Notifications = () => {
                 }
               }}
             >
-              <CheckboxGroup
-                classNames={{ base: "w-full" }}
-                value={selectedUsers}
-                onChange={(value) => handleUserSelection(value)}
-              >
-                {athletesList.items.map((athlete, index) => (
-                  <CustomFormCheckbox
-                    key={index}
-                    user={athlete}
-                    value={athlete.athleteId.toString()}
-                  />
-                ))}
-              </CheckboxGroup>
+              <CustomFormCheckboxGroup
+                selectedUsers={selectedUsers}
+                items={athletesList.items}
+                onUserSelection={handleUserSelection}
+              />
+
               {isLoading && (
                 <span className="flex justify-center w-full">
                   <Spinner />
