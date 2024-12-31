@@ -17,11 +17,12 @@ import Image from "next/image";
 import emoji from "@/assets/images/emoji-gray2.png";
 import messageIcon from "@/assets/images/message-icon.png";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import CustomFormDropdown from "./components/CustomFormDropdown";
 
 const Notifications = () => {
   const {
     athletesList,
-    chats,
+    channelsList,
     selectedChat,
     selectedUsers,
     isLoading,
@@ -66,20 +67,22 @@ const Notifications = () => {
           />
 
           <section className="mt-3 space-y-2 min-h-[60vh] max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800">
-            {chats.map((item, index) => (
+            {channelsList.map((item, index) => (
               <div
                 key={index}
-                onClick={() => handleChatClick(item)}
+                onClick={() => handleChatClick(item.channelId!)}
                 className="flex items-center gap-3 p-4 rounded-lg hover:bg-[#121417] cursor-pointer"
               >
                 <div className="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full">
                   <span className="text-lg">💬</span>
                 </div>
                 <div className="flex-1">
-                  <h5 className="text-sm font-bold text-white">{item.title}</h5>
-                  <p className="text-xs text-gray-400 truncate">
-                    {item.description}
-                  </p>
+                  <h5 className="text-sm font-bold text-white">
+                    {item.channelName}
+                  </h5>
+                  {/* <p className="text-xs text-gray-400 truncate">
+                    {item}
+                  </p> */}
                 </div>
               </div>
             ))}
@@ -89,8 +92,14 @@ const Notifications = () => {
         <div className="mt-1 w-full h-full border-1 border-gray-700 rounded-xl flex flex-col">
           <section className="w-[96%] h-16 border-b border-gray-700 flex items-center justify-center relative rounded-t-xl self-center">
             <h5 className="font-black text-xl text-white">
-              {selectedChat ? selectedChat.title : "Selecciona un chat"}
+              {selectedChat.channelName
+                ? selectedChat.channelName
+                : "Selecciona un chat"}
             </h5>
+
+            {selectedChat.channelName && (
+              <CustomFormDropdown athletes={selectedChat.channelAthletes!} />
+            )}
           </section>
 
           {/* No chats */}
@@ -136,7 +145,9 @@ const Notifications = () => {
                   <div className="absolute bottom-12 right-0">
                     <EmojiPicker
                       open={openEmojiPicker}
-                      onEmojiClick={(event: EmojiClickData) => handleEmojiClick(event)}
+                      onEmojiClick={(event: EmojiClickData) =>
+                        handleEmojiClick(event)
+                      }
                     />
                   </div>
                 </div>

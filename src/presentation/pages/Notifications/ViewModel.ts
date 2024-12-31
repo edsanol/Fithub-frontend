@@ -10,6 +10,8 @@ import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMem
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import { EmojiClickData } from "emoji-picker-react";
 import { CreateChannelUseCase } from "@/domain/useCases/Channel/CreateChannelUseCase";
+import { Channel } from "@/domain/entities/Channel";
+import { GetChannelsUseCase } from "@/domain/useCases/Channel/getChannelsUseCase";
 interface State {
   athletesList: PaginateResponseList;
   athleteUser: AthleteUser;
@@ -21,6 +23,7 @@ interface State {
     channelNameModal: boolean;
   };
   textFilter: string;
+  channelsList: Channel[];
 }
 
 type Value = string | number;
@@ -32,7 +35,8 @@ type Action =
   | { type: "SET_SELECTED_USERS"; selectedUsers: string[] }
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
   | { type: "SET_TEXT_FILTER"; value: string }
-  | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] };
+  | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] }
+  | { type: "SET_CHANNELS_LIST"; channelsList: Channel[] };
 
 const initialState: State = {
   athletesList: {
@@ -63,6 +67,7 @@ const initialState: State = {
     channelNameModal: false,
   },
   textFilter: "",
+  channelsList: [],
 };
 
 function reducer(state: State, action: Action): State {
@@ -81,73 +86,17 @@ function reducer(state: State, action: Action): State {
       return { ...state, textFilter: action.value };
     case "TOGGLE_MODAL":
       return { ...state, isModalOpen: { ...state.isModalOpen, [action.modalName]: action.value ?? !state.isModalOpen[action.modalName as keyof State["isModalOpen"]] }};
+    case "SET_CHANNELS_LIST":
+      return { ...state, channelsList: action.channelsList };
     default:
       return state;
   }
 }
 
-const chats = [
-  {
-    title: "General",
-    description: "Último mensaje aquí",
-    icon: "💬",
-  },
-  {
-    title: "Grupo 1",
-    description: "Hola, ¿cómo estás?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-];
-
 const ViewModel = () => {
-  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter }, dispatch] = useReducer(reducer, initialState);
+  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter, channelsList }, dispatch] = useReducer(reducer, initialState);
   const [textMessage, setTextMessage] = useState("");
-  const [selectedChat, setSelectedChat] = useState<any>(null);
+  const [selectedChat, setSelectedChat] = useState<Channel>({channelId: 0, channelName: "", channelAthletes: []});
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<boolean>(false);
@@ -155,19 +104,23 @@ const ViewModel = () => {
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
 
   useEffect(() => {
-    getAthletesList();
-  }, []);
-
-  useEffect(() => {
-    getMembershipByGymId();
+    getChannelsList();
   }, []);
 
   const handleTextMessage = (value: string) => {
     setTextMessage(value);
   };
 
-  const handleChatClick = (chat: any) => {
-    setSelectedChat(chat);
+  const handleChatClick = (channelId: number) => {
+    const channel = channelsList.find((channel) => channel.channelId === channelId);
+
+    if (!channel) {
+      setError(true);
+      setErrorMessage("Error al seleccionar el chat");
+      return;
+    }
+
+    setSelectedChat(channel);
   };
 
   const getAthletesList = async (params?: Partial<PaginateData>, reset = false) => {
@@ -237,6 +190,30 @@ const ViewModel = () => {
     }
   };
 
+  const getChannelsList = async () => {
+    try {
+      setIsLoading(true);
+
+      const getChannelsList = container.get<GetChannelsUseCase>(TYPES.GetChannelsUseCase);
+
+      const response = await getChannelsList.execute();
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      dispatch({ type: "SET_CHANNELS_LIST", channelsList: response });
+
+      setIsLoading(false);
+    } catch (error: any) {
+      console.log(error);
+      setError(true);
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de canales");
+      setIsLoading(false);
+    }
+  };
+
   const handleCreateChannel = async () => {
     try {
       if (selectedUsers.length === 0) {
@@ -258,6 +235,7 @@ const ViewModel = () => {
       }
 
       console.log("Canal creado:", response);
+      await getChannelsList();
       toggleModal("selectedUsersModal", false);
       dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
       dispatch({ type: "SET_FIELD", value: "" });
@@ -309,7 +287,12 @@ const ViewModel = () => {
     setTextMessage((prev) => prev + event.emoji);
   };
 
-  const toggleModal = (modalName: string, value?: boolean) => {
+  const toggleModal = async (modalName: string, value?: boolean) => {
+    if (modalName === "selectedUsersModal" && value) {
+      await getAthletesList({ textFilter: "" }, true);
+      await getMembershipByGymId();
+    }
+
     dispatch({ type: "TOGGLE_MODAL", modalName, value });
   };
 
@@ -330,7 +313,7 @@ const ViewModel = () => {
 
   return {
     athletesList,
-    chats,
+    channelsList,
     selectedChat,
     selectedUsers,
     isLoading,
