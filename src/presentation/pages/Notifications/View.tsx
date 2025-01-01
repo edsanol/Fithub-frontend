@@ -103,9 +103,9 @@ const Notifications = () => {
               <>
                 <CustomFormDropdown athletes={selectedChat.channelAthletes!} />
 
-                <div className="absolute right-14 top-3 p-1 bg-[#3669FC] rounded-full cursor-pointer">
+                <button className="absolute right-[4rem] top-[1.2rem] p-1 cursor-pointer bg-[#3669FC] rounded-full">
                   <PlusIcon />
-                </div>
+                </button>
               </>
             )}
           </section>
