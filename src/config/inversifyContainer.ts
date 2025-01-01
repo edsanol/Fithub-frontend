@@ -63,8 +63,13 @@ import { ChannelRepository } from "@/domain/repositories/channelRepository";
 import { ChannelRepositoryImpl } from "@/infrastructure/repositories/channelRepository";
 import { ChannelService } from "@/domain/services/channelService";
 import { ChannelServiceImpl } from "@/infrastructure/services/channelService";
-import { CreateChannelUseCase } from "@/domain/useCases/Channel/CreateChannelUseCase";
 import { GetChannelsUseCase } from "@/domain/useCases/Channel/getChannelsUseCase";
+import { MessageRepository } from "@/domain/repositories/messageRepository";
+import { MessageRepositoryImpl } from "@/infrastructure/repositories/messageRepository";
+import { CreateChannelUseCase } from "@/domain/useCases/Channel/createChannelUseCase";
+import { MessageService } from "@/domain/services/messageService";
+import { MessageServiceImpl } from "@/infrastructure/services/messageService";
+import { SendNotificationUseCase } from "@/domain/useCases/Message/sendNotificationUseCase";
 
 const container = new Container();
 
@@ -262,5 +267,20 @@ container
 container
   .bind<GetChannelsUseCase>(TYPES.GetChannelsUseCase)
   .to(GetChannelsUseCase);
+
+// MessageRepository
+container
+  .bind<MessageRepository>(TYPES.MessageRepository)
+  .to(MessageRepositoryImpl);
+
+// MessageService
+container
+  .bind<MessageService>(TYPES.MessageService)
+  .to(MessageServiceImpl);
+
+// MessageUseCases
+container
+  .bind<SendNotificationUseCase>(TYPES.SendNotificationUseCase)
+  .to(SendNotificationUseCase);
 
 export default container;

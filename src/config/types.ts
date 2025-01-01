@@ -73,9 +73,7 @@ const TYPES = {
 
   // DashboardDataUseCases
   GetDashboardDataUseCase: Symbol.for("GetDashboardDataUseCase"),
-  GetDailyAssistanceGraphicUseCase: Symbol.for(
-    "GetDailyAssistanceGraphicUseCase"
-  ),
+  GetDailyAssistanceGraphicUseCase: Symbol.for("GetDailyAssistanceGraphicUseCase"),
   GetIncomeGraphicUseCase: Symbol.for("GetIncomeGraphicUseCase"),
   GetMembershipGraphicUseCase: Symbol.for("GetMembershipGraphicUseCase"),
   GetAthleteAssistanceUseCase: Symbol.for("GetAthleteAssistanceUseCase"),
@@ -90,6 +88,15 @@ const TYPES = {
   // ChannelUseCases
   CreateChannelUseCase: Symbol.for("CreateChannelUseCase"),
   GetChannelsUseCase: Symbol.for("GetChannelsUseCase"),
+
+  // MessageRepository
+  MessageRepository: Symbol.for("MessageRepository"),
+
+  // MessageService
+  MessageService: Symbol.for("MessageService"),
+
+  // MessageUseCases
+  SendNotificationUseCase: Symbol.for("SendNotificationUseCase"),
 };
 
 export { TYPES };

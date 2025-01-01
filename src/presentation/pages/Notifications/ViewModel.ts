@@ -9,9 +9,10 @@ import { debounce } from "lodash";
 import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import { EmojiClickData } from "emoji-picker-react";
-import { CreateChannelUseCase } from "@/domain/useCases/Channel/CreateChannelUseCase";
 import { Channel } from "@/domain/entities/Channel";
 import { GetChannelsUseCase } from "@/domain/useCases/Channel/getChannelsUseCase";
+import { CreateChannelUseCase } from "@/domain/useCases/Channel/createChannelUseCase";
+import { SendNotificationUseCase } from "@/domain/useCases/Message/sendNotificationUseCase";
 interface State {
   athletesList: PaginateResponseList;
   athleteUser: AthleteUser;
@@ -36,7 +37,7 @@ type Action =
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
   | { type: "SET_TEXT_FILTER"; value: string }
   | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] }
-  | { type: "SET_CHANNELS_LIST"; channelsList: Channel[] };
+  | { type: "SET_CHANNELS_LIST"; channelsList: Channel[] }
 
 const initialState: State = {
   athletesList: {
@@ -114,13 +115,16 @@ const ViewModel = () => {
   const handleChatClick = (channelId: number) => {
     const channel = channelsList.find((channel) => channel.channelId === channelId);
 
-    if (!channel) {
+    if (!channel || !channel.channelAthletes) {
       setError(true);
       setErrorMessage("Error al seleccionar el chat");
       return;
     }
 
+    const channelAthletes = channel.channelAthletes.map((athlete) => athlete.athleteId.toString());
+
     setSelectedChat(channel);
+    dispatch({ type: "SET_SELECTED_USERS", selectedUsers: channelAthletes });
   };
 
   const getAthletesList = async (params?: Partial<PaginateData>, reset = false) => {
@@ -246,28 +250,40 @@ const ViewModel = () => {
     }
   };
 
-  const handleSendMessage = () => {
-    if (!textMessage.trim()) {
+  const handleSendMessage = async () => {
+    try {
+      if (!textMessage.trim()) {
+        setError(true);
+        setErrorMessage("Debes ingresar un mensaje");
+        return;
+      }
+
+      if (selectedUsers.length === 0) {
+        setError(true);
+        setErrorMessage("Debes seleccionar al menos un usuario");
+        return;
+      }
+
+      const sendNotification = container.get<SendNotificationUseCase>(TYPES.SendNotificationUseCase);
+
+      const response = await sendNotification.execute({
+        channelId: selectedChat.channelId!,
+        message: textMessage,
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setTextMessage("");
+      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
+      dispatch({ type: "SET_FIELD", value: "" });
+    } catch (error: any) {
+      console.log(error);
       setError(true);
-      setErrorMessage("Debes ingresar un mensaje");
-      return;
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de membresías");
     }
-
-    if (selectedUsers.length === 0) {
-      setError(true);
-      setErrorMessage("Debes seleccionar al menos un usuario");
-      return;
-    }
-
-    console.log("Mensaje enviado:", {
-      channel: channelName,
-      message: textMessage,
-      selectedUsers,
-    });
-
-    setTextMessage("");
-    dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
-    dispatch({ type: "SET_FIELD", value: "" });
   };
 
   const handleSetTextFilter = debounce(async (textFilter: string) => {
