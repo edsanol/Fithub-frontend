@@ -19,6 +19,8 @@ import CustomFormDropdown from "./components/CustomFormDropdown";
 import CustomFormCheckboxGroup from "./components/CustomFormCheckboxGroup";
 import NoMessageFound from "./components/NoMessageFound";
 import PlusIcon from "@/assets/svg/PlusIcon";
+import MessageBubble from "./components/MessageBubble";
+import { useEffect, useRef } from "react";
 
 const Notifications = () => {
   const {
@@ -36,6 +38,7 @@ const Notifications = () => {
     handleSetTextFilter,
     openEmojiPicker,
     textMessage,
+    notificationsList,
     setOpenEmojiPicker,
     setField,
     setError,
@@ -50,6 +53,13 @@ const Notifications = () => {
     handleEmojiClick,
     handleTruncateText,
   } = ViewModel();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [notificationsList]);
 
   return (
     <>
@@ -110,7 +120,24 @@ const Notifications = () => {
             )}
           </section>
 
-          <NoMessageFound />
+          {selectedChat.channelName ? (
+            <section className="max-h-[400px] flex-1 flex flex-col overflow-y-auto px-4 pt-2 gap-2">
+              {notificationsList && notificationsList.length > 0 ? (
+                notificationsList.map((notif) => (
+                  <MessageBubble
+                    key={notif.notificationId}
+                    message={notif.message}
+                    sendAt={notif.sendAt}
+                  />
+                ))
+              ) : (
+                <NoMessageFound />
+              )}
+              <div ref={messagesEndRef} />
+            </section>
+          ) : (
+            <NoMessageFound />
+          )}
 
           <section className="flex flex-col justify-end">
             <div className="w-[98%] border-t border-gray-700 p-3 flex items-end gap-3 self-center">

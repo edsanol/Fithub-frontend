@@ -70,6 +70,10 @@ import { CreateChannelUseCase } from "@/domain/useCases/Channel/createChannelUse
 import { MessageService } from "@/domain/services/messageService";
 import { MessageServiceImpl } from "@/infrastructure/services/messageService";
 import { SendNotificationUseCase } from "@/domain/useCases/Message/sendNotificationUseCase";
+import { GetNotificationsUseCase } from "@/domain/useCases/Message/getNotificationsUseCase";
+import { SignalRService } from "@/domain/services/signalRService";
+import { SignalRServiceImpl } from "@/infrastructure/services/signalRService";
+import { SignalRNotificationUseCase } from "@/domain/useCases/SignalR/signalRNotificationUseCase";
 
 const container = new Container();
 
@@ -142,16 +146,24 @@ container
   .bind<DeleteAthleteUserUseCase>(TYPES.DeleteAthleteUserUseCase)
   .to(DeleteAthleteUserUseCase);
 container
-  .bind<UpdateMembershipToAthleteUseCase>(TYPES.UpdateMembershipToAthleteUseCase)
+  .bind<UpdateMembershipToAthleteUseCase>(
+    TYPES.UpdateMembershipToAthleteUseCase
+  )
   .to(UpdateMembershipToAthleteUseCase);
 container
-  .bind<CreateMeasurementProgressUseCase>(TYPES.CreateMeasurementProgressUseCase)
+  .bind<CreateMeasurementProgressUseCase>(
+    TYPES.CreateMeasurementProgressUseCase
+  )
   .to(CreateMeasurementProgressUseCase);
 container
-  .bind<GetMeasurementProgressListUseCase>(TYPES.GetMeasurementProgressListUseCase)
+  .bind<GetMeasurementProgressListUseCase>(
+    TYPES.GetMeasurementProgressListUseCase
+  )
   .to(GetMeasurementProgressListUseCase);
 container
-  .bind<GetMeasurementProgressByLastMonthUseCase>(TYPES.GetMeasurementProgressByLastMonthUseCase)
+  .bind<GetMeasurementProgressByLastMonthUseCase>(
+    TYPES.GetMeasurementProgressByLastMonthUseCase
+  )
   .to(GetMeasurementProgressByLastMonthUseCase);
 container
   .bind<GetMeasurementsGraphicUseCase>(TYPES.GetMeasurementsGraphicUseCase)
@@ -235,7 +247,9 @@ container
   .bind<GetDashboardDataUseCase>(TYPES.GetDashboardDataUseCase)
   .to(GetDashboardDataUseCase);
 container
-  .bind<GetDailyAssistanceGraphicUseCase>(TYPES.GetDailyAssistanceGraphicUseCase)
+  .bind<GetDailyAssistanceGraphicUseCase>(
+    TYPES.GetDailyAssistanceGraphicUseCase
+  )
   .to(GetDailyAssistanceGraphicUseCase);
 container
   .bind<GetIncomeGraphicUseCase>(TYPES.GetIncomeGraphicUseCase)
@@ -256,9 +270,7 @@ container
   .to(ChannelRepositoryImpl);
 
 // ChannelService
-container
-  .bind<ChannelService>(TYPES.ChannelService)
-  .to(ChannelServiceImpl);
+container.bind<ChannelService>(TYPES.ChannelService).to(ChannelServiceImpl);
 
 // ChannelUseCases
 container
@@ -274,13 +286,25 @@ container
   .to(MessageRepositoryImpl);
 
 // MessageService
-container
-  .bind<MessageService>(TYPES.MessageService)
-  .to(MessageServiceImpl);
+container.bind<MessageService>(TYPES.MessageService).to(MessageServiceImpl);
 
 // MessageUseCases
 container
   .bind<SendNotificationUseCase>(TYPES.SendNotificationUseCase)
   .to(SendNotificationUseCase);
+container
+  .bind<GetNotificationsUseCase>(TYPES.GetNotificationsUseCase)
+  .to(GetNotificationsUseCase);
+
+// SignalRService
+container
+  .bind<SignalRService>(TYPES.SignalRService)
+  .to(SignalRServiceImpl)
+  .inSingletonScope();
+
+// SignalRNotificationUseCase
+container
+  .bind<SignalRNotificationUseCase>(TYPES.SignalRNotificationUseCase)
+  .to(SignalRNotificationUseCase);
 
 export default container;
