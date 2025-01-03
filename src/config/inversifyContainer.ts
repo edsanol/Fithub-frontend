@@ -74,6 +74,7 @@ import { GetNotificationsUseCase } from "@/domain/useCases/Message/getNotificati
 import { SignalRService } from "@/domain/services/signalRService";
 import { SignalRServiceImpl } from "@/infrastructure/services/signalRService";
 import { SignalRNotificationUseCase } from "@/domain/useCases/SignalR/signalRNotificationUseCase";
+import { AddOrRemoveUsersFromChannelUseCase } from "@/domain/useCases/Channel/addOrRemoveUserUseCase";
 
 const container = new Container();
 
@@ -279,6 +280,9 @@ container
 container
   .bind<GetChannelsUseCase>(TYPES.GetChannelsUseCase)
   .to(GetChannelsUseCase);
+container
+  .bind<AddOrRemoveUsersFromChannelUseCase>(TYPES.AddOrRemoveUsersFromChannelUseCase)
+  .to(AddOrRemoveUsersFromChannelUseCase);
 
 // MessageRepository
 container

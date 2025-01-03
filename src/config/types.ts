@@ -101,6 +101,7 @@ const TYPES = {
   // ChannelUseCases
   CreateChannelUseCase: Symbol.for("CreateChannelUseCase"),
   GetChannelsUseCase: Symbol.for("GetChannelsUseCase"),
+  AddOrRemoveUsersFromChannelUseCase: Symbol.for("AddOrRemoveUsersFromChannelUseCase"),
 
   // MessageRepository
   MessageRepository: Symbol.for("MessageRepository"),

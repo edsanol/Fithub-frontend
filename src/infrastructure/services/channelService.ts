@@ -24,4 +24,13 @@ export class ChannelServiceImpl implements ChannelService {
 
     return response.data;
   }
+
+  async addOrRemoveUsersFromChannel(channelId: number, userIds: number[]): Promise<boolean> {
+    const response = await this.http.post<TickerResponseApi<boolean>, { channelId: number; userIds: number[] }>("/Notification/AddUserToChannel", {
+      channelId,
+      userIds,
+    });
+
+    return response.data;
+  }
 }

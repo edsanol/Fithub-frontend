@@ -7,6 +7,7 @@ export const config = {
     "/discounts",
     "/gym-profile",
     "/membership",
+    "/notifications",
     "/user-list",
     "/user-progress",
   ],

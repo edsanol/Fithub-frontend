@@ -6,7 +6,7 @@ import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { debounce } from "lodash";
+import { debounce, set } from "lodash";
 import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import { EmojiClickData } from "emoji-picker-react";
@@ -17,6 +17,7 @@ import { SendNotificationUseCase } from "@/domain/useCases/Message/sendNotificat
 import { GetNotificationsUseCase } from "@/domain/useCases/Message/getNotificationsUseCase";
 import { GetNotifications } from "@/domain/models/getNotifications";
 import { SignalRNotificationUseCase } from "@/domain/useCases/SignalR/signalRNotificationUseCase";
+import { AddOrRemoveUsersFromChannelUseCase } from "@/domain/useCases/Channel/addOrRemoveUserUseCase";
 
 interface State {
   athletesList: PaginateResponseList;
@@ -176,6 +177,12 @@ const ViewModel = () => {
     getChannelsList();
   }, []);
 
+  useEffect(() => {
+    if (selectedChat.channelId) {
+      updateChannelAthletesList();
+    }
+  }, [channelsList, selectedChat.channelId]);
+
   const handleTextMessage = (value: string) => {
     setTextMessage(value);
   };
@@ -268,8 +275,6 @@ const ViewModel = () => {
 
   const getChannelsList = async () => {
     try {
-      setIsLoading(true);
-
       const getChannelsList = container.get<GetChannelsUseCase>(TYPES.GetChannelsUseCase);
 
       const response = await getChannelsList.execute();
@@ -280,12 +285,10 @@ const ViewModel = () => {
       }
 
       dispatch({ type: "SET_CHANNELS_LIST", channelsList: response });
-      setIsLoading(false);
     } catch (error: any) {
       console.log(error);
       setError(true);
       setErrorMessage(error.response?.data?.message || "Error al obtener la lista de canales");
-      setIsLoading(false);
     }
   };
 
@@ -409,12 +412,49 @@ const ViewModel = () => {
     });
   };
 
-  const handleSelectedUsers = () => {
+  const handleSelectedUsers = async () => {
     if (isModalOpen.addAndDeleteUsersModal) {
-      const updatedUsers = Array.from(new Set(selectedUsers));
-      console.log("Usuarios finales para actualizar:", updatedUsers);
-      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: updatedUsers });
+      try {
+        const channelId = selectedChat.channelId;
+        const usersIds = selectedUsers.map((id) => parseInt(id));
+
+        if (channelId === 0 || usersIds.length === 0) {
+          setError(true);
+          setErrorMessage("Error al actualizar los usuarios");
+          return;
+        }
+
+        const addOrRemoveUsersFromChannel = container.get<AddOrRemoveUsersFromChannelUseCase>(TYPES.AddOrRemoveUsersFromChannelUseCase);
+
+        const response = await addOrRemoveUsersFromChannel.execute(channelId!, usersIds);
+
+        if (!response) {
+          console.log("error");
+          setError(true);
+          setErrorMessage("Error al actualizar los usuarios");
+          return;
+        }
+
+        toggleUserModal("addAndDeleteUsers", false);
+        await getChannelsList();
+      } catch (error: any) {
+        console.log(error);
+        setError(true);
+        setErrorMessage(error.response?.data?.message || "Error al actualizar los usuarios");
+      }
     }
+  };
+
+  const updateChannelAthletesList = () => {
+    const updatedChannel = channelsList.find((channel) => channel.channelId === selectedChat.channelId);
+  
+    if (!updatedChannel || !updatedChannel.channelAthletes) {
+      setError(true);
+      setErrorMessage("Error al sincronizar los usuarios del canal");
+      return;
+    }
+  
+    setSelectedChat(updatedChannel);
   };
 
   const setField = (value: string) => {

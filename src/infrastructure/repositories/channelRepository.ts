@@ -23,4 +23,10 @@ export class ChannelRepositoryImpl implements ChannelRepository {
 
     return response;
   }
+
+  async addOrRemoveUsersFromChannel(channelId: number, userIds: number[]): Promise<boolean> {
+    const response = await this.service.addOrRemoveUsersFromChannel(channelId, userIds);
+
+    return response;
+  }
 }
