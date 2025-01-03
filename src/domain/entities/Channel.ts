@@ -9,6 +9,7 @@ type constructorParams = {
   channelId?: number;
   channelName?: string;
   channelAthletes?: Athlete[];
+  lastMessage?: string;
 };
 
 export class Channel {
@@ -17,9 +18,14 @@ export class Channel {
   public channelId?: number;
   public channelName?: string;
   public channelAthletes?: Athlete[];
+  public lastMessage?: string;
 
-  constructor({ name, userIds }: constructorParams) {
+  constructor({ name, userIds, channelId, channelName, channelAthletes, lastMessage }: constructorParams) {
     this.name = name;
     this.userIds = userIds;
+    this.channelId = channelId;
+    this.channelName = channelName;
+    this.channelAthletes = channelAthletes;
+    this.lastMessage = lastMessage;
   }
 }

@@ -90,16 +90,16 @@ const Notifications = () => {
                 onClick={() => handleChatClick(item.channelId!)}
                 className="flex items-center gap-3 p-4 rounded-lg hover:bg-[#121417] cursor-pointer"
               >
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full">
+                <div className="min-w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full">
                   <span className="text-lg">💬</span>
                 </div>
                 <div className="flex-1">
                   <h5 className="text-sm font-bold text-white">
                     {handleTruncateText(item.channelName!, 40)}
                   </h5>
-                  {/* <p className="text-xs text-gray-400 truncate">
-                    {item}
-                  </p> */}
+                  <p className="text-xs text-gray-400 truncate">
+                    {item.lastMessage !== "" ? handleTruncateText(item.lastMessage!, 30) : "No hay mensajes"}
+                  </p>
                 </div>
               </div>
             ))}
