@@ -3,24 +3,21 @@
 import {
   CustomModal,
   FormInput,
-  FormSelect,
   InfoModal,
   SecondaryButton,
 } from "@/presentation/components";
 import ViewModel from "./ViewModel";
 import SendIcon from "@/assets/svg/SendIcon";
 import { Button } from "@nextui-org/react";
-import { Spinner } from "@nextui-org/spinner";
-import { formatMembershipElements } from "@/presentation/helpers";
 import Image from "next/image";
 import emoji from "@/assets/images/emoji-gray2.png";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import CustomFormDropdown from "./components/CustomFormDropdown";
-import CustomFormCheckboxGroup from "./components/CustomFormCheckboxGroup";
 import NoMessageFound from "./components/NoMessageFound";
 import PlusIcon from "@/assets/svg/PlusIcon";
 import MessageBubble from "./components/MessageBubble";
 import { useEffect, useRef } from "react";
+import CustomUserModal from "./components/CustomUserModal";
 
 const Notifications = () => {
   const {
@@ -46,12 +43,13 @@ const Notifications = () => {
     getAthletesList,
     handleUserSelection,
     handleCreateChannel,
-    toggleModal,
+    toggleUserModal,
     handleOpenSelectedUsersModal,
     handleSendMessage,
     handleTextMessage,
     handleEmojiClick,
     handleTruncateText,
+    handleSelectedUsers,
   } = ViewModel();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -60,6 +58,13 @@ const Notifications = () => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [notificationsList]);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 10 && !isLoading && hasMore) {
+      getAthletesList();
+    }
+  };
 
   return (
     <>
@@ -75,7 +80,7 @@ const Notifications = () => {
           <SecondaryButton
             text="Nuevo canal"
             customButtonClass="w-full py-6 mt-5"
-            onClick={() => toggleModal("channelNameModal", true)}
+            onClick={() => toggleUserModal("channelName", true)}
           />
 
           <section className="mt-3 space-y-2 min-h-[60vh] max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800">
@@ -113,7 +118,10 @@ const Notifications = () => {
               <>
                 <CustomFormDropdown athletes={selectedChat.channelAthletes!} />
 
-                <button className="absolute right-[4rem] top-[1.2rem] p-1 cursor-pointer bg-[#3669FC] rounded-full">
+                <button
+                  className="absolute right-[4rem] top-[1.2rem] p-1 cursor-pointer bg-[#3669FC] rounded-full"
+                  onClick={() => toggleUserModal("addAndDeleteUsers", true)}
+                >
                   <PlusIcon />
                 </button>
               </>
@@ -181,7 +189,7 @@ const Notifications = () => {
 
       <CustomModal
         isOpen={isModalOpen.channelNameModal}
-        onOpenChange={(value) => toggleModal("channelNameModal", value)}
+        onOpenChange={(value) => toggleUserModal("channelName", value)}
         size="xl"
         content={
           <FormInput
@@ -196,7 +204,7 @@ const Notifications = () => {
             <Button
               color="danger"
               variant="ghost"
-              onPress={() => toggleModal("channelNameModal", false)}
+              onPress={() => toggleUserModal("channelName", false)}
             >
               Cerrar
             </Button>
@@ -211,74 +219,19 @@ const Notifications = () => {
         }
       />
 
-      <CustomModal
-        isOpen={isModalOpen.selectedUsersModal}
-        onOpenChange={(value) => toggleModal("selectedUsersModal", value)}
-        size="xl"
-        content={
-          <>
-            <div className="flex flex-col justify-center items-center md:flex-row gap-3">
-              <FormInput
-                type="text"
-                label="Buscar por nombre"
-                onChange={(value) => handleSetTextFilter(value)}
-                size="sm"
-              />
-              <FormSelect
-                label="Filtrar por membresía"
-                size="sm"
-                popoverProps={{ color: "foreground" }}
-                items={formatMembershipElements(membership)}
-              />
-            </div>
-            <span>Listado de deportistas</span>
-            <div
-              className="h-96 overflow-y-auto space-y-4"
-              onScroll={(e) => {
-                const target = e.target as HTMLElement;
-                if (
-                  target.scrollTop + target.clientHeight >=
-                    target.scrollHeight - 10 &&
-                  !isLoading &&
-                  hasMore
-                ) {
-                  getAthletesList();
-                }
-              }}
-            >
-              <CustomFormCheckboxGroup
-                selectedUsers={selectedUsers}
-                items={athletesList.items}
-                onUserSelection={handleUserSelection}
-              />
-
-              {isLoading && (
-                <span className="flex justify-center w-full">
-                  <Spinner />
-                </span>
-              )}
-              {!hasMore && <p className="text-center">No hay más usuarios</p>}
-            </div>
-          </>
-        }
-        footerContent={
-          <>
-            <Button
-              color="danger"
-              variant="ghost"
-              onPress={() => toggleModal("selectedUsersModal", false)}
-            >
-              Cerrar
-            </Button>
-            <Button
-              color="primary"
-              variant="ghost"
-              onPress={handleCreateChannel}
-            >
-              Continuar
-            </Button>
-          </>
-        }
+      <CustomUserModal
+        isOpen={isModalOpen.selectUsersModal || isModalOpen.addAndDeleteUsersModal}
+        onClose={() => toggleUserModal(isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers", false)}
+        type={isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers"}
+        users={athletesList.items}
+        selectedUsers={selectedUsers}
+        memberships={membership}
+        isLoading={isLoading}
+        hasMore={hasMore}
+        onScroll={handleScroll}
+        onUserSelection={handleUserSelection}
+        onConfirm={isModalOpen.selectUsersModal ? handleCreateChannel : handleSelectedUsers}
+        onFilterChange={(value) => handleSetTextFilter(value)}
       />
 
       <InfoModal

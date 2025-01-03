@@ -25,7 +25,7 @@ interface State {
   channelName: string;
   membership: MembershipByGymId[];
   isModalOpen: {
-    selectedUsersModal: boolean;
+    selectUsersModal: boolean;
     channelNameModal: boolean;
     addAndDeleteUsersModal: boolean;
   };
@@ -71,7 +71,7 @@ const initialState: State = {
   membership: [],
   channelName: "",
   isModalOpen: {
-    selectedUsersModal: false,
+    selectUsersModal: false,
     channelNameModal: false,
     addAndDeleteUsersModal: false,
   },
@@ -280,7 +280,6 @@ const ViewModel = () => {
       }
 
       dispatch({ type: "SET_CHANNELS_LIST", channelsList: response });
-
       setIsLoading(false);
     } catch (error: any) {
       console.log(error);
@@ -311,7 +310,7 @@ const ViewModel = () => {
       }
 
       await getChannelsList();
-      toggleModal("selectedUsersModal", false);
+      toggleUserModal("selectUsers", false);
       dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
       dispatch({ type: "SET_FIELD", value: "" });
     } catch (error: any) {
@@ -381,24 +380,41 @@ const ViewModel = () => {
   }, 300);
 
   const handleUserSelection = (selected: string[]) => {
-    const updatedUsers = selected
-      .filter((id) => !selectedUsers.includes(id))
-      .concat(selectedUsers.filter((id) => selected.includes(id)));
-
-    dispatch({ type: "SET_SELECTED_USERS", selectedUsers: updatedUsers });
+    dispatch({ type: "SET_SELECTED_USERS", selectedUsers: selected });
   };
 
   const handleEmojiClick = (event: EmojiClickData) => {
     setTextMessage((prev) => prev + event.emoji);
   };
 
-  const toggleModal = async (modalName: string, value?: boolean) => {
-    if (modalName === "selectedUsersModal" && value) {
-      await getAthletesList({ textFilter: "" }, true);
-      await getMembershipByGymId();
+  const toggleUserModal = async (type: "selectUsers" | "addAndDeleteUsers" | "channelName", value: boolean) => {
+    if (value) {
+      await Promise.all([
+        getAthletesList({ textFilter: "" }, true),
+        getMembershipByGymId(),
+      ]);
+  
+      if (type === "selectUsers") {
+        dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
+      } else if (type === "addAndDeleteUsers") {
+        const channelAthletes = selectedChat.channelAthletes?.map((a) => a.athleteId.toString()) || [];
+        dispatch({ type: "SET_SELECTED_USERS", selectedUsers: channelAthletes });
+      }
     }
+  
+    dispatch({
+      type: "TOGGLE_MODAL",
+      modalName: `${type}Modal`,
+      value,
+    });
+  };
 
-    dispatch({ type: "TOGGLE_MODAL", modalName, value });
+  const handleSelectedUsers = () => {
+    if (isModalOpen.addAndDeleteUsersModal) {
+      const updatedUsers = Array.from(new Set(selectedUsers));
+      console.log("Usuarios finales para actualizar:", updatedUsers);
+      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: updatedUsers });
+    }
   };
 
   const setField = (value: string) => {
@@ -412,8 +428,8 @@ const ViewModel = () => {
       return;
     }
 
-    toggleModal("selectedUsersModal", true);
-    toggleModal("channelNameModal", false);
+    toggleUserModal("selectUsers", true);
+    toggleUserModal("channelName", false);
   };
 
   const handleTruncateText = (text: string, length: number) => {
@@ -444,11 +460,12 @@ const ViewModel = () => {
     getAthletesList,
     handleUserSelection,
     handleCreateChannel,
-    toggleModal,
+    toggleUserModal,
     handleOpenSelectedUsersModal,
     handleSendMessage,
     handleEmojiClick,
     handleTruncateText,
+    handleSelectedUsers,
   };
 };
 
