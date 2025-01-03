@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
@@ -26,13 +27,12 @@ interface State {
   isModalOpen: {
     selectedUsersModal: boolean;
     channelNameModal: boolean;
+    addAndDeleteUsersModal: boolean;
   };
   textFilter: string;
   channelsList: Channel[];
   notificationsList: GetNotifications[];
 }
-
-type Value = string | number;
 
 type Action =
   | { type: "SET_FIELD"; value: string }
@@ -73,6 +73,7 @@ const initialState: State = {
   isModalOpen: {
     selectedUsersModal: false,
     channelNameModal: false,
+    addAndDeleteUsersModal: false,
   },
   textFilter: "",
   channelsList: [],
@@ -94,49 +95,22 @@ function reducer(state: State, action: Action): State {
     case "SET_TEXT_FILTER":
       return { ...state, textFilter: action.value };
     case "TOGGLE_MODAL":
-      return {
-        ...state,
-        isModalOpen: {
-          ...state.isModalOpen,
-          [action.modalName]:
-            action.value ??
-            !state.isModalOpen[action.modalName as keyof State["isModalOpen"]],
-        },
-      };
+      return { ...state, isModalOpen: { ...state.isModalOpen, [action.modalName]: action.value ?? !state.isModalOpen[action.modalName as keyof State["isModalOpen"]] }};
     case "SET_CHANNELS_LIST":
       return { ...state, channelsList: action.channelsList };
     case "SET_NOTIFICATIONS_LIST":
       return { ...state, notificationsList: action.notificationsList };
     case "APPEND_NOTIFICATION":
-      return {
-        ...state,
-        notificationsList: [...state.notificationsList, action.notification],
-      };
+      return { ...state, notificationsList: [...state.notificationsList, action.notification] };
     default:
       return state;
   }
 }
 
 const ViewModel = () => {
-  const [
-    {
-      athletesList,
-      selectedUsers,
-      isModalOpen,
-      channelName,
-      membership,
-      textFilter,
-      channelsList,
-      notificationsList,
-    },
-    dispatch,
-  ] = useReducer(reducer, initialState);
+  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter, channelsList, notificationsList }, dispatch] = useReducer(reducer, initialState);
   const [textMessage, setTextMessage] = useState("");
-  const [selectedChat, setSelectedChat] = useState<Channel>({
-    channelId: 0,
-    channelName: "",
-    channelAthletes: [],
-  });
+  const [selectedChat, setSelectedChat] = useState<Channel>({ channelId: 0, channelName: "", channelAthletes: [] });
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<boolean>(false);
@@ -144,30 +118,25 @@ const ViewModel = () => {
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
   const selectedChatRef = useRef(selectedChat.channelId);
 
-  const signalRNotificationUseCase = container.get<SignalRNotificationUseCase>(
-    TYPES.SignalRNotificationUseCase
-  );
+  const signalRNotificationUseCase = container.get<SignalRNotificationUseCase>(TYPES.SignalRNotificationUseCase);
 
   const initializeConnection = async () => {
     await signalRNotificationUseCase.initializeConnection();
   };
 
-  const handleReceiveMessage = useCallback(
-    (channelId: number, message: string) => {
-      if (channelId === selectedChatRef.current) {
-        dispatch({
-          type: "APPEND_NOTIFICATION",
-          notification: {
-            notificationId: Math.random(),
-            channelId,
-            message,
-            sendAt: new Date().toISOString(),
-          },
-        });
-      }
-    },
-    []
-  );
+  const handleReceiveMessage = useCallback((channelId: number, message: string) => {
+    if (channelId === selectedChatRef.current) {
+      dispatch({
+        type: "APPEND_NOTIFICATION",
+        notification: {
+          notificationId: Math.random(),
+          channelId,
+          message,
+          sendAt: new Date().toISOString(),
+        },
+      });
+    }
+  }, []);
 
   useEffect(() => {
     selectedChatRef.current = selectedChat.channelId;
@@ -175,7 +144,6 @@ const ViewModel = () => {
 
   useEffect(() => {
     initializeConnection();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -184,7 +152,6 @@ const ViewModel = () => {
     return () => {
       signalRNotificationUseCase.unsubscribeFromNotifications();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -203,7 +170,6 @@ const ViewModel = () => {
     };
 
     joinChannel();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat.channelId]);
 
   useEffect(() => {
@@ -215,9 +181,7 @@ const ViewModel = () => {
   };
 
   const handleChatClick = async (channelId: number) => {
-    const channel = channelsList.find(
-      (channel) => channel.channelId === channelId
-    );
+    const channel = channelsList.find((channel) => channel.channelId === channelId);
 
     if (!channel || !channel.channelAthletes) {
       setError(true);
@@ -235,20 +199,14 @@ const ViewModel = () => {
     await getNotificationsList(channelId);
   };
 
-  const getAthletesList = async (
-    params?: Partial<PaginateData>,
-    reset = false
-  ) => {
+  const getAthletesList = async (params?: Partial<PaginateData>, reset = false) => {
     try {
       setIsLoading(true);
 
       const filterByName = params?.textFilter ?? textFilter;
       const numPage = reset ? 1 : Math.ceil(athletesList.items.length / 7) + 1;
 
-      const getAthleteUserListUseCase =
-        container.get<GetAthleteUserListUseCase>(
-          TYPES.GetAthleteUserListUseCase
-        );
+      const getAthleteUserListUseCase = container.get<GetAthleteUserListUseCase>(TYPES.GetAthleteUserListUseCase);
 
       const requestParams = {
         numRecordsPage: 7,
@@ -283,9 +241,7 @@ const ViewModel = () => {
     } catch (error: any) {
       console.error(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message || "Error al obtener la lista de usuarios"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de usuarios");
     } finally {
       setIsLoading(false);
     }
@@ -293,9 +249,7 @@ const ViewModel = () => {
 
   const getMembershipByGymId = async () => {
     try {
-      const getMembershipByGymId = container.get<GetMembershipByGymIdUseCase>(
-        TYPES.GetMembershipByGymIdUseCase
-      );
+      const getMembershipByGymId = container.get<GetMembershipByGymIdUseCase>(TYPES.GetMembershipByGymIdUseCase);
 
       const response = await getMembershipByGymId.execute();
 
@@ -308,10 +262,7 @@ const ViewModel = () => {
     } catch (error: any) {
       console.log(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Error al obtener la lista de membresías"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de membresías");
     }
   };
 
@@ -319,9 +270,7 @@ const ViewModel = () => {
     try {
       setIsLoading(true);
 
-      const getChannelsList = container.get<GetChannelsUseCase>(
-        TYPES.GetChannelsUseCase
-      );
+      const getChannelsList = container.get<GetChannelsUseCase>(TYPES.GetChannelsUseCase);
 
       const response = await getChannelsList.execute();
 
@@ -336,9 +285,7 @@ const ViewModel = () => {
     } catch (error: any) {
       console.log(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message || "Error al obtener la lista de canales"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de canales");
       setIsLoading(false);
     }
   };
@@ -351,9 +298,7 @@ const ViewModel = () => {
         return;
       }
 
-      const createChannel = container.get<CreateChannelUseCase>(
-        TYPES.CreateChannelUseCase
-      );
+      const createChannel = container.get<CreateChannelUseCase>(TYPES.CreateChannelUseCase);
 
       const response = await createChannel.execute({
         name: channelName,
@@ -365,7 +310,6 @@ const ViewModel = () => {
         return;
       }
 
-      console.log("Canal creado:", response);
       await getChannelsList();
       toggleModal("selectedUsersModal", false);
       dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
@@ -373,9 +317,7 @@ const ViewModel = () => {
     } catch (error: any) {
       console.log(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message || "Error al crear el canal"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al crear el canal");
     }
   };
 
@@ -393,9 +335,7 @@ const ViewModel = () => {
         return;
       }
 
-      const sendNotification = container.get<SendNotificationUseCase>(
-        TYPES.SendNotificationUseCase
-      );
+      const sendNotification = container.get<SendNotificationUseCase>(TYPES.SendNotificationUseCase);
 
       const response = await sendNotification.execute({
         channelId: selectedChat.channelId!,
@@ -412,18 +352,13 @@ const ViewModel = () => {
     } catch (error: any) {
       console.log(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Error al obtener la lista de membresías"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de membresías");
     }
   };
 
   const getNotificationsList = async (id: number) => {
     try {
-      const getNotifications = container.get<GetNotificationsUseCase>(
-        TYPES.GetNotificationsUseCase
-      );
+      const getNotifications = container.get<GetNotificationsUseCase>(TYPES.GetNotificationsUseCase);
 
       const response = await getNotifications.execute(id);
 
@@ -436,10 +371,7 @@ const ViewModel = () => {
     } catch (error: any) {
       console.log(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Error al obtener la lista de notificaciones"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de notificaciones");
     }
   };
 
