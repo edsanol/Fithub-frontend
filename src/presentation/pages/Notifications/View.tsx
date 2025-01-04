@@ -52,6 +52,8 @@ const Notifications = () => {
     handleTruncateText,
     handleSelectedUsers,
     handleMembershipFilter,
+    handleSelectAllUsers,
+    handleScroll,
   } = ViewModel();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -60,13 +62,6 @@ const Notifications = () => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [notificationsList]);
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLElement;
-    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 10 && !isLoading && hasMore) {
-      getAthletesList();
-    }
-  };
 
   return (
     <>
@@ -236,6 +231,7 @@ const Notifications = () => {
         onConfirm={isModalOpen.selectUsersModal ? handleCreateChannel : handleSelectedUsers}
         onFilterChange={(value) => handleSetTextFilter(value)}
         onMembershipFilter={handleMembershipFilter}
+        onSelectAllUsers={handleSelectAllUsers}
       />
 
       <InfoModal

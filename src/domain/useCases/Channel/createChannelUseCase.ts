@@ -1,5 +1,5 @@
 import { TYPES } from "@/config/types";
-import { Channel } from "@/domain/entities/Channel";
+import { CreateChannel } from "@/domain/models/CreateChannel";
 import type { ChannelRepository } from "@/domain/repositories/channelRepository";
 import { inject, injectable } from "inversify";
 
@@ -10,7 +10,7 @@ export class CreateChannelUseCase {
     private channelRepository: ChannelRepository
   ) {}
 
-  async execute(channel: Channel): Promise<boolean> {
+  async execute(channel: CreateChannel): Promise<boolean> {
     return await this.channelRepository.createChannel(channel);
   }
 }

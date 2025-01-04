@@ -1,7 +1,7 @@
-import React from "react";
+import { useState } from "react";
 import { Button } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/spinner";
-import { CustomModal, FormInput, FormMultiSelect, FormSelect } from "@/presentation/components";
+import { CustomModal, FormCheckbox, FormInput, FormMultiSelect, FormSelect } from "@/presentation/components";
 import CustomFormCheckboxGroup from "./CustomFormCheckboxGroup";
 import { formatMembershipElements } from "@/presentation/helpers";
 
@@ -20,6 +20,7 @@ interface CustomUserModalProps {
   onConfirm: () => void;
   onFilterChange: (value: string) => void;
   onMembershipFilter: (value: number[]) => void;
+  onSelectAllUsers: (selected: boolean) => void;
 }
 
 const CustomUserModal = ({
@@ -37,7 +38,15 @@ const CustomUserModal = ({
   onConfirm,
   onFilterChange,
   onMembershipFilter,
+  onSelectAllUsers,
 }: CustomUserModalProps) => {
+  const [isAllSelected, setIsAllSelected] = useState(false);
+
+  const handleOnClose = () => {
+    setIsAllSelected(false);
+    onClose();
+  }
+
   return (
     <>
       <CustomModal
@@ -62,7 +71,21 @@ const CustomUserModal = ({
                 customInputClass="max-w-full md:max-w-[260px]"
               />
             </div>
-            <span>Listado de deportistas</span>
+
+            <div className="flex flex-col md:flex-row gap-3 justify-between items-center mb-2">
+              <span>Listado de deportistas</span>
+
+              <FormCheckbox
+                label={
+                  selectedMemberships.length > 0
+                    ? "Seleccionar todos los usuarios que pertenecen a las membresías seleccionadas"
+                    : "Seleccionar todos"
+                }
+                selected={isAllSelected}
+                onValueChange={(value) => onSelectAllUsers(Boolean(value))}
+              />
+            </div>
+
             <div
               className="h-80 overflow-y-auto space-y-4 mt-2"
               onScroll={onScroll}
@@ -83,7 +106,7 @@ const CustomUserModal = ({
         }
         footerContent={
           <>
-            <Button color="danger" variant="ghost" onPress={onClose}>
+            <Button color="danger" variant="ghost" onPress={handleOnClose}>
               Cerrar
             </Button>
             <Button color="primary" variant="ghost" onPress={onConfirm}>

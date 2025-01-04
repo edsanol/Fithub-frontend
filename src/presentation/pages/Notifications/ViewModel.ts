@@ -6,7 +6,7 @@ import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { debounce, set } from "lodash";
+import { debounce } from "lodash";
 import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import { EmojiClickData } from "emoji-picker-react";
@@ -18,6 +18,7 @@ import { GetNotificationsUseCase } from "@/domain/useCases/Message/getNotificati
 import { GetNotifications } from "@/domain/models/getNotifications";
 import { SignalRNotificationUseCase } from "@/domain/useCases/SignalR/signalRNotificationUseCase";
 import { AddOrRemoveUsersFromChannelUseCase } from "@/domain/useCases/Channel/addOrRemoveUserUseCase";
+import { CreateChannel } from "@/domain/models/CreateChannel";
 
 interface State {
   athletesList: PaginateResponseList;
@@ -34,6 +35,7 @@ interface State {
   channelsList: Channel[];
   notificationsList: GetNotifications[];
   selectedMemberships: string[];
+  numFilter: number | undefined;
 }
 
 type Action =
@@ -47,7 +49,8 @@ type Action =
   | { type: "SET_CHANNELS_LIST"; channelsList: Channel[] }
   | { type: "SET_NOTIFICATIONS_LIST"; notificationsList: GetNotifications[] }
   | { type: "APPEND_NOTIFICATION"; notification: GetNotifications }
-  | { type: "SET_SELECTED_MEMBERSHIPS"; selectedMemberships: string[] };
+  | { type: "SET_SELECTED_MEMBERSHIPS"; selectedMemberships: string[] }
+  | { type: "SET_NUM_FILTER"; numFilter: number | undefined };
 
 const initialState: State = {
   athletesList: {
@@ -82,6 +85,7 @@ const initialState: State = {
   channelsList: [],
   notificationsList: [],
   selectedMemberships: [],
+  numFilter: 0,
 };
 
 function reducer(state: State, action: Action): State {
@@ -108,13 +112,15 @@ function reducer(state: State, action: Action): State {
       return { ...state, notificationsList: [...state.notificationsList, action.notification] };
     case "SET_SELECTED_MEMBERSHIPS":
       return { ...state, selectedMemberships: action.selectedMemberships };
+    case "SET_NUM_FILTER":
+      return { ...state, numFilter: action.numFilter };
     default:
       return state;
   }
 }
 
 const ViewModel = () => {
-  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter, channelsList, notificationsList, selectedMemberships }, dispatch] = useReducer(reducer, initialState);
+  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter, channelsList, notificationsList, selectedMemberships, numFilter }, dispatch] = useReducer(reducer, initialState);
   const [textMessage, setTextMessage] = useState("");
   const [selectedChat, setSelectedChat] = useState<Channel>({ channelId: 0, channelName: "", channelAthletes: [] });
   const [isLoading, setIsLoading] = useState(false);
@@ -122,6 +128,7 @@ const ViewModel = () => {
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
   const selectedChatRef = useRef(selectedChat.channelId);
 
   const signalRNotificationUseCase = container.get<SignalRNotificationUseCase>(TYPES.SignalRNotificationUseCase);
@@ -217,6 +224,7 @@ const ViewModel = () => {
 
       const filterByName = params?.textFilter ?? textFilter;
       const filterByMemberships = selectedMemberships.join(",");
+      const effectiveNumFilter = params?.numFilter ?? numFilter;
       const numPage = reset ? 1 : Math.ceil(athletesList.items.length / 7) + 1;
 
       const getAthleteUserListUseCase = container.get<GetAthleteUserListUseCase>(TYPES.GetAthleteUserListUseCase);
@@ -225,7 +233,7 @@ const ViewModel = () => {
         numRecordsPage: 7,
         numPage,
         textFilter: filterByMemberships || filterByName,
-        numFilter: filterByMemberships ? 6 : filterByName ? 7 : undefined,
+        numFilter: effectiveNumFilter,
         ...params,
       };
 
@@ -300,18 +308,28 @@ const ViewModel = () => {
 
   const handleCreateChannel = async () => {
     try {
-      if (selectedUsers.length === 0) {
-        setError(true);
-        setErrorMessage("Debes seleccionar al menos un usuario");
-        return;
-      }
+      const allUsersSelected = selectedUsers.length === 0 && selectedMemberships.length === 0;
+      const allUsersSelectedByMembership = selectedMemberships.length > 0;
+      const deselectedUserIds = allUsersSelected || allUsersSelectedByMembership ? selectedUsers.map(Number) : [];
+
+      // if (selectedUsers.length === 0) {
+      //   setError(true);
+      //   setErrorMessage("Debes seleccionar al menos un usuario");
+      //   return;
+      // }
 
       const createChannel = container.get<CreateChannelUseCase>(TYPES.CreateChannelUseCase);
 
-      const response = await createChannel.execute({
-        name: channelName,
-        userIds: selectedUsers.map((id) => parseInt(id)),
-      });
+      const response = await createChannel.execute(
+        new CreateChannel({
+          name: channelName,
+          userIds: selectedUsers.map(Number),
+          allUsersSelected,
+          allUsersSelectedByMembersip: allUsersSelectedByMembership,
+          deselectedUserIds,
+          membershipIds: selectedMemberships.map(Number),
+        })
+      );
 
       if (!response) {
         console.log("error");
@@ -385,13 +403,17 @@ const ViewModel = () => {
 
   const handleSetTextFilter = debounce(async (textFilter: string) => {
     dispatch({ type: "SET_TEXT_FILTER", value: textFilter });
-    await getAthletesList({ textFilter }, true);
+    dispatch({ type: "SET_NUM_FILTER", numFilter: 7 });
+    dispatch({ type: "SET_SELECTED_MEMBERSHIPS", selectedMemberships: [] });
+    await getAthletesList({ textFilter, numFilter: 7 }, true);
   }, 300);
 
-  const handleMembershipFilter = (memberships: number[]) => {
+  const handleMembershipFilter = async (memberships: number[]) => {
     const membershipFilter = memberships.join(",");
     dispatch({ type: "SET_SELECTED_MEMBERSHIPS", selectedMemberships: memberships.map((m) => m.toString()) });
-    handleSetTextFilter(membershipFilter);
+    dispatch({ type: "SET_NUM_FILTER", numFilter: 6 });
+    dispatch({ type: "SET_TEXT_FILTER", value: "" });
+    await getAthletesList({ textFilter: membershipFilter, numFilter: 6 }, true);
   };
 
   const handleUserSelection = (selected: string[]) => {
@@ -404,6 +426,10 @@ const ViewModel = () => {
 
   const toggleUserModal = async (type: "selectUsers" | "addAndDeleteUsers" | "channelName", value: boolean) => {
     if (value) {
+      dispatch({ type: "SET_TEXT_FILTER", value: "" });
+      dispatch({ type: "SET_SELECTED_MEMBERSHIPS", selectedMemberships: [] });
+      dispatch({ type: "SET_NUM_FILTER", numFilter: undefined });
+
       await Promise.all([
         getAthletesList({ textFilter: "" }, true),
         getMembershipByGymId(),
@@ -427,18 +453,28 @@ const ViewModel = () => {
   const handleSelectedUsers = async () => {
     if (isModalOpen.addAndDeleteUsersModal) {
       try {
-        const channelId = selectedChat.channelId;
-        const usersIds = selectedUsers.map((id) => parseInt(id));
+        const allUsersSelected = selectedUsers.length === 0 && selectedMemberships.length === 0;
+        const allUsersSelectedByMembership = selectedMemberships.length > 0;
+        const deselectedUserIds = allUsersSelected || allUsersSelectedByMembership ? selectedUsers.map(Number) : [];
 
-        if (channelId === 0 || usersIds.length === 0) {
-          setError(true);
-          setErrorMessage("Error al actualizar los usuarios");
-          return;
-        }
+        // if (channelId === 0 || usersIds.length === 0) {
+        //   setError(true);
+        //   setErrorMessage("Error al actualizar los usuarios");
+        //   return;
+        // }
 
         const addOrRemoveUsersFromChannel = container.get<AddOrRemoveUsersFromChannelUseCase>(TYPES.AddOrRemoveUsersFromChannelUseCase);
 
-        const response = await addOrRemoveUsersFromChannel.execute(channelId!, usersIds);
+        const response = await addOrRemoveUsersFromChannel.execute(
+          new CreateChannel({
+            channelId: selectedChat.channelId!,
+            userIds: selectedUsers.map(Number),
+            allUsersSelected,
+            allUsersSelectedByMembersip: allUsersSelectedByMembership,
+            deselectedUserIds,
+            membershipIds: selectedMemberships.map(Number),
+          })
+        );
 
         if (!response) {
           console.log("error");
@@ -488,6 +524,29 @@ const ViewModel = () => {
     return text.length > length ? `${text.slice(0, length)}...` : text;
   };
 
+  const handleSelectAllUsers = (selectAll: boolean) => {
+    setSelectAllChecked(selectAll);
+
+    if (selectAll) {
+      const allVisibleUserIds = athletesList.items.map((user) => user.athleteId.toString());
+      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: allVisibleUserIds });
+    } else {
+      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
+    }
+  };
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 10 && !isLoading && hasMore) {
+      getAthletesList();
+    }
+
+    if (selectAllChecked) {
+      const visibleUserIds = athletesList.items.map((user) => user.athleteId.toString());
+      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: visibleUserIds });
+    }
+  };
+
   return {
     athletesList,
     channelsList,
@@ -520,6 +579,8 @@ const ViewModel = () => {
     handleTruncateText,
     handleSelectedUsers,
     handleMembershipFilter,
+    handleSelectAllUsers,
+    handleScroll,
   };
 };
 

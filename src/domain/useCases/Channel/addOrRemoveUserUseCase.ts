@@ -1,4 +1,5 @@
 import { TYPES } from "@/config/types";
+import { CreateChannel } from "@/domain/models/CreateChannel";
 import type { ChannelRepository } from "@/domain/repositories/channelRepository";
 import { inject, injectable } from "inversify";
 
@@ -9,7 +10,7 @@ export class AddOrRemoveUsersFromChannelUseCase {
     private channelRepository: ChannelRepository
   ) {}
 
-  async execute(channelId: number, userIds: number[]): Promise<boolean> {
-    return this.channelRepository.addOrRemoveUsersFromChannel(channelId, userIds);
+  async execute(channel: CreateChannel): Promise<boolean> {
+    return this.channelRepository.addOrRemoveUsersFromChannel(channel);
   }
 }

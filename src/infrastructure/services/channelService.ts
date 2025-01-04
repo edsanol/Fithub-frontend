@@ -4,6 +4,7 @@ import type { HttpClient } from "../api/http";
 import { TYPES } from "@/config/types";
 import { Channel } from "@/domain/entities/Channel";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
+import { CreateChannel } from "@/domain/models/CreateChannel";
 
 @injectable()
 export class ChannelServiceImpl implements ChannelService {
@@ -13,7 +14,7 @@ export class ChannelServiceImpl implements ChannelService {
     this.http = http;
   }
 
-  async createChannel(channel: Channel): Promise<boolean> {
+  async createChannel(channel: CreateChannel): Promise<boolean> {
     const response = await this.http.post<TickerResponseApi<boolean>, Channel>("/Notification/CreateChannel", channel);
 
     return response.data;
@@ -25,11 +26,8 @@ export class ChannelServiceImpl implements ChannelService {
     return response.data;
   }
 
-  async addOrRemoveUsersFromChannel(channelId: number, userIds: number[]): Promise<boolean> {
-    const response = await this.http.post<TickerResponseApi<boolean>, { channelId: number; userIds: number[] }>("/Notification/AddUserToChannel", {
-      channelId,
-      userIds,
-    });
+  async addOrRemoveUsersFromChannel(channel: CreateChannel): Promise<boolean> {
+    const response = await this.http.post<TickerResponseApi<boolean>, CreateChannel>("/Notification/AddUserToChannel", channel);
 
     return response.data;
   }
