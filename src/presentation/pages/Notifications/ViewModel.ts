@@ -5,7 +5,7 @@ import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { debounce } from "lodash";
 import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
@@ -554,21 +554,24 @@ const ViewModel = () => {
     }
   };
 
-  const handleScroll = async (e: React.UIEvent<HTMLDivElement>) => {
+  const visibleUserIds = useMemo(() =>
+    athletesList.items
+      .filter((user) => !deselectedUsersIds.includes(user.athleteId.toString()))
+      .map((user) => user.athleteId.toString()),
+    [athletesList, deselectedUsersIds]
+  );
+
+  const handleScroll = debounce(async (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
   
     if (target.scrollTop + target.clientHeight >= target.scrollHeight - 10 && !isLoading && hasMore) {
       await getAthletesList();
     }
-  
+
     if (selectAllChecked) {
-      const visibleUserIds = athletesList.items
-        .filter((user) => !deselectedUsersIds.includes(user.athleteId.toString())) // Respeta los deseleccionados
-        .map((user) => user.athleteId.toString());
-  
       dispatch({ type: "SET_SELECTED_USERS", selectedUsers: visibleUserIds });
     }
-  };
+  }, 200);
 
   return {
     athletesList,

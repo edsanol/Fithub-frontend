@@ -84,7 +84,7 @@ const CustomUserModal = ({
               <FormCheckbox
                 label={
                   selectedMemberships.length > 0
-                    ? "Seleccionar todos los usuarios que pertenecen a las membresías seleccionadas"
+                    ? "Seleccionar todos de las membresías"
                     : "Seleccionar todos"
                 }
                 selected={isAllSelected}
