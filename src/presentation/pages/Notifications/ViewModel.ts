@@ -33,6 +33,7 @@ interface State {
   textFilter: string;
   channelsList: Channel[];
   notificationsList: GetNotifications[];
+  selectedMemberships: string[];
 }
 
 type Action =
@@ -45,7 +46,8 @@ type Action =
   | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] }
   | { type: "SET_CHANNELS_LIST"; channelsList: Channel[] }
   | { type: "SET_NOTIFICATIONS_LIST"; notificationsList: GetNotifications[] }
-  | { type: "APPEND_NOTIFICATION"; notification: GetNotifications };
+  | { type: "APPEND_NOTIFICATION"; notification: GetNotifications }
+  | { type: "SET_SELECTED_MEMBERSHIPS"; selectedMemberships: string[] };
 
 const initialState: State = {
   athletesList: {
@@ -79,6 +81,7 @@ const initialState: State = {
   textFilter: "",
   channelsList: [],
   notificationsList: [],
+  selectedMemberships: [],
 };
 
 function reducer(state: State, action: Action): State {
@@ -103,13 +106,15 @@ function reducer(state: State, action: Action): State {
       return { ...state, notificationsList: action.notificationsList };
     case "APPEND_NOTIFICATION":
       return { ...state, notificationsList: [...state.notificationsList, action.notification] };
+    case "SET_SELECTED_MEMBERSHIPS":
+      return { ...state, selectedMemberships: action.selectedMemberships };
     default:
       return state;
   }
 }
 
 const ViewModel = () => {
-  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter, channelsList, notificationsList }, dispatch] = useReducer(reducer, initialState);
+  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter, channelsList, notificationsList, selectedMemberships }, dispatch] = useReducer(reducer, initialState);
   const [textMessage, setTextMessage] = useState("");
   const [selectedChat, setSelectedChat] = useState<Channel>({ channelId: 0, channelName: "", channelAthletes: [] });
   const [isLoading, setIsLoading] = useState(false);
@@ -211,6 +216,7 @@ const ViewModel = () => {
       setIsLoading(true);
 
       const filterByName = params?.textFilter ?? textFilter;
+      const filterByMemberships = selectedMemberships.join(",");
       const numPage = reset ? 1 : Math.ceil(athletesList.items.length / 7) + 1;
 
       const getAthleteUserListUseCase = container.get<GetAthleteUserListUseCase>(TYPES.GetAthleteUserListUseCase);
@@ -218,8 +224,8 @@ const ViewModel = () => {
       const requestParams = {
         numRecordsPage: 7,
         numPage,
-        textFilter: filterByName,
-        ...(filterByName ? { numFilter: 1 } : {}),
+        textFilter: filterByMemberships || filterByName,
+        numFilter: filterByMemberships ? 6 : filterByName ? 7 : undefined,
         ...params,
       };
 
@@ -382,6 +388,12 @@ const ViewModel = () => {
     await getAthletesList({ textFilter }, true);
   }, 300);
 
+  const handleMembershipFilter = (memberships: number[]) => {
+    const membershipFilter = memberships.join(",");
+    dispatch({ type: "SET_SELECTED_MEMBERSHIPS", selectedMemberships: memberships.map((m) => m.toString()) });
+    handleSetTextFilter(membershipFilter);
+  };
+
   const handleUserSelection = (selected: string[]) => {
     dispatch({ type: "SET_SELECTED_USERS", selectedUsers: selected });
   };
@@ -492,6 +504,7 @@ const ViewModel = () => {
     textMessage,
     openEmojiPicker,
     notificationsList,
+    selectedMemberships,
     setOpenEmojiPicker,
     handleTextMessage,
     setField,
@@ -506,6 +519,7 @@ const ViewModel = () => {
     handleEmojiClick,
     handleTruncateText,
     handleSelectedUsers,
+    handleMembershipFilter,
   };
 };
 

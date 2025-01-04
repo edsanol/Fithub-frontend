@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/spinner";
-import { CustomModal, FormInput, FormSelect } from "@/presentation/components";
+import { CustomModal, FormInput, FormMultiSelect, FormSelect } from "@/presentation/components";
 import CustomFormCheckboxGroup from "./CustomFormCheckboxGroup";
 import { formatMembershipElements } from "@/presentation/helpers";
 
@@ -12,12 +12,14 @@ interface CustomUserModalProps {
   users: any[];
   selectedUsers: string[];
   memberships: any[];
+  selectedMemberships: string[];
   isLoading: boolean;
   hasMore: boolean;
   onScroll: (e: React.UIEvent<HTMLDivElement>) => void;
   onUserSelection: (selected: string[]) => void;
   onConfirm: () => void;
   onFilterChange: (value: string) => void;
+  onMembershipFilter: (value: number[]) => void;
 }
 
 const CustomUserModal = ({
@@ -27,12 +29,14 @@ const CustomUserModal = ({
   users,
   selectedUsers,
   memberships,
+  selectedMemberships,
   isLoading,
   hasMore,
   onScroll,
   onUserSelection,
   onConfirm,
   onFilterChange,
+  onMembershipFilter,
 }: CustomUserModalProps) => {
   return (
     <>
@@ -49,11 +53,13 @@ const CustomUserModal = ({
                 onChange={onFilterChange}
                 size="sm"
               />
-              <FormSelect
+              <FormMultiSelect
                 label="Filtrar por membresía"
                 size="sm"
-                popoverProps={{ color: "foreground" }}
                 items={formatMembershipElements(memberships)}
+                value={new Set(selectedMemberships.map(String))}
+                onChange={(selectedMemberships) => onMembershipFilter(selectedMemberships)}
+                customInputClass="max-w-full md:max-w-[260px]"
               />
             </div>
             <span>Listado de deportistas</span>

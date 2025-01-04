@@ -36,6 +36,7 @@ const Notifications = () => {
     openEmojiPicker,
     textMessage,
     notificationsList,
+    selectedMemberships,
     setOpenEmojiPicker,
     setField,
     setError,
@@ -50,6 +51,7 @@ const Notifications = () => {
     handleEmojiClick,
     handleTruncateText,
     handleSelectedUsers,
+    handleMembershipFilter,
   } = ViewModel();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -226,12 +228,14 @@ const Notifications = () => {
         users={athletesList.items}
         selectedUsers={selectedUsers}
         memberships={membership}
+        selectedMemberships={selectedMemberships}
         isLoading={isLoading}
         hasMore={hasMore}
         onScroll={handleScroll}
         onUserSelection={handleUserSelection}
         onConfirm={isModalOpen.selectUsersModal ? handleCreateChannel : handleSelectedUsers}
         onFilterChange={(value) => handleSetTextFilter(value)}
+        onMembershipFilter={handleMembershipFilter}
       />
 
       <InfoModal
