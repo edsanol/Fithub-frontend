@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/spinner";
 import { CustomModal, FormCheckbox, FormInput, FormMultiSelect, FormSelect } from "@/presentation/components";
@@ -42,6 +42,12 @@ const CustomUserModal = ({
 }: CustomUserModalProps) => {
   const [isAllSelected, setIsAllSelected] = useState(false);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setIsAllSelected(false);
+    }
+  }, [isOpen]);
+
   const handleOnClose = () => {
     setIsAllSelected(false);
     onClose();
@@ -51,7 +57,7 @@ const CustomUserModal = ({
     <>
       <CustomModal
         isOpen={isOpen}
-        onOpenChange={onClose}
+        onOpenChange={handleOnClose}
         size="xl"
         content={
           <div className="flex w-full flex-col">
@@ -82,7 +88,10 @@ const CustomUserModal = ({
                     : "Seleccionar todos"
                 }
                 selected={isAllSelected}
-                onValueChange={(value) => onSelectAllUsers(Boolean(value))}
+                onValueChange={(value) => {
+                  setIsAllSelected(Boolean(value));
+                  onSelectAllUsers(Boolean(value));
+                }}
               />
             </div>
 

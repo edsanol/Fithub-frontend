@@ -41,7 +41,6 @@ const Notifications = () => {
     setField,
     setError,
     handleChatClick,
-    getAthletesList,
     handleUserSelection,
     handleCreateChannel,
     toggleUserModal,
@@ -56,12 +55,43 @@ const Notifications = () => {
     handleScroll,
   } = ViewModel();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [notificationsList]);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const handleInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
+    const target = event.target as HTMLTextAreaElement;
+    target.style.height = "auto";
+    target.style.height = `${target.scrollHeight}px`;
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node)
+      ) {
+        setOpenEmojiPicker(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -95,7 +125,9 @@ const Notifications = () => {
                     {handleTruncateText(item.channelName!, 40)}
                   </h5>
                   <p className="text-xs text-gray-400 truncate">
-                    {item.lastMessage !== "" ? handleTruncateText(item.lastMessage!, 30) : "No hay mensajes"}
+                    {item.lastMessage !== ""
+                      ? handleTruncateText(item.lastMessage!, 30)
+                      : "No hay mensajes"}
                   </p>
                 </div>
               </div>
@@ -147,13 +179,15 @@ const Notifications = () => {
           <section className="flex flex-col justify-end">
             <div className="w-[98%] border-t border-gray-700 p-3 flex items-end gap-3 self-center">
               <div className="flex-1 flex items-center gap-3">
-                <FormInput
-                  type="text"
+                <textarea
                   placeholder="Escribe un mensaje..."
-                  customInputClass="flex flex-1 border-0 outline-0 p-2 rounded-lg"
+                  className="flex flex-1 border-0 outline-0 p-2 rounded-lg resize-none bg-transparent text-white max-h-[100px] overflow-auto"
                   value={textMessage}
-                  onChange={(value) => handleTextMessage(value)}
+                  onChange={(e) => handleTextMessage(e.target.value)}
+                  onKeyDown={(event) => handleKeyDown(event)}
+                  onInput={(event) => handleInput(event)}
                 />
+
                 <div className="flex items-center gap-2 relative">
                   <button onClick={() => setOpenEmojiPicker((prev) => !prev)}>
                     <Image
@@ -163,14 +197,19 @@ const Notifications = () => {
                       alt="Seleccionar emoji"
                     />
                   </button>
-                  <div className="absolute bottom-12 right-[-90px] md:right-0 z-10">
-                    <EmojiPicker
-                      open={openEmojiPicker}
-                      onEmojiClick={(event: EmojiClickData) =>
-                        handleEmojiClick(event)
-                      }
-                    />
-                  </div>
+                  {openEmojiPicker && (
+                    <div
+                      ref={emojiPickerRef}
+                      className="absolute bottom-12 right-[-90px] md:right-0 z-10"
+                    >
+                      <EmojiPicker
+                        open={openEmojiPicker}
+                        onEmojiClick={(event: EmojiClickData) =>
+                          handleEmojiClick(event)
+                        }
+                      />
+                    </div>
+                  )}
                 </div>
                 <button
                   className="flex items-center justify-center w-10 h-10 rounded-full bg-[#3669FC]"
@@ -217,9 +256,18 @@ const Notifications = () => {
       />
 
       <CustomUserModal
-        isOpen={isModalOpen.selectUsersModal || isModalOpen.addAndDeleteUsersModal}
-        onClose={() => toggleUserModal(isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers", false)}
-        type={isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers"}
+        isOpen={
+          isModalOpen.selectUsersModal || isModalOpen.addAndDeleteUsersModal
+        }
+        onClose={() =>
+          toggleUserModal(
+            isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers",
+            false
+          )
+        }
+        type={
+          isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers"
+        }
         users={athletesList.items}
         selectedUsers={selectedUsers}
         memberships={membership}
@@ -228,7 +276,11 @@ const Notifications = () => {
         hasMore={hasMore}
         onScroll={handleScroll}
         onUserSelection={handleUserSelection}
-        onConfirm={isModalOpen.selectUsersModal ? handleCreateChannel : handleSelectedUsers}
+        onConfirm={
+          isModalOpen.selectUsersModal
+            ? handleCreateChannel
+            : handleSelectedUsers
+        }
         onFilterChange={(value) => handleSetTextFilter(value)}
         onMembershipFilter={handleMembershipFilter}
         onSelectAllUsers={handleSelectAllUsers}

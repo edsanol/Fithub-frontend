@@ -36,6 +36,7 @@ interface State {
   notificationsList: GetNotifications[];
   selectedMemberships: string[];
   numFilter: number | undefined;
+  deselectedUsersIds: number[];
 }
 
 type Action =
@@ -50,7 +51,8 @@ type Action =
   | { type: "SET_NOTIFICATIONS_LIST"; notificationsList: GetNotifications[] }
   | { type: "APPEND_NOTIFICATION"; notification: GetNotifications }
   | { type: "SET_SELECTED_MEMBERSHIPS"; selectedMemberships: string[] }
-  | { type: "SET_NUM_FILTER"; numFilter: number | undefined };
+  | { type: "SET_NUM_FILTER"; numFilter: number | undefined }
+  | { type: "SET_DESELECTED_USERS"; deselectedUsersIds: number[] };
 
 const initialState: State = {
   athletesList: {
@@ -86,6 +88,7 @@ const initialState: State = {
   notificationsList: [],
   selectedMemberships: [],
   numFilter: 0,
+  deselectedUsersIds: [],
 };
 
 function reducer(state: State, action: Action): State {
@@ -114,13 +117,15 @@ function reducer(state: State, action: Action): State {
       return { ...state, selectedMemberships: action.selectedMemberships };
     case "SET_NUM_FILTER":
       return { ...state, numFilter: action.numFilter };
+    case "SET_DESELECTED_USERS":
+      return { ...state, deselectedUsersIds: action.deselectedUsersIds };
     default:
       return state;
   }
 }
 
 const ViewModel = () => {
-  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter, channelsList, notificationsList, selectedMemberships, numFilter }, dispatch] = useReducer(reducer, initialState);
+  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter, channelsList, notificationsList, selectedMemberships, numFilter, deselectedUsersIds }, dispatch] = useReducer(reducer, initialState);
   const [textMessage, setTextMessage] = useState("");
   const [selectedChat, setSelectedChat] = useState<Channel>({ channelId: 0, channelName: "", channelAthletes: [] });
   const [isLoading, setIsLoading] = useState(false);
@@ -308,40 +313,44 @@ const ViewModel = () => {
 
   const handleCreateChannel = async () => {
     try {
-      const allUsersSelected = selectedUsers.length === 0 && selectedMemberships.length === 0;
-      const allUsersSelectedByMembership = selectedMemberships.length > 0;
-      const deselectedUserIds = allUsersSelected || allUsersSelectedByMembership ? selectedUsers.map(Number) : [];
-
-      // if (selectedUsers.length === 0) {
-      //   setError(true);
-      //   setErrorMessage("Debes seleccionar al menos un usuario");
-      //   return;
-      // }
-
-      const createChannel = container.get<CreateChannelUseCase>(TYPES.CreateChannelUseCase);
-
-      const response = await createChannel.execute(
-        new CreateChannel({
-          name: channelName,
-          userIds: selectedUsers.map(Number),
-          allUsersSelected,
-          allUsersSelectedByMembersip: allUsersSelectedByMembership,
-          deselectedUserIds,
-          membershipIds: selectedMemberships.map(Number),
-        })
-      );
-
-      if (!response) {
-        console.log("error");
-        return;
+      let payload = new CreateChannel({
+        name: channelName,
+        userIds: [],
+        allUsersSelected: false,
+        deselectedUserIds: [],
+        allUsersSelectedByMembersip: false,
+        membershipIds: [],
+      });
+  
+      if (selectedMemberships.length > 0) {
+        payload.allUsersSelectedByMembersip = true;
+        payload.membershipIds = selectedMemberships.map(Number);
+        payload.deselectedUserIds = athletesList.items
+          .filter((user) => !selectedUsers.includes(user.athleteId.toString()))
+          .map((user) => user.athleteId);
+      } else if (selectAllChecked) {
+        payload.allUsersSelected = true;
+        payload.deselectedUserIds = athletesList.items
+          .filter((user) => !selectedUsers.includes(user.athleteId.toString()))
+          .map((user) => user.athleteId);
+      } else {
+        payload.userIds = selectedUsers.map(Number);
       }
-
-      await getChannelsList();
+  
+      const createChannelUseCase = container.get<CreateChannelUseCase>(TYPES.CreateChannelUseCase);
+      const response = await createChannelUseCase.execute(payload);
+  
+      if (!response) {
+        throw new Error("Error al crear el canal");
+      }
+  
       toggleUserModal("selectUsers", false);
       dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
       dispatch({ type: "SET_FIELD", value: "" });
+
+      await getChannelsList();
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       setError(true);
       setErrorMessage(error.response?.data?.message || "Error al crear el canal");
     }
@@ -417,7 +426,12 @@ const ViewModel = () => {
   };
 
   const handleUserSelection = (selected: string[]) => {
+    const newDeselectedUsers = athletesList.items
+      .filter((user) => !selected.includes(user.athleteId.toString()))
+      .map((user) => user.athleteId.toString());
+  
     dispatch({ type: "SET_SELECTED_USERS", selectedUsers: selected });
+    dispatch({ type: "SET_DESELECTED_USERS", deselectedUsersIds: newDeselectedUsers });
   };
 
   const handleEmojiClick = (event: EmojiClickData) => {
@@ -426,6 +440,8 @@ const ViewModel = () => {
 
   const toggleUserModal = async (type: "selectUsers" | "addAndDeleteUsers" | "channelName", value: boolean) => {
     if (value) {
+      setSelectAllChecked(false);
+      
       dispatch({ type: "SET_TEXT_FILTER", value: "" });
       dispatch({ type: "SET_SELECTED_MEMBERSHIPS", selectedMemberships: [] });
       dispatch({ type: "SET_NUM_FILTER", numFilter: undefined });
@@ -437,6 +453,7 @@ const ViewModel = () => {
   
       if (type === "selectUsers") {
         dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
+        dispatch({ type: "SET_DESELECTED_USERS", deselectedUsersIds: [] });
       } else if (type === "addAndDeleteUsers") {
         const channelAthletes = selectedChat.channelAthletes?.map((a) => a.athleteId.toString()) || [];
         dispatch({ type: "SET_SELECTED_USERS", selectedUsers: channelAthletes });
@@ -451,45 +468,45 @@ const ViewModel = () => {
   };
 
   const handleSelectedUsers = async () => {
-    if (isModalOpen.addAndDeleteUsersModal) {
-      try {
-        const allUsersSelected = selectedUsers.length === 0 && selectedMemberships.length === 0;
-        const allUsersSelectedByMembership = selectedMemberships.length > 0;
-        const deselectedUserIds = allUsersSelected || allUsersSelectedByMembership ? selectedUsers.map(Number) : [];
-
-        // if (channelId === 0 || usersIds.length === 0) {
-        //   setError(true);
-        //   setErrorMessage("Error al actualizar los usuarios");
-        //   return;
-        // }
-
-        const addOrRemoveUsersFromChannel = container.get<AddOrRemoveUsersFromChannelUseCase>(TYPES.AddOrRemoveUsersFromChannelUseCase);
-
-        const response = await addOrRemoveUsersFromChannel.execute(
-          new CreateChannel({
-            channelId: selectedChat.channelId!,
-            userIds: selectedUsers.map(Number),
-            allUsersSelected,
-            allUsersSelectedByMembersip: allUsersSelectedByMembership,
-            deselectedUserIds,
-            membershipIds: selectedMemberships.map(Number),
-          })
-        );
-
-        if (!response) {
-          console.log("error");
-          setError(true);
-          setErrorMessage("Error al actualizar los usuarios");
-          return;
-        }
-
-        toggleUserModal("addAndDeleteUsers", false);
-        await getChannelsList();
-      } catch (error: any) {
-        console.log(error);
-        setError(true);
-        setErrorMessage(error.response?.data?.message || "Error al actualizar los usuarios");
+    try {
+      let payload = new CreateChannel({
+        channelId: selectedChat.channelId!,
+        userIds: [],
+        allUsersSelected: false,
+        deselectedUserIds: [],
+        allUsersSelectedByMembersip: false,
+        membershipIds: [],
+      });
+  
+      if (selectedMemberships.length > 0) {
+        payload.allUsersSelectedByMembersip = true;
+        payload.membershipIds = selectedMemberships.map(Number);
+        payload.deselectedUserIds = athletesList.items
+          .filter((user) => !selectedUsers.includes(user.athleteId.toString()))
+          .map((user) => user.athleteId);
+      } else if (selectAllChecked) {
+        payload.allUsersSelected = true;
+        payload.deselectedUserIds = athletesList.items
+          .filter((user) => !selectedUsers.includes(user.athleteId.toString()))
+          .map((user) => user.athleteId);
+      } else {
+        payload.userIds = selectedUsers.map(Number);
       }
+  
+      const addOrRemoveUsersUseCase = container.get<AddOrRemoveUsersFromChannelUseCase>(TYPES.AddOrRemoveUsersFromChannelUseCase);
+      const response = await addOrRemoveUsersUseCase.execute(payload);
+  
+      if (!response) {
+        throw new Error("Error al actualizar los usuarios");
+      }
+  
+      toggleUserModal("addAndDeleteUsers", false);
+
+      await getChannelsList();
+    } catch (error: any) {
+      console.error(error);
+      setError(true);
+      setErrorMessage(error.response?.data?.message || "Error al actualizar los usuarios");
     }
   };
 
@@ -526,23 +543,29 @@ const ViewModel = () => {
 
   const handleSelectAllUsers = (selectAll: boolean) => {
     setSelectAllChecked(selectAll);
-
+  
     if (selectAll) {
       const allVisibleUserIds = athletesList.items.map((user) => user.athleteId.toString());
       dispatch({ type: "SET_SELECTED_USERS", selectedUsers: allVisibleUserIds });
+      dispatch({ type: "SET_DESELECTED_USERS", deselectedUsersIds: [] });
     } else {
       dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
+      dispatch({ type: "SET_DESELECTED_USERS", deselectedUsersIds: [] });
     }
   };
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+  const handleScroll = async (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
+  
     if (target.scrollTop + target.clientHeight >= target.scrollHeight - 10 && !isLoading && hasMore) {
-      getAthletesList();
+      await getAthletesList();
     }
-
+  
     if (selectAllChecked) {
-      const visibleUserIds = athletesList.items.map((user) => user.athleteId.toString());
+      const visibleUserIds = athletesList.items
+        .filter((user) => !deselectedUsersIds.includes(user.athleteId.toString())) // Respeta los deseleccionados
+        .map((user) => user.athleteId.toString());
+  
       dispatch({ type: "SET_SELECTED_USERS", selectedUsers: visibleUserIds });
     }
   };
