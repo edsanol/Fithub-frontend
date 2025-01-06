@@ -84,7 +84,7 @@ const Notifications = () => {
           />
         </div>
 
-        <div className="mt-1 w-full h-full border-1 border-gray-700 rounded-xl flex flex-col">
+        <div className="mt-1 w-full h-full border-1 border-gray-700 rounded-xl flex flex-col max-h-[76vh] min-h-[76vh]">
           <section className="w-[96%] h-16 border-b border-gray-700 px-1 flex items-center justify-between md:justify-center relative rounded-t-xl self-center">
             <h5 className="font-black text-md text-white max-w-[200px] md:max-w-[500px]">
               {selectedChat.channelName
@@ -107,7 +107,7 @@ const Notifications = () => {
           </section>
 
           {selectedChat.channelName ? (
-            <section className="max-h-[400px] flex-1 flex flex-col overflow-y-auto px-4 pt-2 gap-2">
+            <section className="flex-1 flex flex-col overflow-y-auto px-4 pt-2 gap-2">
               {notificationsList && notificationsList.length > 0 ? (
                 notificationsList.map((notif) => (
                   <MessageBubble
@@ -125,7 +125,7 @@ const Notifications = () => {
             <NoMessageFound />
           )}
 
-          <MessageInput 
+          <MessageInput
             openEmojiPicker={openEmojiPicker}
             textMessage={textMessage}
             onTextMessageChange={handleTextMessage}
@@ -169,9 +169,18 @@ const Notifications = () => {
       />
 
       <CustomUserModal
-        isOpen={isModalOpen.selectUsersModal || isModalOpen.addAndDeleteUsersModal}
-        onClose={() => toggleUserModal(isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers", false)}
-        type={isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers"}
+        isOpen={
+          isModalOpen.selectUsersModal || isModalOpen.addAndDeleteUsersModal
+        }
+        onClose={() =>
+          toggleUserModal(
+            isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers",
+            false
+          )
+        }
+        type={
+          isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers"
+        }
         users={athletesList.items}
         selectedUsers={selectedUsers}
         memberships={membership}
@@ -180,7 +189,11 @@ const Notifications = () => {
         hasMore={hasMore}
         onScroll={handleScroll}
         onUserSelection={handleUserSelection}
-        onConfirm={isModalOpen.selectUsersModal ? handleCreateChannel : handleSelectedUsers}
+        onConfirm={
+          isModalOpen.selectUsersModal
+            ? handleCreateChannel
+            : handleSelectedUsers
+        }
         onFilterChange={(value) => handleSetTextFilter(value)}
         onMembershipFilter={handleMembershipFilter}
         onSelectAllUsers={handleSelectAllUsers}

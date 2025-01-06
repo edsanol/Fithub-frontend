@@ -13,12 +13,22 @@ interface MessageInputProps {
   setOpenEmojiPicker: (open: boolean) => void;
 }
 
-const MessageInput = ({ textMessage, openEmojiPicker, onTextMessageChange, onEmojiClick, onSendMessage, setOpenEmojiPicker }: MessageInputProps) => {
+const MessageInput = ({
+  textMessage,
+  openEmojiPicker,
+  onTextMessageChange,
+  onEmojiClick,
+  onSendMessage,
+  setOpenEmojiPicker,
+}: MessageInputProps) => {
   const emojiPickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node)
+      ) {
         setOpenEmojiPicker(false);
       }
     };
@@ -49,7 +59,7 @@ const MessageInput = ({ textMessage, openEmojiPicker, onTextMessageChange, onEmo
         <div className="flex-1 flex items-center gap-3">
           <textarea
             placeholder="Escribe un mensaje..."
-            className="flex flex-1 border-0 outline-0 p-2 rounded-lg resize-none bg-transparent text-white max-h-[100px] overflow-auto"
+            className="flex flex-1 border-0 outline-0 p-2 rounded-lg resize-none bg-transparent text-white max-h-[50px] overflow-auto"
             value={textMessage}
             onChange={(e) => onTextMessageChange(e.target.value)}
             onKeyDown={(event) => handleKeyDown(event)}
@@ -57,9 +67,7 @@ const MessageInput = ({ textMessage, openEmojiPicker, onTextMessageChange, onEmo
           />
 
           <div className="flex items-center gap-2 relative">
-            <button
-              onClick={() => setOpenEmojiPicker(!openEmojiPicker)}
-            >
+            <button onClick={() => setOpenEmojiPicker(!openEmojiPicker)}>
               <Image
                 src={emoji}
                 width={28}
@@ -74,9 +82,7 @@ const MessageInput = ({ textMessage, openEmojiPicker, onTextMessageChange, onEmo
               >
                 <EmojiPicker
                   open={openEmojiPicker}
-                  onEmojiClick={(event: EmojiClickData) =>
-                    onEmojiClick(event)
-                  }
+                  onEmojiClick={(event: EmojiClickData) => onEmojiClick(event)}
                 />
               </div>
             )}
