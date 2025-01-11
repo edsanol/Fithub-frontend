@@ -19,7 +19,7 @@ const BasicInformation = () => {
   return (
     <div className="mx-auto xl:w-11/12 space-y-6">
       <h2 className="text-xl font-semibold">Paso 1: Información Básica</h2>
-      <div className="space-y-4">
+      <div className="space-y-2">
         <div className="flex flex-col gap-2 md:flex-row">
           <FormInput type="text" placeholder="Nombre de la rutina" />
 
@@ -34,7 +34,7 @@ const BasicInformation = () => {
       </div>
 
       <div>
-        <p className="font-medium mb-4">Selecciona una imagen:</p>
+        <p className="font-medium mb-2">Selecciona una imagen:</p>
         <CustomCarousel
           items={imageOptions}
           onSelect={handleImageSelect}
