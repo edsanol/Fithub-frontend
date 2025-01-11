@@ -1,5 +1,7 @@
 import { TYPES } from "@/config/types";
 import { Channel } from "@/domain/entities/Channel";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import type { ChannelRepository } from "@/domain/repositories/channelRepository";
 import { inject, injectable } from "inversify";
 
@@ -10,7 +12,7 @@ export class GetChannelsUseCase {
     private channelRepository: ChannelRepository
   ) {}
 
-  async execute(): Promise<Channel[]> {
-    return await this.channelRepository.getChannels();
+  async execute(data: PaginateData): Promise<PaginateResponseList<Channel>> {
+    return this.channelRepository.getChannels(data);
   }
 }

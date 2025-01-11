@@ -39,7 +39,7 @@ interface State {
     addAndDeleteUsersModal: boolean;
   };
   textFilter: string;
-  channelsList: Channel[];
+  channelsList: PaginateResponseList;
   notificationsList: GetNotifications[];
   selectedMemberships: string[];
   numFilter: number | undefined;
@@ -54,7 +54,7 @@ type Action =
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
   | { type: "SET_TEXT_FILTER"; value: string }
   | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] }
-  | { type: "SET_CHANNELS_LIST"; channelsList: Channel[] }
+  | { type: "SET_CHANNELS_LIST"; channelsList: PaginateResponseList }
   | { type: "SET_NOTIFICATIONS_LIST"; notificationsList: GetNotifications[] }
   | { type: "APPEND_NOTIFICATION"; notification: GetNotifications }
   | { type: "SET_SELECTED_MEMBERSHIPS"; selectedMemberships: string[] }
@@ -91,7 +91,10 @@ const initialState: State = {
     addAndDeleteUsersModal: false,
   },
   textFilter: "",
-  channelsList: [],
+  channelsList: {
+    totalRecords: 0,
+    items: [],
+  },
   notificationsList: [],
   selectedMemberships: [],
   numFilter: 0,
@@ -113,24 +116,13 @@ function reducer(state: State, action: Action): State {
     case "SET_TEXT_FILTER":
       return { ...state, textFilter: action.value };
     case "TOGGLE_MODAL":
-      return {
-        ...state,
-        isModalOpen: {
-          ...state.isModalOpen,
-          [action.modalName]:
-            action.value ??
-            !state.isModalOpen[action.modalName as keyof State["isModalOpen"]],
-        },
-      };
+      return { ...state, isModalOpen: { ...state.isModalOpen, [action.modalName]: action.value ?? !state.isModalOpen[action.modalName as keyof State["isModalOpen"]]} };
     case "SET_CHANNELS_LIST":
       return { ...state, channelsList: action.channelsList };
     case "SET_NOTIFICATIONS_LIST":
       return { ...state, notificationsList: action.notificationsList };
     case "APPEND_NOTIFICATION":
-      return {
-        ...state,
-        notificationsList: [...state.notificationsList, action.notification],
-      };
+      return { ...state, notificationsList: [...state.notificationsList, action.notification] };
     case "SET_SELECTED_MEMBERSHIPS":
       return { ...state, selectedMemberships: action.selectedMemberships };
     case "SET_NUM_FILTER":
@@ -143,28 +135,9 @@ function reducer(state: State, action: Action): State {
 }
 
 const ViewModel = () => {
-  const [
-    {
-      athletesList,
-      selectedUsers,
-      isModalOpen,
-      channelName,
-      membership,
-      textFilter,
-      channelsList,
-      notificationsList,
-      selectedMemberships,
-      numFilter,
-      deselectedUsersIds,
-    },
-    dispatch,
-  ] = useReducer(reducer, initialState);
+  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter, channelsList, notificationsList, selectedMemberships, numFilter, deselectedUsersIds }, dispatch] = useReducer(reducer, initialState);
   const [textMessage, setTextMessage] = useState("");
-  const [selectedChat, setSelectedChat] = useState<Channel>({
-    channelId: 0,
-    channelName: "",
-    channelAthletes: [],
-  });
+  const [selectedChat, setSelectedChat] = useState<Channel>({ channelId: 0, channelName: "", channelAthletes: [] });
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<boolean>(false);
@@ -173,9 +146,7 @@ const ViewModel = () => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const selectedChatRef = useRef(selectedChat.channelId);
 
-  const signalRNotificationUseCase = container.get<SignalRNotificationUseCase>(
-    TYPES.SignalRNotificationUseCase
-  );
+  const signalRNotificationUseCase = container.get<SignalRNotificationUseCase>(TYPES.SignalRNotificationUseCase);
 
   const initializeConnection = async () => {
     await signalRNotificationUseCase.initializeConnection();
@@ -233,7 +204,7 @@ const ViewModel = () => {
   }, [selectedChat.channelId]);
 
   useEffect(() => {
-    getChannelsList();
+    getChannelsList({ textFilter: "" }, true);
   }, []);
 
   useEffect(() => {
@@ -247,9 +218,7 @@ const ViewModel = () => {
   };
 
   const handleChatClick = async (channelId: number) => {
-    const channel = channelsList.find(
-      (channel) => channel.channelId === channelId
-    );
+    const channel: Channel = channelsList.items.find((channel) => channel.channelId === channelId);
 
     if (!channel || !channel.channelAthletes) {
       setError(true);
@@ -257,9 +226,7 @@ const ViewModel = () => {
       return;
     }
 
-    const channelAthletes = channel.channelAthletes.map((athlete) =>
-      athlete.athleteId.toString()
-    );
+    const channelAthletes = channel.channelAthletes.map((athlete) => athlete.athleteId.toString());
 
     setSelectedChat(channel);
     dispatch({ type: "SET_SELECTED_USERS", selectedUsers: channelAthletes });
@@ -267,10 +234,7 @@ const ViewModel = () => {
     await getNotificationsList(channelId);
   };
 
-  const getAthletesList = async (
-    params?: Partial<PaginateData>,
-    reset = false
-  ) => {
+  const getAthletesList = async (params?: Partial<PaginateData>, reset = false) => {
     try {
       setIsLoading(true);
 
@@ -279,10 +243,7 @@ const ViewModel = () => {
       const effectiveNumFilter = params?.numFilter ?? numFilter;
       const numPage = reset ? 1 : Math.ceil(athletesList.items.length / 7) + 1;
 
-      const getAthleteUserListUseCase =
-        container.get<GetAthleteUserListUseCase>(
-          TYPES.GetAthleteUserListUseCase
-        );
+      const getAthleteUserListUseCase = container.get<GetAthleteUserListUseCase>(TYPES.GetAthleteUserListUseCase);
 
       const requestParams = {
         numRecordsPage: 7,
@@ -317,9 +278,7 @@ const ViewModel = () => {
     } catch (error: any) {
       console.error(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message || "Error al obtener la lista de usuarios"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de usuarios");
     } finally {
       setIsLoading(false);
     }
@@ -342,33 +301,56 @@ const ViewModel = () => {
     } catch (error: any) {
       console.log(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Error al obtener la lista de membresías"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de membresías");
     }
   };
 
-  const getChannelsList = async () => {
+  const getChannelsList = async (params?: Partial<PaginateData>, reset = false) => {
     try {
-      const getChannelsList = container.get<GetChannelsUseCase>(
-        TYPES.GetChannelsUseCase
-      );
+      setIsLoading(true);
 
-      const response = await getChannelsList.execute();
+      const filterByName = params?.textFilter ?? textFilter;
+      const effectiveNumFilter = params?.numFilter ?? numFilter;
+      const numPage = reset ? 1 : Math.ceil(channelsList.items.length / 7) + 1;
 
-      if (!response) {
-        console.log("error");
+      const requestParams = {
+        numRecordsPage: 7,
+        numPage,
+        textFilter: filterByName,
+        numFilter: effectiveNumFilter,
+        ...params,
+      };
+
+      const getChannelsList = container.get<GetChannelsUseCase>(TYPES.GetChannelsUseCase);
+
+      const response = await getChannelsList.execute(requestParams);
+
+      if (!response || response.items.length === 0) {
+        setHasMore(false);
         return;
       }
 
-      dispatch({ type: "SET_CHANNELS_LIST", channelsList: response });
+      const updatedItems = reset
+        ? response.items
+        : [...channelsList.items, ...response.items];
+
+      dispatch({
+        type: "SET_CHANNELS_LIST",
+        channelsList: {
+          totalRecords: response.totalRecords,
+          items: updatedItems,
+        },
+      });
+
+      if (reset) {
+        setHasMore(true);
+      }
     } catch (error: any) {
       console.log(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message || "Error al obtener la lista de canales"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de canales");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -386,21 +368,15 @@ const ViewModel = () => {
       if (selectedMemberships.length > 0) {
         payload.allUsersSelectedByMembersip = true;
         payload.membershipIds = selectedMemberships.map(Number);
-        payload.deselectedUserIds = athletesList.items
-          .filter((user) => !selectedUsers.includes(user.athleteId.toString()))
-          .map((user) => user.athleteId);
+        payload.deselectedUserIds = athletesList.items.filter((user) => !selectedUsers.includes(user.athleteId.toString())).map((user) => user.athleteId);
       } else if (selectAllChecked) {
         payload.allUsersSelected = true;
-        payload.deselectedUserIds = athletesList.items
-          .filter((user) => !selectedUsers.includes(user.athleteId.toString()))
-          .map((user) => user.athleteId);
+        payload.deselectedUserIds = athletesList.items.filter((user) => !selectedUsers.includes(user.athleteId.toString())).map((user) => user.athleteId);
       } else {
         payload.userIds = selectedUsers.map(Number);
       }
 
-      const createChannelUseCase = container.get<CreateChannelUseCase>(
-        TYPES.CreateChannelUseCase
-      );
+      const createChannelUseCase = container.get<CreateChannelUseCase>(TYPES.CreateChannelUseCase);
       const response = await createChannelUseCase.execute(payload);
 
       if (!response) {
@@ -415,9 +391,7 @@ const ViewModel = () => {
     } catch (error: any) {
       console.error(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message || "Error al crear el canal"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al crear el canal");
     }
   };
 
@@ -456,10 +430,7 @@ const ViewModel = () => {
     } catch (error: any) {
       console.log(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Error al obtener la lista de membresías"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de membresías");
     }
   };
 
@@ -480,10 +451,7 @@ const ViewModel = () => {
     } catch (error: any) {
       console.log(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Error al obtener la lista de notificaciones"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de notificaciones");
     }
   };
 
@@ -491,17 +459,17 @@ const ViewModel = () => {
     dispatch({ type: "SET_TEXT_FILTER", value: textFilter });
     dispatch({ type: "SET_NUM_FILTER", numFilter: 7 });
     dispatch({ type: "SET_SELECTED_MEMBERSHIPS", selectedMemberships: [] });
+
     await getAthletesList({ textFilter, numFilter: 7 }, true);
   }, 300);
 
   const handleMembershipFilter = async (memberships: number[]) => {
     const membershipFilter = memberships.join(",");
-    dispatch({
-      type: "SET_SELECTED_MEMBERSHIPS",
-      selectedMemberships: memberships.map((m) => m.toString()),
-    });
+
+    dispatch({ type: "SET_SELECTED_MEMBERSHIPS", selectedMemberships: memberships.map((m) => m.toString()) });
     dispatch({ type: "SET_NUM_FILTER", numFilter: 6 });
     dispatch({ type: "SET_TEXT_FILTER", value: "" });
+
     await getAthletesList({ textFilter: membershipFilter, numFilter: 6 }, true);
   };
 
@@ -511,20 +479,14 @@ const ViewModel = () => {
       .map((user) => user.athleteId.toString());
 
     dispatch({ type: "SET_SELECTED_USERS", selectedUsers: selected });
-    dispatch({
-      type: "SET_DESELECTED_USERS",
-      deselectedUsersIds: newDeselectedUsers,
-    });
+    dispatch({ type: "SET_DESELECTED_USERS", deselectedUsersIds: newDeselectedUsers});
   };
 
   const handleEmojiClick = (event: EmojiClickData) => {
     setTextMessage((prev) => prev + event.emoji);
   };
 
-  const toggleUserModal = async (
-    type: "selectUsers" | "addAndDeleteUsers" | "channelName",
-    value: boolean
-  ) => {
+  const toggleUserModal = async (type: "selectUsers" | "addAndDeleteUsers" | "channelName", value: boolean) => {
     if (value) {
       setSelectAllChecked(false);
 
@@ -541,13 +503,8 @@ const ViewModel = () => {
         dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
         dispatch({ type: "SET_DESELECTED_USERS", deselectedUsersIds: [] });
       } else if (type === "addAndDeleteUsers") {
-        const channelAthletes =
-          selectedChat.channelAthletes?.map((a) => a.athleteId.toString()) ||
-          [];
-        dispatch({
-          type: "SET_SELECTED_USERS",
-          selectedUsers: channelAthletes,
-        });
+        const channelAthletes = selectedChat.channelAthletes?.map((a) => a.athleteId.toString()) || [];
+        dispatch({ type: "SET_SELECTED_USERS", selectedUsers: channelAthletes });
       }
     }
 
@@ -572,22 +529,15 @@ const ViewModel = () => {
       if (selectedMemberships.length > 0) {
         payload.allUsersSelectedByMembersip = true;
         payload.membershipIds = selectedMemberships.map(Number);
-        payload.deselectedUserIds = athletesList.items
-          .filter((user) => !selectedUsers.includes(user.athleteId.toString()))
-          .map((user) => user.athleteId);
+        payload.deselectedUserIds = athletesList.items.filter((user) => !selectedUsers.includes(user.athleteId.toString())).map((user) => user.athleteId);
       } else if (selectAllChecked) {
         payload.allUsersSelected = true;
-        payload.deselectedUserIds = athletesList.items
-          .filter((user) => !selectedUsers.includes(user.athleteId.toString()))
-          .map((user) => user.athleteId);
+        payload.deselectedUserIds = athletesList.items.filter((user) => !selectedUsers.includes(user.athleteId.toString())).map((user) => user.athleteId);
       } else {
         payload.userIds = selectedUsers.map(Number);
       }
 
-      const addOrRemoveUsersUseCase =
-        container.get<AddOrRemoveUsersFromChannelUseCase>(
-          TYPES.AddOrRemoveUsersFromChannelUseCase
-        );
+      const addOrRemoveUsersUseCase = container.get<AddOrRemoveUsersFromChannelUseCase>(TYPES.AddOrRemoveUsersFromChannelUseCase);
       const response = await addOrRemoveUsersUseCase.execute(payload);
 
       if (!response) {
@@ -600,16 +550,12 @@ const ViewModel = () => {
     } catch (error: any) {
       console.error(error);
       setError(true);
-      setErrorMessage(
-        error.response?.data?.message || "Error al actualizar los usuarios"
-      );
+      setErrorMessage(error.response?.data?.message || "Error al actualizar los usuarios");
     }
   };
 
   const updateChannelAthletesList = () => {
-    const updatedChannel = channelsList.find(
-      (channel) => channel.channelId === selectedChat.channelId
-    );
+    const updatedChannel = channelsList.items.find((channel) => channel.channelId === selectedChat.channelId);
 
     if (!updatedChannel || !updatedChannel.channelAthletes) {
       setError(true);
@@ -643,13 +589,8 @@ const ViewModel = () => {
     setSelectAllChecked(selectAll);
 
     if (selectAll) {
-      const allVisibleUserIds = athletesList.items.map((user) =>
-        user.athleteId.toString()
-      );
-      dispatch({
-        type: "SET_SELECTED_USERS",
-        selectedUsers: allVisibleUserIds,
-      });
+      const allVisibleUserIds = athletesList.items.map((user) => user.athleteId.toString());
+      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: allVisibleUserIds });
       dispatch({ type: "SET_DESELECTED_USERS", deselectedUsersIds: [] });
     } else {
       dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
@@ -657,29 +598,30 @@ const ViewModel = () => {
     }
   };
 
-  const visibleUserIds = useMemo(
-    () =>
-      athletesList.items
-        .filter(
-          (user) => !deselectedUsersIds.includes(user.athleteId.toString())
-        )
-        .map((user) => user.athleteId.toString()),
+  const visibleUserIds = useMemo(() => 
+    athletesList.items
+      .filter((user) => !deselectedUsersIds.includes(user.athleteId.toString()))
+      .map((user) => user.athleteId.toString()),
     [athletesList, deselectedUsersIds]
   );
 
   const handleScroll = debounce(async (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
 
-    if (
-      target.scrollTop + target.clientHeight >= target.scrollHeight - 10 &&
-      !isLoading &&
-      hasMore
-    ) {
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 10 && !isLoading && hasMore) {
       await getAthletesList();
     }
 
     if (selectAllChecked) {
       dispatch({ type: "SET_SELECTED_USERS", selectedUsers: visibleUserIds });
+    }
+  }, 200);
+
+  const handleChannelsScroll = debounce(async (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50 && !isLoading && hasMore) {
+      await getChannelsList();
     }
   }, 200);
 
@@ -700,6 +642,8 @@ const ViewModel = () => {
     openEmojiPicker,
     notificationsList,
     selectedMemberships,
+    handleScroll,
+    handleChannelsScroll,
     setOpenEmojiPicker,
     handleTextMessage,
     setField,
@@ -716,7 +660,6 @@ const ViewModel = () => {
     handleSelectedUsers,
     handleMembershipFilter,
     handleSelectAllUsers,
-    handleScroll,
   };
 };
 

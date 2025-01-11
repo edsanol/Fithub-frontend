@@ -35,6 +35,8 @@ const Notifications = () => {
     textMessage,
     notificationsList,
     selectedMemberships,
+    handleScroll,
+    handleChannelsScroll,
     setOpenEmojiPicker,
     setField,
     setError,
@@ -50,7 +52,6 @@ const Notifications = () => {
     handleSelectedUsers,
     handleMembershipFilter,
     handleSelectAllUsers,
-    handleScroll,
   } = ViewModel();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -78,9 +79,11 @@ const Notifications = () => {
           />
 
           <ChannelList
-            channelsList={channelsList}
+            channelsList={channelsList.items}
+            isLoading={isLoading}
             onChatClick={handleChatClick}
             onTruncateText={handleTruncateText}
+            onScroll={handleChannelsScroll}
           />
         </div>
 
@@ -169,18 +172,9 @@ const Notifications = () => {
       />
 
       <CustomUserModal
-        isOpen={
-          isModalOpen.selectUsersModal || isModalOpen.addAndDeleteUsersModal
-        }
-        onClose={() =>
-          toggleUserModal(
-            isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers",
-            false
-          )
-        }
-        type={
-          isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers"
-        }
+        isOpen={isModalOpen.selectUsersModal || isModalOpen.addAndDeleteUsersModal}
+        onClose={() => toggleUserModal(isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers", false)}
+        type={isModalOpen.selectUsersModal ? "selectUsers" : "addAndDeleteUsers"}
         users={athletesList.items}
         selectedUsers={selectedUsers}
         memberships={membership}
@@ -189,11 +183,7 @@ const Notifications = () => {
         hasMore={hasMore}
         onScroll={handleScroll}
         onUserSelection={handleUserSelection}
-        onConfirm={
-          isModalOpen.selectUsersModal
-            ? handleCreateChannel
-            : handleSelectedUsers
-        }
+        onConfirm={isModalOpen.selectUsersModal ? handleCreateChannel : handleSelectedUsers}
         onFilterChange={(value) => handleSetTextFilter(value)}
         onMembershipFilter={handleMembershipFilter}
         onSelectAllUsers={handleSelectAllUsers}

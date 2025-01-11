@@ -5,6 +5,8 @@ import { TYPES } from "@/config/types";
 import { Channel } from "@/domain/entities/Channel";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
 import { CreateChannel } from "@/domain/models/CreateChannel";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 
 @injectable()
 export class ChannelServiceImpl implements ChannelService {
@@ -20,8 +22,8 @@ export class ChannelServiceImpl implements ChannelService {
     return response.data;
   }
 
-  async getChannels(): Promise<Channel[]> {
-    const response = await this.http.get<TickerResponseApi<Channel[]>>("/Notification/GetChannels");
+  async getChannels(data: PaginateData): Promise<PaginateResponseList<Channel>> {
+    const response = await this.http.post<TickerResponseApi<PaginateResponseList<Channel>>, PaginateData>("/Notification/GetChannels", data);
 
     return response.data;
   }
