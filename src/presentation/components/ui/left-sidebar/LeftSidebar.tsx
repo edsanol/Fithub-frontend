@@ -182,7 +182,7 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </li>
 
                 <SidebarLinkGroup
-                  activeCondition={pathname === "/routines" || pathname.includes("routines")}
+                  activeCondition={pathname === "/routines" || pathname.includes("routine")}
                 >
                   {(handleClick, open) => {
                     return (
@@ -190,7 +190,7 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <SidebarItems
                           url="#"
                           icon={<RoutinesIcon />}
-                          route="routines"
+                          route="routine"
                           label="Rutinas"
                           handleClick={() => {
                             sidebarExpanded

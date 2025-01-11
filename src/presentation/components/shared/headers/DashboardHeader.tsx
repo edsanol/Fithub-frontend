@@ -1,6 +1,6 @@
 interface IDashboardHeaderProps {
   title: string;
-  description: string;
+  description?: string;
   customClassName?: string;
 }
 

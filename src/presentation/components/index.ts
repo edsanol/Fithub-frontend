@@ -27,6 +27,7 @@ import InfoModal from "./shared/modals/InfoModal";
 import FormMultiSelect from "./shared/form-elements/FormMultiSelect";
 import FormRichTextInput from "./shared/form-elements/FormRichTextInput";
 import FormDropdown from "./shared/form-elements/FormDropdown";
+import CustomButton from "./shared/buttons/CustomButton";
 
 export {
   PrimaryButton,
@@ -58,4 +59,5 @@ export {
   FormMultiSelect,
   FormRichTextInput,
   FormDropdown,
+  CustomButton,
 };
