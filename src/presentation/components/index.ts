@@ -29,6 +29,7 @@ import FormRichTextInput from "./shared/form-elements/FormRichTextInput";
 import FormDropdown from "./shared/form-elements/FormDropdown";
 import CustomButton from "./shared/buttons/CustomButton";
 import CustomMultiSteps from "./shared/multi-steps/CustomMultiSteps";
+import CustomCarousel from "./shared/carousel/CustomCarousel";
 
 export {
   PrimaryButton,
@@ -62,4 +63,5 @@ export {
   FormDropdown,
   CustomButton,
   CustomMultiSteps,
+  CustomCarousel,
 };

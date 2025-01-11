@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SecondaryButton from "../buttons/SecondaryButton";
 import CustomButton from "../buttons/CustomButton";
 
@@ -26,6 +26,20 @@ const CustomMultiSteps = ({
 }: CustomMultiStepProps) => {
   const [currentStep, setCurrentStep] = useState(initialStep);
 
+  const stepsContainerRef = useRef<HTMLDivElement>(null);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const currentStepElement = stepRefs.current[currentStep];
+    if (currentStepElement && stepsContainerRef.current) {
+      currentStepElement.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [currentStep]);
+
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep((prev) => prev + 1);
@@ -45,12 +59,19 @@ const CustomMultiSteps = ({
   };
 
   return (
-    <div className="w-full mx-auto rounded-lg shadow-lg p-6">
+    <div className="w-full mx-auto rounded-lg shadow-lg p-2 md:p-6">
 
       {/* Barra de Pasos */}
-      <div className="flex items-center justify-between mb-6">
+      <div 
+        ref={stepsContainerRef} 
+        className="flex items-center justify-between mb-6 gap-3 overflow-x-auto md:flex-wrap md:justify-center"
+      >
         {steps.map((step, index) => (
-          <div key={index} className="flex flex-col items-center flex-1">
+          <div 
+            key={index}
+            ref={(element) => (stepRefs.current[index] = element)}
+            className="flex flex-col items-center flex-shrink-0 md:flex-1"
+          >
             <div className={`w-10 h-10 flex items-center justify-center rounded-full font-bold ${index === currentStep ? "bg-blue-600 text-white" : "bg-[#18181a] text-gray-300"}`}>
               {index + 1}
             </div>
@@ -62,7 +83,7 @@ const CustomMultiSteps = ({
       </div>
 
       {/* Contenido Dinámico */}
-      <div className="bg-gray-700 p-6 rounded-lg shadow-md">
+      <div className="p-2 md:p-6 rounded-lg shadow-md">
         {steps[currentStep].component}
       </div>
 
