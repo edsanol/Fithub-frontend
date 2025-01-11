@@ -28,6 +28,7 @@ import FormMultiSelect from "./shared/form-elements/FormMultiSelect";
 import FormRichTextInput from "./shared/form-elements/FormRichTextInput";
 import FormDropdown from "./shared/form-elements/FormDropdown";
 import CustomButton from "./shared/buttons/CustomButton";
+import CustomMultiSteps from "./shared/multi-steps/CustomMultiSteps";
 
 export {
   PrimaryButton,
@@ -60,4 +61,5 @@ export {
   FormRichTextInput,
   FormDropdown,
   CustomButton,
+  CustomMultiSteps,
 };
