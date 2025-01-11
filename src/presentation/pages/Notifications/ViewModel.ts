@@ -144,6 +144,8 @@ const ViewModel = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [channelTextFilter, setChannelTextFilter] = useState("");
+  const [channelNumFilter, setChannelNumFilter] = useState(1);
   const selectedChatRef = useRef(selectedChat.channelId);
 
   const signalRNotificationUseCase = container.get<SignalRNotificationUseCase>(TYPES.SignalRNotificationUseCase);
@@ -387,7 +389,7 @@ const ViewModel = () => {
       dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
       dispatch({ type: "SET_FIELD", value: "" });
 
-      await getChannelsList();
+      await getChannelsList({ textFilter: "" }, true);
     } catch (error: any) {
       console.error(error);
       setError(true);
@@ -546,7 +548,7 @@ const ViewModel = () => {
 
       toggleUserModal("addAndDeleteUsers", false);
 
-      await getChannelsList();
+      await getChannelsList({ textFilter: "" }, true);
     } catch (error: any) {
       console.error(error);
       setError(true);
@@ -621,9 +623,14 @@ const ViewModel = () => {
     const target = e.target as HTMLElement;
 
     if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50 && !isLoading && hasMore) {
-      await getChannelsList();
+      await getChannelsList({ textFilter: channelTextFilter, numFilter: channelNumFilter });
     }
   }, 200);
+
+  const handleChannelsTextFilter = debounce(async (textFilter: string) => {
+    setChannelTextFilter(textFilter);
+    await getChannelsList({ textFilter, numFilter: 1 }, true);
+  }, 300);
 
   return {
     athletesList,
@@ -644,6 +651,7 @@ const ViewModel = () => {
     selectedMemberships,
     handleScroll,
     handleChannelsScroll,
+    handleChannelsTextFilter,
     setOpenEmojiPicker,
     handleTextMessage,
     setField,

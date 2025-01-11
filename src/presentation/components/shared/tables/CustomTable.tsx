@@ -109,7 +109,7 @@ const CustomTable = ({
         <Input
           isClearable
           className="w-full mb-3 p-2 sm:max-w-[44%]"
-          placeholder="Search by name..."
+          placeholder="Filtra por nombre..."
           startContent={<SearchIcon />}
           classNames={{ base: "dark" }}
           onChange={(e) => handleTextFilter(e.target.value)}

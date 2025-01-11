@@ -37,6 +37,7 @@ const Notifications = () => {
     selectedMemberships,
     handleScroll,
     handleChannelsScroll,
+    handleChannelsTextFilter,
     setOpenEmojiPicker,
     setField,
     setError,
@@ -84,6 +85,7 @@ const Notifications = () => {
             onChatClick={handleChatClick}
             onTruncateText={handleTruncateText}
             onScroll={handleChannelsScroll}
+            onTextFilter={handleChannelsTextFilter}
           />
         </div>
 
