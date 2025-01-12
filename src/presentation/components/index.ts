@@ -30,6 +30,7 @@ import FormDropdown from "./shared/form-elements/FormDropdown";
 import CustomButton from "./shared/buttons/CustomButton";
 import CustomMultiSteps from "./shared/multi-steps/CustomMultiSteps";
 import CustomCarousel from "./shared/carousel/CustomCarousel";
+import FormCheckboxGroup from "./shared/form-elements/FormCheckboxGroup";
 
 export {
   PrimaryButton,
@@ -64,4 +65,5 @@ export {
   CustomButton,
   CustomMultiSteps,
   CustomCarousel,
+  FormCheckboxGroup,
 };

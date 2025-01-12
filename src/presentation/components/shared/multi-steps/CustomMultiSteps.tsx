@@ -59,12 +59,12 @@ const CustomMultiSteps = ({
   };
 
   return (
-    <div className="w-full mx-auto rounded-lg shadow-lg p-2 md:p-6">
+    <div className="w-full mx-auto rounded-lg shadow-lg p-2 md:p-4">
 
       {/* Barra de Pasos */}
       <div 
         ref={stepsContainerRef} 
-        className="flex items-center justify-between mb-6 gap-3 overflow-x-auto md:flex-wrap md:justify-center"
+        className="flex items-center justify-between gap-3 overflow-x-auto md:flex-wrap md:justify-center"
       >
         {steps.map((step, index) => (
           <div 
