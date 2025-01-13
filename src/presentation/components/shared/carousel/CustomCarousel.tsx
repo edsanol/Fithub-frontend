@@ -43,7 +43,13 @@ const CustomCarousel = ({
               selectedItem === item ? "border-blue-500" : "border-transparent"
             }`}
           >
-            <Image src={item} alt="Opción" layout="fill" objectFit="cover" />
+            <Image
+              src={item}
+              alt="Opción"
+              fill
+              style={{ objectFit: "cover" }}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
             {selectedItem === item && (
               <div className="absolute inset-0 bg-blue-500 bg-opacity-20 flex items-center justify-center">
                 <span className="text-white font-bold">✔</span>

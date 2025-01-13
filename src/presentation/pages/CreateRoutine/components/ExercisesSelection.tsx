@@ -5,6 +5,7 @@ import {
   FormInput,
   FormSelect,
   FormTextarea,
+  InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
 import { Button, Spinner } from "@nextui-org/react";
@@ -28,6 +29,8 @@ const ExercisesSelection = () => {
   const [textFilter, setTextFilter] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     getExercisesList({ textFilter: "" }, true);
@@ -75,6 +78,8 @@ const ExercisesSelection = () => {
       }
     } catch (error) {
       console.log("Error al obtener la lista de ejercicios:", error);
+      setError(true);
+      setErrorMessage("Error al obtener la lista de ejercicios");
     } finally {
       setIsLoading(false);
     }
@@ -123,13 +128,16 @@ const ExercisesSelection = () => {
       const response = await createExerciseUseCase.execute(state.exercise);
 
       if (!response) {
-        console.log("Error al crear el ejercicio");
+        setError(true);
+        setErrorMessage("Error al crear el ejercicio");
         return;
       }
 
       await getExercisesList({ textFilter: "" }, true);
     } catch (error) {
       console.log("Error al crear el ejercicio:", error);
+      setError(true);
+      setErrorMessage("Error al crear el ejercicio");
     }
   };
 
@@ -249,6 +257,12 @@ const ExercisesSelection = () => {
             </form>
           </>
         }
+      />
+
+      <InfoModal
+        isOpen={error}
+        onOpenChange={setError}
+        message={errorMessage}
       />
     </>
   );
