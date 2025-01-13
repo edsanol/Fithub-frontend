@@ -2,14 +2,17 @@
 
 import { createContext, useContext, useReducer, ReactNode } from "react";
 import { Routine } from "@/domain/entities/Routine";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { Exercise } from "@/domain/entities/Exercise";
 
 interface State {
   routine: Routine;
+  exercisesList: PaginateResponseList<Exercise>;
 }
 
-type Action = {
-  type: "SET_FIELD"; field: keyof Routine; value: string | number | boolean;
-};
+type Action =
+  | { type: "SET_FIELD"; field: keyof Routine; value: string | number | boolean }
+  | { type: "SET_EXERCISES_LIST"; exercisesList: PaginateResponseList<Exercise> };
 
 interface RoutineProviderProps {
   children: ReactNode;
@@ -21,10 +24,12 @@ const initialState: State = {
     description: "",
     idMuscleGroup: 0,
     imageURL: "",
-    startDate: "",
-    endDate: "",
     exercises: [],
   },
+  exercisesList: {
+    totalRecords: 0,
+    items: [],
+  }
 };
 
 const RoutineContext = createContext<{ state: State; dispatch: React.Dispatch<Action>; } | null>(null);
@@ -48,6 +53,11 @@ function routineReducer(state: State, action: Action): State {
           ...state.routine,
           [action.field]: action.value,
         },
+      };
+    case "SET_EXERCISES_LIST":
+      return {
+        ...state,
+        exercisesList: action.exercisesList,
       };
     default:
       return state;

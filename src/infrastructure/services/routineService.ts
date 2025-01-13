@@ -4,6 +4,9 @@ import type { HttpClient } from "../api/http";
 import { TYPES } from "@/config/types";
 import { Routine } from "@/domain/entities/Routine";
 import { TickerResponseApi } from "../api/model/TickerResponseApi";
+import { Exercise } from "@/domain/entities/Exercise";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 
 @injectable()
 export class RoutineServiceImpl implements RoutineService {
@@ -15,6 +18,12 @@ export class RoutineServiceImpl implements RoutineService {
 
   async createRoutine(routine: Routine): Promise<boolean> {
     const response = await this.http.post<TickerResponseApi<boolean>, Routine>("/Routine/CreateRoutine", routine);
+
+    return response.data;
+  }
+
+  async getExercisesList(data: PaginateData): Promise<PaginateResponseList<Exercise>> {
+    const response = await this.http.post<TickerResponseApi<PaginateResponseList<Exercise>>, PaginateData>("/Routine/GetExercisesList", data);
 
     return response.data;
   }
