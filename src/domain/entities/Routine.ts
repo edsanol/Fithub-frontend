@@ -29,6 +29,7 @@ export class Routine {
   public imageURL: string;
   public startDate: string;
   public endDate: string;
+  public exercises: Exercises[];
 
   constructor({
     title,
@@ -37,6 +38,7 @@ export class Routine {
     imageURL,
     startDate,
     endDate,
+    exercises,
   }: constructorParams) {
     this.title = title;
     this.description = description;
@@ -44,5 +46,6 @@ export class Routine {
     this.imageURL = imageURL;
     this.startDate = startDate;
     this.endDate = endDate;
+    this.exercises = exercises;
   }
 }

@@ -5,6 +5,7 @@ import ExercisesSelection from "./components/ExercisesSelection";
 import SetsConfiguration from "./components/SetsConfiguration";
 import RoutineSummary from "./components/RoutineSummary";
 import { CustomMultiSteps, DashboardHeader } from "@/presentation/components";
+import { RoutineProvider } from "./context/RoutineContext";
 
 const steps = [
   { title: "Información Básica", component: <BasicInformation /> },
@@ -19,7 +20,7 @@ const CreateRoutine = () => {
   };
 
   return (
-    <>
+    <RoutineProvider>
       <DashboardHeader title="Crear Nueva Rutina" />
 
       <CustomMultiSteps
@@ -27,7 +28,7 @@ const CreateRoutine = () => {
         initialStep={0}
         onFinish={handleFinishRoutine}
       />
-    </>
+    </RoutineProvider>
   );
 };
 
