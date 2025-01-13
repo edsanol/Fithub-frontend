@@ -3,6 +3,7 @@ import {
   CustomModal,
   FormCheckboxGroup,
   FormInput,
+  FormSelect,
   FormTextarea,
   PrimaryButton,
 } from "@/presentation/components";
@@ -15,7 +16,9 @@ import { GetExercisesListUseCase } from "@/domain/useCases/Routine/getExercisesL
 import { TYPES } from "@/config/types";
 import { debounce } from "lodash";
 import { formatExercises } from "@/presentation/helpers";
-import { imageOptions } from "@/assets/constants";
+import { imageOptions, muscularGroups } from "@/assets/constants";
+import { Exercise } from "@/domain/entities/Exercise";
+import { CreateExerciseUseCase } from "@/domain/useCases/Routine/createExerciseUseCase";
 
 const ExercisesSelection = () => {
   const { state, dispatch } = useRoutine();
@@ -30,18 +33,13 @@ const ExercisesSelection = () => {
     getExercisesList({ textFilter: "" }, true);
   }, []);
 
-  const getExercisesList = async (
-    params?: Partial<PaginateData>,
-    reset = false
-  ) => {
+  const getExercisesList = async (params?: Partial<PaginateData>, reset = false) => {
     try {
       setIsLoading(true);
 
       const filterByName = params?.textFilter || textFilter;
       const effectiveNumFilter = params?.numFilter;
-      const numPage = reset
-        ? 1
-        : Math.ceil(state.exercisesList.items.length / 7) + 1;
+      const numPage = reset ? 1 : Math.ceil(state.exercisesList.items.length / 7) + 1;
 
       const requestParams = {
         numRecordsPage: 7,
@@ -51,9 +49,7 @@ const ExercisesSelection = () => {
         ...params,
       };
 
-      const getExercisesListUseCase = container.get<GetExercisesListUseCase>(
-        TYPES.GetExercisesListUseCase
-      );
+      const getExercisesListUseCase = container.get<GetExercisesListUseCase>(TYPES.GetExercisesListUseCase);
 
       const response = await getExercisesListUseCase.execute(requestParams);
 
@@ -98,11 +94,7 @@ const ExercisesSelection = () => {
   const handleScroll = debounce(async (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
 
-    if (
-      target.scrollTop + target.clientHeight >= target.scrollHeight - 50 &&
-      !isLoading &&
-      hasMore
-    ) {
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50 && !isLoading && hasMore) {
       await getExercisesList({ textFilter });
     }
   }, 200);
@@ -114,6 +106,30 @@ const ExercisesSelection = () => {
 
   const handleImageSelect = (image: string) => {
     setSelectedImage(image);
+
+    handleChange("imageURL", image);
+  };
+
+  const handleChange = (field: keyof Exercise, value: string | number | boolean) => {
+    dispatch({ type: "SET_FIELD_EXERCISE", field, value });
+  };
+
+  const createExercise = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const createExerciseUseCase = container.get<CreateExerciseUseCase>(TYPES.CreateExerciseUseCase);
+
+      const response = await createExerciseUseCase.execute(state.exercise);
+
+      if (!response) {
+        console.log("Error al crear el ejercicio");
+      }
+
+      await getExercisesList({ textFilter: "" }, true);
+    } catch (error) {
+      console.log("Error al crear el ejercicio:", error);
+    }
   };
 
   return (
@@ -166,13 +182,14 @@ const ExercisesSelection = () => {
         size="2xl"
         content={
           <>
-            <form className="mt-3">
+            <form className="mt-3" onSubmit={createExercise}>
               <div className="flex flex-col md:flex-row gap-3">
                 <FormInput
                   isRequired
                   type="text"
                   label="Nombre del ejercicio"
                   size="lg"
+                  onChange={(value) => handleChange("title", value)}
                   customInputClass="mb-5"
                 />
                 <FormInput
@@ -180,21 +197,34 @@ const ExercisesSelection = () => {
                   type="number"
                   label="Duración (minutos)"
                   size="lg"
+                  onChange={(value) => handleChange("duration", parseInt(value, 10))}
                   customInputClass="mb-5"
                 />
               </div>
-              <FormInput
-                isRequired
-                type="string"
-                label="Enlace del video"
-                size="lg"
-              />
+              <div className="flex flex-col md:flex-row gap-3">
+                <FormInput
+                  isRequired
+                  type="string"
+                  label="Enlace del video"
+                  size="lg"
+                  onChange={(value) => handleChange("videoURL", value)}
+                />
+                <FormSelect
+                  isRequired
+                  label="Grupo Muscular"
+                  items={muscularGroups}
+                  popoverProps={{ color: "foreground" }}
+                  size="lg"
+                  onChange={(value) => handleChange("idMuscleGroup", Number(value))}
+                />
+              </div>
               <div className="mt-3">
                 <FormTextarea
                   isRequired
                   label="Descripción"
                   placeholder="Escribe una descripción del ejercicio"
                   size="lg"
+                  onChange={(value) => handleChange("description", value)}
                 />
               </div>
               <div className="mt-3">
@@ -208,14 +238,14 @@ const ExercisesSelection = () => {
                   }}
                 />
               </div>
+              <div className="mt-3">
+                <PrimaryButton
+                  text="Guardar Ejercicio"
+                  btnType="submit"
+                  customButtonClass="w-full p-8" 
+                />
+              </div>
             </form>
-          </>
-        }
-        footerContent={
-          <>
-            <Button color="primary" variant="solid" onPress={() => {}}>
-              Guardar Ejercicio
-            </Button>
           </>
         }
       />

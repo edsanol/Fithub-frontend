@@ -5,5 +5,6 @@ import { PaginateResponseList } from "../models/PaginateResponseList";
 
 export interface RoutineService {
   createRoutine(routine: Routine): Promise<boolean>;
+  createExercise(exercise: Exercise): Promise<boolean>;
   getExercisesList(data: PaginateData): Promise<PaginateResponseList<Exercise>>;
 }

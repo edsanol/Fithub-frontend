@@ -21,6 +21,12 @@ export class RoutineRepositoryImpl implements RoutineRepository {
     return response;
   }
 
+  async createExercise(exercise: Exercise): Promise<boolean> {
+    const response = await this.service.createExercise(exercise);
+
+    return response;
+  }
+
   async getExercisesList(data: PaginateData): Promise<PaginateResponseList<Exercise>> {
     const response = await this.service.getExercisesList(data);
 

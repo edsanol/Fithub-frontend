@@ -22,6 +22,12 @@ export class RoutineServiceImpl implements RoutineService {
     return response.data;
   }
 
+  async createExercise(exercise: Exercise): Promise<boolean> {
+    const response = await this.http.post<TickerResponseApi<boolean>, Exercise>("/Routine/CreateExercise", exercise);
+
+    return response.data;
+  }
+
   async getExercisesList(data: PaginateData): Promise<PaginateResponseList<Exercise>> {
     const response = await this.http.post<TickerResponseApi<PaginateResponseList<Exercise>>, PaginateData>("/Routine/GetExercisesList", data);
 

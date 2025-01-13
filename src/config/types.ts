@@ -124,6 +124,7 @@ const TYPES = {
 
   // RoutineUseCases
   CreateRoutineUseCase: Symbol.for("CreateRoutineUseCase"),
+  CreateExerciseUseCase: Symbol.for("CreateExerciseUseCase"),
   GetExercisesListUseCase: Symbol.for("GetExercisesListUseCase"),
 };
 
