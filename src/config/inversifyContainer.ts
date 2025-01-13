@@ -75,6 +75,11 @@ import { SignalRService } from "@/domain/services/signalRService";
 import { SignalRServiceImpl } from "@/infrastructure/services/signalRService";
 import { SignalRNotificationUseCase } from "@/domain/useCases/SignalR/signalRNotificationUseCase";
 import { AddOrRemoveUsersFromChannelUseCase } from "@/domain/useCases/Channel/addOrRemoveUserUseCase";
+import { RoutineRepository } from "@/domain/repositories/routineRepository";
+import { RoutineRepositoryImpl } from "@/infrastructure/repositories/routineRepository";
+import { RoutineService } from "@/domain/services/routineService";
+import { RoutineServiceImpl } from "@/infrastructure/services/routineService";
+import { CreateRoutineUseCase } from "@/domain/useCases/Routine/createRoutineUseCase";
 
 const container = new Container();
 
@@ -310,5 +315,20 @@ container
 container
   .bind<SignalRNotificationUseCase>(TYPES.SignalRNotificationUseCase)
   .to(SignalRNotificationUseCase);
+
+// RoutineRepository
+container
+  .bind<RoutineRepository>(TYPES.RoutineRepository)
+  .to(RoutineRepositoryImpl);
+
+// RoutineService
+container
+  .bind<RoutineService>(TYPES.RoutineService)
+  .to(RoutineServiceImpl);
+
+// RoutineUseCases
+container
+  .bind<CreateRoutineUseCase>(TYPES.CreateRoutineUseCase)
+  .to(CreateRoutineUseCase);
 
 export default container;

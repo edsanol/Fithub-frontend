@@ -115,6 +115,15 @@ const TYPES = {
 
   // SignalRNotificationUseCase
   SignalRNotificationUseCase: Symbol.for("SignalRNotificationUseCase"),
+
+  // RoutineRepository
+  RoutineRepository: Symbol.for("RoutineRepository"),
+
+  // RoutineService
+  RoutineService: Symbol.for("RoutineService"),
+
+  // RoutineUseCases
+  CreateRoutineUseCase: Symbol.for("CreateRoutineUseCase"),
 };
 
 export { TYPES };
