@@ -6,7 +6,7 @@ interface Sets {
   weight: number;
 }
 
-interface Exercises {
+export interface Exercises {
   idExercise?: number;
   newExercise?: Exercise;
   sets?: Sets[];

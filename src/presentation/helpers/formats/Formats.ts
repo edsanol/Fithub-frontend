@@ -1,3 +1,4 @@
+import { Exercise } from "@/domain/entities/Exercise";
 import { AccessTypes } from "@/domain/models/AccessTypes";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 
@@ -30,5 +31,15 @@ export const formatAccessTypes = (accessTypes: AccessTypes[]) => {
   return accessTypes.map((accessType) => ({
     value: accessType.accessTypeID,
     label: accessType.accessTypeName,
+  }));
+};
+
+export const formatExercises = (exercises: Exercise[]) => {
+  return exercises.map((exercise) => ({
+    name: exercise.exerciseTitle!,
+    value: exercise.exerciseId!.toString(),
+    href: exercise.imageURL,
+    description: exercise.exerciseDescription!,
+    label: exercise.muscleGroupName!,
   }));
 };

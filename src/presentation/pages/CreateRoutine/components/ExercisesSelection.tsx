@@ -1,4 +1,5 @@
 import {
+  CustomCarousel,
   CustomModal,
   FormCheckboxGroup,
   FormInput,
@@ -13,6 +14,8 @@ import container from "@/config/inversifyContainer";
 import { GetExercisesListUseCase } from "@/domain/useCases/Routine/getExercisesListUseCase";
 import { TYPES } from "@/config/types";
 import { debounce } from "lodash";
+import { formatExercises } from "@/presentation/helpers";
+import { imageOptions } from "@/assets/constants";
 
 const ExercisesSelection = () => {
   const { state, dispatch } = useRoutine();
@@ -20,34 +23,25 @@ const ExercisesSelection = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [textFilter, setTextFilter] = useState("");
-
-  const [selectedExercises, setSelectedExercises] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleSelectionChange = (selected: string[]) => {
-    setSelectedExercises(selected);
-    console.log("Ejercicios seleccionados:", selected);
-  };
-
-  const formattedExercises = state.exercisesList.items.map((exercise) => ({
-    name: exercise.exerciseTitle!,
-    value: exercise.exerciseId!.toString(),
-    href: exercise.imageURL,
-    description: exercise.exerciseDescription!,
-    label: exercise.muscleGroupName!,
-  }));
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     getExercisesList({ textFilter: "" }, true);
   }, []);
 
-  const getExercisesList = async (params?: Partial<PaginateData>, reset = false) => {
+  const getExercisesList = async (
+    params?: Partial<PaginateData>,
+    reset = false
+  ) => {
     try {
       setIsLoading(true);
 
       const filterByName = params?.textFilter || textFilter;
       const effectiveNumFilter = params?.numFilter;
-      const numPage = reset ? 1 : Math.ceil(state.exercisesList.items.length / 7) + 1;
+      const numPage = reset
+        ? 1
+        : Math.ceil(state.exercisesList.items.length / 7) + 1;
 
       const requestParams = {
         numRecordsPage: 7,
@@ -57,7 +51,9 @@ const ExercisesSelection = () => {
         ...params,
       };
 
-      const getExercisesListUseCase = container.get<GetExercisesListUseCase>(TYPES.GetExercisesListUseCase);
+      const getExercisesListUseCase = container.get<GetExercisesListUseCase>(
+        TYPES.GetExercisesListUseCase
+      );
 
       const response = await getExercisesListUseCase.execute(requestParams);
 
@@ -66,7 +62,9 @@ const ExercisesSelection = () => {
         return;
       }
 
-      const updatedItems = reset ? response.items : [...state.exercisesList.items, ...response.items];
+      const updatedItems = reset
+        ? response.items
+        : [...state.exercisesList.items, ...response.items];
 
       dispatch({
         type: "SET_EXERCISES_LIST",
@@ -75,7 +73,7 @@ const ExercisesSelection = () => {
           items: updatedItems,
         },
       });
-  
+
       if (reset) {
         setHasMore(true);
       }
@@ -86,10 +84,25 @@ const ExercisesSelection = () => {
     }
   };
 
+  const handleSelectionChange = (selected: string[]) => {
+    const selectedExercisesFormatted = selected.map((exerciseId) => ({
+      idExercise: parseInt(exerciseId, 10),
+    }));
+
+    dispatch({
+      type: "SET_SELECTED_EXERCISES",
+      selectedExercises: selectedExercisesFormatted,
+    });
+  };
+
   const handleScroll = debounce(async (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
 
-    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50 && !isLoading && hasMore) {
+    if (
+      target.scrollTop + target.clientHeight >= target.scrollHeight - 50 &&
+      !isLoading &&
+      hasMore
+    ) {
       await getExercisesList({ textFilter });
     }
   }, 200);
@@ -98,6 +111,10 @@ const ExercisesSelection = () => {
     setTextFilter(textFilter);
     await getExercisesList({ textFilter, numFilter: 1 }, true);
   }, 300);
+
+  const handleImageSelect = (image: string) => {
+    setSelectedImage(image);
+  };
 
   return (
     <>
@@ -126,7 +143,7 @@ const ExercisesSelection = () => {
           onScroll={handleScroll}
         >
           <FormCheckboxGroup
-            items={formattedExercises}
+            items={formatExercises(state.exercisesList.items)}
             label="Selecciona los ejercicios"
             onChange={handleSelectionChange}
             defaultSelected={[]}
@@ -137,31 +154,35 @@ const ExercisesSelection = () => {
             </span>
           )}
 
-          {!hasMore && <p className="mt-3 text-start">No hay ejercicios</p>}
+          {!hasMore && (
+            <p className="mt-3 text-start">No hay mas ejercicios disponibles</p>
+          )}
         </div>
       </div>
 
       <CustomModal
         isOpen={isModalOpen}
         onOpenChange={() => setIsModalOpen(!isModalOpen)}
-        size="xl"
+        size="2xl"
         content={
           <>
             <form className="mt-3">
-              <FormInput
-                isRequired
-                type="text"
-                label="Nombre del ejercicio"
-                size="lg"
-                customInputClass="mb-5"
-              />
-              <FormInput
-                isRequired
-                type="number"
-                label="Duración (minutos)"
-                size="lg"
-                customInputClass="mb-5"
-              />
+              <div className="flex flex-col md:flex-row gap-3">
+                <FormInput
+                  isRequired
+                  type="text"
+                  label="Nombre del ejercicio"
+                  size="lg"
+                  customInputClass="mb-5"
+                />
+                <FormInput
+                  isRequired
+                  type="number"
+                  label="Duración (minutos)"
+                  size="lg"
+                  customInputClass="mb-5"
+                />
+              </div>
               <FormInput
                 isRequired
                 type="string"
@@ -174,6 +195,17 @@ const ExercisesSelection = () => {
                   label="Descripción"
                   placeholder="Escribe una descripción del ejercicio"
                   size="lg"
+                />
+              </div>
+              <div className="mt-3">
+                <CustomCarousel
+                  items={imageOptions}
+                  onSelect={handleImageSelect}
+                  selectedItem={selectedImage}
+                  breakpoints={{
+                    640: { slidesPerView: 3 },
+                    1024: { slidesPerView: 3 },
+                  }}
                 />
               </div>
             </form>

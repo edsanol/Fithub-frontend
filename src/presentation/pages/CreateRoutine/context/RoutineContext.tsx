@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useReducer, ReactNode } from "react";
-import { Routine } from "@/domain/entities/Routine";
+import { Exercises, Routine } from "@/domain/entities/Routine";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { Exercise } from "@/domain/entities/Exercise";
 
@@ -12,7 +12,8 @@ interface State {
 
 type Action =
   | { type: "SET_FIELD"; field: keyof Routine; value: string | number | boolean }
-  | { type: "SET_EXERCISES_LIST"; exercisesList: PaginateResponseList<Exercise> };
+  | { type: "SET_EXERCISES_LIST"; exercisesList: PaginateResponseList<Exercise> }
+  | { type: "SET_SELECTED_EXERCISES"; selectedExercises: Exercises[] };
 
 interface RoutineProviderProps {
   children: ReactNode;
@@ -58,6 +59,14 @@ function routineReducer(state: State, action: Action): State {
       return {
         ...state,
         exercisesList: action.exercisesList,
+      };
+    case "SET_SELECTED_EXERCISES":
+      return {
+        ...state,
+        routine: {
+          ...state.routine,
+          exercises: action.selectedExercises,
+        },
       };
     default:
       return state;
