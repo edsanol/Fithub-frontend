@@ -124,6 +124,7 @@ const ExercisesSelection = () => {
 
       if (!response) {
         console.log("Error al crear el ejercicio");
+        return;
       }
 
       await getExercisesList({ textFilter: "" }, true);
@@ -162,7 +163,7 @@ const ExercisesSelection = () => {
             items={formatExercises(state.exercisesList.items)}
             label="Selecciona los ejercicios"
             onChange={handleSelectionChange}
-            defaultSelected={[]}
+            defaultSelected={state.routine.exercises.map((exercise) => exercise.idExercise!.toString())}
           />
           {isLoading && (
             <span className="flex justify-start w-full mt-3">

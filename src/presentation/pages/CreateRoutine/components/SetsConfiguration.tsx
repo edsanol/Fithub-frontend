@@ -1,83 +1,97 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CustomButton, FormInput } from "@/presentation/components";
 import DeleteIcon from "@/assets/svg/DeleteIcon";
+import { useRoutine } from "../context/RoutineContext";
+import container from "@/config/inversifyContainer";
+import { GetExercisesListUseCase } from "@/domain/useCases/Routine/getExercisesListUseCase";
+import { TYPES } from "@/config/types";
+import { Exercise } from "@/domain/entities/Exercise";
 
 const SetsConfiguration = () => {
-  const mockSelectedExercises = [
-    {
-      exerciseId: 1,
-      exerciseTitle: "Sentadillas",
-      exerciseDescription:
-        "Un ejercicio para fortalecer los músculos de las piernas y los glúteos.",
-      sets: [
-        { setNumber: 1, repetitions: 12, weight: 50 },
-        { setNumber: 2, repetitions: 10, weight: 55 },
-      ],
-    },
-    {
-      exerciseId: 2,
-      exerciseTitle: "Press de Banca",
-      exerciseDescription:
-        "Ejercicio enfocado en trabajar los músculos del pecho y tríceps.",
-      sets: [
-        { setNumber: 1, repetitions: 10, weight: 70 },
-        { setNumber: 2, repetitions: 8, weight: 75 },
-      ],
-    },
-    {
-      exerciseId: 3,
-      exerciseTitle: "Dominadas",
-      exerciseDescription:
-        "Ejercicio compuesto para trabajar espalda y bíceps.",
-      sets: [
-        { setNumber: 1, repetitions: 8, weight: 0 },
-        { setNumber: 2, repetitions: 6, weight: 0 },
-      ],
-    },
-  ];
+  const { state, dispatch } = useRoutine();
+  const [selectedExercises, setSelectedExercises] = useState<Exercise[]>([]);
 
-  const [setsData, setSetsData] = useState(
-    mockSelectedExercises.reduce((acc, exercise) => {
-      acc[exercise.exerciseId] = exercise.sets;
-      return acc;
-    }, {} as Record<number, { setNumber: number; repetitions: number; weight: number }[]>)
-  );
+  useEffect(() => {
+    fetchSelectedExercises();
+  }, []);
 
-  const handleAddSet = (exerciseId: number) => {
-    setSetsData((prev) => ({
-      ...prev,
-      [exerciseId]: [
-        ...prev[exerciseId],
-        {
-          setNumber: prev[exerciseId].length + 1,
-          repetitions: 0,
-          weight: 0,
-        },
-      ],
-    }));
+  useEffect(() => {
+    console.log("state", state);
+  }, [state]);
+
+  const fetchSelectedExercises = async () => {
+    try {
+      const selectedExerciseIds = state.routine.exercises.map((exercise) => exercise.idExercise).join(",");
+
+      if (!selectedExerciseIds) return;
+
+      const getExercisesListUseCase = container.get<GetExercisesListUseCase>(TYPES.GetExercisesListUseCase);
+
+      const response = await getExercisesListUseCase.execute({
+        numRecordsPage: 1000,
+        textFilter: selectedExerciseIds,
+        numFilter: 7,
+      });
+
+      if (response && response.items.length > 0) {
+        setSelectedExercises(response.items);
+
+        const exercisesWithSets = response.items.map((exercise) => ({
+          idExercise: exercise.exerciseId,
+          sets: [{ setNumber: 1, reps: 0, weight: 0 }],
+        }));
+
+        dispatch({
+          type: "SET_SELECTED_EXERCISES",
+          selectedExercises: exercisesWithSets,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching selected exercises:", error);
+    }
   };
 
-  const handleDeleteSet = (exerciseId: number, setIndex: number) => {
-    setSetsData((prev) => {
-      const updatedSets = prev[exerciseId].filter(
-        (_, index) => index !== setIndex
-      );
-      return { ...prev, [exerciseId]: updatedSets };
+  const handleAddSet = (idExercise: number) => {
+    const updatedSets = state.routine.exercises.find((exercise) => exercise.idExercise === idExercise)?.sets || [];
+
+    const newSet = {
+      setNumber: updatedSets.length + 1,
+      reps: 0,
+      weight: 0,
+    };
+
+    const updatedExerciseSets = [...updatedSets, newSet];
+
+    dispatch({
+      type: "UPDATE_EXERCISE_SETS",
+      idExercise,
+      sets: updatedExerciseSets,
     });
   };
 
-  const handleSetChange = (
-    exerciseId: number,
-    setIndex: number,
-    field: "repetitions" | "weight",
-    value: number
-  ) => {
-    setSetsData((prev) => {
-      const updatedSets = [...prev[exerciseId]];
-      updatedSets[setIndex][field] = value;
-      return { ...prev, [exerciseId]: updatedSets };
+  const handleDeleteSet = (idExercise: number, setIndex: number) => {
+    const updatedSets = state.routine.exercises.find((exercise) => exercise.idExercise === idExercise)?.sets || [];
+
+    const filteredSets = updatedSets.filter((_, index) => index !== setIndex);
+
+    dispatch({
+      type: "UPDATE_EXERCISE_SETS",
+      idExercise,
+      sets: filteredSets,
+    });
+  };
+
+  const handleSetChange = (idExercise: number, setIndex: number, field: "reps" | "weight", value: number) => {
+    const updatedSets = state.routine.exercises.find((exercise) => exercise.idExercise === idExercise)?.sets || [];
+
+    updatedSets[setIndex][field] = value;
+
+    dispatch({
+      type: "UPDATE_EXERCISE_SETS",
+      idExercise,
+      sets: updatedSets,
     });
   };
 
@@ -86,36 +100,34 @@ const SetsConfiguration = () => {
       <h2 className="text-xl font-semibold">Paso 3: Configuración de Sets</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {Object.entries(setsData).map(([exerciseId, sets]) => {
-          const exercise = mockSelectedExercises.find(
-            (e) => e.exerciseId === parseInt(exerciseId)
-          );
+        {selectedExercises.map((exercise) => {
+          const sets = state.routine.exercises.find((ex) => ex.idExercise === exercise.exerciseId)?.sets || [];
 
           return (
             <div
-              key={exerciseId}
+              key={exercise.exerciseId}
               className="p-4 bg-[#121417] rounded-lg shadow-md max-h-72 overflow-y-auto"
             >
               <h3 className="text-lg font-semibold mb-2">
-                {exercise?.exerciseTitle}
+                {exercise.exerciseTitle}
               </h3>
               <p className="text-sm text-gray-600 mb-4">
-                {exercise?.exerciseDescription}
+                {exercise.exerciseDescription}
               </p>
 
               <div className="space-y-4">
                 {sets.map((set, index) => (
                   <div key={index} className="flex items-center gap-4">
-                    <span className="font-medium">Set {index + 1}</span>
+                    <span className="font-medium">Set {set.setNumber}</span>
                     <FormInput
                       type="number"
                       placeholder="Repeticiones"
-                      value={set.repetitions || ""}
+                      value={set.reps}
                       onChange={(e) =>
                         handleSetChange(
-                          parseInt(exerciseId),
+                          exercise.exerciseId!,
                           index,
-                          "repetitions",
+                          "reps",
                           parseInt(e, 10) || 0
                         )
                       }
@@ -124,10 +136,10 @@ const SetsConfiguration = () => {
                     <FormInput
                       type="number"
                       placeholder="Peso (kg)"
-                      value={set.weight || ""}
+                      value={set.weight}
                       onChange={(e) =>
                         handleSetChange(
-                          parseInt(exerciseId),
+                          exercise.exerciseId!,
                           index,
                           "weight",
                           parseInt(e, 10) || 0
@@ -135,12 +147,11 @@ const SetsConfiguration = () => {
                       }
                       customInputClass="w-24"
                     />
-
                     <button
                       type="button"
                       className="text-red-500 font-bold text-lg hover:text-red-700"
                       onClick={() =>
-                        handleDeleteSet(parseInt(exerciseId), index)
+                        handleDeleteSet(exercise.exerciseId!, index)
                       }
                     >
                       <DeleteIcon />
@@ -154,7 +165,7 @@ const SetsConfiguration = () => {
                     color="primary"
                     variant="solid"
                     text="Agregar Set"
-                    onClick={() => handleAddSet(parseInt(exerciseId))}
+                    onClick={() => handleAddSet(exercise.exerciseId!)}
                   />
                 </div>
               </div>

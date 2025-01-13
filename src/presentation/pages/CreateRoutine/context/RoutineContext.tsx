@@ -15,7 +15,8 @@ type Action =
   | { type: "SET_FIELD"; field: keyof Routine; value: string | number | boolean }
   | { type: "SET_FIELD_EXERCISE"; field: keyof Exercise; value: string | number | boolean }
   | { type: "SET_EXERCISES_LIST"; exercisesList: PaginateResponseList<Exercise> }
-  | { type: "SET_SELECTED_EXERCISES"; selectedExercises: Exercises[] };
+  | { type: "SET_SELECTED_EXERCISES"; selectedExercises: Exercises[] }
+  | { type: "UPDATE_EXERCISE_SETS"; idExercise: number; sets: { setNumber: number; reps: number; weight: number }[]; };
 
 interface RoutineProviderProps {
   children: ReactNode;
@@ -84,6 +85,18 @@ function routineReducer(state: State, action: Action): State {
         routine: {
           ...state.routine,
           exercises: action.selectedExercises,
+        },
+      };
+    case "UPDATE_EXERCISE_SETS":
+      return {
+        ...state,
+        routine: {
+          ...state.routine,
+          exercises: state.routine.exercises.map((exercise) =>
+            exercise.idExercise === action.idExercise
+              ? { ...exercise, sets: action.sets }
+              : exercise
+          ),
         },
       };
     default:

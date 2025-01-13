@@ -7,7 +7,7 @@ import {
   FormSelect,
   FormTextarea,
 } from "@/presentation/components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRoutine } from "../context/RoutineContext";
 import { Routine } from "@/domain/entities/Routine";
 
@@ -16,10 +16,11 @@ const BasicInformation = () => {
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const handleChange = (
-    field: keyof Routine,
-    value: string | number | boolean
-  ) => {
+  useEffect(() => {
+    setSelectedImage(state.routine.imageURL);
+  }, [state.routine.imageURL]);
+
+  const handleChange = (field: keyof Routine, value: string | number | boolean) => {
     dispatch({ type: "SET_FIELD", field, value });
   };
 
@@ -40,6 +41,7 @@ const BasicInformation = () => {
             label="Nombre de la rutina"
             size="sm"
             onChange={(value) => handleChange("title", value)}
+            value={state.routine.title}
           />
 
           <FormSelect
@@ -49,12 +51,14 @@ const BasicInformation = () => {
             popoverProps={{ color: "foreground" }}
             size="sm"
             onChange={(value) => handleChange("idMuscleGroup", Number(value))}
+            value={state.routine.idMuscleGroup}
           />
         </div>
         <FormTextarea
           isRequired
           label="Descripción de la rutina"
           onChange={(value) => handleChange("description", value)}
+          value={state.routine.description}
         />
       </div>
 
