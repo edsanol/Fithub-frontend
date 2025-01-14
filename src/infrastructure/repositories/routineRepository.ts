@@ -32,4 +32,10 @@ export class RoutineRepositoryImpl implements RoutineRepository {
 
     return response;
   }
+
+  async getMuscleGroups(): Promise<{ label: string; value: string; }[]> {
+    const response = await this.service.getMuscleGroups();
+
+    return response;
+  }
 }

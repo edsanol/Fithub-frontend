@@ -9,6 +9,7 @@ interface State {
   routine: Routine;
   exercise: Exercise;
   exercisesList: PaginateResponseList<Exercise>;
+  muscleGroups: { label: string; value: string }[];
 }
 
 type Action =
@@ -16,7 +17,9 @@ type Action =
   | { type: "SET_FIELD_EXERCISE"; field: keyof Exercise; value: string | number | boolean }
   | { type: "SET_EXERCISES_LIST"; exercisesList: PaginateResponseList<Exercise> }
   | { type: "SET_SELECTED_EXERCISES"; selectedExercises: Exercises[] }
-  | { type: "UPDATE_EXERCISE_SETS"; idExercise: number; sets: { setNumber: number; reps: number; weight: number }[]; };
+  | { type: "UPDATE_EXERCISE_SETS"; idExercise: number; sets: { setNumber: number; reps: number; weight: number }[]; }
+  | { type: "SET_MUSCLE_GROUPS"; muscleGroups: { label: string; value: string }[] }
+  | { type: "RESET_STATE" };
 
 interface RoutineProviderProps {
   children: ReactNode;
@@ -41,7 +44,8 @@ const initialState: State = {
   exercisesList: {
     totalRecords: 0,
     items: [],
-  }
+  },
+  muscleGroups: [],
 };
 
 const RoutineContext = createContext<{ state: State; dispatch: React.Dispatch<Action>; } | null>(null);
@@ -99,6 +103,13 @@ function routineReducer(state: State, action: Action): State {
           ),
         },
       };
+    case "SET_MUSCLE_GROUPS":
+      return {
+        ...state,
+        muscleGroups: action.muscleGroups,
+      };
+    case "RESET_STATE":
+      return initialState;
     default:
       return state;
   }

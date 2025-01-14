@@ -1,6 +1,6 @@
 "use client";
 
-import { imageOptions, muscularGroups } from "@/assets/constants";
+import { imageOptions } from "@/assets/constants";
 import {
   CustomCarousel,
   FormInput,
@@ -10,6 +10,9 @@ import {
 import { useEffect, useState } from "react";
 import { useRoutine } from "../context/RoutineContext";
 import { Routine } from "@/domain/entities/Routine";
+import container from "@/config/inversifyContainer";
+import { GetMuscleGroupsUseCase } from "@/domain/useCases/Routine/getMuscleGroupsUseCase";
+import { TYPES } from "@/config/types";
 
 const BasicInformation = () => {
   const { state, dispatch } = useRoutine();
@@ -20,6 +23,10 @@ const BasicInformation = () => {
     setSelectedImage(state.routine.imageURL);
   }, [state.routine.imageURL]);
 
+  useEffect(() => {
+    getMuscleGroups();
+  }, []);
+
   const handleChange = (field: keyof Routine, value: string | number | boolean) => {
     dispatch({ type: "SET_FIELD", field, value });
   };
@@ -28,6 +35,23 @@ const BasicInformation = () => {
     setSelectedImage(image);
 
     handleChange("imageURL", image);
+  };
+
+  const getMuscleGroups = async () => {
+    try {
+      const getMuscleGroupsUseCase = container.get<GetMuscleGroupsUseCase>(TYPES.GetMuscleGroupsUseCase);
+
+      const response = await getMuscleGroupsUseCase.execute();
+
+      if (!response) {
+        console.log("Error al obtener los grupos musculares");
+        return;
+      }
+
+      dispatch({ type: "SET_MUSCLE_GROUPS", muscleGroups: response });
+    } catch (error) {
+      console.log("Error al obtener los grupos musculares", error);
+    }
   };
 
   return (
@@ -47,7 +71,7 @@ const BasicInformation = () => {
           <FormSelect
             isRequired
             label="Grupo Muscular"
-            items={muscularGroups}
+            items={state.muscleGroups}
             popoverProps={{ color: "foreground" }}
             size="sm"
             onChange={(value) => handleChange("idMuscleGroup", Number(value))}

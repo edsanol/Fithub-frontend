@@ -7,4 +7,5 @@ export interface RoutineRepository {
   createRoutine(routine: Routine): Promise<boolean>;
   createExercise(exercise: Exercise): Promise<boolean>;
   getExercisesList(data: PaginateData): Promise<PaginateResponseList<Exercise>>;
+  getMuscleGroups(): Promise<{ label: string; value: string }[]>;
 }

@@ -8,7 +8,7 @@ import {
   InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
-import { Button, Spinner } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { useRoutine } from "../context/RoutineContext";
 import { PaginateData } from "@/domain/models/PaginateData";
@@ -17,7 +17,7 @@ import { GetExercisesListUseCase } from "@/domain/useCases/Routine/getExercisesL
 import { TYPES } from "@/config/types";
 import { debounce } from "lodash";
 import { formatExercises } from "@/presentation/helpers";
-import { imageOptions, muscularGroups } from "@/assets/constants";
+import { imageOptions } from "@/assets/constants";
 import { Exercise } from "@/domain/entities/Exercise";
 import { CreateExerciseUseCase } from "@/domain/useCases/Routine/createExerciseUseCase";
 
@@ -221,7 +221,7 @@ const ExercisesSelection = () => {
                 <FormSelect
                   isRequired
                   label="Grupo Muscular"
-                  items={muscularGroups}
+                  items={state.muscleGroups}
                   popoverProps={{ color: "foreground" }}
                   size="sm"
                   onChange={(value) => handleChange("idMuscleGroup", Number(value))}

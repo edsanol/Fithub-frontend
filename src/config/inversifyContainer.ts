@@ -82,6 +82,7 @@ import { RoutineServiceImpl } from "@/infrastructure/services/routineService";
 import { CreateRoutineUseCase } from "@/domain/useCases/Routine/createRoutineUseCase";
 import { GetExercisesListUseCase } from "@/domain/useCases/Routine/getExercisesListUseCase";
 import { CreateExerciseUseCase } from "@/domain/useCases/Routine/createExerciseUseCase";
+import { GetMuscleGroupsUseCase } from "@/domain/useCases/Routine/getMuscleGroupsUseCase";
 
 const container = new Container();
 
@@ -338,5 +339,8 @@ container
 container
   .bind<GetExercisesListUseCase>(TYPES.GetExercisesListUseCase)
   .to(GetExercisesListUseCase);
+container
+  .bind<GetMuscleGroupsUseCase>(TYPES.GetMuscleGroupsUseCase)
+  .to(GetMuscleGroupsUseCase);
 
 export default container;

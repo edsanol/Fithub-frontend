@@ -33,4 +33,10 @@ export class RoutineServiceImpl implements RoutineService {
 
     return response.data;
   }
+
+  async getMuscleGroups(): Promise<{ label: string; value: string; }[]> {
+    const response = await this.http.get<TickerResponseApi<{ label: string; value: string; }[]>>("/Routine/GetMuscleGroups");
+
+    return response.data;
+  }
 }
