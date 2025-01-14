@@ -20,17 +20,11 @@ const SetsConfiguration = () => {
     fetchSelectedExercises();
   }, []);
 
-  useEffect(() => {
-    console.log("state", state);
-  }, [state]);
-
   const fetchSelectedExercises = async () => {
     try {
       const selectedExerciseIds = state.routine.exercises.map((exercise) => exercise.idExercise).join(",");
 
       if (!selectedExerciseIds) {
-        setError(true);
-        setErrorMessage("No se han seleccionado ejercicios para la rutina.");
         return;
       }
 
@@ -45,10 +39,16 @@ const SetsConfiguration = () => {
       if (response && response.items.length > 0) {
         setSelectedExercises(response.items);
 
-        const exercisesWithSets = response.items.map((exercise) => ({
-          idExercise: exercise.exerciseId,
-          sets: [{ setNumber: 1, reps: 0, weight: 0 }],
-        }));
+        const exercisesWithSets = response.items.map((exercise) => {
+          const existingExercise = state.routine.exercises.find((ex) => ex.idExercise === exercise.exerciseId);
+
+          return (
+            existingExercise || {
+              idExercise: exercise.exerciseId,
+              sets: [{ setNumber: 1, reps: 0, weight: 0 }],
+            }
+          );
+        });
 
         dispatch({
           type: "SET_SELECTED_EXERCISES",
@@ -109,80 +109,72 @@ const SetsConfiguration = () => {
       <div className="mx-auto xl:w-11/12 space-y-6">
         <h2 className="text-xl font-semibold">Paso 3: Configuración de Sets</h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {selectedExercises.map((exercise) => {
-            const sets = state.routine.exercises.find((ex) => ex.idExercise === exercise.exerciseId)?.sets || [];
+        {selectedExercises.length === 0 ? (
+          <p className="text-center text-gray-500">
+            No hay ejercicios seleccionados para configurar sets.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {selectedExercises.map((exercise) => {
+              const sets = state.routine.exercises.find((ex) => ex.idExercise === exercise.exerciseId)?.sets || [];
 
-            return (
-              <div
-                key={exercise.exerciseId}
-                className="p-4 bg-[#121417] rounded-lg shadow-md max-h-72 overflow-y-auto"
-              >
-                <h3 className="text-lg font-semibold mb-2">
-                  {exercise.exerciseTitle}
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  {exercise.exerciseDescription}
-                </p>
+              return (
+                <div
+                  key={exercise.exerciseId}
+                  className="p-4 bg-[#121417] rounded-lg shadow-md max-h-72 overflow-y-auto"
+                >
+                  <h3 className="text-lg font-semibold mb-2">
+                    {exercise.exerciseTitle}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {exercise.exerciseDescription}
+                  </p>
 
-                <div className="space-y-4">
-                  {sets.map((set, index) => (
-                    <div key={index} className="flex items-center gap-4">
-                      <span className="font-medium">Set {set.setNumber}</span>
-                      <FormInput
-                        type="number"
-                        placeholder="Repeticiones"
-                        value={set.reps}
-                        onChange={(e) =>
-                          handleSetChange(
-                            exercise.exerciseId!,
-                            index,
-                            "reps",
-                            parseInt(e, 10) || 0
-                          )
-                        }
-                        customInputClass="w-24"
-                      />
-                      <FormInput
-                        type="number"
-                        placeholder="Peso (kg)"
-                        value={set.weight}
-                        onChange={(e) =>
-                          handleSetChange(
-                            exercise.exerciseId!,
-                            index,
-                            "weight",
-                            parseInt(e, 10) || 0
-                          )
-                        }
-                        customInputClass="w-24"
-                      />
-                      <button
+                  <div className="space-y-4">
+                    {sets.map((set, index) => (
+                      <div key={index} className="flex items-center gap-4">
+                        <span className="font-medium">Set {set.setNumber}</span>
+                        <FormInput
+                          type="number"
+                          label="Repeticiones"
+                          value={set.reps === 0 ? "" : set.reps}
+                          onChange={(value) => handleSetChange(exercise.exerciseId!, index, "reps", parseInt(value, 10) || 0)}
+                          customInputClass="w-32"
+                          size="sm"
+                        />
+                        <FormInput
+                          type="number"
+                          label="Peso (kg)"
+                          value={set.weight === 0 ? "" : set.weight}
+                          onChange={(e) => handleSetChange(exercise.exerciseId!, index, "weight", parseInt(e, 10) || 0)}
+                          customInputClass="w-32"
+                          size="sm"
+                        />
+                        <button
+                          type="button"
+                          className="text-red-500 font-bold text-lg hover:text-red-700"
+                          onClick={() => handleDeleteSet(exercise.exerciseId!, index)}
+                        >
+                          <DeleteIcon />
+                        </button>
+                      </div>
+                    ))}
+
+                    <div className="flex items-center justify-end">
+                      <CustomButton
                         type="button"
-                        className="text-red-500 font-bold text-lg hover:text-red-700"
-                        onClick={() =>
-                          handleDeleteSet(exercise.exerciseId!, index)
-                        }
-                      >
-                        <DeleteIcon />
-                      </button>
+                        color="primary"
+                        variant="solid"
+                        text="Agregar Set"
+                        onClick={() => handleAddSet(exercise.exerciseId!)}
+                      />
                     </div>
-                  ))}
-
-                  <div className="flex items-center justify-end">
-                    <CustomButton
-                      type="button"
-                      color="primary"
-                      variant="solid"
-                      text="Agregar Set"
-                      onClick={() => handleAddSet(exercise.exerciseId!)}
-                    />
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <InfoModal

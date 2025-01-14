@@ -15,10 +15,6 @@ const steps = [
 ];
 
 const CreateRoutine = () => {
-  const handleFinishRoutine = () => {
-    console.log("¡Rutina creada exitosamente!");
-  };
-
   return (
     <RoutineProvider>
       <DashboardHeader title="Crear Nueva Rutina" />
@@ -26,7 +22,6 @@ const CreateRoutine = () => {
       <CustomMultiSteps
         steps={steps}
         initialStep={0}
-        onFinish={handleFinishRoutine}
       />
     </RoutineProvider>
   );

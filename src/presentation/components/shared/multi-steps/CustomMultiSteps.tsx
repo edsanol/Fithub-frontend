@@ -14,7 +14,6 @@ interface CustomMultiStepProps {
   initialStep?: number;
   onNext?: (currentStep: number) => void;
   onBack?: (currentStep: number) => void;
-  onFinish?: () => void;
 }
 
 const CustomMultiSteps = ({
@@ -22,7 +21,6 @@ const CustomMultiSteps = ({
   initialStep = 0,
   onNext,
   onBack,
-  onFinish,
 }: CustomMultiStepProps) => {
   const [currentStep, setCurrentStep] = useState(initialStep);
 
@@ -52,10 +50,6 @@ const CustomMultiSteps = ({
       setCurrentStep((prev) => prev - 1);
       onBack?.(currentStep - 1);
     }
-  };
-
-  const handleFinish = () => {
-    onFinish?.();
   };
 
   return (
@@ -104,13 +98,7 @@ const CustomMultiSteps = ({
             onClick={handleNext}
           />
         ) : (
-          <CustomButton
-            type="button"
-            color="primary"
-            variant="shadow"
-            text="Finalizar"
-            onClick={handleFinish}
-          />
+          null
         )}
       </div>
     </div>

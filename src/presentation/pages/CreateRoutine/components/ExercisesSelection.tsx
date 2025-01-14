@@ -197,7 +197,7 @@ const ExercisesSelection = () => {
                   isRequired
                   type="text"
                   label="Nombre del ejercicio"
-                  size="lg"
+                  size="sm"
                   onChange={(value) => handleChange("title", value)}
                   customInputClass="mb-5"
                 />
@@ -205,7 +205,7 @@ const ExercisesSelection = () => {
                   isRequired
                   type="number"
                   label="Duración (minutos)"
-                  size="lg"
+                  size="sm"
                   onChange={(value) => handleChange("duration", parseInt(value, 10))}
                   customInputClass="mb-5"
                 />
@@ -215,7 +215,7 @@ const ExercisesSelection = () => {
                   isRequired
                   type="string"
                   label="Enlace del video"
-                  size="lg"
+                  size="sm"
                   onChange={(value) => handleChange("videoURL", value)}
                 />
                 <FormSelect
@@ -223,7 +223,7 @@ const ExercisesSelection = () => {
                   label="Grupo Muscular"
                   items={muscularGroups}
                   popoverProps={{ color: "foreground" }}
-                  size="lg"
+                  size="sm"
                   onChange={(value) => handleChange("idMuscleGroup", Number(value))}
                 />
               </div>
@@ -232,7 +232,7 @@ const ExercisesSelection = () => {
                   isRequired
                   label="Descripción"
                   placeholder="Escribe una descripción del ejercicio"
-                  size="lg"
+                  size="sm"
                   onChange={(value) => handleChange("description", value)}
                 />
               </div>
