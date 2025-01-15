@@ -1,6 +1,7 @@
 import { Exercise } from "./Exercise";
 
 interface Sets {
+  setId?: number;
   setNumber: number;
   reps: number;
   weight: number;
@@ -8,6 +9,7 @@ interface Sets {
 
 export interface Exercises {
   exerciseTitle?: string;
+  routineExerciseId?: number;
   idExercise?: number;
   newExercise?: Exercise;
   sets?: Sets[];
@@ -22,6 +24,8 @@ type constructorParams = {
   exercises: Exercises[];
   muscleGroupName?: string;
   isActive?: boolean;
+  deleteExercises?: number[];
+  deleteSets?: number[];
 };
 
 export class Routine {
@@ -33,6 +37,8 @@ export class Routine {
   public exercises: Exercises[];
   public muscleGroupName?: string;
   public isActive?: boolean;
+  public deleteExercises?: number[];
+  public deleteSets?: number[];
 
   constructor({
     routineId,
@@ -43,6 +49,8 @@ export class Routine {
     exercises,
     muscleGroupName,
     isActive,
+    deleteExercises,
+    deleteSets,
   }: constructorParams) {
     this.routineId = routineId;
     this.title = title;
@@ -52,5 +60,7 @@ export class Routine {
     this.exercises = exercises;
     this.muscleGroupName = muscleGroupName;
     this.isActive = isActive;
+    this.deleteExercises = deleteExercises;
+    this.deleteSets = deleteSets;
   }
 }

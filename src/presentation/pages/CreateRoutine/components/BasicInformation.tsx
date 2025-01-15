@@ -86,10 +86,12 @@ const BasicInformation = () => {
     }
   };
 
-  const transformRoutineResponse = (response: any): Routine => {
+  const transformRoutineResponse = (response: Routine): Routine => {
     const transformedExercises = response.exercises.map((exercise: any) => ({
       idExercise: exercise.idExercise,
+      routineExerciseId: exercise.routineExerciseId,
       sets: exercise.routineExerciseSets.map((set: any) => ({
+        setId: set.routineExerciseSetId,
         setNumber: set.setNumber,
         reps: set.reps,
         weight: set.weight,

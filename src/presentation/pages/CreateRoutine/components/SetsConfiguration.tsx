@@ -80,18 +80,6 @@ const SetsConfiguration = () => {
     });
   };
 
-  const handleDeleteSet = (idExercise: number, setIndex: number) => {
-    const updatedSets = state.routine.exercises.find((exercise) => exercise.idExercise === idExercise)?.sets || [];
-
-    const filteredSets = updatedSets.filter((_, index) => index !== setIndex);
-
-    dispatch({
-      type: "UPDATE_EXERCISE_SETS",
-      idExercise,
-      sets: filteredSets,
-    });
-  };
-
   const handleSetChange = (idExercise: number, setIndex: number, field: "reps" | "weight", value: number) => {
     const updatedSets = state.routine.exercises.find((exercise) => exercise.idExercise === idExercise)?.sets || [];
 
@@ -102,6 +90,42 @@ const SetsConfiguration = () => {
       idExercise,
       sets: updatedSets,
     });
+  };
+
+  const handleSetRemoval = (idExercise: number, setId: number) => {
+    dispatch({ type: "ADD_TO_DELETE_SETS", setId });
+  
+    const updatedSets = state.routine.exercises.find((exercise) => exercise.idExercise === idExercise)?.sets || [];
+  
+    const filteredSets = updatedSets.filter((set) => set.setId !== setId);
+  
+    dispatch({
+      type: "UPDATE_EXERCISE_SETS",
+      idExercise,
+      sets: filteredSets,
+    });
+  };
+
+  const handleDeleteSet = (idExercise: number, setIndex: number) => {
+    const exercise = state.routine.exercises.find((exercise) => exercise.idExercise === idExercise);
+  
+    if (exercise && exercise.sets && setIndex >= 0 && setIndex < exercise.sets.length) {
+      const setToDelete = exercise.sets[setIndex];
+  
+      if (setToDelete?.setId) {
+        handleSetRemoval(idExercise, setToDelete.setId);
+      } else {
+        const filteredSets = exercise.sets.filter((_, index) => index !== setIndex);
+  
+        dispatch({
+          type: "UPDATE_EXERCISE_SETS",
+          idExercise,
+          sets: filteredSets,
+        });
+      }
+    } else {
+      console.warn(`No se encontró el ejercicio con ID ${idExercise} o el índice ${setIndex} es inválido.`);
+    }
   };
 
   return (

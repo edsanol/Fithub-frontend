@@ -10,6 +10,8 @@ interface State {
   exercise: Exercise;
   exercisesList: PaginateResponseList<Exercise>;
   muscleGroups: { label: string; value: string }[];
+  deleteExercises: number[];
+  deleteSets: number[];
 }
 
 type Action =
@@ -20,7 +22,9 @@ type Action =
   | { type: "UPDATE_EXERCISE_SETS"; idExercise: number; sets: { setNumber: number; reps: number; weight: number }[]; }
   | { type: "SET_MUSCLE_GROUPS"; muscleGroups: { label: string; value: string }[] }
   | { type: "RESET_STATE" }
-  | { type: "SET_ROUTINE"; routine: Routine };
+  | { type: "SET_ROUTINE"; routine: Routine }
+  | { type: "ADD_TO_DELETE_EXERCISES", idExercise: number }
+  | { type: "ADD_TO_DELETE_SETS", setId: number }
 
 interface RoutineProviderProps {
   children: ReactNode;
@@ -47,6 +51,8 @@ const initialState: State = {
     items: [],
   },
   muscleGroups: [],
+  deleteExercises: [],
+  deleteSets: [],
 };
 
 const RoutineContext = createContext<{ state: State; dispatch: React.Dispatch<Action>; } | null>(null);
@@ -115,6 +121,16 @@ function routineReducer(state: State, action: Action): State {
       return {
         ...state,
         routine: action.routine,
+      };
+    case "ADD_TO_DELETE_EXERCISES":
+      return {
+        ...state,
+        deleteExercises: [...state.deleteExercises, action.idExercise],
+      };
+    case "ADD_TO_DELETE_SETS":
+      return {
+        ...state,
+        deleteSets: [...state.deleteSets, action.setId],
       };
     default:
       return state;

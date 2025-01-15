@@ -88,13 +88,17 @@ const ExercisesSelection = () => {
   const handleSelectionChange = (selected: string[]) => {
     const selectedIds = selected.map((id) => parseInt(id, 10));
 
-    const updatedExercises = state.routine.exercises.map((exercise) => {
-      if (selectedIds.includes(exercise.idExercise!)) {
-        return exercise;
-      }
+    const deselectedExercises = state.routine.exercises.filter(
+      (exercise) => !selectedIds.includes(exercise.idExercise!)
+    );
 
-      return { ...exercise, sets: [] };
+    deselectedExercises.forEach((exercise) => {
+      dispatch({ type: "ADD_TO_DELETE_EXERCISES", idExercise: exercise.idExercise! });
     });
+
+    const updatedExercises = state.routine.exercises.filter((exercise) =>
+      selectedIds.includes(exercise.idExercise!)
+    );
 
     const selectedExercisesFormatted = selectedIds.map((id) => {
       const existingExercise = updatedExercises.find(

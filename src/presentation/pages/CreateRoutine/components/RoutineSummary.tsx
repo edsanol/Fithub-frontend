@@ -54,7 +54,8 @@ const RoutineSummary = () => {
 
         response = await updateRoutineUseCase.execute({
           ...state.routine,
-          routineId: Number(routineIdValue),
+          deleteExercises: state.deleteExercises,
+          deleteSets: state.deleteSets,
         });
       } else {
         const createRoutineUseCase = container.get<CreateRoutineUseCase>(TYPES.CreateRoutineUseCase);
