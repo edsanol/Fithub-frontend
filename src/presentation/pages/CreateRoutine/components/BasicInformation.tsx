@@ -129,7 +129,7 @@ const BasicInformation = () => {
             popoverProps={{ color: "foreground" }}
             size="sm"
             onChange={(value) => handleChange("idMuscleGroup", Number(value))}
-            value={state.routine.idMuscleGroup}
+            value={String(state.routine?.idMuscleGroup || "")}
           />
         </div>
         <FormTextarea

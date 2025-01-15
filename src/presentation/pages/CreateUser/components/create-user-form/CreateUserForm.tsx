@@ -123,7 +123,7 @@ const CreateUserForm = () => {
                 items={formatMembershipElements(membership)}
                 onChange={(value) => setField("membershipId", Number(value))}
                 customInputClass="mt-5"
-                value={athleteData?.membershipId}
+                value={String(athleteData?.membershipId) || ""}
               />
               <FormInput
                 isRequired

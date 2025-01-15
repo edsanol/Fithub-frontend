@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/spinner";
-import { CustomModal, FormCheckbox, FormInput, FormMultiSelect, FormSelect } from "@/presentation/components";
+import { CustomModal, FormCheckbox, FormInput, FormMultiSelect } from "@/presentation/components";
 import CustomFormCheckboxGroup from "./CustomFormCheckboxGroup";
 import { formatMembershipElements } from "@/presentation/helpers";
 
