@@ -50,4 +50,10 @@ export class RoutineRepositoryImpl implements RoutineRepository {
 
     return response;
   }
+
+  async desactivateRoutine(id: number): Promise<boolean> {
+    const response = await this.service.desactivateRoutine(id);
+
+    return response;
+  }
 }

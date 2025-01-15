@@ -85,6 +85,7 @@ import { CreateExerciseUseCase } from "@/domain/useCases/Routine/createExerciseU
 import { GetMuscleGroupsUseCase } from "@/domain/useCases/Routine/getMuscleGroupsUseCase";
 import { GetRoutinesListUseCase } from "@/domain/useCases/Routine/getRoutinesListUseCase";
 import { GetRoutineByIdUseCase } from "@/domain/useCases/Routine/getRoutineByIdUseCase";
+import { DesactivateRoutineUseCase } from "@/domain/useCases/Routine/desactivateRoutineUseCase";
 
 const container = new Container();
 
@@ -350,5 +351,8 @@ container
 container
   .bind<GetRoutineByIdUseCase>(TYPES.GetRoutineByIdUseCase)
   .to(GetRoutineByIdUseCase);
+container
+  .bind<DesactivateRoutineUseCase>(TYPES.DesactivateRoutineUseCase)
+  .to(DesactivateRoutineUseCase);
 
 export default container;

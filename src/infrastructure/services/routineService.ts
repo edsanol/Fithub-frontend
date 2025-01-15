@@ -51,4 +51,10 @@ export class RoutineServiceImpl implements RoutineService {
 
     return response.data;
   }
+
+  async desactivateRoutine(id: number): Promise<boolean> {
+    const response = await this.http.put<TickerResponseApi<boolean>, null>(`/Routine/DeleteRoutine/${id}`, null);
+
+    return response.data;
+  }
 }

@@ -129,6 +129,7 @@ const TYPES = {
   GetExercisesListUseCase: Symbol.for("GetExercisesListUseCase"),
   GetMuscleGroupsUseCase: Symbol.for("GetMuscleGroupsUseCase"),
   GetRoutineByIdUseCase: Symbol.for("GetRoutineByIdUseCase"),
+  DesactivateRoutineUseCase: Symbol.for("DesactivateRoutineUseCase"),
 };
 
 export { TYPES };
