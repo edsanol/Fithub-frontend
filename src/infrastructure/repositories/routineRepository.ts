@@ -38,4 +38,10 @@ export class RoutineRepositoryImpl implements RoutineRepository {
 
     return response;
   }
+
+  async getRoutinesList(data: PaginateData): Promise<PaginateResponseList<Routine>> {
+    const response = await this.service.getRoutinesList(data);
+
+    return response;
+  }
 }

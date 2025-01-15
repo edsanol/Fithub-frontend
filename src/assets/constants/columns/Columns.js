@@ -36,3 +36,11 @@ export const MeasurementProgressColumns = [
   { name: "ESPALDA", uid: "shoulders" },
   { name: "ANTEBRAZO", uid: "forearm" },
 ];
+
+export const RoutinesColumns = [
+  { name: "NOMBRE", uid: "title" },
+  { name: "GRUPO MUSCULAR", uid: "muscleGroupName" },
+  { name: "EJERCICIOS", uid: "exercises" },
+  { name: "ESTADO", uid: "isActive" },
+  { name: "ACCIONES", uid: "actions" },
+];

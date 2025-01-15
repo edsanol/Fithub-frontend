@@ -39,4 +39,10 @@ export class RoutineServiceImpl implements RoutineService {
 
     return response.data;
   }
+
+  async getRoutinesList(data: PaginateData): Promise<PaginateResponseList<Routine>> {
+    const response = await this.http.post<TickerResponseApi<PaginateResponseList<Routine>>, PaginateData>("/Routine/GetRoutinesList", data);
+
+    return response.data;
+  }
 }

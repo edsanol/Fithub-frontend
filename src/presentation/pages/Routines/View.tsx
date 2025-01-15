@@ -1,10 +1,21 @@
 "use client";
 
-import { DashboardHeader, PrimaryButton } from "@/presentation/components";
+import { RoutinesColumns } from "@/assets/constants/columns/Columns";
+import { CustomTable, DashboardHeader, PrimaryButton } from "@/presentation/components";
 import { useRouter } from "next/navigation";
+import ViewModel from "./ViewModel";
+import { customRenderCell } from "./components/table-render-cell/RenderCell";
 
 const Routines = () => {
   const router = useRouter();
+
+  const {
+    routinesList,
+    handleSetNumPage,
+    handleSetTextFilter,
+    handleRedirect,
+    handleOpenModal,
+  } = ViewModel();
 
   return (
     <>
@@ -22,6 +33,15 @@ const Routines = () => {
           onClick={() => router.push("/create-routine")}
         />
       </div>
+
+      <CustomTable
+        onSetNumPage={handleSetNumPage}
+        onSetTextFilter={handleSetTextFilter}
+        customRenderCell={(routine, columnKey) => customRenderCell(routine, columnKey, { handleOpenModal, handleRedirect })}
+        records={routinesList}
+        columns={RoutinesColumns}
+        uniqueKeyField="routineId"
+      />
     </>
   );
 };
