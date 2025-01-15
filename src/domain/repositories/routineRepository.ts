@@ -9,4 +9,5 @@ export interface RoutineRepository {
   getRoutinesList(data: PaginateData): Promise<PaginateResponseList<Routine>>;
   getExercisesList(data: PaginateData): Promise<PaginateResponseList<Exercise>>;
   getMuscleGroups(): Promise<{ label: string; value: string }[]>;
+  getRoutineById(id: number): Promise<Routine>;
 }

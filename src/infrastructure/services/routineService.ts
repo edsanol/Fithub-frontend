@@ -45,4 +45,10 @@ export class RoutineServiceImpl implements RoutineService {
 
     return response.data;
   }
+
+  async getRoutineById(id: number): Promise<Routine> {
+    const response = await this.http.get<TickerResponseApi<Routine>>(`/Routine/GetRoutineById/${id}`);
+
+    return response.data;
+  }
 }

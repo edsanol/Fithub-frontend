@@ -44,4 +44,10 @@ export class RoutineRepositoryImpl implements RoutineRepository {
 
     return response;
   }
+
+  async getRoutineById(id: number): Promise<Routine> {
+    const response = await this.service.getRoutineById(id);
+
+    return response;
+  }
 }

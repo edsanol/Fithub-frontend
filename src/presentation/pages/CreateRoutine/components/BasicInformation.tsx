@@ -13,8 +13,15 @@ import { Routine } from "@/domain/entities/Routine";
 import container from "@/config/inversifyContainer";
 import { GetMuscleGroupsUseCase } from "@/domain/useCases/Routine/getMuscleGroupsUseCase";
 import { TYPES } from "@/config/types";
+import { usePathname } from "next/navigation";
+import { GetRoutineByIdUseCase } from "@/domain/useCases/Routine/getRoutineByIdUseCase";
 
 const BasicInformation = () => {
+  const pathname = usePathname();
+
+  const routineId = pathname.match(/\/create-routine\/(.*)/);
+  const routineIdValue = routineId ? routineId[1] : null;
+
   const { state, dispatch } = useRoutine();
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -26,6 +33,12 @@ const BasicInformation = () => {
   useEffect(() => {
     getMuscleGroups();
   }, []);
+
+  useEffect(() => {
+    if (routineIdValue) {
+      getRoutineById(Number(routineIdValue));
+    }
+  }, [routineIdValue]);
 
   const handleChange = (field: keyof Routine, value: string | number | boolean) => {
     dispatch({ type: "SET_FIELD", field, value });
@@ -52,6 +65,47 @@ const BasicInformation = () => {
     } catch (error) {
       console.log("Error al obtener los grupos musculares", error);
     }
+  };
+
+  const getRoutineById = async (id: number) => {
+    try {
+      const getRoutineByIdUseCase = container.get<GetRoutineByIdUseCase>(TYPES.GetRoutineByIdUseCase);
+
+      const response = await getRoutineByIdUseCase.execute(id);
+
+      if (!response) {
+        console.log("Error al obtener la rutina");
+        return;
+      }
+
+      const transformedResponse = transformRoutineResponse(response);
+
+      dispatch({ type: "SET_ROUTINE", routine: transformedResponse });
+    } catch (error) {
+      console.log("Error al obtener la rutina", error);
+    }
+  };
+
+  const transformRoutineResponse = (response: any): Routine => {
+    const transformedExercises = response.exercises.map((exercise: any) => ({
+      idExercise: exercise.idExercise,
+      sets: exercise.routineExerciseSets.map((set: any) => ({
+        setNumber: set.setNumber,
+        reps: set.reps,
+        weight: set.weight,
+      })),
+    }));
+  
+    return {
+      routineId: response.routineId,
+      title: response.title,
+      description: response.description,
+      idMuscleGroup: response.idMuscleGroup,
+      muscleGroupName: response.muscleGroupName,
+      imageURL: response.imageURL,
+      isActive: response.isActive,
+      exercises: transformedExercises,
+    };
   };
 
   return (

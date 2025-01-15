@@ -19,7 +19,8 @@ type Action =
   | { type: "SET_SELECTED_EXERCISES"; selectedExercises: Exercises[] }
   | { type: "UPDATE_EXERCISE_SETS"; idExercise: number; sets: { setNumber: number; reps: number; weight: number }[]; }
   | { type: "SET_MUSCLE_GROUPS"; muscleGroups: { label: string; value: string }[] }
-  | { type: "RESET_STATE" };
+  | { type: "RESET_STATE" }
+  | { type: "SET_ROUTINE"; routine: Routine };
 
 interface RoutineProviderProps {
   children: ReactNode;
@@ -110,6 +111,11 @@ function routineReducer(state: State, action: Action): State {
       };
     case "RESET_STATE":
       return initialState;
+    case "SET_ROUTINE":
+      return {
+        ...state,
+        routine: action.routine,
+      };
     default:
       return state;
   }
