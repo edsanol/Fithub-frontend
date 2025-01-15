@@ -156,6 +156,8 @@ const ExercisesSelection = () => {
       }
 
       await getExercisesList({ textFilter: "" }, true);
+      setIsModalOpen(false);
+      setSelectedImage(null);
     } catch (error) {
       console.log("Error al crear el ejercicio:", error);
       setError(true);
@@ -247,6 +249,7 @@ const ExercisesSelection = () => {
                   popoverProps={{ color: "foreground" }}
                   size="sm"
                   onChange={(value) => handleChange("idMuscleGroup", Number(value))}
+                  value={String(state.exercise.idMuscleGroup)}
                 />
               </div>
               <div className="mt-3">
