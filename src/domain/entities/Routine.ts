@@ -7,6 +7,7 @@ interface Sets {
 }
 
 export interface Exercises {
+  exerciseTitle?: string;
   idExercise?: number;
   newExercise?: Exercise;
   sets?: Sets[];

@@ -5,7 +5,7 @@ import DeleteIcon from "@/assets/svg/DeleteIcon";
 import { Routine } from "@/domain/entities/Routine";
 
 interface customRenderCellProps {
-  handleOpenModal: (id: number, modalName: "detailsModal" | "deleteModal" | "editMembershipModal") => void;
+  handleOpenModal: (id: number, modalName: "detailsModal" | "deleteModal") => void;
   handleRedirect: (id: number) => void;
 }
 

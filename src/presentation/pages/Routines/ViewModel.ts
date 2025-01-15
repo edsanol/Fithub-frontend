@@ -25,10 +25,13 @@ const initialState: State = {
     deleteModal: false,
   },
   routine: {
+    routineId: 0,
     title: "",
     description: "",
     idMuscleGroup: 0,
+    muscleGroupName: "",
     imageURL: "",
+    isActive: false,
     exercises: [],
   },
 };
@@ -130,6 +133,7 @@ const ViewModel = () => {
 
   const transformRoutineResponse = (response: any): Routine => {
     const transformedExercises = response.exercises.map((exercise: any) => ({
+      exerciseTitle: exercise.exerciseTitle,
       idExercise: exercise.idExercise,
       sets: exercise.routineExerciseSets.map((set: any) => ({
         setNumber: set.setNumber,
@@ -162,7 +166,7 @@ const ViewModel = () => {
     router.push(`/create-routine/${routineId}`);
   };
 
-  const handleOpenModal = (routineId: number, modalName: "detailsModal" | "deleteModal" | "editMembershipModal") => {
+  const handleOpenModal = (routineId: number, modalName: "detailsModal" | "deleteModal") => {
     getRoutineById(routineId);
     toggleModal(modalName);
   };
