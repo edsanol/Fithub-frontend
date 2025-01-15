@@ -11,4 +11,5 @@ export interface RoutineService {
   getMuscleGroups(): Promise<{ label: string; value: string }[]>;
   getRoutineById(id: number): Promise<Routine>;
   desactivateRoutine(id: number): Promise<boolean>;
+  updateRoutine(routine: Routine): Promise<boolean>;
 }

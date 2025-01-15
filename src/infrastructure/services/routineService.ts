@@ -57,4 +57,10 @@ export class RoutineServiceImpl implements RoutineService {
 
     return response.data;
   }
+
+  async updateRoutine(routine: Routine): Promise<boolean> {
+    const response = await this.http.put<TickerResponseApi<boolean>, Routine>("/Routine/UpdateRoutine", routine);
+
+    return response.data;
+  }
 }

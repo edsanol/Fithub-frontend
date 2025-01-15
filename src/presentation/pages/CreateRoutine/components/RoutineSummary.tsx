@@ -7,14 +7,19 @@ import { IRoutineValidation } from "@/presentation/interfaces";
 import container from "@/config/inversifyContainer";
 import { CreateRoutineUseCase } from "@/domain/useCases/Routine/createRoutineUseCase";
 import { TYPES } from "@/config/types";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { UpdateRoutineUseCase } from "@/domain/useCases/Routine/updateRoutineUseCase";
 
 const RoutineSummary = () => {
   const router = useRouter();
+  const pathname = usePathname();
+  
+  const routineId = pathname.match(/\/create-routine\/(.*)/);
+  const routineIdValue = routineId ? routineId[1] : null;
+
   const { state, dispatch } = useRoutine();
 
-  const { title, description, idMuscleGroup, exercises, imageURL } =
-    state.routine;
+  const { title, description, idMuscleGroup, exercises, imageURL } = state.routine;
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -42,9 +47,20 @@ const RoutineSummary = () => {
         return;
       }
 
-      const createRoutineUseCase = container.get<CreateRoutineUseCase>(TYPES.CreateRoutineUseCase);
+      let response;
 
-      const response = await createRoutineUseCase.execute(state.routine);
+      if (routineIdValue) {
+        const updateRoutineUseCase = container.get<UpdateRoutineUseCase>(TYPES.UpdateRoutineUseCase);
+
+        response = await updateRoutineUseCase.execute({
+          ...state.routine,
+          routineId: Number(routineIdValue),
+        });
+      } else {
+        const createRoutineUseCase = container.get<CreateRoutineUseCase>(TYPES.CreateRoutineUseCase);
+
+        response = await createRoutineUseCase.execute(state.routine);
+      }
 
       if (!response) {
         setError(true);

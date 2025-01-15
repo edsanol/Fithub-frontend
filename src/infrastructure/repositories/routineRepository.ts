@@ -56,4 +56,10 @@ export class RoutineRepositoryImpl implements RoutineRepository {
 
     return response;
   }
+
+  async updateRoutine(routine: Routine): Promise<boolean> {
+    const response = await this.service.updateRoutine(routine);
+
+    return response;
+  }
 }

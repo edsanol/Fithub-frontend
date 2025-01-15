@@ -86,6 +86,7 @@ import { GetMuscleGroupsUseCase } from "@/domain/useCases/Routine/getMuscleGroup
 import { GetRoutinesListUseCase } from "@/domain/useCases/Routine/getRoutinesListUseCase";
 import { GetRoutineByIdUseCase } from "@/domain/useCases/Routine/getRoutineByIdUseCase";
 import { DesactivateRoutineUseCase } from "@/domain/useCases/Routine/desactivateRoutineUseCase";
+import { UpdateRoutineUseCase } from "@/domain/useCases/Routine/updateRoutineUseCase";
 
 const container = new Container();
 
@@ -354,5 +355,8 @@ container
 container
   .bind<DesactivateRoutineUseCase>(TYPES.DesactivateRoutineUseCase)
   .to(DesactivateRoutineUseCase);
+container
+  .bind<UpdateRoutineUseCase>(TYPES.UpdateRoutineUseCase)
+  .to(UpdateRoutineUseCase);
 
 export default container;
