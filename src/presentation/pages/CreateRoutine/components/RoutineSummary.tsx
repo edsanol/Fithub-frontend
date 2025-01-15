@@ -2,7 +2,7 @@
 
 import { InfoModal, PrimaryButton } from "@/presentation/components";
 import { useRoutine } from "../context/RoutineContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IRoutineValidation } from "@/presentation/interfaces";
 import container from "@/config/inversifyContainer";
 import { CreateRoutineUseCase } from "@/domain/useCases/Routine/createRoutineUseCase";
@@ -18,10 +18,6 @@ const RoutineSummary = () => {
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    console.log(state);
-  }, []);
 
   const handleIsValidForm = () => {
     const errors: IRoutineValidation = {

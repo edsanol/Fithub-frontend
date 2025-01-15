@@ -86,9 +86,27 @@ const ExercisesSelection = () => {
   };
 
   const handleSelectionChange = (selected: string[]) => {
-    const selectedExercisesFormatted = selected.map((exerciseId) => ({
-      idExercise: parseInt(exerciseId, 10),
-    }));
+    const selectedIds = selected.map((id) => parseInt(id, 10));
+
+    const updatedExercises = state.routine.exercises.map((exercise) => {
+      if (selectedIds.includes(exercise.idExercise!)) {
+        return exercise;
+      }
+
+      return { ...exercise, sets: [] };
+    });
+
+    const selectedExercisesFormatted = selectedIds.map((id) => {
+      const existingExercise = updatedExercises.find(
+        (exercise) => exercise.idExercise === id
+      );
+      return (
+        existingExercise || {
+          idExercise: id,
+          sets: [],
+        }
+      );
+    });
 
     dispatch({
       type: "SET_SELECTED_EXERCISES",
