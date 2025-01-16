@@ -1,4 +1,5 @@
 import { Exercise } from "@/domain/entities/Exercise";
+import { Routine } from "@/domain/entities/Routine";
 import { AccessTypes } from "@/domain/models/AccessTypes";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 
@@ -41,5 +42,15 @@ export const formatExercises = (exercises: Exercise[]) => {
     href: exercise.imageURL,
     description: exercise.exerciseDescription!,
     label: exercise.muscleGroupName!,
+  }));
+};
+
+export const formatRoutines = (routines: Routine[]) => {
+  return routines.map((routine) => ({
+    name: routine.title,
+    value: routine.routineId!.toString(),
+    href: routine.imageURL,
+    description: routine.description,
+    label: routine.muscleGroupName!,
   }));
 };

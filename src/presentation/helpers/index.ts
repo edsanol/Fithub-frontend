@@ -20,6 +20,7 @@ import {
   formatMembershipElements,
   formatAccessTypes,
   formatExercises,
+  formatRoutines,
 } from "./formats/Formats";
 
 import { mapperMuscleNames, mapperMuscleIcon } from "./mappers/Mappers";
@@ -45,4 +46,5 @@ export {
   isValidDocumentID,
   formatAccessTypes,
   formatExercises,
+  formatRoutines,
 };
