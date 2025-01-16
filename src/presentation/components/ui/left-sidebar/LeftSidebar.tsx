@@ -221,8 +221,8 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             <li>
                               <SidebarLinkGroupItems
                                 label="Enviar Rutinas"
-                                url="/send-routine"
-                                route="/send-routine"
+                                url="/send-routines"
+                                route="/send-routines"
                               />
                             </li>
                           </ul>
