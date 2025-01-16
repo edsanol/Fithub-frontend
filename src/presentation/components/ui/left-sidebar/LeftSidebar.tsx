@@ -172,15 +172,6 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   }}
                 </SidebarLinkGroup>
 
-                <li>
-                  <SidebarItems
-                    url="/membership"
-                    route="membership"
-                    icon={<MembershipIcon />}
-                    label="Membresías"
-                  />
-                </li>
-
                 <SidebarLinkGroup
                   activeCondition={pathname === "/routines" || pathname.includes("routine")}
                 >
@@ -231,6 +222,15 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     );
                   }}
                 </SidebarLinkGroup>
+
+                <li>
+                  <SidebarItems
+                    url="/membership"
+                    route="membership"
+                    icon={<MembershipIcon />}
+                    label="Membresías"
+                  />
+                </li>
               </ul>
             </div>
 
