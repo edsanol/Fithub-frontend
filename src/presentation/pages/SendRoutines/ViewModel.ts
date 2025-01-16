@@ -233,6 +233,7 @@ const ViewModel = () => {
       setOpenModal(false);
       setError(true);
       setErrorMessage("Rutina enviada correctamente");
+      setSelectedRoutine([]);
     } catch (error) {
       console.log("Error al enviar la rutina", error);
       setError(true);
