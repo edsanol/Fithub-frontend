@@ -87,6 +87,7 @@ import { GetRoutinesListUseCase } from "@/domain/useCases/Routine/getRoutinesLis
 import { GetRoutineByIdUseCase } from "@/domain/useCases/Routine/getRoutineByIdUseCase";
 import { DesactivateRoutineUseCase } from "@/domain/useCases/Routine/desactivateRoutineUseCase";
 import { UpdateRoutineUseCase } from "@/domain/useCases/Routine/updateRoutineUseCase";
+import { SendRoutineUseCase } from "@/domain/useCases/Routine/sendRoutineUseCase";
 
 const container = new Container();
 
@@ -358,5 +359,8 @@ container
 container
   .bind<UpdateRoutineUseCase>(TYPES.UpdateRoutineUseCase)
   .to(UpdateRoutineUseCase);
+container
+  .bind<SendRoutineUseCase>(TYPES.SendRoutineUseCase)
+  .to(SendRoutineUseCase);
 
 export default container;

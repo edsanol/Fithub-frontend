@@ -7,6 +7,7 @@ import { TickerResponseApi } from "../api/model/TickerResponseApi";
 import { Exercise } from "@/domain/entities/Exercise";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { SendRoutine } from "@/domain/models/SendRoutine";
 
 @injectable()
 export class RoutineServiceImpl implements RoutineService {
@@ -60,6 +61,12 @@ export class RoutineServiceImpl implements RoutineService {
 
   async updateRoutine(routine: Routine): Promise<boolean> {
     const response = await this.http.put<TickerResponseApi<boolean>, Routine>("/Routine/UpdateRoutine", routine);
+
+    return response.data;
+  }
+
+  async sendRoutine(data: SendRoutine): Promise<boolean> {
+    const response = await this.http.post<TickerResponseApi<boolean>, SendRoutine>("/Routine/SendRoutineToChannel", data);
 
     return response.data;
   }

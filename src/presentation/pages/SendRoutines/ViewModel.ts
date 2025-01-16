@@ -6,17 +6,21 @@ import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { GetChannelsUseCase } from "@/domain/useCases/Channel/getChannelsUseCase";
 import { GetRoutinesListUseCase } from "@/domain/useCases/Routine/getRoutinesListUseCase";
+import { SendRoutineUseCase } from "@/domain/useCases/Routine/sendRoutineUseCase";
+import { useDateGMT5 } from "@/hooks/useDateGMT5";
 import { debounce } from "lodash";
 import { useEffect, useReducer, useRef, useState } from "react";
 
 interface State {
   routinesList: PaginateResponseList<Routine>;
   channelsList: PaginateResponseList;
+  dates: { startDate: string; endDate: string };
 }
 
 type Action =
   | { type: "SET_CHANNELS_LIST"; channelsList: PaginateResponseList }
-  | { type: "SET_ROUTINES_LIST"; routinesList: PaginateResponseList<Routine> };
+  | { type: "SET_ROUTINES_LIST"; routinesList: PaginateResponseList<Routine> }
+  | { type: "SET_DATES"; field: keyof { startDate: string; endDate: string }; value: string };
 
 const initialState: State = {
   channelsList: {
@@ -26,6 +30,10 @@ const initialState: State = {
   routinesList: {
     totalRecords: 0,
     items: [],
+  },
+  dates: {
+    startDate: "",
+    endDate: "",
   },
 };
 
@@ -38,18 +46,29 @@ function reducer(state: State, action: Action): State {
         ...state,
         routinesList: action.routinesList,
       };
+    case "SET_DATES":
+      return {
+        ...state,
+        dates: { ...state.dates, [action.field]: action.value },
+      };
     default:
       return state;
   }
 }
 
 const ViewModel = () => {
-  const [{ channelsList, routinesList }, dispatch] = useReducer(reducer, initialState);
+  const dateGMT5 = useDateGMT5();
+
+  const [{ channelsList, routinesList, dates }, dispatch] = useReducer(reducer, initialState);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [textChannelFilter, setTextChannelFilter] = useState("");
   const [textRoutineFilter, setTextRoutineFilter] = useState("");
+  const [selectedRoutine, setSelectedRoutine] = useState<string[]>([]);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [selectedChat, setSelectedChat] = useState<Channel>({
     channelId: 0,
     channelName: "",
@@ -70,6 +89,12 @@ const ViewModel = () => {
     getRoutinesList({ textFilter: "" }, true);
   }, []);
 
+  useEffect(() => {
+    if (openModal) {
+      setDateByDefault();
+    }
+  }, [openModal]);
+
   const handleChatClick = async (channelId: number) => {
     const channel: Channel = channelsList.items.find((channel) => channel.channelId === channelId);
 
@@ -78,6 +103,10 @@ const ViewModel = () => {
     }
 
     setSelectedChat(channel);
+  };
+
+  const handleRoutineClick = (selected: string[]) => {
+    setSelectedRoutine(selected);
   };
 
   const handleTruncateText = (text: string, length: number) => {
@@ -126,6 +155,8 @@ const ViewModel = () => {
       }
     } catch (error: any) {
       console.log(error);
+      setError(true);
+      setErrorMessage("Error al obtener la lista de chats");
     } finally {
       setIsLoading(false);
     }
@@ -173,8 +204,39 @@ const ViewModel = () => {
       }
     } catch (error) {
       console.log("Error al obtener la lista de rutinas", error);
+      setError(true);
+      setErrorMessage("Error al obtener la lista de rutinas");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const sendRoutines = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const routineId = Number(selectedRoutine.join(""));
+
+      const sendRoutineUseCase = container.get<SendRoutineUseCase>(TYPES.SendRoutineUseCase);
+
+      const response = await sendRoutineUseCase.execute({
+        channelId: selectedChat.channelId!,
+        routineId,
+        startDate: dates.startDate,
+        endDate: dates.endDate,
+      });
+
+      if (!response) {
+        return;
+      }
+
+      setOpenModal(false);
+      setError(true);
+      setErrorMessage("Rutina enviada correctamente");
+    } catch (error) {
+      console.log("Error al enviar la rutina", error);
+      setError(true);
+      setErrorMessage("Error al enviar la rutina");
     }
   };
 
@@ -206,6 +268,18 @@ const ViewModel = () => {
     }
   }, 200);
 
+  const toogleModal = () => {
+    setOpenModal(!openModal);
+  };
+
+  const setField = (field: keyof { startDate: string; endDate: string }, value: string) => {
+    dispatch({ type: "SET_DATES", field, value });
+  };
+
+  const setDateByDefault = () => {
+    dispatch({ type: "SET_DATES", field: "startDate", value: dateGMT5 });
+  };
+
   return {
     channelsList,
     selectedChat,
@@ -215,7 +289,16 @@ const ViewModel = () => {
     handleRoutinesTextFilter,
     handleRoutinesScroll,
     routinesList,
+    openModal,
+    dates,
+    error,
+    errorMessage,
+    setError,
+    sendRoutines,
+    setField,
+    toogleModal,
     handleChatClick,
+    handleRoutineClick,
     handleTruncateText,
   };
 };

@@ -131,6 +131,7 @@ const TYPES = {
   GetRoutineByIdUseCase: Symbol.for("GetRoutineByIdUseCase"),
   DesactivateRoutineUseCase: Symbol.for("DesactivateRoutineUseCase"),
   UpdateRoutineUseCase: Symbol.for("UpdateRoutineUseCase"),
+  SendRoutineUseCase: Symbol.for("SendRoutineUseCase"),
 };
 
 export { TYPES };

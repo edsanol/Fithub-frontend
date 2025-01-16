@@ -2,6 +2,7 @@ import { Exercise } from "../entities/Exercise";
 import { Routine } from "../entities/Routine";
 import { PaginateData } from "../models/PaginateData";
 import { PaginateResponseList } from "../models/PaginateResponseList";
+import { SendRoutine } from "../models/SendRoutine";
 
 export interface RoutineRepository {
   createRoutine(routine: Routine): Promise<boolean>;
@@ -12,4 +13,5 @@ export interface RoutineRepository {
   getRoutineById(id: number): Promise<Routine>;
   desactivateRoutine(id: number): Promise<boolean>;
   updateRoutine(routine: Routine): Promise<boolean>;
+  sendRoutine(data: SendRoutine): Promise<boolean>;
 }

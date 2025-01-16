@@ -3,6 +3,7 @@ import { Exercise } from "@/domain/entities/Exercise";
 import { Routine } from "@/domain/entities/Routine";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+import { SendRoutine } from "@/domain/models/SendRoutine";
 import { RoutineRepository } from "@/domain/repositories/routineRepository";
 import type { RoutineService } from "@/domain/services/routineService";
 import { inject, injectable } from "inversify";
@@ -59,6 +60,12 @@ export class RoutineRepositoryImpl implements RoutineRepository {
 
   async updateRoutine(routine: Routine): Promise<boolean> {
     const response = await this.service.updateRoutine(routine);
+
+    return response;
+  }
+
+  async sendRoutine(data: SendRoutine): Promise<boolean> {
+    const response = await this.service.sendRoutine(data);
 
     return response;
   }
