@@ -148,6 +148,7 @@ const BasicInformation = () => {
           items={imageOptions}
           onSelect={handleImageSelect}
           selectedItem={selectedImage}
+          loading={!state.muscleGroups.length}
         />
       </div>
     </div>
