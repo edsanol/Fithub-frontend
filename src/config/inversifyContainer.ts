@@ -75,6 +75,19 @@ import { SignalRService } from "@/domain/services/signalRService";
 import { SignalRServiceImpl } from "@/infrastructure/services/signalRService";
 import { SignalRNotificationUseCase } from "@/domain/useCases/SignalR/signalRNotificationUseCase";
 import { AddOrRemoveUsersFromChannelUseCase } from "@/domain/useCases/Channel/addOrRemoveUserUseCase";
+import { RoutineRepository } from "@/domain/repositories/routineRepository";
+import { RoutineRepositoryImpl } from "@/infrastructure/repositories/routineRepository";
+import { RoutineService } from "@/domain/services/routineService";
+import { RoutineServiceImpl } from "@/infrastructure/services/routineService";
+import { CreateRoutineUseCase } from "@/domain/useCases/Routine/createRoutineUseCase";
+import { GetExercisesListUseCase } from "@/domain/useCases/Routine/getExercisesListUseCase";
+import { CreateExerciseUseCase } from "@/domain/useCases/Routine/createExerciseUseCase";
+import { GetMuscleGroupsUseCase } from "@/domain/useCases/Routine/getMuscleGroupsUseCase";
+import { GetRoutinesListUseCase } from "@/domain/useCases/Routine/getRoutinesListUseCase";
+import { GetRoutineByIdUseCase } from "@/domain/useCases/Routine/getRoutineByIdUseCase";
+import { DesactivateRoutineUseCase } from "@/domain/useCases/Routine/desactivateRoutineUseCase";
+import { UpdateRoutineUseCase } from "@/domain/useCases/Routine/updateRoutineUseCase";
+import { SendRoutineUseCase } from "@/domain/useCases/Routine/sendRoutineUseCase";
 
 const container = new Container();
 
@@ -310,5 +323,44 @@ container
 container
   .bind<SignalRNotificationUseCase>(TYPES.SignalRNotificationUseCase)
   .to(SignalRNotificationUseCase);
+
+// RoutineRepository
+container
+  .bind<RoutineRepository>(TYPES.RoutineRepository)
+  .to(RoutineRepositoryImpl);
+
+// RoutineService
+container
+  .bind<RoutineService>(TYPES.RoutineService)
+  .to(RoutineServiceImpl);
+
+// RoutineUseCases
+container
+  .bind<CreateRoutineUseCase>(TYPES.CreateRoutineUseCase)
+  .to(CreateRoutineUseCase);
+container
+  .bind<CreateExerciseUseCase>(TYPES.CreateExerciseUseCase)
+  .to(CreateExerciseUseCase);
+container
+  .bind<GetRoutinesListUseCase>(TYPES.GetRoutinesListUseCase)
+  .to(GetRoutinesListUseCase);
+container
+  .bind<GetExercisesListUseCase>(TYPES.GetExercisesListUseCase)
+  .to(GetExercisesListUseCase);
+container
+  .bind<GetMuscleGroupsUseCase>(TYPES.GetMuscleGroupsUseCase)
+  .to(GetMuscleGroupsUseCase);
+container
+  .bind<GetRoutineByIdUseCase>(TYPES.GetRoutineByIdUseCase)
+  .to(GetRoutineByIdUseCase);
+container
+  .bind<DesactivateRoutineUseCase>(TYPES.DesactivateRoutineUseCase)
+  .to(DesactivateRoutineUseCase);
+container
+  .bind<UpdateRoutineUseCase>(TYPES.UpdateRoutineUseCase)
+  .to(UpdateRoutineUseCase);
+container
+  .bind<SendRoutineUseCase>(TYPES.SendRoutineUseCase)
+  .to(SendRoutineUseCase);
 
 export default container;

@@ -27,6 +27,10 @@ import InfoModal from "./shared/modals/InfoModal";
 import FormMultiSelect from "./shared/form-elements/FormMultiSelect";
 import FormRichTextInput from "./shared/form-elements/FormRichTextInput";
 import FormDropdown from "./shared/form-elements/FormDropdown";
+import CustomButton from "./shared/buttons/CustomButton";
+import CustomMultiSteps from "./shared/multi-steps/CustomMultiSteps";
+import CustomCarousel from "./shared/carousel/CustomCarousel";
+import FormCheckboxGroup from "./shared/form-elements/FormCheckboxGroup";
 
 export {
   PrimaryButton,
@@ -58,4 +62,8 @@ export {
   FormMultiSelect,
   FormRichTextInput,
   FormDropdown,
+  CustomButton,
+  CustomMultiSteps,
+  CustomCarousel,
+  FormCheckboxGroup,
 };

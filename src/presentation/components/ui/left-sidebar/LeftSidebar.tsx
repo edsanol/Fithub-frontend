@@ -16,6 +16,7 @@ import ArrowDownIcon from "@/assets/svg/ArrowDownIcon";
 import ArrowLeftIcon from "@/assets/svg/ArrowLeftIcon";
 import Image from "next/image";
 import NotificationsIcon from "@/assets/svg/NotificationsIcon";
+import RoutinesIcon from "@/assets/svg/RoutinesIcon";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -162,6 +163,57 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 label="Progreso deportistas"
                                 url="/user-progress"
                                 route="/user-progress"
+                              />
+                            </li>
+                          </ul>
+                        </div>
+                      </>
+                    );
+                  }}
+                </SidebarLinkGroup>
+
+                <SidebarLinkGroup
+                  activeCondition={pathname === "/routines" || pathname.includes("routine")}
+                >
+                  {(handleClick, open) => {
+                    return (
+                      <>
+                        <SidebarItems
+                          url="#"
+                          icon={<RoutinesIcon />}
+                          route="routine"
+                          label="Rutinas"
+                          handleClick={() => {
+                            sidebarExpanded
+                              ? handleClick()
+                              : setSidebarExpanded(true);
+                          }}
+                          secondaryIcon={<ArrowDownIcon open={open} />}
+                        />
+
+                        <div
+                          className={`transition-opacity opacity-0 duration-700 ease-in-out overflow-hidden ${open ? "opacity-100 max-h-96" : "max-h-0"}`}
+                        >
+                          <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                            <li>
+                              <SidebarLinkGroupItems
+                                label="Crear Rutina"
+                                url="/create-routine"
+                                route="/create-routine"
+                              />
+                            </li>
+                            <li>
+                              <SidebarLinkGroupItems
+                                label="Listado de Rutinas"
+                                url="/routines"
+                                route="/routines"
+                              />
+                            </li>
+                            <li>
+                              <SidebarLinkGroupItems
+                                label="Enviar Rutinas"
+                                url="/send-routines"
+                                route="/send-routines"
                               />
                             </li>
                           </ul>

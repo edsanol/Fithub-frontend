@@ -19,6 +19,8 @@ import {
   cleanAndFormatCurrency,
   formatMembershipElements,
   formatAccessTypes,
+  formatExercises,
+  formatRoutines,
 } from "./formats/Formats";
 
 import { mapperMuscleNames, mapperMuscleIcon } from "./mappers/Mappers";
@@ -43,4 +45,6 @@ export {
   mapperMuscleIcon,
   isValidDocumentID,
   formatAccessTypes,
+  formatExercises,
+  formatRoutines,
 };

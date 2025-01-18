@@ -183,6 +183,7 @@ const UserList = () => {
                 popoverProps={{ color: "foreground" }}
                 items={formatMembershipElements(membership)}
                 onChange={(value) => setField("membershipId", value)}
+                value={String(updateMembershipToAthlete?.membershipId) || ""}
               />
               <FormInput
                 isRequired

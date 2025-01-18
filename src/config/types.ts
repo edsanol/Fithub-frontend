@@ -115,6 +115,23 @@ const TYPES = {
 
   // SignalRNotificationUseCase
   SignalRNotificationUseCase: Symbol.for("SignalRNotificationUseCase"),
+
+  // RoutineRepository
+  RoutineRepository: Symbol.for("RoutineRepository"),
+
+  // RoutineService
+  RoutineService: Symbol.for("RoutineService"),
+
+  // RoutineUseCases
+  CreateRoutineUseCase: Symbol.for("CreateRoutineUseCase"),
+  CreateExerciseUseCase: Symbol.for("CreateExerciseUseCase"),
+  GetRoutinesListUseCase: Symbol.for("GetRoutinesListUseCase"),
+  GetExercisesListUseCase: Symbol.for("GetExercisesListUseCase"),
+  GetMuscleGroupsUseCase: Symbol.for("GetMuscleGroupsUseCase"),
+  GetRoutineByIdUseCase: Symbol.for("GetRoutineByIdUseCase"),
+  DesactivateRoutineUseCase: Symbol.for("DesactivateRoutineUseCase"),
+  UpdateRoutineUseCase: Symbol.for("UpdateRoutineUseCase"),
+  SendRoutineUseCase: Symbol.for("SendRoutineUseCase"),
 };
 
 export { TYPES };

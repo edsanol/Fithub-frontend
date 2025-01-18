@@ -4,6 +4,7 @@ import { IColumns } from "./CustomTable/ICustomTable";
 import { IDiscountValidation } from "./Discounts/IDiscounts";
 import { IMembershipValidation } from "./Membership/IMembership";
 import { IMeasurementProgressValidation } from "./UserProgress/IUserProgress";
+import { IRoutineValidation } from "./Routine/IRoutine";
 
 export type {
   IAthleteValidation,
@@ -15,4 +16,5 @@ export type {
   IDiscountValidation,
   IMembershipValidation,
   IMeasurementProgressValidation,
+  IRoutineValidation,
 };
