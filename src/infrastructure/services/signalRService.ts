@@ -13,7 +13,7 @@ export class SignalRServiceImpl implements SignalRService {
   async connect(): Promise<void> {
     if (!this.connection) {
       this.connection = new HubConnectionBuilder()
-        .withUrl("http://localhost:5278/hubs/notification")
+        .withUrl("https://api.fithubplus.com/hubs/notification")
         .withAutomaticReconnect()
         .configureLogging(LogLevel.Information)
         .build();
