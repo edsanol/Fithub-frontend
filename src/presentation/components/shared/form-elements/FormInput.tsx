@@ -15,7 +15,7 @@ interface FormInputProps {
     | undefined;
   errorMessage?: string;
   type: string;
-  label: string;
+  label?: string;
   size?: "lg" | "md" | "sm";
   description?: string;
   customInputClass?: string;
@@ -24,6 +24,7 @@ interface FormInputProps {
   isReadOnly?: boolean;
   value?: any;
   step?: string;
+  startContent?: React.ReactNode;
   onChange?: (event: string) => void;
 }
 
@@ -42,6 +43,7 @@ const FormInput = ({
   isReadOnly,
   value,
   step,
+  startContent,
   onChange,
 }: FormInputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,6 +68,7 @@ const FormInput = ({
       placeholder={placeholder || ""}
       value={value}
       step={step || ""}
+      startContent={startContent}
       onChange={handleChange}
     />
   );

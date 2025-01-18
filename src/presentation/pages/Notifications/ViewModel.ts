@@ -1,13 +1,32 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import container from "@/config/inversifyContainer";
 import { TYPES } from "@/config/types";
 import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
-import { useEffect, useReducer, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import { debounce } from "lodash";
 import { GetMembershipByGymIdUseCase } from "@/domain/useCases/Membership/getMembershipByGymIdUseCase";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
+import { EmojiClickData } from "emoji-picker-react";
+import { Channel } from "@/domain/entities/Channel";
+import { GetChannelsUseCase } from "@/domain/useCases/Channel/getChannelsUseCase";
+import { CreateChannelUseCase } from "@/domain/useCases/Channel/createChannelUseCase";
+import { SendNotificationUseCase } from "@/domain/useCases/Message/sendNotificationUseCase";
+import { GetNotificationsUseCase } from "@/domain/useCases/Message/getNotificationsUseCase";
+import { GetNotifications } from "@/domain/models/getNotifications";
+import { SignalRNotificationUseCase } from "@/domain/useCases/SignalR/signalRNotificationUseCase";
+import { AddOrRemoveUsersFromChannelUseCase } from "@/domain/useCases/Channel/addOrRemoveUserUseCase";
+import { CreateChannel } from "@/domain/models/CreateChannel";
+
 interface State {
   athletesList: PaginateResponseList;
   athleteUser: AthleteUser;
@@ -15,13 +34,17 @@ interface State {
   channelName: string;
   membership: MembershipByGymId[];
   isModalOpen: {
-    selectedUsersModal: boolean;
+    selectUsersModal: boolean;
     channelNameModal: boolean;
+    addAndDeleteUsersModal: boolean;
   };
   textFilter: string;
+  channelsList: PaginateResponseList;
+  notificationsList: GetNotifications[];
+  selectedMemberships: string[];
+  numFilter: number | undefined;
+  deselectedUsersIds: number[];
 }
-
-type Value = string | number;
 
 type Action =
   | { type: "SET_FIELD"; value: string }
@@ -30,7 +53,13 @@ type Action =
   | { type: "SET_SELECTED_USERS"; selectedUsers: string[] }
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
   | { type: "SET_TEXT_FILTER"; value: string }
-  | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] };
+  | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] }
+  | { type: "SET_CHANNELS_LIST"; channelsList: PaginateResponseList }
+  | { type: "SET_NOTIFICATIONS_LIST"; notificationsList: GetNotifications[] }
+  | { type: "APPEND_NOTIFICATION"; notification: GetNotifications }
+  | { type: "SET_SELECTED_MEMBERSHIPS"; selectedMemberships: string[] }
+  | { type: "SET_NUM_FILTER"; numFilter: number | undefined }
+  | { type: "SET_DESELECTED_USERS"; deselectedUsersIds: number[] };
 
 const initialState: State = {
   athletesList: {
@@ -57,10 +86,19 @@ const initialState: State = {
   membership: [],
   channelName: "",
   isModalOpen: {
-    selectedUsersModal: false,
+    selectUsersModal: false,
     channelNameModal: false,
+    addAndDeleteUsersModal: false,
   },
   textFilter: "",
+  channelsList: {
+    totalRecords: 0,
+    items: [],
+  },
+  notificationsList: [],
+  selectedMemberships: [],
+  numFilter: 0,
+  deselectedUsersIds: [],
 };
 
 function reducer(state: State, action: Action): State {
@@ -78,93 +116,124 @@ function reducer(state: State, action: Action): State {
     case "SET_TEXT_FILTER":
       return { ...state, textFilter: action.value };
     case "TOGGLE_MODAL":
-      return { ...state, isModalOpen: { ...state.isModalOpen, [action.modalName]: action.value ?? !state.isModalOpen[action.modalName as keyof State["isModalOpen"]] }};
+      return { ...state, isModalOpen: { ...state.isModalOpen, [action.modalName]: action.value ?? !state.isModalOpen[action.modalName as keyof State["isModalOpen"]]} };
+    case "SET_CHANNELS_LIST":
+      return { ...state, channelsList: action.channelsList };
+    case "SET_NOTIFICATIONS_LIST":
+      return { ...state, notificationsList: action.notificationsList };
+    case "APPEND_NOTIFICATION":
+      return { ...state, notificationsList: [...state.notificationsList, action.notification] };
+    case "SET_SELECTED_MEMBERSHIPS":
+      return { ...state, selectedMemberships: action.selectedMemberships };
+    case "SET_NUM_FILTER":
+      return { ...state, numFilter: action.numFilter };
+    case "SET_DESELECTED_USERS":
+      return { ...state, deselectedUsersIds: action.deselectedUsersIds };
     default:
       return state;
   }
 }
 
-const chats = [
-  {
-    title: "General",
-    description: "Último mensaje aquí",
-    icon: "💬",
-  },
-  {
-    title: "Grupo 1",
-    description: "Hola, ¿cómo estás?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-  {
-    title: "Privado",
-    description: "¿Estás disponible?",
-    icon: "💬",
-  },
-];
-
 const ViewModel = () => {
-  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter }, dispatch] = useReducer(reducer, initialState);
-  const [richTextMessage, setRichTextMessage] = useState("");
-  const [selectedChat, setSelectedChat] = useState<any>(null);
+  const [{ athletesList, selectedUsers, isModalOpen, channelName, membership, textFilter, channelsList, notificationsList, selectedMemberships, numFilter, deselectedUsersIds }, dispatch] = useReducer(reducer, initialState);
+  const [textMessage, setTextMessage] = useState("");
+  const [selectedChat, setSelectedChat] = useState<Channel>({ channelId: 0, channelName: "", channelAthletes: [] });
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [channelTextFilter, setChannelTextFilter] = useState("");
+  const [channelNumFilter, setChannelNumFilter] = useState(1);
+  const selectedChatRef = useRef(selectedChat.channelId);
 
-  useEffect(() => {
-    getAthletesList();
-  }, []);
+  const signalRNotificationUseCase = container.get<SignalRNotificationUseCase>(TYPES.SignalRNotificationUseCase);
 
-  useEffect(() => {
-    getMembershipByGymId();
-  }, []);
-
-  const handleSetRichTextMessage = (value: string) => {
-    setRichTextMessage(value);
+  const initializeConnection = async () => {
+    await signalRNotificationUseCase.initializeConnection();
   };
 
-  const handleChatClick = (chat: any) => {
-    setSelectedChat(chat);
+  const handleReceiveMessage = useCallback(
+    (channelId: number, message: string) => {
+      if (channelId === selectedChatRef.current) {
+        dispatch({
+          type: "APPEND_NOTIFICATION",
+          notification: {
+            notificationId: Math.random(),
+            channelId,
+            message,
+            sendAt: new Date().toISOString(),
+          },
+        });
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    selectedChatRef.current = selectedChat.channelId;
+  }, [selectedChat.channelId]);
+
+  useEffect(() => {
+    initializeConnection();
+  }, []);
+
+  useEffect(() => {
+    signalRNotificationUseCase.subscribeToNotifications(handleReceiveMessage);
+
+    return () => {
+      signalRNotificationUseCase.unsubscribeFromNotifications();
+    };
+  }, []);
+
+  useEffect(() => {
+    const joinChannel = async () => {
+      if (selectedChat.channelId && selectedChat.channelId > 0) {
+        try {
+          if (signalRNotificationUseCase) {
+            await signalRNotificationUseCase.joinChannel(
+              selectedChat.channelId
+            );
+          }
+        } catch (error) {
+          console.error("Error al unirse al canal:", error);
+        }
+      }
+    };
+
+    joinChannel();
+  }, [selectedChat.channelId]);
+
+  useEffect(() => {
+    getChannelsList({ textFilter: "" }, true);
+  }, []);
+
+  useEffect(() => {
+    if (selectedChat.channelId) {
+      updateChannelAthletesList();
+    }
+  }, [channelsList, selectedChat.channelId]);
+
+  const handleTextMessage = (value: string) => {
+    setTextMessage(value);
+  };
+
+  const handleChatClick = async (channelId: number) => {
+    const channel: Channel = channelsList.items.find((channel) => channel.channelId === channelId);
+
+    if (!channel || !channel.channelAthletes) {
+      setError(true);
+      setErrorMessage("Error al seleccionar el chat");
+      return;
+    }
+
+    const channelAthletes = channel.channelAthletes.map((athlete) => athlete.athleteId.toString());
+
+    setSelectedChat(channel);
+    dispatch({ type: "SET_SELECTED_USERS", selectedUsers: channelAthletes });
+
+    await getNotificationsList(channelId);
   };
 
   const getAthletesList = async (params?: Partial<PaginateData>, reset = false) => {
@@ -172,6 +241,8 @@ const ViewModel = () => {
       setIsLoading(true);
 
       const filterByName = params?.textFilter ?? textFilter;
+      const filterByMemberships = selectedMemberships.join(",");
+      const effectiveNumFilter = params?.numFilter ?? numFilter;
       const numPage = reset ? 1 : Math.ceil(athletesList.items.length / 7) + 1;
 
       const getAthleteUserListUseCase = container.get<GetAthleteUserListUseCase>(TYPES.GetAthleteUserListUseCase);
@@ -179,8 +250,8 @@ const ViewModel = () => {
       const requestParams = {
         numRecordsPage: 7,
         numPage,
-        textFilter: filterByName,
-        ...(filterByName ? { numFilter: 1 } : {}),
+        textFilter: filterByMemberships || filterByName,
+        numFilter: effectiveNumFilter,
         ...params,
       };
 
@@ -217,9 +288,11 @@ const ViewModel = () => {
 
   const getMembershipByGymId = async () => {
     try {
-      const GetMembershipByGymId = container.get<GetMembershipByGymIdUseCase>(TYPES.GetMembershipByGymIdUseCase);
+      const getMembershipByGymId = container.get<GetMembershipByGymIdUseCase>(
+        TYPES.GetMembershipByGymIdUseCase
+      );
 
-      const response = await GetMembershipByGymId.execute();
+      const response = await getMembershipByGymId.execute();
 
       if (!response) {
         console.log("error");
@@ -234,65 +307,265 @@ const ViewModel = () => {
     }
   };
 
-  const handleSendMessage = () => {
-    if (!richTextMessage.trim()) {
+  const getChannelsList = async (params?: Partial<PaginateData>, reset = false) => {
+    try {
+      setIsLoading(true);
+
+      const filterByName = params?.textFilter ?? textFilter;
+      const effectiveNumFilter = params?.numFilter ?? numFilter;
+      const numPage = reset ? 1 : Math.ceil(channelsList.items.length / 7) + 1;
+
+      const requestParams = {
+        numRecordsPage: 7,
+        numPage,
+        textFilter: filterByName,
+        numFilter: effectiveNumFilter,
+        ...params,
+      };
+
+      const getChannelsList = container.get<GetChannelsUseCase>(TYPES.GetChannelsUseCase);
+
+      const response = await getChannelsList.execute(requestParams);
+
+      if (!response || response.items.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      const updatedItems = reset
+        ? response.items
+        : [...channelsList.items, ...response.items];
+
+      dispatch({
+        type: "SET_CHANNELS_LIST",
+        channelsList: {
+          totalRecords: response.totalRecords,
+          items: updatedItems,
+        },
+      });
+
+      if (reset) {
+        setHasMore(true);
+      }
+    } catch (error: any) {
+      console.log(error);
       setError(true);
-      setErrorMessage("Debes ingresar un mensaje");
-      return;
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de canales");
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    if (selectedUsers.length === 0) {
+  const handleCreateChannel = async () => {
+    try {
+      let payload = new CreateChannel({
+        name: channelName,
+        userIds: [],
+        allUsersSelected: false,
+        deselectedUserIds: [],
+        allUsersSelectedByMembersip: false,
+        membershipIds: [],
+      });
+
+      if (selectedMemberships.length > 0) {
+        payload.allUsersSelectedByMembersip = true;
+        payload.membershipIds = selectedMemberships.map(Number);
+        payload.deselectedUserIds = athletesList.items.filter((user) => !selectedUsers.includes(user.athleteId.toString())).map((user) => user.athleteId);
+      } else if (selectAllChecked) {
+        payload.allUsersSelected = true;
+        payload.deselectedUserIds = athletesList.items.filter((user) => !selectedUsers.includes(user.athleteId.toString())).map((user) => user.athleteId);
+      } else {
+        payload.userIds = selectedUsers.map(Number);
+      }
+
+      const createChannelUseCase = container.get<CreateChannelUseCase>(TYPES.CreateChannelUseCase);
+      const response = await createChannelUseCase.execute(payload);
+
+      if (!response) {
+        throw new Error("Error al crear el canal");
+      }
+
+      toggleUserModal("selectUsers", false);
+      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
+      dispatch({ type: "SET_FIELD", value: "" });
+
+      await getChannelsList({ textFilter: "" }, true);
+    } catch (error: any) {
+      console.error(error);
       setError(true);
-      setErrorMessage("Debes seleccionar al menos un usuario");
-      return;
+      setErrorMessage(error.response?.data?.message || "Error al crear el canal");
     }
+  };
 
-    console.log("Mensaje enviado:", {
-      channel: channelName,
-      message: richTextMessage,
-      selectedUsers,
-    });
+  const handleSendMessage = async () => {
+    try {
+      if (!textMessage.trim()) {
+        setError(true);
+        setErrorMessage("Debes ingresar un mensaje");
+        return;
+      }
 
-    setRichTextMessage("");
-    dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
-    dispatch({ type: "SET_FIELD", value: "" });
+      if (selectedUsers.length === 0) {
+        setError(true);
+        setErrorMessage("Debes seleccionar al menos un usuario");
+        return;
+      }
+
+      const sendNotification = container.get<SendNotificationUseCase>(
+        TYPES.SendNotificationUseCase
+      );
+
+      const response = await sendNotification.execute({
+        channelId: selectedChat.channelId!,
+        message: textMessage,
+        type: "message",
+        title: "Nuevo mensaje",
+      });
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      setTextMessage("");
+      dispatch({ type: "SET_FIELD", value: "" });
+    } catch (error: any) {
+      console.log(error);
+      setError(true);
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de membresías");
+    }
+  };
+
+  const getNotificationsList = async (id: number) => {
+    try {
+      const getNotifications = container.get<GetNotificationsUseCase>(
+        TYPES.GetNotificationsUseCase
+      );
+
+      const response = await getNotifications.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      dispatch({ type: "SET_NOTIFICATIONS_LIST", notificationsList: response });
+    } catch (error: any) {
+      console.log(error);
+      setError(true);
+      setErrorMessage(error.response?.data?.message || "Error al obtener la lista de notificaciones");
+    }
   };
 
   const handleSetTextFilter = debounce(async (textFilter: string) => {
     dispatch({ type: "SET_TEXT_FILTER", value: textFilter });
-    await getAthletesList({ textFilter }, true);
+    dispatch({ type: "SET_NUM_FILTER", numFilter: 7 });
+    dispatch({ type: "SET_SELECTED_MEMBERSHIPS", selectedMemberships: [] });
+
+    await getAthletesList({ textFilter, numFilter: 7 }, true);
   }, 300);
 
-  const handleUserSelection = (selected: string[]) => {
-    const updatedUsers = selected
-      .filter((id) => !selectedUsers.includes(id))
-      .concat(selectedUsers.filter((id) => selected.includes(id)));
+  const handleMembershipFilter = async (memberships: number[]) => {
+    const membershipFilter = memberships.join(",");
 
-    dispatch({ type: "SET_SELECTED_USERS", selectedUsers: updatedUsers });
+    dispatch({ type: "SET_SELECTED_MEMBERSHIPS", selectedMemberships: memberships.map((m) => m.toString()) });
+    dispatch({ type: "SET_NUM_FILTER", numFilter: 6 });
+    dispatch({ type: "SET_TEXT_FILTER", value: "" });
+
+    await getAthletesList({ textFilter: membershipFilter, numFilter: 6 }, true);
   };
 
-  const handleCreateChannel = () => {
-    if (selectedUsers.length === 0) {
+  const handleUserSelection = (selected: string[]) => {
+    const newDeselectedUsers = athletesList.items
+      .filter((user) => !selected.includes(user.athleteId.toString()))
+      .map((user) => user.athleteId.toString());
+
+    dispatch({ type: "SET_SELECTED_USERS", selectedUsers: selected });
+    dispatch({ type: "SET_DESELECTED_USERS", deselectedUsersIds: newDeselectedUsers});
+  };
+
+  const handleEmojiClick = (event: EmojiClickData) => {
+    setTextMessage((prev) => prev + event.emoji);
+  };
+
+  const toggleUserModal = async (type: "selectUsers" | "addAndDeleteUsers" | "channelName", value: boolean) => {
+    if (value) {
+      setSelectAllChecked(false);
+
+      dispatch({ type: "SET_TEXT_FILTER", value: "" });
+      dispatch({ type: "SET_SELECTED_MEMBERSHIPS", selectedMemberships: [] });
+      dispatch({ type: "SET_NUM_FILTER", numFilter: undefined });
+
+      await Promise.all([
+        getAthletesList({ textFilter: "" }, true),
+        getMembershipByGymId(),
+      ]);
+
+      if (type === "selectUsers") {
+        dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
+        dispatch({ type: "SET_DESELECTED_USERS", deselectedUsersIds: [] });
+      } else if (type === "addAndDeleteUsers") {
+        const channelAthletes = selectedChat.channelAthletes?.map((a) => a.athleteId.toString()) || [];
+        dispatch({ type: "SET_SELECTED_USERS", selectedUsers: channelAthletes });
+      }
+    }
+
+    dispatch({
+      type: "TOGGLE_MODAL",
+      modalName: `${type}Modal`,
+      value,
+    });
+  };
+
+  const handleSelectedUsers = async () => {
+    try {
+      let payload = new CreateChannel({
+        channelId: selectedChat.channelId!,
+        userIds: [],
+        allUsersSelected: false,
+        deselectedUserIds: [],
+        allUsersSelectedByMembersip: false,
+        membershipIds: [],
+      });
+
+      if (selectedMemberships.length > 0) {
+        payload.allUsersSelectedByMembersip = true;
+        payload.membershipIds = selectedMemberships.map(Number);
+        payload.deselectedUserIds = athletesList.items.filter((user) => !selectedUsers.includes(user.athleteId.toString())).map((user) => user.athleteId);
+      } else if (selectAllChecked) {
+        payload.allUsersSelected = true;
+        payload.deselectedUserIds = athletesList.items.filter((user) => !selectedUsers.includes(user.athleteId.toString())).map((user) => user.athleteId);
+      } else {
+        payload.userIds = selectedUsers.map(Number);
+      }
+
+      const addOrRemoveUsersUseCase = container.get<AddOrRemoveUsersFromChannelUseCase>(TYPES.AddOrRemoveUsersFromChannelUseCase);
+      const response = await addOrRemoveUsersUseCase.execute(payload);
+
+      if (!response) {
+        throw new Error("Error al actualizar los usuarios");
+      }
+
+      toggleUserModal("addAndDeleteUsers", false);
+
+      await getChannelsList({ textFilter: "" }, true);
+    } catch (error: any) {
+      console.error(error);
       setError(true);
-      setErrorMessage("Debes seleccionar al menos un usuario");
+      setErrorMessage(error.response?.data?.message || "Error al actualizar los usuarios");
+    }
+  };
+
+  const updateChannelAthletesList = () => {
+    const updatedChannel = channelsList.items.find((channel) => channel.channelId === selectedChat.channelId);
+
+    if (!updatedChannel || !updatedChannel.channelAthletes) {
+      setError(true);
+      setErrorMessage("Error al sincronizar los usuarios del canal");
       return;
     }
 
-    const newChannel = {
-      title: channelName,
-      description: "Aun no hay mensajes",
-      icon: "💬",
-    };
-
-    chats.push(newChannel);
-
-    setSelectedChat(newChannel);
-
-    toggleModal("selectedUsersModal", false);
-  };
-
-  const toggleModal = (modalName: string, value?: boolean) => {
-    dispatch({ type: "TOGGLE_MODAL", modalName, value });
+    setSelectedChat(updatedChannel);
   };
 
   const setField = (value: string) => {
@@ -306,13 +579,62 @@ const ViewModel = () => {
       return;
     }
 
-    toggleModal("selectedUsersModal", true);
-    toggleModal("channelNameModal", false);
+    toggleUserModal("selectUsers", true);
+    toggleUserModal("channelName", false);
   };
+
+  const handleTruncateText = (text: string, length: number) => {
+    return text.length > length ? `${text.slice(0, length)}...` : text;
+  };
+
+  const handleSelectAllUsers = (selectAll: boolean) => {
+    setSelectAllChecked(selectAll);
+
+    if (selectAll) {
+      const allVisibleUserIds = athletesList.items.map((user) => user.athleteId.toString());
+      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: allVisibleUserIds });
+      dispatch({ type: "SET_DESELECTED_USERS", deselectedUsersIds: [] });
+    } else {
+      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: [] });
+      dispatch({ type: "SET_DESELECTED_USERS", deselectedUsersIds: [] });
+    }
+  };
+
+  const visibleUserIds = useMemo(() => 
+    athletesList.items
+      .filter((user) => !deselectedUsersIds.includes(user.athleteId.toString()))
+      .map((user) => user.athleteId.toString()),
+    [athletesList, deselectedUsersIds]
+  );
+
+  const handleScroll = debounce(async (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 10 && !isLoading && hasMore) {
+      await getAthletesList();
+    }
+
+    if (selectAllChecked) {
+      dispatch({ type: "SET_SELECTED_USERS", selectedUsers: visibleUserIds });
+    }
+  }, 200);
+
+  const handleChannelsScroll = debounce(async (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50 && !isLoading && hasMore) {
+      await getChannelsList({ textFilter: channelTextFilter, numFilter: channelNumFilter });
+    }
+  }, 200);
+
+  const handleChannelsTextFilter = debounce(async (textFilter: string) => {
+    setChannelTextFilter(textFilter);
+    await getChannelsList({ textFilter, numFilter: 1 }, true);
+  }, 300);
 
   return {
     athletesList,
-    chats,
+    channelsList,
     selectedChat,
     selectedUsers,
     isLoading,
@@ -323,17 +645,29 @@ const ViewModel = () => {
     channelName,
     membership,
     handleSetTextFilter,
-    richTextMessage,
-    handleSetRichTextMessage,
+    textMessage,
+    openEmojiPicker,
+    notificationsList,
+    selectedMemberships,
+    handleScroll,
+    handleChannelsScroll,
+    handleChannelsTextFilter,
+    setOpenEmojiPicker,
+    handleTextMessage,
     setField,
     setError,
     handleChatClick,
     getAthletesList,
     handleUserSelection,
     handleCreateChannel,
-    toggleModal,
+    toggleUserModal,
     handleOpenSelectedUsersModal,
     handleSendMessage,
+    handleEmojiClick,
+    handleTruncateText,
+    handleSelectedUsers,
+    handleMembershipFilter,
+    handleSelectAllUsers,
   };
 };
 

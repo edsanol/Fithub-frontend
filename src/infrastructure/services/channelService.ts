@@ -1,0 +1,36 @@
+import { ChannelService } from "@/domain/services/channelService";
+import { inject, injectable } from "inversify";
+import type { HttpClient } from "../api/http";
+import { TYPES } from "@/config/types";
+import { Channel } from "@/domain/entities/Channel";
+import { TickerResponseApi } from "../api/model/TickerResponseApi";
+import { CreateChannel } from "@/domain/models/CreateChannel";
+import { PaginateData } from "@/domain/models/PaginateData";
+import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
+
+@injectable()
+export class ChannelServiceImpl implements ChannelService {
+  private readonly http: HttpClient;
+
+  constructor(@inject(TYPES.HttpClient) http: HttpClient) {
+    this.http = http;
+  }
+
+  async createChannel(channel: CreateChannel): Promise<boolean> {
+    const response = await this.http.post<TickerResponseApi<boolean>, Channel>("/Notification/CreateChannel", channel);
+
+    return response.data;
+  }
+
+  async getChannels(data: PaginateData): Promise<PaginateResponseList<Channel>> {
+    const response = await this.http.post<TickerResponseApi<PaginateResponseList<Channel>>, PaginateData>("/Notification/GetChannels", data);
+
+    return response.data;
+  }
+
+  async addOrRemoveUsersFromChannel(channel: CreateChannel): Promise<boolean> {
+    const response = await this.http.post<TickerResponseApi<boolean>, CreateChannel>("/Notification/AddUserToChannel", channel);
+
+    return response.data;
+  }
+}

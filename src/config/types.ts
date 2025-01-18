@@ -30,10 +30,18 @@ const TYPES = {
   GetAthleteUserByIdUseCase: Symbol.for("GetAthleteUserByIdUseCase"),
   EditAthleteUserUseCase: Symbol.for("EditAthleteUserUseCase"),
   DeleteAthleteUserUseCase: Symbol.for("DeleteAthleteUserUseCase"),
-  UpdateMembershipToAthleteUseCase: Symbol.for("UpdateMembershipToAthleteUseCase"),
-  CreateMeasurementProgressUseCase: Symbol.for("CreateMeasurementProgressUseCase"),
-  GetMeasurementProgressListUseCase: Symbol.for("GetMeasurementProgressListUseCase"),
-  GetMeasurementProgressByLastMonthUseCase: Symbol.for("GetMeasurementProgressByLastMonthUseCase"),
+  UpdateMembershipToAthleteUseCase: Symbol.for(
+    "UpdateMembershipToAthleteUseCase"
+  ),
+  CreateMeasurementProgressUseCase: Symbol.for(
+    "CreateMeasurementProgressUseCase"
+  ),
+  GetMeasurementProgressListUseCase: Symbol.for(
+    "GetMeasurementProgressListUseCase"
+  ),
+  GetMeasurementProgressByLastMonthUseCase: Symbol.for(
+    "GetMeasurementProgressByLastMonthUseCase"
+  ),
   GetMeasurementsGraphicUseCase: Symbol.for("GetMeasurementsGraphicUseCase"),
   UnsubscribeAthleteUserUseCase: Symbol.for("UnsubscribeAthleteUserUseCase"),
   RegisterAthleteByQRUseCase: Symbol.for("RegisterAthleteByQRUseCase"),
@@ -68,6 +76,9 @@ const TYPES = {
   // DashboardService
   DashboardDataService: Symbol.for("DashboardDataService"),
 
+  // SignalRService
+  SignalRService: Symbol.for("SignalRService"),
+
   // DashboardRepository
   DashboardDataRepository: Symbol.for("DashboardDataRepository"),
 
@@ -80,6 +91,30 @@ const TYPES = {
   GetMembershipGraphicUseCase: Symbol.for("GetMembershipGraphicUseCase"),
   GetAthleteAssistanceUseCase: Symbol.for("GetAthleteAssistanceUseCase"),
   GetAthleteBirthDateUseCase: Symbol.for("GetAthleteBirthDateUseCase"),
+
+  // ChannelRepository
+  ChannelRepository: Symbol.for("ChannelRepository"),
+
+  // ChannelService
+  ChannelService: Symbol.for("ChannelService"),
+
+  // ChannelUseCases
+  CreateChannelUseCase: Symbol.for("CreateChannelUseCase"),
+  GetChannelsUseCase: Symbol.for("GetChannelsUseCase"),
+  AddOrRemoveUsersFromChannelUseCase: Symbol.for("AddOrRemoveUsersFromChannelUseCase"),
+
+  // MessageRepository
+  MessageRepository: Symbol.for("MessageRepository"),
+
+  // MessageService
+  MessageService: Symbol.for("MessageService"),
+
+  // MessageUseCases
+  SendNotificationUseCase: Symbol.for("SendNotificationUseCase"),
+  GetNotificationsUseCase: Symbol.for("GetNotificationsUseCase"),
+
+  // SignalRNotificationUseCase
+  SignalRNotificationUseCase: Symbol.for("SignalRNotificationUseCase"),
 };
 
 export { TYPES };

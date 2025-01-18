@@ -26,6 +26,7 @@ import TopbarLayout from "./layout/TopbarLayout";
 import InfoModal from "./shared/modals/InfoModal";
 import FormMultiSelect from "./shared/form-elements/FormMultiSelect";
 import FormRichTextInput from "./shared/form-elements/FormRichTextInput";
+import FormDropdown from "./shared/form-elements/FormDropdown";
 
 export {
   PrimaryButton,
@@ -56,4 +57,5 @@ export {
   InfoModal,
   FormMultiSelect,
   FormRichTextInput,
+  FormDropdown,
 };

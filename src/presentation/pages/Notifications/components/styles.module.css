@@ -1,0 +1,19 @@
+.customDropdownMenu {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.customDropdownMenu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.customDropdownMenu::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+.customDropdownMenu::-webkit-scrollbar-track {
+  background: transparent;
+}
