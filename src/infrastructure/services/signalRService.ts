@@ -13,7 +13,9 @@ export class SignalRServiceImpl implements SignalRService {
   async connect(): Promise<void> {
     if (!this.connection) {
       this.connection = new HubConnectionBuilder()
-        .withUrl("https://api.fithubplus.com/hubs/notification")
+        .withUrl("https://api.fithubplus.com/hubs/notification", {
+          withCredentials: true,
+        })
         .withAutomaticReconnect()
         .configureLogging(LogLevel.Information)
         .build();
