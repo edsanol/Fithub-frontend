@@ -17,7 +17,7 @@ const Home = () => {
             Bienvendios a{" "}
             <Skeleton
               isLoaded={!isLoading}
-              className="w-[auto] h-[auto] rounded-[2rem]"
+              className="rounded-[2rem]"
               classNames={{ base: "dark" }}
             >
               <span className="text-[#3669FC]">{gymData.gymName}</span>
@@ -25,7 +25,7 @@ const Home = () => {
           </h1>
           <Skeleton
             isLoaded={!isLoading}
-            className="w-[auto] h-[auto] rounded-[2rem]"
+            className="rounded-[2rem]"
             classNames={{ base: "dark" }}
           >
             <p className="text-lg md:text-xl text-gray-400 mt-3">
