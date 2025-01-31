@@ -22,7 +22,7 @@ export default function DashboardLayout({
             <TopbarLayout />
 
             <main>
-              <div className="mx-auto max-w-screen-2xl p-4 md:p-6">
+              <div className="mx-auto max-w-screen-2xl p-4 mt-16 md:p-6 md:mt-10">
                 {children}
               </div>
             </main>

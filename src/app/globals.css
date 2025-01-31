@@ -92,3 +92,18 @@ text {
   font-size: 14px;
   overflow-y: auto;
 }
+
+body {
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-container {
+  pointer-events: auto !important;
+}
+
+.modal-content {
+  min-height: 50vh;
+  max-height: 80vh;
+  overflow-y: auto;
+  touch-action: manipulation;
+}
