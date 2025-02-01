@@ -3,6 +3,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { injectable, inject } from "inversify";
 import { jwtDecode } from "jwt-decode";
 import { signOut } from "next-auth/react";
+import { getGlobalRefreshPromise } from "./globalRefresh";
 
 export interface HttpClient {
   post<T, U>(url: string, data: U): Promise<T>;
@@ -30,26 +31,36 @@ export class AxiosHttpClient implements HttpClient {
   }
 
   private async handleTokenRefresh(config: AxiosRequestConfig) {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     const authToken = localStorage.getItem("secureData");
-
     if (authToken && config.headers) {
       const timeDifference = await this.checkTokenExpiration(authToken);
-      if (timeDifference < 2 * 60 * 1000) {
-        const refreshToken = localStorage.getItem("syncCode");
-        try {
-          if (refreshToken) {
-            const response = await this.refreshToken(refreshToken);
 
-            if (response) {
-              localStorage.setItem("secureData", response.data.data.token);
-              localStorage.setItem("syncCode", response.data.data.refreshToken);
-              config.headers.Authorization = `Bearer ${response.data.data.token}`;
-            }
-          }
-        } catch (error) {
+      if (timeDifference < 2 * 60 * 1000) {
+        const currentToken = localStorage.getItem("secureData");
+        if (currentToken && (await this.checkTokenExpiration(currentToken)) >= 2 * 60 * 1000) {
+          config.headers.Authorization = `Bearer ${currentToken}`;
+          return;
+        }
+
+        const refreshToken = localStorage.getItem("syncCode");
+        if (!refreshToken) {
+          console.error("No existe refreshToken en localStorage");
           this.handleAuthenticationError();
+          return;
+        }
+        try {
+          const response = await getGlobalRefreshPromise(refreshToken);
+
+          localStorage.setItem("secureData", response.data.data.token);
+          localStorage.setItem("syncCode", response.data.data.refreshToken);
+
+          config.headers.Authorization = `Bearer ${response.data.data.token}`;
+        } catch (error) {
+          console.error("Error al refrescar token dentro del global lock:", error);
+          this.handleAuthenticationError();
+          throw error;
         }
       } else {
         config.headers.Authorization = `Bearer ${authToken}`;
@@ -61,27 +72,16 @@ export class AxiosHttpClient implements HttpClient {
     }
   }
 
-  private async refreshToken(refreshToken: string) {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Gym/refreshToken`,
-      null,
-      {
-        headers: {
-          RefreshToken: refreshToken,
-        },
-      }
-    );
-
-    return response;
-  }
-
-  private async checkTokenExpiration(token: string) {
-    const decodedToken = jwtDecode(token);
-    const currentDate = new Date();
-    const expirationDate = new Date((decodedToken.exp as number) * 1000);
-
-    const timeDifference = expirationDate.getTime() - currentDate.getTime();
-    return timeDifference;
+  private async checkTokenExpiration(token: string): Promise<number> {
+    try {
+      const decodedToken = jwtDecode(token);
+      const currentDate = new Date();
+      const expirationDate = new Date((decodedToken.exp as number) * 1000);
+      return expirationDate.getTime() - currentDate.getTime();
+    } catch (error) {
+      console.error("Error decodificando el token:", error);
+      return -1;
+    }
   }
 
   private handleAuthenticationError() {
