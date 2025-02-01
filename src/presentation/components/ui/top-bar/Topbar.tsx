@@ -1,7 +1,6 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import Cookies from "js-cookie";
 import Image from "next/image";
 import Logout from "@/assets/svg/logout.svg";
 import MenuIcon from "@/assets/svg/MenuIcon";
@@ -14,8 +13,10 @@ const Topbar = (props: {
   const router = useRouter();
 
   const logout = () => {
-    Cookies.remove("authToken");
-    Cookies.remove("refreshToken");
+    if (typeof window === 'undefined') return;
+
+    localStorage.removeItem("secureData");
+    localStorage.removeItem("syncCode");
     router.push("/login");
     signOut();
   };

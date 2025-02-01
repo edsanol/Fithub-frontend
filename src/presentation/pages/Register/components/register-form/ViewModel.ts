@@ -13,7 +13,6 @@ import {
   isValidPhone,
 } from "@/presentation/helpers";
 import { IGymDataValidation } from "@/presentation/interfaces";
-import Cookies from "js-cookie";
 import { GymUser } from "@/domain/entities/GymUser";
 import { GetAccessTypesUseCase } from "@/domain/useCases/GymUser/getAccessTypesUseCase";
 import { AccessTypes } from "@/domain/models/AccessTypes";
@@ -94,9 +93,9 @@ const ViewModel = () => {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    if (session?.user.token) {
-      Cookies.set("authToken", session.user.token, { expires: 1 });
-      Cookies.set("refreshToken", session?.user.refreshToken, { expires: 1 });
+    if (session?.user.token && typeof window !== 'undefined') {
+      localStorage.setItem("secureData", session.user.token);
+      localStorage.setItem("syncCode", session?.user.refreshToken);
     }
   }, [session]);
 

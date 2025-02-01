@@ -2,7 +2,6 @@ import { TYPES } from "@/config/types";
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { injectable, inject } from "inversify";
 import { jwtDecode } from "jwt-decode";
-import Cookies from "js-cookie";
 import { signOut } from "next-auth/react";
 
 export interface HttpClient {
@@ -31,19 +30,21 @@ export class AxiosHttpClient implements HttpClient {
   }
 
   private async handleTokenRefresh(config: AxiosRequestConfig) {
-    const authToken = Cookies.get("authToken");
+    if (typeof window === 'undefined') return;
+
+    const authToken = localStorage.getItem("secureData");
 
     if (authToken && config.headers) {
       const timeDifference = await this.checkTokenExpiration(authToken);
       if (timeDifference < 2 * 60 * 1000) {
-        const refreshToken = Cookies.get("refreshToken");
+        const refreshToken = localStorage.getItem("syncCode");
         try {
           if (refreshToken) {
             const response = await this.refreshToken(refreshToken);
 
             if (response) {
-              Cookies.set("authToken", response.data.data.token, { expires: 1 });
-              Cookies.set("refreshToken", response.data.data.refreshToken, { expires: 1 });
+              localStorage.setItem("secureData", response.data.data.token);
+              localStorage.setItem("syncCode", response.data.data.refreshToken);
               config.headers.Authorization = `Bearer ${response.data.data.token}`;
             }
           }
@@ -84,8 +85,10 @@ export class AxiosHttpClient implements HttpClient {
   }
 
   private handleAuthenticationError() {
-    Cookies.remove("authToken");
-    Cookies.remove("refreshToken");
+    if (typeof window === 'undefined') return;
+
+    localStorage.removeItem("secureData");
+    localStorage.removeItem("syncCode");
     signOut();
   }
 

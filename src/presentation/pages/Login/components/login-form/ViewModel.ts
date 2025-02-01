@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { cipherData } from "@/config/secureData";
-import Cookies from "js-cookie";
 
 const ViewModel = () => {
   const [email, setEmail] = useState<string>("");
@@ -35,9 +33,9 @@ const ViewModel = () => {
   };
 
   useEffect(() => {
-    if (session?.user.token) {
-      Cookies.set("authToken", session.user.token, { expires: 1 });
-      Cookies.set("refreshToken", session?.user.refreshToken, { expires: 1 });
+    if (session?.user.token && typeof window !== 'undefined') {
+      localStorage.setItem("secureData", session.user.token);
+      localStorage.setItem("syncCode", session?.user.refreshToken);
     }
   }, [session]);
 
