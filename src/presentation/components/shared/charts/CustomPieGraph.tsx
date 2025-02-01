@@ -41,7 +41,7 @@ const CustomPieGraph = ({ initialData }: CustomPieGraphProps) => {
       const data = initialData.map((item, index) => {
         const color = colorsList[index]?.color || "#000000";
         return {
-          id: index,
+          id: String(index),
           value: item.value,
           color,
           label: item.label,

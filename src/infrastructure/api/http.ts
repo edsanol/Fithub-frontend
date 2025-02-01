@@ -4,6 +4,7 @@ import { injectable, inject } from "inversify";
 import { jwtDecode } from "jwt-decode";
 import { signOut } from "next-auth/react";
 import { getGlobalRefreshPromise } from "./globalRefresh";
+import { decryptToken, encryptToken } from "@/config/secureData";
 
 export interface HttpClient {
   post<T, U>(url: string, data: U): Promise<T>;
@@ -33,18 +34,24 @@ export class AxiosHttpClient implements HttpClient {
   private async handleTokenRefresh(config: AxiosRequestConfig) {
     if (typeof window === "undefined") return;
 
-    const authToken = localStorage.getItem("secureData");
+    const storedToken = localStorage.getItem("secureData");
+    const authToken = storedToken ? decryptToken(storedToken) : null;
+
     if (authToken && config.headers) {
       const timeDifference = await this.checkTokenExpiration(authToken);
 
       if (timeDifference < 2 * 60 * 1000) {
-        const currentToken = localStorage.getItem("secureData");
+        const storedCurrentToken = localStorage.getItem("secureData");
+        const currentToken = storedCurrentToken ? decryptToken(storedCurrentToken) : null;
+
         if (currentToken && (await this.checkTokenExpiration(currentToken)) >= 2 * 60 * 1000) {
           config.headers.Authorization = `Bearer ${currentToken}`;
           return;
         }
 
-        const refreshToken = localStorage.getItem("syncCode");
+        const storedRefreshToken = localStorage.getItem("syncCode");
+        const refreshToken = storedRefreshToken ? decryptToken(storedRefreshToken) : null;
+
         if (!refreshToken) {
           console.error("No existe refreshToken en localStorage");
           this.handleAuthenticationError();
@@ -53,8 +60,11 @@ export class AxiosHttpClient implements HttpClient {
         try {
           const response = await getGlobalRefreshPromise(refreshToken);
 
-          localStorage.setItem("secureData", response.data.data.token);
-          localStorage.setItem("syncCode", response.data.data.refreshToken);
+          const newToken = encryptToken(response.data.data.token);
+          const newRefreshToken = encryptToken(response.data.data.refreshToken);
+
+          localStorage.setItem("secureData", newToken);
+          localStorage.setItem("syncCode", newRefreshToken);
 
           config.headers.Authorization = `Bearer ${response.data.data.token}`;
         } catch (error) {

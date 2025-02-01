@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { encryptToken } from "@/config/secureData";
 
 const ViewModel = () => {
   const [email, setEmail] = useState<string>("");
@@ -34,8 +35,11 @@ const ViewModel = () => {
 
   useEffect(() => {
     if (session?.user.token && typeof window !== 'undefined') {
-      localStorage.setItem("secureData", session.user.token);
-      localStorage.setItem("syncCode", session?.user.refreshToken);
+      const newToken = encryptToken(session.user?.token);
+      const newRefreshToken = encryptToken(session?.user.refreshToken);
+
+      localStorage.setItem("secureData", newToken);
+      localStorage.setItem("syncCode", newRefreshToken);
     }
   }, [session]);
 
