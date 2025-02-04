@@ -8,6 +8,7 @@ const mulish = Mulish({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "FitHub Connect",
   description: "FitHub Connect",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
 };
 
 export default function RootLayout({

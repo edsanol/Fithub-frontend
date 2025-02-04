@@ -23,6 +23,7 @@ export const customRenderCell = (
   const statusColorMap: Record<string, ChipProps["color"]> = {
     activo: "success",
     inactivo: "danger",
+    "por expirar": "warning",
   };
 
   switch (columnKey) {

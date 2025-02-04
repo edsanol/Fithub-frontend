@@ -184,9 +184,24 @@ const ViewModel = () => {
 
     const startDate = new Date(athleteUser.startDate);
     const endDate = new Date(athleteUser.endDate);
+    const today = new Date(dateGMT5);
 
     if (startDate > endDate) {
       athleteUser.stateAthlete = "Inactivo";
+      return;
+    }
+
+    const fiveDaysBeforeEnd = new Date(endDate);
+    fiveDaysBeforeEnd.setDate(fiveDaysBeforeEnd.getDate() - 5);
+
+    if (today >= fiveDaysBeforeEnd && today <= endDate) {
+      athleteUser.stateAthlete = "Por expirar";
+      return;
+    }
+
+    if (today < startDate || today > endDate) {
+      athleteUser.stateAthlete = "Inactivo";
+      return;
     }
 
     athleteUser.stateAthlete = "Activo";
