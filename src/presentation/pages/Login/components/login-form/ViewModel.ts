@@ -31,7 +31,7 @@ const ViewModel = () => {
     setEmailError(false);
     setPasswordError(false);
 
-    router.push("/dashboard");
+    router.push("/home");
   };
 
   useEffect(() => {
