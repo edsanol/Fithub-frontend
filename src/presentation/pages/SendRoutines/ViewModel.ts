@@ -168,7 +168,7 @@ const ViewModel = () => {
 
       const filterByName = params?.textFilter;
       const effectiveNumFilter = params?.numFilter;
-      const numPage = reset ? 1 : Math.ceil(channelsList.items.length / 7) + 1;
+      const numPage = reset ? 1 : Math.ceil(routinesList.items.length / 7) + 1;
 
       const requestParams = {
         numRecordsPage: 7,

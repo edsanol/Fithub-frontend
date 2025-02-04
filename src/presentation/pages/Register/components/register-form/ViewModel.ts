@@ -179,7 +179,7 @@ const ViewModel = () => {
         return;
       }
 
-      router.push("/dashboard");
+      router.push("/home");
     } catch (error: any) {
       console.log(error);
       setErrorModal(true);

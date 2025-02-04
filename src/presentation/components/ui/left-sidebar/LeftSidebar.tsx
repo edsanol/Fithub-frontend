@@ -17,6 +17,7 @@ import ArrowLeftIcon from "@/assets/svg/ArrowLeftIcon";
 import Image from "next/image";
 import NotificationsIcon from "@/assets/svg/NotificationsIcon";
 import RoutinesIcon from "@/assets/svg/RoutinesIcon";
+import HomeIcon from "@/assets/svg/HomeIcon";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -108,6 +109,14 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </h3>
 
               <ul className="mb-6 flex flex-col gap-4">
+                <li>
+                  <SidebarItems
+                    url="/home"
+                    route="home"
+                    icon={<HomeIcon />}
+                    label="Inicio"
+                  />
+                </li>
                 <li>
                   <SidebarItems
                     url="/dashboard"
