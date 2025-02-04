@@ -20,13 +20,13 @@ const CustomDashboardDoubleGraph = ({
     if (dashboardData) {
       setData([
         {
-          id: 0,
+          id: "0",
           value: dashboardData.activeAthletes,
           color: "#5855F6",
           label: "Usuarios Activos",
         },
         {
-          id: 1,
+          id: "1",
           value: dashboardData.inactiveAthletes,
           color: "#981A2A",
           label: "Usuarios Inactivos",

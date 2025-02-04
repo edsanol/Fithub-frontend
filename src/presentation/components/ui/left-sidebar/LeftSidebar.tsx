@@ -2,7 +2,6 @@
 
 import { signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 import Link from "next/link";
 import Logout from "@/assets/svg/logout.svg";
 import { useEffect, useRef, useState } from "react";
@@ -62,7 +61,6 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   });
 
   useEffect(() => {
-    localStorage.setItem("sidebar-expanded", sidebarExpanded.toString());
     if (sidebarExpanded) {
       document.querySelector("body")?.classList.add("sidebar-expanded");
     } else {
@@ -71,8 +69,10 @@ const LeftSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   }, [sidebarExpanded]);
 
   const logout = () => {
-    Cookies.remove("authToken");
-    Cookies.remove("refreshToken");
+    if (typeof window === 'undefined') return;
+
+    localStorage.removeItem("secureData");
+    localStorage.removeItem("syncCode");
     router.push("/login");
     signOut();
   };

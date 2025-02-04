@@ -2,8 +2,9 @@ import { TYPES } from "@/config/types";
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { injectable, inject } from "inversify";
 import { jwtDecode } from "jwt-decode";
-import Cookies from "js-cookie";
 import { signOut } from "next-auth/react";
+import { getGlobalRefreshPromise } from "./globalRefresh";
+import { decryptToken, encryptToken } from "@/config/secureData";
 
 export interface HttpClient {
   post<T, U>(url: string, data: U): Promise<T>;
@@ -31,24 +32,45 @@ export class AxiosHttpClient implements HttpClient {
   }
 
   private async handleTokenRefresh(config: AxiosRequestConfig) {
-    const authToken = Cookies.get("authToken");
+    if (typeof window === "undefined") return;
+
+    const storedToken = localStorage.getItem("secureData");
+    const authToken = storedToken ? decryptToken(storedToken) : null;
 
     if (authToken && config.headers) {
       const timeDifference = await this.checkTokenExpiration(authToken);
-      if (timeDifference < 2 * 60 * 1000) {
-        const refreshToken = Cookies.get("refreshToken");
-        try {
-          if (refreshToken) {
-            const response = await this.refreshToken(refreshToken);
 
-            if (response) {
-              Cookies.set("authToken", response.data.data.token, { expires: 1 });
-              Cookies.set("refreshToken", response.data.data.refreshToken, { expires: 1 });
-              config.headers.Authorization = `Bearer ${response.data.data.token}`;
-            }
-          }
-        } catch (error) {
+      if (timeDifference < 2 * 60 * 1000) {
+        const storedCurrentToken = localStorage.getItem("secureData");
+        const currentToken = storedCurrentToken ? decryptToken(storedCurrentToken) : null;
+
+        if (currentToken && (await this.checkTokenExpiration(currentToken)) >= 2 * 60 * 1000) {
+          config.headers.Authorization = `Bearer ${currentToken}`;
+          return;
+        }
+
+        const storedRefreshToken = localStorage.getItem("syncCode");
+        const refreshToken = storedRefreshToken ? decryptToken(storedRefreshToken) : null;
+
+        if (!refreshToken) {
+          console.error("No existe refreshToken en localStorage");
           this.handleAuthenticationError();
+          return;
+        }
+        try {
+          const response = await getGlobalRefreshPromise(refreshToken);
+
+          const newToken = encryptToken(response.data.data.token);
+          const newRefreshToken = encryptToken(response.data.data.refreshToken);
+
+          localStorage.setItem("secureData", newToken);
+          localStorage.setItem("syncCode", newRefreshToken);
+
+          config.headers.Authorization = `Bearer ${response.data.data.token}`;
+        } catch (error) {
+          console.error("Error al refrescar token dentro del global lock:", error);
+          this.handleAuthenticationError();
+          throw error;
         }
       } else {
         config.headers.Authorization = `Bearer ${authToken}`;
@@ -60,32 +82,23 @@ export class AxiosHttpClient implements HttpClient {
     }
   }
 
-  private async refreshToken(refreshToken: string) {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Gym/refreshToken`,
-      null,
-      {
-        headers: {
-          RefreshToken: refreshToken,
-        },
-      }
-    );
-
-    return response;
-  }
-
-  private async checkTokenExpiration(token: string) {
-    const decodedToken = jwtDecode(token);
-    const currentDate = new Date();
-    const expirationDate = new Date((decodedToken.exp as number) * 1000);
-
-    const timeDifference = expirationDate.getTime() - currentDate.getTime();
-    return timeDifference;
+  private async checkTokenExpiration(token: string): Promise<number> {
+    try {
+      const decodedToken = jwtDecode(token);
+      const currentDate = new Date();
+      const expirationDate = new Date((decodedToken.exp as number) * 1000);
+      return expirationDate.getTime() - currentDate.getTime();
+    } catch (error) {
+      console.error("Error decodificando el token:", error);
+      return -1;
+    }
   }
 
   private handleAuthenticationError() {
-    Cookies.remove("authToken");
-    Cookies.remove("refreshToken");
+    if (typeof window === 'undefined') return;
+
+    localStorage.removeItem("secureData");
+    localStorage.removeItem("syncCode");
     signOut();
   }
 
