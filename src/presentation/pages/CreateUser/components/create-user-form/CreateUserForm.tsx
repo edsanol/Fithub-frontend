@@ -1,13 +1,12 @@
 "use client";
 
 import {
+  FormCheckbox,
   FormInput,
-  FormRadioButton,
   FormSelect,
   InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
-import React from "react";
 import ViewModel from "./ViewModel";
 import { formatMembershipElements } from "@/presentation/helpers";
 import { genres } from "@/assets/constants";
@@ -17,12 +16,15 @@ const CreateUserForm = () => {
     handleSubmit,
     setField,
     setErrorModal,
+    toogleCheckboxes,
     athleteIdValue,
     athleteData,
     athleteDataError,
     membership,
     errorModal,
     errorMessage,
+    paymentEnabled,
+    discountEnabled,
   } = ViewModel();
 
   return (
@@ -111,18 +113,54 @@ const CreateUserForm = () => {
           onChange={(value) => setField("email", value)}
           value={athleteData?.email}
         />
+
+        <div className="md:flex md:gap-3">
+          <FormInput
+            isRequired
+            isInvalid={athleteDataError?.birthDateError}
+            color={athleteDataError?.birthDateError ? "danger" : "default"}
+            errorMessage={
+              athleteDataError?.birthDateError
+                ? "Por favor ingresa una fecha válida"
+                : ""
+            }
+            type="date"
+            label="Fecha de nacimiento"
+            placeholder="Fecha de nacimiento"
+            size="lg"
+            customInputClass="mt-5"
+            onChange={(value) => setField("birthDate", value)}
+            value={athleteData?.birthDate.slice(0, 10)}
+          />
+          <FormSelect
+            isRequired
+            label="Género"
+            placeholder="Selecciona un género"
+            size="lg"
+            popoverProps={{ color: "foreground" }}
+            items={genres}
+            onChange={(value) => setField("genre", value)}
+            customInputClass="mt-5"
+            value={athleteData?.genre}
+          />
+        </div>
+
         {!athleteIdValue && (
-          <>
-            <div className="md:flex gap-1">
+          <div className="mt-3">
+            <h3 className="text-lg font-semibold mb-3">
+              Información de la membresía
+            </h3>
+
+            <div className="md:flex gap-3">
               <FormSelect
                 isRequired
-                label="Membresías"
+                label="Membresía"
                 placeholder="Selecciona un plan"
                 size="lg"
                 popoverProps={{ color: "foreground" }}
                 items={formatMembershipElements(membership)}
                 onChange={(value) => setField("membershipId", Number(value))}
-                customInputClass="mt-5"
+                customInputClass="mt-5 md:mt-0"
                 value={String(athleteData?.membershipId) || ""}
               />
               <FormInput
@@ -139,41 +177,61 @@ const CreateUserForm = () => {
                     : ""
                 }
                 type="date"
-                label="Inicio de membresía (dd/mm/aaaa)"
+                label="Inicio de membresía"
                 placeholder="Fecha de inicio de membresía"
                 size="lg"
-                customInputClass="mt-5"
+                customInputClass="mt-5 md:mt-0"
                 onChange={(value) => setField("startMembershipDate", value)}
                 value={athleteData?.startMembershipDate}
               />
             </div>
-          </>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <FormCheckbox
+                  customClassNames="mt-2"
+                  label="¿Pago por abono?"
+                  selected={paymentEnabled}
+                  onValueChange={() => toogleCheckboxes("payment")}
+                />
+
+                {paymentEnabled && (
+                  <div className="mt-3">
+                    <FormInput
+                      type="number"
+                      label="Monto Abonado"
+                      placeholder="Ej: 50000"
+                      size="lg"
+                      onChange={(value) => setField("paymentAmount", Number(value))}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <FormCheckbox
+                  customClassNames="mt-2"
+                  label="¿Aplicar descuento?"
+                  selected={discountEnabled}
+                  onValueChange={() => toogleCheckboxes("discount")}
+                />
+
+                {discountEnabled && (
+                  <div className="mt-3">
+                    <FormInput
+                      type="number"
+                      label="Valor del descuento"
+                      placeholder="Ej: 20000"
+                      size="lg"
+                      onChange={(value) => setField("discount", Number(value))}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         )}
-        <FormInput
-          isRequired
-          isInvalid={athleteDataError?.birthDateError}
-          color={athleteDataError?.birthDateError ? "danger" : "default"}
-          errorMessage={
-            athleteDataError?.birthDateError
-              ? "Por favor ingresa una fecha válida"
-              : ""
-          }
-          type="date"
-          label="Fecha de nacimiento"
-          placeholder="Fecha de nacimiento"
-          size="lg"
-          customInputClass="mt-5"
-          onChange={(value) => setField("birthDate", value)}
-          value={athleteData?.birthDate.slice(0, 10)}
-        />
-        <FormRadioButton
-          label="Selecciona el genero del deportista"
-          isInvalid={athleteDataError?.genreError}
-          customClass="mt-5"
-          onChange={(value) => setField("genre", value)}
-          options={genres}
-          value={athleteData?.genre}
-        />
+
         <PrimaryButton
           text="Guardar"
           btnType="submit"

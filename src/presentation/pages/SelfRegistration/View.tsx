@@ -72,7 +72,7 @@ const SelfRegistration = () => {
                 color={athleteDataError?.documentIDError ? "danger" : "default"}
                 errorMessage={
                   athleteDataError?.documentIDError
-                    ? "Por favor ingresa un número de teléfono válido"
+                    ? "Por favor ingresa un número de documento válido"
                     : ""
                 }
                 type="text"
