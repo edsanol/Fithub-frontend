@@ -3,6 +3,7 @@ import {
   MembershipColumns,
   DiscountsColumns,
   MeasurementProgressColumns,
+  StatusOptions,
 } from "./columns/Columns";
 
 import { subscriptionsPlans } from "./subscriptions-plans/SubscriptionsPlans";
@@ -23,4 +24,5 @@ export {
   status,
   muscularGroups,
   imageOptions,
+  StatusOptions,
 };

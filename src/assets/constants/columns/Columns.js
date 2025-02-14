@@ -44,3 +44,9 @@ export const RoutinesColumns = [
   { name: "ESTADO", uid: "isActive" },
   { name: "ACCIONES", uid: "actions" },
 ];
+
+export const StatusOptions = [
+  { name: "Activos", uid: 8 },
+  { name: "Inactivos", uid: 10 },
+  { name: "Por expirar", uid: 9 },
+];

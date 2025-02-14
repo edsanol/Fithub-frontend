@@ -134,6 +134,12 @@ const ViewModel = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [paymentEnabled, setPaymentEnabled] = useState(false);
   const [discountEnabled, setDiscountEnabled] = useState(false);
+  const [filterParams, setFilterParams] = useState<PaginateData>({
+    numPage: 1,
+    textFilter: "",
+    numFilter: undefined,
+  });
+  
 
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
@@ -155,13 +161,11 @@ const ViewModel = () => {
 
   const handleSubmit = async (params: Partial<PaginateData>) => {
     try {
-      const getAthleteUserListUseCase =
-        container.get<GetAthleteUserListUseCase>(
-          TYPES.GetAthleteUserListUseCase
-        );
+      const getAthleteUserListUseCase = container.get<GetAthleteUserListUseCase>(TYPES.GetAthleteUserListUseCase);
 
       const response = await getAthleteUserListUseCase.execute({
         numRecordsPage: 7,
+        ...filterParams,
         ...params,
       });
 
@@ -170,9 +174,7 @@ const ViewModel = () => {
         return;
       }
 
-      response.items.map((athlete) => {
-        mapperAthleteUser(athlete);
-      });
+      response.items.forEach(mapperAthleteUser);
 
       dispatch({ type: "SET_ATHLETES_LIST", athletesList: response });
     } catch (error: any) {
@@ -310,11 +312,27 @@ const ViewModel = () => {
   };
 
   const handleSetNumPage = async (numPage: number) => {
-    await handleSubmit({ numPage });
-  };
+    setFilterParams((prev) => {
+      let updatedTextFilter = prev.textFilter;
+  
+      if ([8, 9, 10].includes(prev.numFilter || 0) && !prev.textFilter) {
+        updatedTextFilter = "Filtrando...";
+      }
+  
+      const updatedParams = { ...prev, numPage, textFilter: updatedTextFilter };
+      handleSubmit(updatedParams);
+      return updatedParams;
+    });
+  };  
 
   const handleSetTextFilter = async (textFilter: string) => {
+    setFilterParams((prev) => ({ ...prev, textFilter, numFilter: 1, numPage: 1 }));
     await handleSubmit({ textFilter, numFilter: 1 });
+  };
+
+  const handleSetStatusFilter = async (statusFilter: number) => {
+    setFilterParams((prev) => ({ ...prev, numFilter: statusFilter, numPage: 1 }));
+    await handleSubmit({ numFilter: statusFilter, textFilter: "Filtrando..." });
   };
 
   const handleRedirect = (athleteId: number) => {
@@ -386,6 +404,7 @@ const ViewModel = () => {
     setField,
     handleSetNumPage,
     handleSetTextFilter,
+    handleSetStatusFilter,
     toggleModal,
     updateMembership,
     toogleCheckboxes,

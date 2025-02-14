@@ -37,6 +37,7 @@ const UserList = () => {
     setField,
     handleSetNumPage,
     handleSetTextFilter,
+    handleSetStatusFilter,
     toggleModal,
     updateMembership,
     toogleCheckboxes,
@@ -54,9 +55,8 @@ const UserList = () => {
       <CustomTable
         onSetNumPage={handleSetNumPage}
         onSetTextFilter={handleSetTextFilter}
-        customRenderCell={(user, columnKey) =>
-          customRenderCell(user, columnKey, { handleOpenModal, handleRedirect })
-        }
+        onSetStatusFilter={handleSetStatusFilter}
+        customRenderCell={(user, columnKey) => customRenderCell(user, columnKey, { handleOpenModal, handleRedirect })}
         records={athletesList}
         columns={AthleteColumns}
         uniqueKeyField="athleteId"
