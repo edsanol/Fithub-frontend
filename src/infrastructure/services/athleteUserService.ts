@@ -68,17 +68,8 @@ export class AthleteUserServiceImpl implements AthleteUserService {
     return response.data;
   }
 
-  async updateMembershipToAthlete(
-    data: UpdateMembershipToAthlete
-  ): Promise<boolean> {
-    const response = await this.http.post<
-      TickerResponseApi<boolean>,
-      UpdateMembershipToAthlete
-    >("/Athlete/UpdateMembershipToAthlete", {
-      athleteId: data.athleteId,
-      membershipId: data.membershipId,
-      startMembershipDate: data.startMembershipDate,
-    });
+  async updateMembershipToAthlete(data: UpdateMembershipToAthlete): Promise<boolean> {
+    const response = await this.http.post<TickerResponseApi<boolean>, UpdateMembershipToAthlete>("/Athlete/UpdateMembershipToAthlete", data);
 
     return response.data;
   }

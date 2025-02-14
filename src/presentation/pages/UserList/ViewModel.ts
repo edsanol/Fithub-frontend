@@ -3,7 +3,7 @@ import { AthleteUser } from "@/domain/entities/AthleteUser";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { UpdateMembershipToAthlete } from "@/domain/models/UpdateMembershipToAthlete";
-import React, { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useSession } from "next-auth/react";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
@@ -35,14 +35,11 @@ type Value = string | number;
 type Action =
   | { type: "SET_ATHLETES_LIST"; athletesList: PaginateResponseList }
   | { type: "SET_ATHLETE_USER"; athleteUser: AthleteUser }
-  | {
-      type: "SET_UPDATE_MEMBERSHIP_FIELD";
-      field: keyof UpdateMembershipToAthlete;
-      value: Value;
-    }
+  | { type: "SET_UPDATE_MEMBERSHIP_FIELD"; field: keyof UpdateMembershipToAthlete; value: Value; }
   | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] }
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
-  | { type: "CLOSE_MODAL" };
+  | { type: "CLOSE_MODAL" }
+  | { type: "RESET_UPDATE_MEMBERSHIP" };
 
 const initialState: State = {
   athletesList: {
@@ -69,6 +66,8 @@ const initialState: State = {
     athleteId: 0,
     membershipId: 0,
     startMembershipDate: "",
+    discount: 0,
+    paymentAmount: 0,
   },
   membership: [],
   isModalOpen: {
@@ -114,6 +113,11 @@ function reducer(state: State, action: Action): State {
           editMembershipModal: false,
         },
       };
+    case "RESET_UPDATE_MEMBERSHIP":
+      return {
+        ...state,
+        updateMembershipToAthlete: initialState.updateMembershipToAthlete,
+      };
     default:
       return state;
   }
@@ -128,6 +132,8 @@ const ViewModel = () => {
   const [idGym, setIdGym] = useState<number>(0);
   const [errorModal, setErrorModal] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [paymentEnabled, setPaymentEnabled] = useState(false);
+  const [discountEnabled, setDiscountEnabled] = useState(false);
 
   useEffect(() => {
     if (session && session.user.gymId !== idGym) {
@@ -199,7 +205,7 @@ const ViewModel = () => {
       return;
     }
 
-    if (today < startDate || today > endDate) {
+    if (today > endDate) {
       athleteUser.stateAthlete = "Inactivo";
       return;
     }
@@ -218,13 +224,9 @@ const ViewModel = () => {
         return;
       }
 
-      const updateMembership = container.get<UpdateMembershipToAthleteUseCase>(
-        TYPES.UpdateMembershipToAthleteUseCase
-      );
+      const updateMembership = container.get<UpdateMembershipToAthleteUseCase>(TYPES.UpdateMembershipToAthleteUseCase);
 
-      const response = await updateMembership.execute(
-        updateMembershipToAthlete
-      );
+      const response = await updateMembership.execute(updateMembershipToAthlete);
 
       if (!response) {
         console.log("error");
@@ -234,6 +236,7 @@ const ViewModel = () => {
       await handleSubmit({ numPage: 1 });
 
       dispatch({ type: "CLOSE_MODAL" });
+      dispatch({ type: "RESET_UPDATE_MEMBERSHIP" });
     } catch (error: any) {
       console.log(error);
       setErrorModal(true);
@@ -326,10 +329,7 @@ const ViewModel = () => {
     dispatch({ type: "TOGGLE_MODAL", modalName, value });
   };
 
-  const handleOpenModal = async (
-    athleteId: number,
-    modalName: "detailsModal" | "deleteModal" | "editMembershipModal"
-  ) => {
+  const handleOpenModal = async (athleteId: number, modalName: "detailsModal" | "deleteModal" | "editMembershipModal") => {
     await getAthleteUserById(athleteId);
     toggleModal(modalName);
 
@@ -360,6 +360,14 @@ const ViewModel = () => {
     });
   };
 
+  const toogleCheckboxes = (state: string) => {
+    if (state === "payment") {
+      setPaymentEnabled(!paymentEnabled);
+    } else {
+      setDiscountEnabled(!discountEnabled);
+    }
+  };
+
   return {
     athletesList,
     athleteUser,
@@ -369,6 +377,8 @@ const ViewModel = () => {
     errorModal,
     errorMessage,
     updateMembershipToAthlete,
+    paymentEnabled,
+    discountEnabled,
     setErrorModal,
     deleteAthleteUser,
     handleOpenModal,
@@ -378,6 +388,7 @@ const ViewModel = () => {
     handleSetTextFilter,
     toggleModal,
     updateMembership,
+    toogleCheckboxes,
   };
 };
 

@@ -5,6 +5,7 @@ import {
   CustomModal,
   CustomTable,
   DashboardHeader,
+  FormCheckbox,
   FormInput,
   FormRadioButton,
   FormSelect,
@@ -12,7 +13,6 @@ import {
   PrimaryButton,
 } from "@/presentation/components";
 import { Button } from "@nextui-org/react";
-import React from "react";
 import ViewModel from "./ViewModel";
 import { customRenderCell } from "./components/table-render-cell/RenderCell";
 import { genres } from "@/assets/constants";
@@ -28,6 +28,8 @@ const UserList = () => {
     errorModal,
     errorMessage,
     updateMembershipToAthlete,
+    paymentEnabled,
+    discountEnabled,
     setErrorModal,
     deleteAthleteUser,
     handleOpenModal,
@@ -37,6 +39,7 @@ const UserList = () => {
     handleSetTextFilter,
     toggleModal,
     updateMembership,
+    toogleCheckboxes,
   } = ViewModel();
 
   return (
@@ -195,6 +198,50 @@ const UserList = () => {
                 onChange={(value) => setField("startMembershipDate", value)}
                 value={updateMembershipToAthlete?.startMembershipDate}
               />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <FormCheckbox
+                    customClassNames="mt-2"
+                    label="¿Pago por abono?"
+                    selected={paymentEnabled}
+                    onValueChange={() => toogleCheckboxes("payment")}
+                  />
+
+                  {paymentEnabled && (
+                    <div className="mt-3">
+                      <FormInput
+                        type="number"
+                        label="Monto Abonado"
+                        placeholder="Ej: 50000"
+                        size="lg"
+                        onChange={(value) => setField("paymentAmount", Number(value))}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <FormCheckbox
+                    customClassNames="mt-2"
+                    label="¿Aplicar descuento?"
+                    selected={discountEnabled}
+                    onValueChange={() => toogleCheckboxes("discount")}
+                  />
+
+                  {discountEnabled && (
+                    <div className="mt-3">
+                      <FormInput
+                        type="number"
+                        label="Valor del descuento"
+                        placeholder="Ej: 20000"
+                        size="lg"
+                        onChange={(value) => setField("discount", Number(value))}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
               <div className="mt-5">
                 <PrimaryButton
                   text={"Guardar"}
