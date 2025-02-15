@@ -48,7 +48,7 @@ const FormMultiSelect = ({
       description={description}
       className={customInputClass}
       selectionMode="multiple"
-      selectedKeys={value}
+      selectedKeys={new Set(Array.from(value).filter((key) => items.some((item) => item.value.toString() === key.toString())))}
       onSelectionChange={(keys) => {
         const selectedValues = Array.from(keys as Set<string>).map(Number);
         onChange && onChange(selectedValues);

@@ -45,7 +45,7 @@ const FormSelect = ({
           popoverProps={popoverProps || ""}
           description={description || ""}
           className={customInputClass || ""}
-          selectedKeys={value ? [value] : []}
+          selectedKeys={items.some((item: any) => String(item.value) === String(value)) ? [String(value)] : []}
           onSelectionChange={(keys) => {
             const selectedValue = Array.from(keys).join("");
             if (onChange) {
