@@ -1,4 +1,3 @@
-import React from "react";
 import { User, Chip, Tooltip, ChipProps } from "@nextui-org/react";
 import EyeIcon from "@/assets/svg/EyeIcon";
 import EditIcon from "@/assets/svg/EditIcon";
@@ -13,10 +12,10 @@ interface customRenderCellProps {
 
 export const customRenderCell = (user: AthleteUser, columnKey: React.Key, { handleOpenModal, handleRedirect }: customRenderCellProps) => {
   const cellValue = user[columnKey as keyof AthleteUser];
-  
+
   const statusColorMap: Record<string, ChipProps["color"]> = {
-    activo: "success",
-    inactivo: "danger",
+    "activo": "success",
+    "inactivo": "danger",
     "por expirar": "warning",
   };
 
@@ -48,17 +47,18 @@ export const customRenderCell = (user: AthleteUser, columnKey: React.Key, { hand
           >
             {cellValue}
           </Chip>
-          <Tooltip content="Ver detalle de pago" classNames={{ base: "dark" }}>
-            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EyeIcon
-                clickHandler={
-                  () => handleOpenModal(user.athleteId!, "paymentAmountModal")
-                }
-              />
-            </span>
-          </Tooltip>
+          {user.paymentStatus === "Pendiente" && (
+            <Tooltip
+              content="Ver detalle de pago"
+              classNames={{ base: "dark" }}
+            >
+              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                <EyeIcon clickHandler={() => handleOpenModal(user.athleteMembershipId!, "paymentAmountModal")} />
+              </span>
+            </Tooltip>
+          )}
         </div>
-      );  
+      );
     case "startDate":
       return (
         <div className="flex flex-col">
@@ -91,11 +91,7 @@ export const customRenderCell = (user: AthleteUser, columnKey: React.Key, { hand
         <div className="relative flex items-center gap-2">
           <Tooltip content="Ver detalle" classNames={{ base: "dark" }}>
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EyeIcon
-                clickHandler={() =>
-                  handleOpenModal(user.athleteId!, "detailsModal")
-                }
-              />
+              <EyeIcon clickHandler={() => handleOpenModal(user.athleteId!, "detailsModal")} />
             </span>
           </Tooltip>
           <Tooltip content="Editar usuario" classNames={{ base: "dark" }}>
@@ -105,20 +101,12 @@ export const customRenderCell = (user: AthleteUser, columnKey: React.Key, { hand
           </Tooltip>
           <Tooltip content="Editar membresía" classNames={{ base: "dark" }}>
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <MembershipIcon
-                clickHandler={() =>
-                  handleOpenModal(user.athleteId!, "editMembershipModal")
-                }
-              />
+              <MembershipIcon clickHandler={() => handleOpenModal(user.athleteId!, "editMembershipModal")} />
             </span>
           </Tooltip>
           <Tooltip color="danger" content="Eliminar usuario">
             <span className="text-lg text-danger cursor-pointer active:opacity-50">
-              <DeleteIcon
-                clickHandler={() =>
-                  handleOpenModal(user.athleteId!, "deleteModal")
-                }
-              />
+              <DeleteIcon clickHandler={() => handleOpenModal(user.athleteId!, "deleteModal")} />
             </span>
           </Tooltip>
         </div>

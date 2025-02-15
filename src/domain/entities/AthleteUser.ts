@@ -24,6 +24,7 @@ type constructorParams = {
   paymentAmount?: number;
   discount?: number;
   paymentStatus?: string;
+  athleteMembershipId?: number;
 };
 
 export class AthleteUser {
@@ -52,6 +53,7 @@ export class AthleteUser {
   public paymentAmount?: number;
   public discount?: number;
   public paymentStatus?: string;
+  public athleteMembershipId?: number;
 
   constructor({
     athleteId,
@@ -79,6 +81,7 @@ export class AthleteUser {
     paymentAmount,
     discount,
     paymentStatus,
+    athleteMembershipId,
   }: constructorParams) {
     this.athleteId = athleteId;
     this.athleteName = athleteName;
@@ -105,5 +108,6 @@ export class AthleteUser {
     this.paymentAmount = paymentAmount;
     this.discount = discount;
     this.paymentStatus = paymentStatus;
+    this.athleteMembershipId = athleteMembershipId;
   }
 }

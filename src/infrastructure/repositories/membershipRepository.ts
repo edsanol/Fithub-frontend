@@ -4,6 +4,7 @@ import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { RegisterPaymentAmount } from "@/domain/models/RegisterPaymentStatus";
+import { TotalPaid } from "@/domain/models/TotalPaid";
 import { MembershipRepository } from "@/domain/repositories/membershipRepository";
 import type { MembershipService } from "@/domain/services/membershipService";
 import { inject, injectable } from "inversify";
@@ -58,5 +59,11 @@ export class MembershipRepositoryImpl implements MembershipRepository {
     const response = await this.service.registerPaymentAmount(data);
 
     return response
+  }
+
+  async getTotalPaid(id: number): Promise<TotalPaid> {
+    const response = await this.service.getTotalPaid(id);
+
+    return response;
   }
 }

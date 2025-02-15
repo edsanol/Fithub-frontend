@@ -17,12 +17,18 @@ import { useRouter } from "next/navigation";
 import { AthleteColumns } from "@/assets/constants";
 import { useDateGMT5 } from "@/hooks/useDateGMT5";
 import { isValidDate } from "@/presentation/helpers";
+import { GetTotalPaidUseCase } from "@/domain/useCases/Membership/getTotalPaidUseCase";
+import { TotalPaid } from "@/domain/models/TotalPaid";
+import { RegisterPaymentAmount } from "@/domain/models/RegisterPaymentStatus";
+import { RegisterPaymentAmountUseCase } from "@/domain/useCases/Membership/registerPaymentAmountUseCase";
 
 interface State {
   athletesList: PaginateResponseList;
   athleteUser: AthleteUser;
   updateMembershipToAthlete: UpdateMembershipToAthlete;
   membership: MembershipByGymId[];
+  totalPaid: TotalPaid;
+  paymentAmount: RegisterPaymentAmount;
   isModalOpen: {
     detailsModal: boolean;
     deleteModal: boolean;
@@ -40,7 +46,9 @@ type Action =
   | { type: "SET_MEMBERSHIP"; membership: MembershipByGymId[] }
   | { type: "TOGGLE_MODAL"; modalName: string; value?: boolean }
   | { type: "CLOSE_MODAL" }
-  | { type: "RESET_UPDATE_MEMBERSHIP" };
+  | { type: "RESET_UPDATE_MEMBERSHIP" }
+  | { type: "SET_TOTAL_PAID"; totalPaid: TotalPaid }
+  | { type: "SET_PAYMENT_AMOUNT_FIELD"; field: keyof RegisterPaymentAmount; value: Value; };
 
 const initialState: State = {
   athletesList: {
@@ -76,6 +84,15 @@ const initialState: State = {
     deleteModal: false,
     editMembershipModal: false,
     paymentAmountModal: false,
+  },
+  totalPaid: {
+    totalPaid: 0,
+    remainingAmount: 0,
+  },
+  paymentAmount: {
+    athleteMembershipId: 0,
+    paymentAmount: 0,
+    paymentDate: "",
   },
 };
 
@@ -121,13 +138,26 @@ function reducer(state: State, action: Action): State {
         ...state,
         updateMembershipToAthlete: initialState.updateMembershipToAthlete,
       };
+    case "SET_TOTAL_PAID":
+      return {
+        ...state,
+        totalPaid: action.totalPaid,
+      };
+    case "SET_PAYMENT_AMOUNT_FIELD":
+      return {
+        ...state,
+        paymentAmount: {
+          ...state.paymentAmount,
+          [action.field]: action.value,
+        },
+      };
     default:
       return state;
   }
 }
 
 const ViewModel = () => {
-  const [{athletesList, athleteUser, updateMembershipToAthlete, membership, isModalOpen}, dispatch] = useReducer(reducer, initialState);
+  const [{athletesList, athleteUser, updateMembershipToAthlete, membership, isModalOpen, totalPaid, paymentAmount}, dispatch] = useReducer(reducer, initialState);
   const { data: session } = useSession();
   const dateGMT5 = useDateGMT5();
   const router = useRouter();
@@ -161,6 +191,12 @@ const ViewModel = () => {
       setDateByDefault(athleteUser);
     }
   }, [isModalOpen.editMembershipModal, athleteUser]);
+
+  useEffect(() => {
+    if (isModalOpen.paymentAmountModal && paymentAmount.athleteMembershipId !== 0 && !paymentAmount.paymentDate) {
+      dispatch({ type: "SET_PAYMENT_AMOUNT_FIELD", field: "paymentDate", value: dateGMT5 });
+    }
+  }, [isModalOpen.paymentAmountModal, paymentAmount.athleteMembershipId]);
 
   const handleSubmit = async (params: Partial<PaginateData>) => {
     try {
@@ -351,15 +387,27 @@ const ViewModel = () => {
   };
 
   const handleOpenModal = async (athleteId: number, modalName: "detailsModal" | "deleteModal" | "editMembershipModal" | "paymentAmountModal") => {
-    await getAthleteUserById(athleteId);
-    toggleModal(modalName);
-
-    if (modalName === "editMembershipModal") {
-      dispatch({
-        type: "SET_UPDATE_MEMBERSHIP_FIELD",
-        field: "athleteId",
-        value: athleteId,
-      });
+    switch (modalName) {
+      case "detailsModal":
+        await getAthleteUserById(athleteId);
+        toggleModal(modalName);
+        break;
+      case "deleteModal":
+        await getAthleteUserById(athleteId);
+        toggleModal(modalName);
+        break;
+      case "editMembershipModal":
+        dispatch({ type: "SET_UPDATE_MEMBERSHIP_FIELD", field: "athleteId", value: athleteId });
+        await getAthleteUserById(athleteId);
+        toggleModal(modalName);
+        break;
+      case "paymentAmountModal":
+        await getTotalPaid(athleteId);
+        dispatch({ type: "SET_PAYMENT_AMOUNT_FIELD", field: "athleteMembershipId", value: athleteId });
+        toggleModal(modalName);
+        break;
+      default:
+        break;
     }
   };
 
@@ -389,6 +437,52 @@ const ViewModel = () => {
     }
   };
 
+  const getTotalPaid = async (id: number) => {
+    try {
+      const getTotalPaidUseCase = container.get<GetTotalPaidUseCase>(
+        TYPES.GetTotalPaidUseCase
+      );
+
+      const response = await getTotalPaidUseCase.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      dispatch({ type: "SET_TOTAL_PAID", totalPaid: response });
+    } catch (error: any) {
+      console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response.data.message);
+    }
+  };
+
+  const setPaymentAmountField = (field: keyof RegisterPaymentAmount, value: Value) => {
+    dispatch({ type: "SET_PAYMENT_AMOUNT_FIELD", field, value });
+  };
+
+  const registerPaymentAmount = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      const registerPaymentAmountUseCase = container.get<RegisterPaymentAmountUseCase>(TYPES.RegisterPaymentAmountUseCase);
+
+      const response = await registerPaymentAmountUseCase.execute(paymentAmount);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      await handleSubmit({ numPage: 1 });
+      dispatch({ type: "CLOSE_MODAL" });
+    } catch (error: any) {
+      console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response?.data?.message);
+    }
+  };
+
   return {
     athletesList,
     athleteUser,
@@ -400,6 +494,8 @@ const ViewModel = () => {
     updateMembershipToAthlete,
     paymentEnabled,
     discountEnabled,
+    totalPaid,
+    paymentAmount,
     setErrorModal,
     deleteAthleteUser,
     handleOpenModal,
@@ -411,6 +507,8 @@ const ViewModel = () => {
     toggleModal,
     updateMembership,
     toogleCheckboxes,
+    setPaymentAmountField,
+    registerPaymentAmount,
   };
 };
 

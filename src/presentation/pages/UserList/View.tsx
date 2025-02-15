@@ -30,6 +30,8 @@ const UserList = () => {
     updateMembershipToAthlete,
     paymentEnabled,
     discountEnabled,
+    totalPaid,
+    paymentAmount,
     setErrorModal,
     deleteAthleteUser,
     handleOpenModal,
@@ -41,6 +43,8 @@ const UserList = () => {
     toggleModal,
     updateMembership,
     toogleCheckboxes,
+    setPaymentAmountField,
+    registerPaymentAmount,
   } = ViewModel();
 
   return (
@@ -307,20 +311,39 @@ const UserList = () => {
               title="Estado de pago"
               description="Ingresa el monto abonado por el atleta."
             />
-            <form className="mt-3">
+            <div className="block md:flex md:gap-3">
+              <FormInput
+                isReadOnly
+                type="text"
+                label="Total Pagado"
+                size="lg"
+                value={totalPaid?.totalPaid}
+              />
+              <FormInput
+                isReadOnly
+                type="text"
+                label="Cantidad Pendiente"
+                size="lg"
+                customInputClass="mt-7 md:mt-0"
+                value={totalPaid?.remainingAmount}
+              />
+            </div>
+            <form className="mt-3" onSubmit={registerPaymentAmount}>
               <FormInput
                 type="number"
                 label="Monto Abonado"
                 placeholder="Ej: 50000"
                 size="lg"
+                onChange={(value) => setPaymentAmountField("paymentAmount", Number(value))}
               />
               <FormInput
                 isRequired
                 type="date"
-                label="Inicio de membresía (dd/mm/aaaa)"
-                placeholder="Fecha de inicio de membresía"
+                label="Fecha de Pago (dd/mm/aaaa)"
                 size="lg"
                 customInputClass="mt-5"
+                onChange={(value) => setPaymentAmountField("paymentDate", value)}
+                value={paymentAmount?.paymentDate}
               />
               <div className="mt-5">
                 <PrimaryButton

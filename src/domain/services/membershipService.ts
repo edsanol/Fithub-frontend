@@ -3,6 +3,7 @@ import { MembershipByGymId } from "../models/MembershipByGymId";
 import { PaginateData } from "../models/PaginateData";
 import { PaginateResponseList } from "../models/PaginateResponseList";
 import { RegisterPaymentAmount } from "../models/RegisterPaymentStatus";
+import { TotalPaid } from "../models/TotalPaid";
 
 export interface MembershipService {
   registerMembership(membership: Membership): Promise<boolean>;
@@ -12,4 +13,5 @@ export interface MembershipService {
   deleteMembership(id: number): Promise<boolean>;
   getMembershipByGymId(): Promise<MembershipByGymId[]>;
   registerPaymentAmount(data: RegisterPaymentAmount): Promise<boolean>;
+  getTotalPaid(id: number): Promise<TotalPaid>;
 }
