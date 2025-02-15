@@ -67,6 +67,15 @@ const Filters = ({
               ))}
             </DropdownMenu>
           </Dropdown>
+
+          <Button
+            color="warning"
+            variant="bordered"
+            onClick={() => onSetStatusFilter && onSetStatusFilter(11)}
+          >
+            Pendientes
+          </Button>
+
           <Button
             color="primary"
             endContent={<PlusIcon />}

@@ -4,7 +4,6 @@ import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { UpdateMembershipToAthlete } from "@/domain/models/UpdateMembershipToAthlete";
 import { useEffect, useReducer, useState } from "react";
-import { useSession } from "next-auth/react";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { GetAthleteUserListUseCase } from "@/domain/useCases/AthleteUser/getAthleteUserListUseCase";
 import container from "@/config/inversifyContainer";
@@ -159,11 +158,9 @@ function reducer(state: State, action: Action): State {
 
 const ViewModel = () => {
   const [{athletesList, athleteUser, updateMembershipToAthlete, membership, isModalOpen, totalPaid, paymentAmount}, dispatch] = useReducer(reducer, initialState);
-  const { data: session } = useSession();
   const dateGMT5 = useDateGMT5();
   const router = useRouter();
 
-  const [idGym, setIdGym] = useState<number>(0);
   const [errorModal, setErrorModal] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [paymentEnabled, setPaymentEnabled] = useState(false);
@@ -173,19 +170,6 @@ const ViewModel = () => {
     textFilter: "",
     numFilter: undefined,
   });
-  
-
-  useEffect(() => {
-    if (session && session.user.gymId !== idGym) {
-      setIdGym(session.user.gymId);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    if (idGym !== 0) {
-      getMembershipByGymId();
-    }
-  }, [idGym]);
 
   useEffect(() => {
     if (isModalOpen.editMembershipModal && athleteUser.athleteId !== 0) {
@@ -198,6 +182,10 @@ const ViewModel = () => {
       dispatch({ type: "SET_PAYMENT_AMOUNT_FIELD", field: "paymentDate", value: dateGMT5 });
     }
   }, [isModalOpen.paymentAmountModal, paymentAmount.athleteMembershipId]);
+
+  useEffect(() => {
+    handleSubmit(filterParams);
+  }, [filterParams]);
 
   const handleSubmit = async (params: Partial<PaginateData>) => {
     try {
@@ -351,28 +339,27 @@ const ViewModel = () => {
     }
   };
 
-  const handleSetNumPage = async (numPage: number) => {
-    setFilterParams((prev) => {
-      let updatedTextFilter = prev.textFilter;
-  
-      if ([8, 9, 10].includes(prev.numFilter || 0) && !prev.textFilter) {
-        updatedTextFilter = "Filtrando...";
-      }
-  
-      const updatedParams = { ...prev, numPage, textFilter: updatedTextFilter, download: false };
-      handleSubmit(updatedParams);
-      return updatedParams;
-    });
-  };  
-
-  const handleSetTextFilter = async (textFilter: string) => {
-    setFilterParams((prev) => ({ ...prev, textFilter, numFilter: 1, numPage: 1 }));
-    await handleSubmit({ textFilter, numFilter: 1 });
+  const handleSetNumPage = (numPage: number) => {
+    setFilterParams((prev) => ({ ...prev, numPage }));
   };
 
-  const handleSetStatusFilter = async (statusFilter: number) => {
-    setFilterParams((prev) => ({ ...prev, numFilter: statusFilter, numPage: 1 }));
-    await handleSubmit({ numFilter: statusFilter, textFilter: "Filtrando..." });
+  const handleSetTextFilter = (textFilter: string) => {
+    setFilterParams((prev) => ({
+      ...prev,
+      textFilter,
+      numFilter: 1,
+      numPage: 1,
+    }));
+  };
+
+  const handleSetStatusFilter = (statusFilter: number) => {
+    const textFilter = statusFilter === 11 ? "Pendientes" : "Estados";
+    setFilterParams((prev) => ({
+      ...prev,
+      numFilter: statusFilter,
+      numPage: 1,
+      textFilter,
+    }));
   };
 
   const handleRedirect = (athleteId: number) => {
@@ -399,7 +386,7 @@ const ViewModel = () => {
         break;
       case "editMembershipModal":
         dispatch({ type: "SET_UPDATE_MEMBERSHIP_FIELD", field: "athleteId", value: athleteId });
-        await getAthleteUserById(athleteId);
+        await Promise.all([getAthleteUserById(athleteId), getMembershipByGymId()]);
         toggleModal(modalName);
         break;
       case "paymentAmountModal":

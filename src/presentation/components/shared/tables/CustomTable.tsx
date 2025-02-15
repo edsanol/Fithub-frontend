@@ -78,10 +78,9 @@ const CustomTable = ({
   const handleStatusFilterChange = (keys: "all" | Set<Key>) => {
     const selectedKey = keys === "all" ? null : Array.from(keys)[0];
     setStatusFilter(selectedKey);
-    if (selectedKey) {
-      if (onSetStatusFilter) {
-        onSetStatusFilter(Number(selectedKey));
-      }
+  
+    if (selectedKey && onSetStatusFilter) {
+      onSetStatusFilter(Number(selectedKey));
     }
   };
 

@@ -38,6 +38,10 @@ const CustomMultiSteps = ({
     }
   }, [currentStep]);
 
+  const handleStepClick = (index: number) => {
+    setCurrentStep(index);
+  };
+
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep((prev) => prev + 1);
@@ -64,7 +68,8 @@ const CustomMultiSteps = ({
           <div 
             key={index}
             ref={(element) => (stepRefs.current[index] = element)}
-            className="flex flex-col items-center flex-shrink-0 md:flex-1"
+            className="flex flex-col items-center flex-shrink-0 md:flex-1 cursor-pointer"
+            onClick={() => handleStepClick(index)}
           >
             <div className={`w-10 h-10 flex items-center justify-center rounded-full font-bold ${index === currentStep ? "bg-blue-600 text-white" : "bg-[#18181a] text-gray-300"}`}>
               {index + 1}
