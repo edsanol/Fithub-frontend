@@ -27,6 +27,7 @@ interface State {
     detailsModal: boolean;
     deleteModal: boolean;
     editMembershipModal: boolean;
+    paymentAmountModal: boolean;
   };
 }
 
@@ -74,6 +75,7 @@ const initialState: State = {
     detailsModal: false,
     deleteModal: false,
     editMembershipModal: false,
+    paymentAmountModal: false,
   },
 };
 
@@ -111,6 +113,7 @@ function reducer(state: State, action: Action): State {
           detailsModal: false,
           deleteModal: false,
           editMembershipModal: false,
+          paymentAmountModal: false,
         },
       };
     case "RESET_UPDATE_MEMBERSHIP":
@@ -319,7 +322,7 @@ const ViewModel = () => {
         updatedTextFilter = "Filtrando...";
       }
   
-      const updatedParams = { ...prev, numPage, textFilter: updatedTextFilter };
+      const updatedParams = { ...prev, numPage, textFilter: updatedTextFilter, download: false };
       handleSubmit(updatedParams);
       return updatedParams;
     });
@@ -347,7 +350,7 @@ const ViewModel = () => {
     dispatch({ type: "TOGGLE_MODAL", modalName, value });
   };
 
-  const handleOpenModal = async (athleteId: number, modalName: "detailsModal" | "deleteModal" | "editMembershipModal") => {
+  const handleOpenModal = async (athleteId: number, modalName: "detailsModal" | "deleteModal" | "editMembershipModal" | "paymentAmountModal") => {
     await getAthleteUserById(athleteId);
     toggleModal(modalName);
 

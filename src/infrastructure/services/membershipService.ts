@@ -7,6 +7,7 @@ import { TickerResponseApi } from "../api/model/TickerResponseApi";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
+import { RegisterPaymentAmount } from "@/domain/models/RegisterPaymentStatus";
 
 @injectable()
 export class MembershipServiceImpl implements MembershipService {
@@ -63,9 +64,13 @@ export class MembershipServiceImpl implements MembershipService {
   }
 
   async getMembershipByGymId(): Promise<MembershipByGymId[]> {
-    const response = await this.http.get<
-      TickerResponseApi<MembershipByGymId[]>
-    >("/Membership/Select");
+    const response = await this.http.get<TickerResponseApi<MembershipByGymId[]>>("/Membership/Select");
+
+    return response.data;
+  }
+
+  async registerPaymentAmount(data: RegisterPaymentAmount): Promise<boolean> {
+    const response = await this.http.post<TickerResponseApi<boolean>, RegisterPaymentAmount>("/Membership/RegisterPaymentAmount", data);
 
     return response.data;
   }

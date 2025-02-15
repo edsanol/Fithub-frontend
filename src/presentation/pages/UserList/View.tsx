@@ -297,6 +297,43 @@ const UserList = () => {
         }
       />
 
+      <CustomModal
+        isOpen={isModalOpen.paymentAmountModal}
+        onOpenChange={() => toggleModal("paymentAmountModal")}
+        size="2xl"
+        content={
+          <>
+            <DashboardHeader
+              title="Estado de pago"
+              description="Ingresa el monto abonado por el atleta."
+            />
+            <form className="mt-3">
+              <FormInput
+                type="number"
+                label="Monto Abonado"
+                placeholder="Ej: 50000"
+                size="lg"
+              />
+              <FormInput
+                isRequired
+                type="date"
+                label="Inicio de membresía (dd/mm/aaaa)"
+                placeholder="Fecha de inicio de membresía"
+                size="lg"
+                customInputClass="mt-5"
+              />
+              <div className="mt-5">
+                <PrimaryButton
+                  text={"Guardar"}
+                  btnType="submit"
+                  customButtonClass="w-full p-8 mt-5"
+                />
+              </div>
+            </form>
+          </>
+        }
+      />
+
       <InfoModal
         isOpen={errorModal}
         onOpenChange={setErrorModal}

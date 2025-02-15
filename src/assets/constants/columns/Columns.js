@@ -1,6 +1,6 @@
 export const AthleteColumns = [
   { name: "NOMBRE", uid: "athleteName" },
-  { name: "DATOS PERSONALES", uid: "phoneNumber" },
+  { name: "PAGO", uid: "paymentStatus" },
   { name: "FECHA DE INICIO", uid: "startDate" },
   { name: "FECHA DE CIERRE", uid: "endDate" },
   { name: "ESTADO", uid: "stateAthlete" },

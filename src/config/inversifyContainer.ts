@@ -88,6 +88,7 @@ import { GetRoutineByIdUseCase } from "@/domain/useCases/Routine/getRoutineByIdU
 import { DesactivateRoutineUseCase } from "@/domain/useCases/Routine/desactivateRoutineUseCase";
 import { UpdateRoutineUseCase } from "@/domain/useCases/Routine/updateRoutineUseCase";
 import { SendRoutineUseCase } from "@/domain/useCases/Routine/sendRoutineUseCase";
+import { RegisterPaymentAmountUseCase } from "@/domain/useCases/Membership/registerPaymentAmountUseCase";
 
 const container = new Container();
 
@@ -218,6 +219,9 @@ container
 container
   .bind<GetMembershipByGymIdUseCase>(TYPES.GetMembershipByGymIdUseCase)
   .to(GetMembershipByGymIdUseCase);
+container
+  .bind<RegisterPaymentAmountUseCase>(TYPES.RegisterPaymentAmountUseCase)
+  .to(RegisterPaymentAmountUseCase);
 
 // DiscountsRepository
 container
