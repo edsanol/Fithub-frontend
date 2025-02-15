@@ -14,7 +14,7 @@ const Home = () => {
       <div className="w-full mx-auto bg-[#1C1F24] rounded-xl p-5 md:p-10 xl:w-11/12 shadow-lg">
         <div className="text-center">
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
-            Bienvendios a{" "}
+            Bienvenidos a{" "}
             <Skeleton
               isLoaded={!isLoading}
               className="rounded-[2rem]"

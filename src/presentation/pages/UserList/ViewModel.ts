@@ -70,6 +70,7 @@ const initialState: State = {
     membershipName: "",
     cardAccessCode: "",
     documentID: "",
+    auditCreateDate: "",
   },
   updateMembershipToAthlete: {
     athleteId: 0,

@@ -57,6 +57,9 @@ const initialState: State = {
     startMembershipDate: "",
     paymentAmount: 0,
     discount: 0,
+    emergencyContactName: "",
+    emergencyContactPhone: "",
+    medicalCondition: "",
   },
   athleteDataError: {
     nameError: false,

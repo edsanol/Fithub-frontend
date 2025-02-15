@@ -15,14 +15,14 @@ export default function DashboardLayout({
   return (
     <>
       <SidebarProvider>
-        <div className="flex h-screen overflow-hidden">
+        <div className="flex min-h-screen overflow-hidden">
           <SidebarLayout />
 
-          <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-black">
+          <div className="flex flex-1 flex-col h-full overflow-y-auto overflow-x-hidden bg-black">
             <TopbarLayout />
 
-            <main>
-              <div className="mx-auto max-w-screen-2xl p-4 mt-16 mb-8 md:p-6 md:mt-10 md:mb-5">
+            <main className="flex-grow">
+              <div className="mx-auto max-w-screen-2xl p-4 pt-10 pb-16 mt-16 mb-8 md:p-6 md:mt-10 md:mb-5 md:pb-6">
                 {children}
               </div>
             </main>

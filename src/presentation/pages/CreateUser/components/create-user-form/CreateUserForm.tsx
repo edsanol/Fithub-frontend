@@ -4,6 +4,7 @@ import {
   FormCheckbox,
   FormInput,
   FormSelect,
+  FormTextarea,
   InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
@@ -202,7 +203,9 @@ const CreateUserForm = () => {
                       label="Monto Abonado"
                       placeholder="Ej: 50000"
                       size="lg"
-                      onChange={(value) => setField("paymentAmount", Number(value))}
+                      onChange={(value) =>
+                        setField("paymentAmount", Number(value))
+                      }
                     />
                   </div>
                 )}
@@ -231,6 +234,39 @@ const CreateUserForm = () => {
             </div>
           </div>
         )}
+
+        <div className="mt-3">
+          <h3 className="text-lg font-semibold mb-3">
+            Información de adicional <span className="text-sm text-default-400">(opcional)</span>
+          </h3>
+
+          <div className="md:flex md:mb-2 gap-3">
+            <FormInput
+              type="text"
+              label="Nombre contacto de emergencia"
+              placeholder="Ej: Juan Pérez"
+              size="lg"
+              customInputClass="mt-5 md:mt-0"
+              onChange={(value) => setField("emergencyContactName", value)}
+              value={athleteData?.emergencyContactName}
+            />
+            <FormInput
+              type="number"
+              label="Teléfono contacto de emergencia"
+              placeholder="Ej: 3001234567"
+              size="lg"
+              customInputClass="mt-5 md:mt-0"
+              onChange={(value) => setField("emergencyContactPhone", value)}
+              value={athleteData?.emergencyContactPhone}
+            />
+          </div>
+          <FormTextarea
+            label="Observaciones (Condiciones médicas, alergias, etc.)"
+            placeholder="Escribe aquí alguna observación adicional"
+            onChange={(value) => setField("medicalCondition", value)}
+            value={athleteData?.medicalCondition}
+          />
+        </div>
 
         <PrimaryButton
           text="Guardar"

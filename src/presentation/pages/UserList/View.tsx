@@ -125,29 +125,52 @@ const UserList = () => {
                 customInputClass="mt-7"
                 value={athleteUser?.email}
               />
-              <FormInput
-                isRequired
-                isReadOnly
-                type="text"
-                label="Membresía"
-                size="lg"
-                customInputClass="mt-7"
-                value={
-                  athleteUser?.membershipName
-                    ? athleteUser?.membershipName
-                    : "Sin membresía"
-                }
-              />
-              <FormInput
-                isRequired
-                isReadOnly
-                type="date"
-                label="Fecha de nacimiento"
-                placeholder="Fecha de nacimiento"
-                size="lg"
-                customInputClass="mt-5"
-                value={athleteUser?.birthDate.slice(0, 10)}
-              />
+              <div className="block md:flex md:gap-3">
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="text"
+                  label="Membresía"
+                  size="lg"
+                  customInputClass="mt-7"
+                  value={
+                    athleteUser?.membershipName
+                      ? athleteUser?.membershipName
+                      : "Sin membresía"
+                  }
+                />
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="text"
+                  label="Pago"
+                  size="lg"
+                  customInputClass="mt-7"
+                  value={athleteUser?.paymentStatus}
+                />
+              </div>
+              <div className="block md:flex md:gap-3">
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="date"
+                  label="Fecha de nacimiento"
+                  placeholder="Fecha de nacimiento"
+                  size="lg"
+                  customInputClass="mt-5"
+                  value={athleteUser?.birthDate.slice(0, 10)}
+                />
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="date"
+                  label="Fecha de registro"
+                  placeholder="Fecha de registro"
+                  size="lg"
+                  customInputClass="mt-5"
+                  value={athleteUser?.auditCreateDate?.slice(0, 10) || "Sin fecha"}
+                />
+              </div>
               <FormRadioButton
                 isDisabled
                 label="Selecciona el genero del deportista"
