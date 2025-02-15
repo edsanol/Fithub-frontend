@@ -10,7 +10,7 @@ const Home = () => {
   const { gymData, isLoading, setGymData } = ViewModel();
 
   return (
-    <div className="h-full bg-gradient-to-b from-[#121417] to-[#000] text-white flex items-center justify-center">
+    <div className="h-full text-white flex items-center justify-center">
       <div className="w-full mx-auto bg-[#1C1F24] rounded-xl p-5 md:p-10 xl:w-11/12 shadow-lg">
         <div className="text-center">
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
@@ -36,7 +36,7 @@ const Home = () => {
 
         <div className="mt-8 flex justify-center">
           <Image
-            src="https://images.pexels.com/photos/5327487/pexels-photo-5327487.jpeg"
+            src="https://res.cloudinary.com/deeyjyklm/image/upload/v1739653190/pexels-photo-5327487_xi4lrz.jpg"
             alt="Gym Image"
             width={500}
             height={300}
