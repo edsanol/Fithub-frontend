@@ -72,4 +72,16 @@ export class MembershipServiceImpl implements MembershipService {
 
     return response.data;
   }
+
+  async editPaymentAmount(data: RegisterPaymentAmount): Promise<boolean> {
+    const response = await this.http.put<TickerResponseApi<boolean>, RegisterPaymentAmount>("/Membership/UpdatePaymentAmount", data);
+
+    return response.data;
+  }
+
+  async deletePaymentAmount(id: number): Promise<boolean> {
+    const response = await this.http.delete<TickerResponseApi<boolean>, null>(`/Membership/DeletePaymentAmount/${id}`, null);
+
+    return response.data;
+  }
 }

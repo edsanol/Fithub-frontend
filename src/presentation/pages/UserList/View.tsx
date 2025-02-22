@@ -38,6 +38,8 @@ const UserList = () => {
     totalPaid,
     totalPaidRecord,
     paymentAmount,
+    editPaymentAmountId,
+    setEditPaymentAmountId,
     setErrorModal,
     deleteAthleteUser,
     handleOpenModal,
@@ -50,14 +52,11 @@ const UserList = () => {
     updateMembership,
     toogleCheckboxes,
     setPaymentAmountField,
+    setPaymentAmount,
     registerPaymentAmount,
+    editPaymentAmount,
+    deletePaymentAmount,
   } = ViewModel();
-
-  const [editingId, setEditingId] = useState<number | null>(0);
-  const [editValues, setEditValues] = useState({
-    paymentAmount: 0,
-    paymentDate: "",
-  });
 
   return (
     <>
@@ -355,34 +354,31 @@ const UserList = () => {
               {totalPaidRecord?.length > 0 ? (
                 totalPaidRecord.map((payment) => (
                   <div key={payment.paymentId} className="border-b pb-3">
-                    {editingId === payment.paymentId ? (
+                    {editPaymentAmountId === payment.paymentId ? (
                       <>
                         <div className="flex gap-2 justify-between items-center">
                           <div className="w-full flex flex-col md:flex-row gap-2 mt-2">
                             <FormInput
                               label="Monto Abonado"
                               type="number"
-                              value={
-                                editValues.paymentAmount ||
-                                payment.paymentAmount
-                              }
+                              value={paymentAmount?.paymentAmount !== undefined && paymentAmount?.paymentAmount !== null ? paymentAmount.paymentAmount : ""}
+                              onChange={(value) => setPaymentAmountField("paymentAmount", value === "" ? "" : Number(value))}
                             />
                             <FormInput
                               type="date"
                               label="Fecha de Pago"
-                              value={
-                                editValues.paymentDate || payment.paymentDate
-                              }
+                              value={paymentAmount?.paymentDate ?? payment.paymentDate ?? ""}
+                              onChange={(value) => setPaymentAmountField("paymentDate", value)}
                             />
                           </div>
                           <div className="flex gap-2">
-                            <Button isIconOnly color="success">
+                            <Button isIconOnly color="success" onPress={editPaymentAmount}>
                               <CheckinIcon />
                             </Button>
                             <Button
                               isIconOnly
                               color="danger"
-                              onPress={() => setEditingId(null)}
+                              onPress={() => setEditPaymentAmountId(null)}
                             >
                               <XIcon />
                             </Button>
@@ -405,14 +401,17 @@ const UserList = () => {
                           <div className="flex gap-2">
                             <button
                               onClick={() => {
-                                setEditingId(payment.paymentId);
-                                setEditValues(payment);
+                                setEditPaymentAmountId(payment.paymentId);
+                                setPaymentAmount({ ...payment });
                               }}
                               className="text-blue-500 hover:text-blue-700"
                             >
                               <EditIcon />
                             </button>
-                            <button className="text-red-500 hover:text-red-700">
+                            <button 
+                              className="text-red-500 hover:text-red-700"
+                              onClick={() => deletePaymentAmount(payment.paymentId)}
+                            >
                               <DeleteIcon />
                             </button>
                           </div>

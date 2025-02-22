@@ -73,4 +73,15 @@ export class MembershipRepositoryImpl implements MembershipRepository {
 
     return response;
   }
+
+  async editPaymentAmount(data: RegisterPaymentAmount): Promise<boolean> {
+    const response = await this.service.editPaymentAmount(data);
+
+    return response;
+  }
+  deletePaymentAmount(id: number): Promise<boolean> {
+    const response = this.service.deletePaymentAmount(id);
+
+    return response;
+  }
 }

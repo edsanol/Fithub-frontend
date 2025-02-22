@@ -6,10 +6,10 @@ type ConstructorParams = {
 };
 
 export class TotalPaidRecord {
-  paymentId: number;
-  athleteMembershipId: number;
-  paymentAmount: number;
-  paymentDate: string;
+  public paymentId: number;
+  public athleteMembershipId: number;
+  public paymentAmount: number;
+  public paymentDate: string;
 
   constructor({
     paymentId,

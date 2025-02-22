@@ -16,4 +16,6 @@ export interface MembershipService {
   registerPaymentAmount(data: RegisterPaymentAmount): Promise<boolean>;
   getTotalPaid(id: number): Promise<TotalPaid>;
   getTotalPaidRecord(id: number): Promise<TotalPaidRecord[]>;
+  editPaymentAmount(data: RegisterPaymentAmount): Promise<boolean>;
+  deletePaymentAmount(id: number): Promise<boolean>;
 }

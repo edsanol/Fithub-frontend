@@ -22,6 +22,8 @@ import { RegisterPaymentAmount } from "@/domain/models/RegisterPaymentStatus";
 import { RegisterPaymentAmountUseCase } from "@/domain/useCases/Membership/registerPaymentAmountUseCase";
 import { GetTotalPaidRecordUseCase } from "@/domain/useCases/Membership/getTotalPaidRecordUseCase";
 import { TotalPaidRecord } from "@/domain/models/TotalPaidRecord";
+import { EditPaymentAmountUseCase } from "@/domain/useCases/Membership/editPaymentAmountUseCase";
+import { DeletePaymentAmountUseCase } from "@/domain/useCases/Membership/deletePaymentAmountUseCase";
 
 interface State {
   athletesList: PaginateResponseList;
@@ -51,7 +53,10 @@ type Action =
   | { type: "RESET_UPDATE_MEMBERSHIP" }
   | { type: "SET_TOTAL_PAID"; totalPaid: TotalPaid }
   | { type: "SET_PAYMENT_AMOUNT_FIELD"; field: keyof RegisterPaymentAmount; value: Value; }
-  | { type: "SET_TOTAL_PAID_RECORD"; totalPaidRecord: TotalPaidRecord[] };
+  | { type: "SET_TOTAL_PAID_RECORD"; totalPaidRecord: TotalPaidRecord[] }
+  | { type: "SET_PAYMENT_AMOUNT"; paymentAmount: RegisterPaymentAmount }
+  | { type: "RESET_PAYMENT_AMOUNT" }
+  | { type: "RESET_TOTAL_PAID_RECORD" };
 
 const initialState: State = {
   athletesList: {
@@ -94,6 +99,7 @@ const initialState: State = {
     remainingAmount: 0,
   },
   paymentAmount: {
+    paymentId: 0,
     athleteMembershipId: 0,
     paymentAmount: 0,
     paymentDate: "",
@@ -161,6 +167,21 @@ function reducer(state: State, action: Action): State {
         ...state,
         totalPaidRecord: action.totalPaidRecord,
       };
+    case "SET_PAYMENT_AMOUNT":
+      return {
+        ...state,
+        paymentAmount: action.paymentAmount,
+      };
+    case "RESET_PAYMENT_AMOUNT":
+      return {
+        ...state,
+        paymentAmount: initialState.paymentAmount,
+      };
+    case "RESET_TOTAL_PAID_RECORD":
+      return {
+        ...state,
+        totalPaidRecord: initialState.totalPaidRecord,
+      };
     default:
       return state;
   }
@@ -175,6 +196,7 @@ const ViewModel = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [paymentEnabled, setPaymentEnabled] = useState(false);
   const [discountEnabled, setDiscountEnabled] = useState(false);
+  const [editPaymentAmountId, setEditPaymentAmountId] = useState<number | null>(0);
   const [filterParams, setFilterParams] = useState<PaginateData>({
     numPage: 1,
     textFilter: "",
@@ -403,6 +425,7 @@ const ViewModel = () => {
         await Promise.all([getTotalPaid(athleteId), getTotalPaidRecord(athleteId)])
         dispatch({ type: "SET_PAYMENT_AMOUNT_FIELD", field: "athleteMembershipId", value: athleteId });
         toggleModal(modalName);
+        setEditPaymentAmountId(null);
         break;
       default:
         break;
@@ -460,6 +483,10 @@ const ViewModel = () => {
     dispatch({ type: "SET_PAYMENT_AMOUNT_FIELD", field, value });
   };
 
+  const setPaymentAmount = (paymentAmount: RegisterPaymentAmount) => {
+    dispatch({ type: "SET_PAYMENT_AMOUNT", paymentAmount });
+  };
+
   const registerPaymentAmount = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
@@ -474,6 +501,7 @@ const ViewModel = () => {
 
       await handleSubmit({ numPage: 1 });
       dispatch({ type: "CLOSE_MODAL" });
+      dispatch({ type: "RESET_PAYMENT_AMOUNT" });
     } catch (error: any) {
       console.log(error);
       setErrorModal(true);
@@ -500,6 +528,52 @@ const ViewModel = () => {
     }
   };
 
+  const editPaymentAmount = async () => {
+    try {
+      const editPaymentAmountUseCase = container.get<EditPaymentAmountUseCase>(TYPES.EditPaymentAmountUseCase);
+
+      const response = await editPaymentAmountUseCase.execute(paymentAmount);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      await handleSubmit({ numPage: 1 });
+      dispatch({ type: "CLOSE_MODAL" });
+      dispatch({ type: "RESET_PAYMENT_AMOUNT" });
+      dispatch({ type: "RESET_TOTAL_PAID_RECORD" });
+      setEditPaymentAmountId(null);
+    } catch (error: any) {
+      console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response?.data?.message);
+    }
+  };
+
+  const deletePaymentAmount = async (id: number) => {
+    try {
+      const deletePaymentAmountUseCase = container.get<DeletePaymentAmountUseCase>(TYPES.DeletePaymentAmountUseCase);
+
+      const response = await deletePaymentAmountUseCase.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      await handleSubmit({ numPage: 1 });
+      dispatch({ type: "CLOSE_MODAL" });
+      dispatch({ type: "RESET_PAYMENT_AMOUNT" });
+      dispatch({ type: "RESET_TOTAL_PAID_RECORD" });
+      setEditPaymentAmountId(null);
+    } catch (error: any) {
+      console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response?.data?.message);
+    }
+  };
+
   return {
     athletesList,
     athleteUser,
@@ -514,6 +588,8 @@ const ViewModel = () => {
     totalPaid,
     totalPaidRecord,
     paymentAmount,
+    editPaymentAmountId,
+    setEditPaymentAmountId,
     setErrorModal,
     deleteAthleteUser,
     handleOpenModal,
@@ -526,7 +602,10 @@ const ViewModel = () => {
     updateMembership,
     toogleCheckboxes,
     setPaymentAmountField,
+    setPaymentAmount,
     registerPaymentAmount,
+    editPaymentAmount,
+    deletePaymentAmount,
   };
 };
 

@@ -62,6 +62,8 @@ const TYPES = {
   RegisterPaymentAmountUseCase: Symbol.for("RegisterPaymentAmountUseCase"),
   GetTotalPaidUseCase: Symbol.for("GetTotalPaidUseCase"),
   GetTotalPaidRecordUseCase: Symbol.for("GetTotalPaidRecordUseCase"),
+  EditPaymentAmountUseCase: Symbol.for("EditPaymentAmountUseCase"),
+  DeletePaymentAmountUseCase: Symbol.for("DeletePaymentAmountUseCase"),
 
   // DiscountsRepository
   DiscountsRepository: Symbol.for("DiscountsRepository"),
