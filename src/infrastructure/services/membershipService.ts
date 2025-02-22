@@ -9,6 +9,7 @@ import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
 import { RegisterPaymentAmount } from "@/domain/models/RegisterPaymentStatus";
 import { TotalPaid } from "@/domain/models/TotalPaid";
+import { TotalPaidRecord } from "@/domain/models/TotalPaidRecord";
 
 @injectable()
 export class MembershipServiceImpl implements MembershipService {
@@ -62,6 +63,12 @@ export class MembershipServiceImpl implements MembershipService {
 
   async getTotalPaid(id: number): Promise<TotalPaid> {
     const response = await this.http.get<TickerResponseApi<TotalPaid>>(`/Membership/GetTotalPaid/${id}`);
+
+    return response.data;
+  }
+
+  async getTotalPaidRecord(id: number): Promise<TotalPaidRecord[]> {
+    const response = await this.http.get<TickerResponseApi<TotalPaidRecord[]>>(`/Membership/GetTotalPaidRecord/${id}`);
 
     return response.data;
   }

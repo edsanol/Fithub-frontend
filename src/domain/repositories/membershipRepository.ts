@@ -4,6 +4,7 @@ import { PaginateData } from "../models/PaginateData";
 import { PaginateResponseList } from "../models/PaginateResponseList";
 import { RegisterPaymentAmount } from "../models/RegisterPaymentStatus";
 import { TotalPaid } from "../models/TotalPaid";
+import { TotalPaidRecord } from "../models/TotalPaidRecord";
 
 export interface MembershipRepository {
   registerMembership(membership: Membership): Promise<boolean>;
@@ -14,4 +15,5 @@ export interface MembershipRepository {
   getMembershipByGymId(): Promise<MembershipByGymId[]>;
   registerPaymentAmount(data: RegisterPaymentAmount): Promise<boolean>;
   getTotalPaid(id: number): Promise<TotalPaid>;
+  getTotalPaidRecord(id: number): Promise<TotalPaidRecord[]>;
 }

@@ -20,6 +20,8 @@ import { GetTotalPaidUseCase } from "@/domain/useCases/Membership/getTotalPaidUs
 import { TotalPaid } from "@/domain/models/TotalPaid";
 import { RegisterPaymentAmount } from "@/domain/models/RegisterPaymentStatus";
 import { RegisterPaymentAmountUseCase } from "@/domain/useCases/Membership/registerPaymentAmountUseCase";
+import { GetTotalPaidRecordUseCase } from "@/domain/useCases/Membership/getTotalPaidRecordUseCase";
+import { TotalPaidRecord } from "@/domain/models/TotalPaidRecord";
 
 interface State {
   athletesList: PaginateResponseList;
@@ -27,6 +29,7 @@ interface State {
   updateMembershipToAthlete: UpdateMembershipToAthlete;
   membership: MembershipByGymId[];
   totalPaid: TotalPaid;
+  totalPaidRecord: TotalPaidRecord[];
   paymentAmount: RegisterPaymentAmount;
   isModalOpen: {
     detailsModal: boolean;
@@ -47,7 +50,8 @@ type Action =
   | { type: "CLOSE_MODAL" }
   | { type: "RESET_UPDATE_MEMBERSHIP" }
   | { type: "SET_TOTAL_PAID"; totalPaid: TotalPaid }
-  | { type: "SET_PAYMENT_AMOUNT_FIELD"; field: keyof RegisterPaymentAmount; value: Value; };
+  | { type: "SET_PAYMENT_AMOUNT_FIELD"; field: keyof RegisterPaymentAmount; value: Value; }
+  | { type: "SET_TOTAL_PAID_RECORD"; totalPaidRecord: TotalPaidRecord[] };
 
 const initialState: State = {
   athletesList: {
@@ -94,6 +98,7 @@ const initialState: State = {
     paymentAmount: 0,
     paymentDate: "",
   },
+  totalPaidRecord: [],
 };
 
 function reducer(state: State, action: Action): State {
@@ -151,13 +156,18 @@ function reducer(state: State, action: Action): State {
           [action.field]: action.value,
         },
       };
+    case "SET_TOTAL_PAID_RECORD":
+      return {
+        ...state,
+        totalPaidRecord: action.totalPaidRecord,
+      };
     default:
       return state;
   }
 }
 
 const ViewModel = () => {
-  const [{athletesList, athleteUser, updateMembershipToAthlete, membership, isModalOpen, totalPaid, paymentAmount}, dispatch] = useReducer(reducer, initialState);
+  const [{athletesList, athleteUser, updateMembershipToAthlete, membership, isModalOpen, totalPaid, paymentAmount, totalPaidRecord}, dispatch] = useReducer(reducer, initialState);
   const dateGMT5 = useDateGMT5();
   const router = useRouter();
 
@@ -390,7 +400,7 @@ const ViewModel = () => {
         toggleModal(modalName);
         break;
       case "paymentAmountModal":
-        await getTotalPaid(athleteId);
+        await Promise.all([getTotalPaid(athleteId), getTotalPaidRecord(athleteId)])
         dispatch({ type: "SET_PAYMENT_AMOUNT_FIELD", field: "athleteMembershipId", value: athleteId });
         toggleModal(modalName);
         break;
@@ -471,6 +481,25 @@ const ViewModel = () => {
     }
   };
 
+  const getTotalPaidRecord = async (id: number) => {
+    try {
+      const getTotalPaidRecordUseCase = container.get<GetTotalPaidRecordUseCase>(TYPES.GetTotalPaidRecordUseCase);
+
+      const response = await getTotalPaidRecordUseCase.execute(id);
+
+      if (!response) {
+        console.log("error");
+        return;
+      }
+
+      dispatch({ type: "SET_TOTAL_PAID_RECORD", totalPaidRecord: response });
+    } catch (error: any) {
+      console.log(error);
+      setErrorModal(true);
+      setErrorMessage(error.response.data.message);
+    }
+  };
+
   return {
     athletesList,
     athleteUser,
@@ -483,6 +512,7 @@ const ViewModel = () => {
     paymentEnabled,
     discountEnabled,
     totalPaid,
+    totalPaidRecord,
     paymentAmount,
     setErrorModal,
     deleteAthleteUser,

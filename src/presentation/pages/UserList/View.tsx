@@ -17,6 +17,11 @@ import ViewModel from "./ViewModel";
 import { customRenderCell } from "./components/table-render-cell/RenderCell";
 import { genres } from "@/assets/constants";
 import { formatMembershipElements } from "@/presentation/helpers";
+import EditIcon from "@/assets/svg/EditIcon";
+import DeleteIcon from "@/assets/svg/DeleteIcon";
+import { useState } from "react";
+import CheckinIcon from "@/assets/svg/CheckinIcon";
+import XIcon from "@/assets/svg/XIcon";
 
 const UserList = () => {
   const {
@@ -31,6 +36,7 @@ const UserList = () => {
     paymentEnabled,
     discountEnabled,
     totalPaid,
+    totalPaidRecord,
     paymentAmount,
     setErrorModal,
     deleteAthleteUser,
@@ -47,6 +53,12 @@ const UserList = () => {
     registerPaymentAmount,
   } = ViewModel();
 
+  const [editingId, setEditingId] = useState<number | null>(0);
+  const [editValues, setEditValues] = useState({
+    paymentAmount: 0,
+    paymentDate: "",
+  });
+
   return (
     <>
       <DashboardHeader
@@ -60,7 +72,9 @@ const UserList = () => {
         onSetNumPage={handleSetNumPage}
         onSetTextFilter={handleSetTextFilter}
         onSetStatusFilter={handleSetStatusFilter}
-        customRenderCell={(user, columnKey) => customRenderCell(user, columnKey, { handleOpenModal, handleRedirect })}
+        customRenderCell={(user, columnKey) =>
+          customRenderCell(user, columnKey, { handleOpenModal, handleRedirect })
+        }
         records={athletesList}
         columns={AthleteColumns}
         uniqueKeyField="athleteId"
@@ -168,7 +182,9 @@ const UserList = () => {
                   placeholder="Fecha de registro"
                   size="lg"
                   customInputClass="mt-5"
-                  value={athleteUser?.auditCreateDate?.slice(0, 10) || "Sin fecha"}
+                  value={
+                    athleteUser?.auditCreateDate?.slice(0, 10) || "Sin fecha"
+                  }
                 />
               </div>
               <FormRadioButton
@@ -242,7 +258,9 @@ const UserList = () => {
                         label="Monto Abonado"
                         placeholder="Ej: 50000"
                         size="lg"
-                        onChange={(value) => setField("paymentAmount", Number(value))}
+                        onChange={(value) =>
+                          setField("paymentAmount", Number(value))
+                        }
                       />
                     </div>
                   )}
@@ -263,7 +281,9 @@ const UserList = () => {
                         label="Valor del descuento"
                         placeholder="Ej: 20000"
                         size="lg"
-                        onChange={(value) => setField("discount", Number(value))}
+                        onChange={(value) =>
+                          setField("discount", Number(value))
+                        }
                       />
                     </div>
                   )}
@@ -330,28 +350,95 @@ const UserList = () => {
         size="2xl"
         content={
           <>
-            <DashboardHeader
-              title="Estado de pago"
-              description="Ingresa el monto abonado por el atleta."
-            />
-            <div className="block md:flex md:gap-3">
-              <FormInput
-                isReadOnly
-                type="text"
-                label="Total Pagado"
-                size="lg"
-                value={totalPaid?.totalPaid}
-              />
-              <FormInput
-                isReadOnly
-                type="text"
-                label="Cantidad Pendiente"
-                size="lg"
-                customInputClass="mt-7 md:mt-0"
-                value={totalPaid?.remainingAmount}
-              />
+            <div className="p-4">
+              <h3 className="text-md mb-3">Historial de Abonos</h3>
+              {totalPaidRecord?.length > 0 ? (
+                totalPaidRecord.map((payment) => (
+                  <div key={payment.paymentId} className="border-b pb-3">
+                    {editingId === payment.paymentId ? (
+                      <>
+                        <div className="flex gap-2 justify-between items-center">
+                          <div className="w-full flex flex-col md:flex-row gap-2 mt-2">
+                            <FormInput
+                              label="Monto Abonado"
+                              type="number"
+                              value={
+                                editValues.paymentAmount ||
+                                payment.paymentAmount
+                              }
+                            />
+                            <FormInput
+                              type="date"
+                              label="Fecha de Pago"
+                              value={
+                                editValues.paymentDate || payment.paymentDate
+                              }
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <Button isIconOnly color="success">
+                              <CheckinIcon />
+                            </Button>
+                            <Button
+                              isIconOnly
+                              color="danger"
+                              onPress={() => setEditingId(null)}
+                            >
+                              <XIcon />
+                            </Button>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex gap-2 justify-between items-center">
+                          <div className="mt-2">
+                            <span className="block text-md">Monto:</span>
+                            <span>
+                              ${payment.paymentAmount.toLocaleString()}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="block text-md">Fecha:</span>
+                            <span>{payment.paymentDate}</span>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => {
+                                setEditingId(payment.paymentId);
+                                setEditValues(payment);
+                              }}
+                              className="text-blue-500 hover:text-blue-700"
+                            >
+                              <EditIcon />
+                            </button>
+                            <button className="text-red-500 hover:text-red-700">
+                              <DeleteIcon />
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-500">
+                  No hay abonos registrados.
+                </p>
+              )}
+
+              <div className="pt-3 font-md flex justify-between">
+                <span>Total Pagado:</span>
+                <span>${totalPaid?.totalPaid.toLocaleString()}</span>
+              </div>
+              <div className="border-t pt-3 mt-3 font-md flex justify-between">
+                <span>Cantidad Pendiente:</span>
+                <span>${totalPaid?.remainingAmount.toLocaleString()}</span>
+              </div>
             </div>
-            <form className="mt-3" onSubmit={registerPaymentAmount}>
+
+            <form onSubmit={registerPaymentAmount}>
+              <h3 className="text-md mb-3">Registrar abono</h3>
               <FormInput
                 type="number"
                 label="Monto Abonado"
@@ -370,7 +457,7 @@ const UserList = () => {
               />
               <div className="mt-5">
                 <PrimaryButton
-                  text={"Guardar"}
+                  text="Guardar"
                   btnType="submit"
                   customButtonClass="w-full p-8 mt-5"
                 />
