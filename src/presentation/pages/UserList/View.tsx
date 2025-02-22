@@ -12,7 +12,7 @@ import {
   InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
-import { Button } from "@nextui-org/react";
+import { Button, Tooltip } from "@nextui-org/react";
 import ViewModel from "./ViewModel";
 import { customRenderCell } from "./components/table-render-cell/RenderCell";
 import { genres } from "@/assets/constants";
@@ -399,21 +399,25 @@ const UserList = () => {
                             <span>{payment.paymentDate}</span>
                           </div>
                           <div className="flex gap-2">
-                            <button
-                              onClick={() => {
-                                setEditPaymentAmountId(payment.paymentId);
-                                setPaymentAmount({ ...payment });
-                              }}
-                              className="text-blue-500 hover:text-blue-700"
-                            >
-                              <EditIcon />
-                            </button>
-                            <button 
-                              className="text-red-500 hover:text-red-700"
-                              onClick={() => deletePaymentAmount(payment.paymentId)}
-                            >
-                              <DeleteIcon />
-                            </button>
+                            <Tooltip content="Editar abono" classNames={{ base: "dark" }}>
+                              <button
+                                onClick={() => {
+                                  setEditPaymentAmountId(payment.paymentId);
+                                  setPaymentAmount({ ...payment });
+                                }}
+                                className="text-blue-500 hover:text-blue-700"
+                              >
+                                <EditIcon />
+                              </button>
+                            </Tooltip>
+                            <Tooltip content="Eliminar abono" classNames={{ base: "dark" }}>
+                              <button 
+                                className="text-red-500 hover:text-red-700"
+                                onClick={() => deletePaymentAmount(payment.paymentId)}
+                              >
+                                <DeleteIcon />
+                              </button>
+                            </Tooltip>
                           </div>
                         </div>
                       </>
