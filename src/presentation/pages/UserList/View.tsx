@@ -9,6 +9,7 @@ import {
   FormInput,
   FormRadioButton,
   FormSelect,
+  FormTextarea,
   InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
@@ -186,6 +187,34 @@ const UserList = () => {
                   }
                 />
               </div>
+              <div className="block md:flex md:gap-3 mb-2">
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="text"
+                  label="Contacto de emergencia"
+                  placeholder="Contacto de emergencia"
+                  size="lg"
+                  customInputClass="mt-5"
+                  value={athleteUser?.emergencyContactName}
+                />
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="number"
+                  label="Teléfono de emergencia"
+                  placeholder="Teléfono de emergencia"
+                  size="lg"
+                  customInputClass="mt-5"
+                  value={athleteUser?.emergencyContactPhone}
+                />
+              </div>
+              <FormTextarea
+                isReadOnly
+                label="Observaciones (Condiciones médicas, alergias, etc.)"
+                placeholder="Escribe aquí alguna observación adicional"
+                value={athleteUser?.medicalCondition}
+              />
               <FormRadioButton
                 isDisabled
                 label="Selecciona el genero del deportista"

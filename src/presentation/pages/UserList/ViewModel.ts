@@ -79,6 +79,9 @@ const initialState: State = {
     cardAccessCode: "",
     documentID: "",
     auditCreateDate: "",
+    emergencyContactName: "",
+    emergencyContactPhone: "",
+    medicalCondition: "",
   },
   updateMembershipToAthlete: {
     athleteId: 0,

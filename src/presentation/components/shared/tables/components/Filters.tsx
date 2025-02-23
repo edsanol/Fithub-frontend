@@ -43,7 +43,7 @@ const Filters = ({
         />
       )}
       {onSetStatusFilter && (
-        <div className="flex gap-3 mb-4">
+        <div className="flex flex-col md:flex-row gap-3 mb-4">
           <Dropdown classNames={{ base: "dark" }}>
             <DropdownTrigger className="flex">
               <Button
