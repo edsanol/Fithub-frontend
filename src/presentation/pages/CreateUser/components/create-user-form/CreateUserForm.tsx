@@ -248,7 +248,7 @@ const CreateUserForm = () => {
               size="lg"
               customInputClass="mt-5 md:mt-0"
               onChange={(value) => setField("emergencyContactName", value)}
-              value={athleteData?.emergencyContactName}
+              value={athleteData?.emergencyContactName || ""}
             />
             <FormInput
               type="number"
@@ -257,14 +257,14 @@ const CreateUserForm = () => {
               size="lg"
               customInputClass="mt-5 md:mt-0"
               onChange={(value) => setField("emergencyContactPhone", value)}
-              value={athleteData?.emergencyContactPhone}
+              value={athleteData?.emergencyContactPhone || ""}
             />
           </div>
           <FormTextarea
             label="Observaciones (Condiciones médicas, alergias, etc.)"
             placeholder="Escribe aquí alguna observación adicional"
             onChange={(value) => setField("medicalCondition", value)}
-            value={athleteData?.medicalCondition}
+            value={athleteData?.medicalCondition || ""}
           />
         </div>
 
