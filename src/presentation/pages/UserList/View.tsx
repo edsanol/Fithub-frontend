@@ -196,24 +196,24 @@ const UserList = () => {
                   placeholder="Contacto de emergencia"
                   size="lg"
                   customInputClass="mt-5"
-                  value={athleteUser?.emergencyContactName}
+                  value={athleteUser?.emergencyContactName || "Sin registro"}
                 />
                 <FormInput
                   isRequired
                   isReadOnly
-                  type="number"
+                  type="text"
                   label="Teléfono de emergencia"
                   placeholder="Teléfono de emergencia"
                   size="lg"
                   customInputClass="mt-5"
-                  value={athleteUser?.emergencyContactPhone}
+                  value={athleteUser?.emergencyContactPhone || "Sin registro"}
                 />
               </div>
               <FormTextarea
                 isReadOnly
                 label="Observaciones (Condiciones médicas, alergias, etc.)"
                 placeholder="Escribe aquí alguna observación adicional"
-                value={athleteUser?.medicalCondition}
+                value={athleteUser?.medicalCondition || "Sin observaciones"}
               />
               <FormRadioButton
                 isDisabled

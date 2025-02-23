@@ -84,7 +84,7 @@ const ViewModel = () => {
       emailError: !isValidEmail(athleteData.email),
       nameError: !isValidName(athleteData.athleteName),
       lastNameError: !isValidName(athleteData.athleteLastName),
-      phoneNumberError: !isValidPhone(athleteData.phoneNumber),
+      phoneNumberError: !isNotEmpty(athleteData.phoneNumber),
       genreError: !isValidGenre(athleteData.genre),
       birthDateError: !isNotEmpty(athleteData.birthDate),
       documentIDError: !isValidDocumentID(athleteData.documentID),
