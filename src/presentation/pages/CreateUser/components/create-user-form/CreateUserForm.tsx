@@ -99,14 +99,6 @@ const CreateUserForm = () => {
           />
         </div>
         <FormInput
-          isRequired
-          isInvalid={athleteDataError?.emailError}
-          color={athleteDataError?.emailError ? "danger" : "default"}
-          errorMessage={
-            athleteDataError?.emailError
-              ? "Por favor ingresa un correo electrónico válido"
-              : ""
-          }
           type="email"
           label="Correo electrónico"
           size="lg"
@@ -237,7 +229,7 @@ const CreateUserForm = () => {
 
         <div className="mt-3">
           <h3 className="text-lg font-semibold mb-3">
-            Información de adicional <span className="text-sm text-default-400">(opcional)</span>
+            Información adicional <span className="text-sm text-default-400">(opcional)</span>
           </h3>
 
           <div className="md:flex md:mb-2 gap-3">

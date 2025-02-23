@@ -100,14 +100,6 @@ const SelfRegistration = () => {
               />
             </div>
             <FormInput
-              isRequired
-              isInvalid={athleteDataError?.emailError}
-              color={athleteDataError?.emailError ? "danger" : "default"}
-              errorMessage={
-                athleteDataError?.emailError
-                  ? "Por favor ingresa un correo electrónico válido"
-                  : ""
-              }
               type="email"
               label="Correo electrónico"
               size="lg"

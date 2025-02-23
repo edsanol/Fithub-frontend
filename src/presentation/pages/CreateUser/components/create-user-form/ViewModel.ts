@@ -3,7 +3,6 @@ import {
   isNotEmpty,
   isValidDate,
   isValidDocumentID,
-  isValidEmail,
   isValidGenre,
   isValidName,
   isValidPhone,
@@ -64,7 +63,6 @@ const initialState: State = {
   athleteDataError: {
     nameError: false,
     lastNameError: false,
-    emailError: false,
     phoneNumberError: false,
     genreError: false,
     birthDateError: false,
@@ -118,7 +116,6 @@ const ViewModel = () => {
 
 
   const validateAthleteData = (athleteData: AthleteUser, useStartMembershipDate: boolean): IAthleteValidation => ({
-    emailError: !isValidEmail(athleteData.email),
     nameError: !isValidName(athleteData.athleteName),
     lastNameError: !isValidName(athleteData.athleteLastName),
     phoneNumberError: !isValidPhone(athleteData.phoneNumber),
