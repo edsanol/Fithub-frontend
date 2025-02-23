@@ -1,6 +1,6 @@
 export const AthleteColumns = [
   { name: "NOMBRE", uid: "athleteName" },
-  { name: "DATOS PERSONALES", uid: "phoneNumber" },
+  { name: "PAGO", uid: "paymentStatus" },
   { name: "FECHA DE INICIO", uid: "startDate" },
   { name: "FECHA DE CIERRE", uid: "endDate" },
   { name: "ESTADO", uid: "stateAthlete" },
@@ -43,4 +43,10 @@ export const RoutinesColumns = [
   { name: "EJERCICIOS", uid: "exercises" },
   { name: "ESTADO", uid: "isActive" },
   { name: "ACCIONES", uid: "actions" },
+];
+
+export const StatusOptions = [
+  { name: "Activos", uid: 8 },
+  { name: "Inactivos", uid: 10 },
+  { name: "Por expirar", uid: 9 },
 ];

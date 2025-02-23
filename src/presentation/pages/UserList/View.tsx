@@ -5,18 +5,24 @@ import {
   CustomModal,
   CustomTable,
   DashboardHeader,
+  FormCheckbox,
   FormInput,
   FormRadioButton,
   FormSelect,
+  FormTextarea,
   InfoModal,
   PrimaryButton,
 } from "@/presentation/components";
-import { Button } from "@nextui-org/react";
-import React from "react";
+import { Button, Tooltip } from "@nextui-org/react";
 import ViewModel from "./ViewModel";
 import { customRenderCell } from "./components/table-render-cell/RenderCell";
 import { genres } from "@/assets/constants";
 import { formatMembershipElements } from "@/presentation/helpers";
+import EditIcon from "@/assets/svg/EditIcon";
+import DeleteIcon from "@/assets/svg/DeleteIcon";
+import { useState } from "react";
+import CheckinIcon from "@/assets/svg/CheckinIcon";
+import XIcon from "@/assets/svg/XIcon";
 
 const UserList = () => {
   const {
@@ -28,6 +34,13 @@ const UserList = () => {
     errorModal,
     errorMessage,
     updateMembershipToAthlete,
+    paymentEnabled,
+    discountEnabled,
+    totalPaid,
+    totalPaidRecord,
+    paymentAmount,
+    editPaymentAmountId,
+    setEditPaymentAmountId,
     setErrorModal,
     deleteAthleteUser,
     handleOpenModal,
@@ -35,8 +48,15 @@ const UserList = () => {
     setField,
     handleSetNumPage,
     handleSetTextFilter,
+    handleSetStatusFilter,
     toggleModal,
     updateMembership,
+    toogleCheckboxes,
+    setPaymentAmountField,
+    setPaymentAmount,
+    registerPaymentAmount,
+    editPaymentAmount,
+    deletePaymentAmount,
   } = ViewModel();
 
   return (
@@ -51,6 +71,7 @@ const UserList = () => {
       <CustomTable
         onSetNumPage={handleSetNumPage}
         onSetTextFilter={handleSetTextFilter}
+        onSetStatusFilter={handleSetStatusFilter}
         customRenderCell={(user, columnKey) =>
           customRenderCell(user, columnKey, { handleOpenModal, handleRedirect })
         }
@@ -118,28 +139,81 @@ const UserList = () => {
                 customInputClass="mt-7"
                 value={athleteUser?.email}
               />
-              <FormInput
-                isRequired
+              <div className="block md:flex md:gap-3">
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="text"
+                  label="Membresía"
+                  size="lg"
+                  customInputClass="mt-7"
+                  value={
+                    athleteUser?.membershipName
+                      ? athleteUser?.membershipName
+                      : "Sin membresía"
+                  }
+                />
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="text"
+                  label="Pago"
+                  size="lg"
+                  customInputClass="mt-7"
+                  value={athleteUser?.paymentStatus}
+                />
+              </div>
+              <div className="block md:flex md:gap-3">
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="date"
+                  label="Fecha de nacimiento"
+                  placeholder="Fecha de nacimiento"
+                  size="lg"
+                  customInputClass="mt-5"
+                  value={athleteUser?.birthDate.slice(0, 10)}
+                />
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="date"
+                  label="Fecha de registro"
+                  placeholder="Fecha de registro"
+                  size="lg"
+                  customInputClass="mt-5"
+                  value={
+                    athleteUser?.auditCreateDate?.slice(0, 10) || "Sin fecha"
+                  }
+                />
+              </div>
+              <div className="block md:flex md:gap-3 mb-2">
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="text"
+                  label="Contacto de emergencia"
+                  placeholder="Contacto de emergencia"
+                  size="lg"
+                  customInputClass="mt-5"
+                  value={athleteUser?.emergencyContactName || "Sin registro"}
+                />
+                <FormInput
+                  isRequired
+                  isReadOnly
+                  type="text"
+                  label="Teléfono de emergencia"
+                  placeholder="Teléfono de emergencia"
+                  size="lg"
+                  customInputClass="mt-5"
+                  value={athleteUser?.emergencyContactPhone || "Sin registro"}
+                />
+              </div>
+              <FormTextarea
                 isReadOnly
-                type="text"
-                label="Membresía"
-                size="lg"
-                customInputClass="mt-7"
-                value={
-                  athleteUser?.membershipName
-                    ? athleteUser?.membershipName
-                    : "Sin membresía"
-                }
-              />
-              <FormInput
-                isRequired
-                isReadOnly
-                type="date"
-                label="Fecha de nacimiento"
-                placeholder="Fecha de nacimiento"
-                size="lg"
-                customInputClass="mt-5"
-                value={athleteUser?.birthDate.slice(0, 10)}
+                label="Observaciones (Condiciones médicas, alergias, etc.)"
+                placeholder="Escribe aquí alguna observación adicional"
+                value={athleteUser?.medicalCondition || "Sin observaciones"}
               />
               <FormRadioButton
                 isDisabled
@@ -195,6 +269,54 @@ const UserList = () => {
                 onChange={(value) => setField("startMembershipDate", value)}
                 value={updateMembershipToAthlete?.startMembershipDate}
               />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <FormCheckbox
+                    customClassNames="mt-2"
+                    label="¿Pago por abono?"
+                    selected={paymentEnabled}
+                    onValueChange={() => toogleCheckboxes("payment")}
+                  />
+
+                  {paymentEnabled && (
+                    <div className="mt-3">
+                      <FormInput
+                        type="number"
+                        label="Monto Abonado"
+                        placeholder="Ej: 50000"
+                        size="lg"
+                        onChange={(value) =>
+                          setField("paymentAmount", Number(value))
+                        }
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <FormCheckbox
+                    customClassNames="mt-2"
+                    label="¿Aplicar descuento?"
+                    selected={discountEnabled}
+                    onValueChange={() => toogleCheckboxes("discount")}
+                  />
+
+                  {discountEnabled && (
+                    <div className="mt-3">
+                      <FormInput
+                        type="number"
+                        label="Valor del descuento"
+                        placeholder="Ej: 20000"
+                        size="lg"
+                        onChange={(value) =>
+                          setField("discount", Number(value))
+                        }
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
               <div className="mt-5">
                 <PrimaryButton
                   text={"Guardar"}
@@ -246,6 +368,133 @@ const UserList = () => {
             >
               Si, eliminar
             </Button>
+          </>
+        }
+      />
+
+      <CustomModal
+        isOpen={isModalOpen.paymentAmountModal}
+        onOpenChange={() => toggleModal("paymentAmountModal")}
+        size="2xl"
+        content={
+          <>
+            <div className="p-4">
+              <h3 className="text-md mb-3">Historial de Abonos</h3>
+              {totalPaidRecord?.length > 0 ? (
+                totalPaidRecord.map((payment) => (
+                  <div key={payment.paymentId} className="border-b pb-3">
+                    {editPaymentAmountId === payment.paymentId ? (
+                      <>
+                        <div className="flex gap-2 justify-between items-center">
+                          <div className="w-full flex flex-col md:flex-row gap-2 mt-2">
+                            <FormInput
+                              label="Monto Abonado"
+                              type="number"
+                              value={paymentAmount?.paymentAmount !== undefined && paymentAmount?.paymentAmount !== null ? paymentAmount.paymentAmount : ""}
+                              onChange={(value) => setPaymentAmountField("paymentAmount", value === "" ? "" : Number(value))}
+                            />
+                            <FormInput
+                              type="date"
+                              label="Fecha de Pago"
+                              value={paymentAmount?.paymentDate ?? payment.paymentDate ?? ""}
+                              onChange={(value) => setPaymentAmountField("paymentDate", value)}
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <Button isIconOnly color="success" onPress={editPaymentAmount}>
+                              <CheckinIcon />
+                            </Button>
+                            <Button
+                              isIconOnly
+                              color="danger"
+                              onPress={() => setEditPaymentAmountId(null)}
+                            >
+                              <XIcon />
+                            </Button>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex gap-2 justify-between items-center">
+                          <div className="mt-2">
+                            <span className="block text-md">Monto:</span>
+                            <span>
+                              ${payment.paymentAmount.toLocaleString()}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="block text-md">Fecha:</span>
+                            <span>{payment.paymentDate}</span>
+                          </div>
+                          <div className="flex gap-2">
+                            <Tooltip content="Editar abono" classNames={{ base: "dark" }}>
+                              <button
+                                onClick={() => {
+                                  setEditPaymentAmountId(payment.paymentId);
+                                  setPaymentAmount({ ...payment });
+                                }}
+                                className="text-blue-500 hover:text-blue-700"
+                              >
+                                <EditIcon />
+                              </button>
+                            </Tooltip>
+                            <Tooltip content="Eliminar abono" classNames={{ base: "dark" }}>
+                              <button 
+                                className="text-red-500 hover:text-red-700"
+                                onClick={() => deletePaymentAmount(payment.paymentId)}
+                              >
+                                <DeleteIcon />
+                              </button>
+                            </Tooltip>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-500">
+                  No hay abonos registrados.
+                </p>
+              )}
+
+              <div className="pt-3 font-md flex justify-between">
+                <span>Total Pagado:</span>
+                <span>${totalPaid?.totalPaid.toLocaleString()}</span>
+              </div>
+              <div className="border-t pt-3 mt-3 font-md flex justify-between">
+                <span>Cantidad Pendiente:</span>
+                <span>${totalPaid?.remainingAmount.toLocaleString()}</span>
+              </div>
+            </div>
+
+            <form onSubmit={registerPaymentAmount}>
+              <h3 className="text-md mb-3">Registrar abono</h3>
+              <FormInput
+                type="number"
+                label="Monto Abonado"
+                placeholder="Ej: 50000"
+                size="lg"
+                onChange={(value) => setPaymentAmountField("paymentAmount", Number(value))}
+              />
+              <FormInput
+                isRequired
+                type="date"
+                label="Fecha de Pago (dd/mm/aaaa)"
+                size="lg"
+                customInputClass="mt-5"
+                onChange={(value) => setPaymentAmountField("paymentDate", value)}
+                value={paymentAmount?.paymentDate}
+              />
+              <div className="mt-5">
+                <PrimaryButton
+                  text="Guardar"
+                  btnType="submit"
+                  customButtonClass="w-full p-8 mt-5"
+                />
+              </div>
+            </form>
           </>
         }
       />

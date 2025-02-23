@@ -1,4 +1,3 @@
-import React from "react";
 import { User, Chip, Tooltip, ChipProps } from "@nextui-org/react";
 import EyeIcon from "@/assets/svg/EyeIcon";
 import EditIcon from "@/assets/svg/EditIcon";
@@ -7,23 +6,23 @@ import { AthleteUser } from "@/domain/entities/AthleteUser";
 import MembershipIcon from "@/assets/svg/MembershipIcon";
 
 interface customRenderCellProps {
-  handleOpenModal: (
-    id: number,
-    modalName: "detailsModal" | "deleteModal" | "editMembershipModal"
-  ) => void;
+  handleOpenModal: (id: number, modalName: "detailsModal" | "deleteModal" | "editMembershipModal" | "paymentAmountModal") => void;
   handleRedirect: (id: number) => void;
 }
 
-export const customRenderCell = (
-  user: AthleteUser,
-  columnKey: React.Key,
-  { handleOpenModal, handleRedirect }: customRenderCellProps
-) => {
+export const customRenderCell = (user: AthleteUser, columnKey: React.Key, { handleOpenModal, handleRedirect }: customRenderCellProps) => {
   const cellValue = user[columnKey as keyof AthleteUser];
+
   const statusColorMap: Record<string, ChipProps["color"]> = {
-    activo: "success",
-    inactivo: "danger",
+    "activo": "success",
+    "inactivo": "danger",
     "por expirar": "warning",
+  };
+
+  const paymentStatusColorMap: Record<string, ChipProps["color"]> = {
+    "completado": "success",
+    "pendiente": "warning",
+    "sin membresía": "danger",
   };
 
   switch (columnKey) {
@@ -37,13 +36,27 @@ export const customRenderCell = (
           {user.email}
         </User>
       );
-    case "phoneNumber":
+    case "paymentStatus":
       return (
-        <div className="flex flex-col">
-          <p className="text-bold text-sm capitalize">{cellValue}</p>
-          <p className="text-bold text-sm capitalize text-default-400">
-            {user.birthDate.slice(0, 10)}
-          </p>
+        <div className="flex items-center gap-2">
+          <Chip
+            className="capitalize"
+            color={paymentStatusColorMap[user.paymentStatus!.toLowerCase()]}
+            size="sm"
+            variant="faded"
+          >
+            {cellValue}
+          </Chip>
+          {user.paymentStatus === "Pendiente" && (
+            <Tooltip
+              content="Ver detalle de pago"
+              classNames={{ base: "dark" }}
+            >
+              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                <EyeIcon clickHandler={() => handleOpenModal(user.athleteMembershipId!, "paymentAmountModal")} />
+              </span>
+            </Tooltip>
+          )}
         </div>
       );
     case "startDate":
@@ -78,11 +91,7 @@ export const customRenderCell = (
         <div className="relative flex items-center gap-2">
           <Tooltip content="Ver detalle" classNames={{ base: "dark" }}>
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EyeIcon
-                clickHandler={() =>
-                  handleOpenModal(user.athleteId!, "detailsModal")
-                }
-              />
+              <EyeIcon clickHandler={() => handleOpenModal(user.athleteId!, "detailsModal")} />
             </span>
           </Tooltip>
           <Tooltip content="Editar usuario" classNames={{ base: "dark" }}>
@@ -97,11 +106,7 @@ export const customRenderCell = (
           </Tooltip>
           <Tooltip color="danger" content="Eliminar usuario">
             <span className="text-lg text-danger cursor-pointer active:opacity-50">
-              <DeleteIcon
-                clickHandler={() =>
-                  handleOpenModal(user.athleteId!, "deleteModal")
-                }
-              />
+              <DeleteIcon clickHandler={() => handleOpenModal(user.athleteId!, "deleteModal")} />
             </span>
           </Tooltip>
         </div>

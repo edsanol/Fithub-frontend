@@ -5,10 +5,8 @@ import { RegisterAthleteByQRUseCase } from "@/domain/useCases/AthleteUser/regist
 import {
   isNotEmpty,
   isValidDocumentID,
-  isValidEmail,
   isValidGenre,
   isValidName,
-  isValidPhone,
 } from "@/presentation/helpers";
 import { ISelfRegistrationValidation } from "@/presentation/interfaces/Athlete/IAthlete";
 import { usePathname } from "next/navigation";
@@ -41,7 +39,6 @@ const initialState: State = {
   athleteDataError: {
     nameError: false,
     lastNameError: false,
-    emailError: false,
     phoneNumberError: false,
     genreError: false,
     birthDateError: false,
@@ -81,10 +78,9 @@ const ViewModel = () => {
 
   const handleIsValidForm = () => {
     const errors: ISelfRegistrationValidation = {
-      emailError: !isValidEmail(athleteData.email),
       nameError: !isValidName(athleteData.athleteName),
       lastNameError: !isValidName(athleteData.athleteLastName),
-      phoneNumberError: !isValidPhone(athleteData.phoneNumber),
+      phoneNumberError: !isNotEmpty(athleteData.phoneNumber),
       genreError: !isValidGenre(athleteData.genre),
       birthDateError: !isNotEmpty(athleteData.birthDate),
       documentIDError: !isValidDocumentID(athleteData.documentID),

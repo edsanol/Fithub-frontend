@@ -3,7 +3,6 @@ import {
   isNotEmpty,
   isValidDate,
   isValidDocumentID,
-  isValidEmail,
   isValidGenre,
   isValidName,
   isValidPhone,
@@ -55,11 +54,15 @@ const initialState: State = {
     membershipId: 0,
     cardAccessCode: "",
     startMembershipDate: "",
+    paymentAmount: 0,
+    discount: 0,
+    emergencyContactName: "",
+    emergencyContactPhone: "",
+    medicalCondition: "",
   },
   athleteDataError: {
     nameError: false,
     lastNameError: false,
-    emailError: false,
     phoneNumberError: false,
     genreError: false,
     birthDateError: false,
@@ -108,9 +111,11 @@ const ViewModel = () => {
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [error, setError] = useState("");
+  const [paymentEnabled, setPaymentEnabled] = useState(false);
+  const [discountEnabled, setDiscountEnabled] = useState(false);
 
-  const ValidateAthleteData = (athleteData: AthleteUser, useStartMembershipDate: boolean): IAthleteValidation => ({
-    emailError: !isValidEmail(athleteData.email),
+
+  const validateAthleteData = (athleteData: AthleteUser, useStartMembershipDate: boolean): IAthleteValidation => ({
     nameError: !isValidName(athleteData.athleteName),
     lastNameError: !isValidName(athleteData.athleteLastName),
     phoneNumberError: !isValidPhone(athleteData.phoneNumber),
@@ -124,7 +129,7 @@ const ViewModel = () => {
 
   const handleIsValidForm = () => {
     const useStartMembershipDate = Boolean(!athleteIdValue);
-    const errors = ValidateAthleteData(athleteData, useStartMembershipDate);
+    const errors = validateAthleteData(athleteData, useStartMembershipDate);
   
     dispatch({ type: "SET_ERROR", errors });
     return errors;
@@ -237,11 +242,20 @@ const ViewModel = () => {
     });
   };
 
+  const toogleCheckboxes = (state: string) => {
+    if (state === "payment") {
+      setPaymentEnabled(!paymentEnabled);
+    } else {
+      setDiscountEnabled(!discountEnabled);
+    }
+  };
+
   return {
     handleSubmit,
     getAthleteUserById,
     setField,
     setErrorModal,
+    toogleCheckboxes,
     athleteIdValue,
     athleteData,
     athleteDataError,
@@ -249,6 +263,8 @@ const ViewModel = () => {
     errorModal,
     errorMessage,
     error,
+    paymentEnabled,
+    discountEnabled,
   };
 };
 

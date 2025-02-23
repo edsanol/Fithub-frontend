@@ -2,6 +2,9 @@ import { Membership } from "../entities/Membership";
 import { MembershipByGymId } from "../models/MembershipByGymId";
 import { PaginateData } from "../models/PaginateData";
 import { PaginateResponseList } from "../models/PaginateResponseList";
+import { RegisterPaymentAmount } from "../models/RegisterPaymentStatus";
+import { TotalPaid } from "../models/TotalPaid";
+import { TotalPaidRecord } from "../models/TotalPaidRecord";
 
 export interface MembershipRepository {
   registerMembership(membership: Membership): Promise<boolean>;
@@ -10,4 +13,9 @@ export interface MembershipRepository {
   editMembership(id: number, membership: Membership): Promise<boolean>;
   deleteMembership(id: number): Promise<boolean>;
   getMembershipByGymId(): Promise<MembershipByGymId[]>;
+  registerPaymentAmount(data: RegisterPaymentAmount): Promise<boolean>;
+  getTotalPaid(id: number): Promise<TotalPaid>;
+  getTotalPaidRecord(id: number): Promise<TotalPaidRecord[]>;
+  editPaymentAmount(data: RegisterPaymentAmount): Promise<boolean>;
+  deletePaymentAmount(id: number): Promise<boolean>;
 }

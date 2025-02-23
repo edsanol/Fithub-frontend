@@ -10,17 +10,19 @@ import {
   TableRow,
   TableCell,
   Pagination,
-  Input,
   Skeleton,
 } from "@nextui-org/react";
-import SearchIcon from "@/assets/svg/SearchIcon";
 import { useSession } from "next-auth/react";
 import { IColumns } from "@/presentation/interfaces";
+import { useRouter } from "next/navigation";
+import { Key } from "@react-types/shared";
+import Filters from "./components/Filters";
 
 interface CustomTableProps {
   onSetNumPage?: (numPage: number) => void;
   onSetTextFilter?: (textFilter: string) => void;
   customRenderCell: (user: any, columnKey: React.Key) => React.ReactNode;
+  onSetStatusFilter?: (status: number) => void;
   customClassName?: string;
   records: any;
   columns: IColumns[];
@@ -30,6 +32,7 @@ interface CustomTableProps {
 const CustomTable = ({
   onSetNumPage,
   onSetTextFilter,
+  onSetStatusFilter,
   customRenderCell,
   customClassName,
   records,
@@ -38,8 +41,10 @@ const CustomTable = ({
 }: CustomTableProps) => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<Key | null>(null);
 
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     try {
@@ -69,6 +74,15 @@ const CustomTable = ({
     },
     [onSetTextFilter]
   );
+
+  const handleStatusFilterChange = (keys: "all" | Set<Key>) => {
+    const selectedKey = keys === "all" ? null : Array.from(keys)[0];
+    setStatusFilter(selectedKey);
+  
+    if (selectedKey && onSetStatusFilter) {
+      onSetStatusFilter(Number(selectedKey));
+    }
+  };
 
   if (status === "loading" || loading) {
     return (
@@ -105,18 +119,19 @@ const CustomTable = ({
 
   return (
     <>
-      {onSetTextFilter && (
-        <Input
-          isClearable
-          className="w-full mb-3 p-2 sm:max-w-[44%]"
-          placeholder="Filtra por nombre..."
-          startContent={<SearchIcon />}
-          classNames={{ base: "dark" }}
-          onChange={(e) => handleTextFilter(e.target.value)}
-        />
-      )}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col items-center md:flex-row justify-between gap-3 md:items-end">
+          <Filters
+            statusFilter={statusFilter}
+            onSetTextFilter={onSetTextFilter}
+            onSetStatusFilter={onSetStatusFilter}
+            onHandleTextFilter={handleTextFilter}
+            onHandleStatusFilter={handleStatusFilterChange}
+          />
+        </div>
+      </div>
       <Table
-        aria-label="Example table with custom cells"
+        aria-label="Tabla de usuarios"
         classNames={{ base: "dark", wrapper: "min-h-[222px]" }}
         className={customClassName}
         bottomContent={

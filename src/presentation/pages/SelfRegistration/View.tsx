@@ -72,7 +72,7 @@ const SelfRegistration = () => {
                 color={athleteDataError?.documentIDError ? "danger" : "default"}
                 errorMessage={
                   athleteDataError?.documentIDError
-                    ? "Por favor ingresa un número de teléfono válido"
+                    ? "Por favor ingresa un número de documento válido"
                     : ""
                 }
                 type="text"
@@ -100,14 +100,6 @@ const SelfRegistration = () => {
               />
             </div>
             <FormInput
-              isRequired
-              isInvalid={athleteDataError?.emailError}
-              color={athleteDataError?.emailError ? "danger" : "default"}
-              errorMessage={
-                athleteDataError?.emailError
-                  ? "Por favor ingresa un correo electrónico válido"
-                  : ""
-              }
               type="email"
               label="Correo electrónico"
               size="lg"

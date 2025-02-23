@@ -7,6 +7,9 @@ import { TickerResponseApi } from "../api/model/TickerResponseApi";
 import { PaginateData } from "@/domain/models/PaginateData";
 import { PaginateResponseList } from "@/domain/models/PaginateResponseList";
 import { MembershipByGymId } from "@/domain/models/MembershipByGymId";
+import { RegisterPaymentAmount } from "@/domain/models/RegisterPaymentStatus";
+import { TotalPaid } from "@/domain/models/TotalPaid";
+import { TotalPaidRecord } from "@/domain/models/TotalPaidRecord";
 
 @injectable()
 export class MembershipServiceImpl implements MembershipService {
@@ -17,55 +20,67 @@ export class MembershipServiceImpl implements MembershipService {
   }
 
   async registerMembership(membership: Membership): Promise<boolean> {
-    const response = await this.http.post<
-      TickerResponseApi<boolean>,
-      Membership
-    >("/Membership/Register", membership);
+    const response = await this.http.post<TickerResponseApi<boolean>, Membership>("/Membership/Register", membership);
 
     return response.data;
   }
 
-  async getMembershipList(
-    data: PaginateData
-  ): Promise<PaginateResponseList<Membership>> {
-    const response = await this.http.post<
-      TickerResponseApi<PaginateResponseList<Membership>>,
-      PaginateData
-    >("/Membership", data);
+  async getMembershipList(data: PaginateData): Promise<PaginateResponseList<Membership>> {
+    const response = await this.http.post<TickerResponseApi<PaginateResponseList<Membership>>, PaginateData>("/Membership", data);
 
     return response.data;
   }
 
   async getMembershipById(id: number): Promise<Membership> {
-    const response = await this.http.get<TickerResponseApi<Membership>>(
-      `/Membership/${id}`
-    );
+    const response = await this.http.get<TickerResponseApi<Membership>>(`/Membership/${id}`);
 
     return response.data;
   }
 
   async editMembership(id: number, membership: Membership): Promise<boolean> {
-    const response = await this.http.put<
-      TickerResponseApi<boolean>,
-      Membership
-    >(`/Membership/Edit/${id}`, membership);
+    const response = await this.http.put<TickerResponseApi<boolean>, Membership>(`/Membership/Edit/${id}`, membership);
 
     return response.data;
   }
 
   async deleteMembership(id: number): Promise<boolean> {
-    const response = await this.http.put<TickerResponseApi<boolean>, null>(
-      `/Membership/Delete/${id}`,
-      null
-    );
+    const response = await this.http.put<TickerResponseApi<boolean>, null>(`/Membership/Delete/${id}`, null);
 
     return response.data;
   }
 
   async getMembershipByGymId(): Promise<MembershipByGymId[]> {
-    const response = await this.http.get<
-      TickerResponseApi<MembershipByGymId[]>
-    >("/Membership/Select");
+    const response = await this.http.get<TickerResponseApi<MembershipByGymId[]>>("/Membership/Select");
+
+    return response.data;
+  }
+
+  async registerPaymentAmount(data: RegisterPaymentAmount): Promise<boolean> {
+    const response = await this.http.post<TickerResponseApi<boolean>, RegisterPaymentAmount>("/Membership/RegisterPaymentAmount", data);
+
+    return response.data;
+  }
+
+  async getTotalPaid(id: number): Promise<TotalPaid> {
+    const response = await this.http.get<TickerResponseApi<TotalPaid>>(`/Membership/GetTotalPaid/${id}`);
+
+    return response.data;
+  }
+
+  async getTotalPaidRecord(id: number): Promise<TotalPaidRecord[]> {
+    const response = await this.http.get<TickerResponseApi<TotalPaidRecord[]>>(`/Membership/GetTotalPaidRecord/${id}`);
+
+    return response.data;
+  }
+
+  async editPaymentAmount(data: RegisterPaymentAmount): Promise<boolean> {
+    const response = await this.http.put<TickerResponseApi<boolean>, RegisterPaymentAmount>("/Membership/UpdatePaymentAmount", data);
+
+    return response.data;
+  }
+
+  async deletePaymentAmount(id: number): Promise<boolean> {
+    const response = await this.http.delete<TickerResponseApi<boolean>, null>(`/Membership/DeletePaymentAmount/${id}`, null);
 
     return response.data;
   }

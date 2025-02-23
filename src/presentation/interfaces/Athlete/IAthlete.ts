@@ -1,7 +1,6 @@
 export interface IAthleteValidation {
   nameError: boolean;
   lastNameError: boolean;
-  emailError: boolean;
   phoneNumberError: boolean;
   genreError: boolean;
   birthDateError: boolean;
@@ -12,7 +11,6 @@ export interface IAthleteValidation {
 export interface ISelfRegistrationValidation {
   nameError: boolean;
   lastNameError: boolean;
-  emailError: boolean;
   phoneNumberError: boolean;
   genreError: boolean;
   birthDateError: boolean;

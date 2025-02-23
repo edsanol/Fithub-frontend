@@ -88,6 +88,11 @@ import { GetRoutineByIdUseCase } from "@/domain/useCases/Routine/getRoutineByIdU
 import { DesactivateRoutineUseCase } from "@/domain/useCases/Routine/desactivateRoutineUseCase";
 import { UpdateRoutineUseCase } from "@/domain/useCases/Routine/updateRoutineUseCase";
 import { SendRoutineUseCase } from "@/domain/useCases/Routine/sendRoutineUseCase";
+import { RegisterPaymentAmountUseCase } from "@/domain/useCases/Membership/registerPaymentAmountUseCase";
+import { GetTotalPaidUseCase } from "@/domain/useCases/Membership/getTotalPaidUseCase";
+import { GetTotalPaidRecordUseCase } from "@/domain/useCases/Membership/getTotalPaidRecordUseCase";
+import { EditPaymentAmountUseCase } from "@/domain/useCases/Membership/editPaymentAmountUseCase";
+import { DeletePaymentAmountUseCase } from "@/domain/useCases/Membership/deletePaymentAmountUseCase";
 
 const container = new Container();
 
@@ -218,6 +223,21 @@ container
 container
   .bind<GetMembershipByGymIdUseCase>(TYPES.GetMembershipByGymIdUseCase)
   .to(GetMembershipByGymIdUseCase);
+container
+  .bind<RegisterPaymentAmountUseCase>(TYPES.RegisterPaymentAmountUseCase)
+  .to(RegisterPaymentAmountUseCase);
+container
+  .bind<GetTotalPaidUseCase>(TYPES.GetTotalPaidUseCase)
+  .to(GetTotalPaidUseCase);
+container
+  .bind<GetTotalPaidRecordUseCase>(TYPES.GetTotalPaidRecordUseCase)
+  .to(GetTotalPaidRecordUseCase);
+container
+  .bind<EditPaymentAmountUseCase>(TYPES.EditPaymentAmountUseCase)
+  .to(EditPaymentAmountUseCase);
+container 
+  .bind<DeletePaymentAmountUseCase>(TYPES.DeletePaymentAmountUseCase)
+  .to(DeletePaymentAmountUseCase);
 
 // DiscountsRepository
 container
